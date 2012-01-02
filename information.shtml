@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="header.html" -->
 
 </div>
 
@@ -25,7 +25,7 @@ resource; please ask questions you have there, and the professor, TA, and
 fellow students will answer them.
 
 <h3> Assignments </h3> All assignments are found in the <a
-href="/~scott/pl/assignments/">assignments</a> directory.<p>
+href="assignments/">assignments</a> directory.<p>
 
 There will be three kinds of assignments
 <ol>
@@ -39,7 +39,7 @@ There will be three kinds of assignments
 
 <h3>Office Hours</h3>
 Information about office hours and other contact information can be found on the
-<a href="/~scott/pl/contact.shtml">Contact Information</a> page.
+<a href="contact.shtml">Contact Information</a> page.
 
 <h3>Grading</h3>
 Approximately 2/3 of the grade will be from assignments and 1/3 from
@@ -50,4 +50,4 @@ the final examination.
 </div>
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="footer.html" -->

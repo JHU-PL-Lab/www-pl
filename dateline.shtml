@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="header.html" -->
 
 </div>
 
@@ -538,4 +538,4 @@ Shaffer 202</strong></div>
 </div>
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="footer.html" -->

@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="header.html" -->
 
 </div>
 
@@ -66,4 +66,4 @@ which I am not very familiar with but should cover the basic concepts.
 </div>
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="footer.html" -->

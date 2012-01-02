@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="header.html" -->
 
 </div>
 
@@ -35,4 +35,4 @@ Department's academic integrity code</a>.</p>
 
 </div>
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="footer.html" -->

@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="header.html" -->
 
 </div>
 
@@ -41,4 +41,4 @@ href="mailto:TBA@cs.jhu.edu">TBA@cs.jhu.edu</a><br>
 </div>
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="footer.html" -->
