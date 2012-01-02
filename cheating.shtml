@@ -1,0 +1,38 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+<h2>Course Academic Integrity Policy</h2>
+<p>
+As with all your coursework and your life in general for that matter, you are expected
+to act ethically.  See the <a href="http://ethics.jhu.edu">The JHU 
+Ethics site</a> for more details on the university's ethics policy,
+and also read the <a href="http://www.cs.jhu.edu/integrity-code/">CS
+Department's academic integrity code</a>.</p>
+<ul>
+  <li> It is considered cheating to copy code from another student's
+    assignment or for two students to share code (this includes code
+    from assignments submitted in past 
+    years).  It is not even allowed for you to show any working code
+      you have to another student.  You may ask another student for
+      help with code you have that is not working.  If you are helping
+      such a student, you cannot show them your correct code as a way
+      of answering their question.  It is not considered cheating to discuss general
+    ideas on how to solve a problem with another student. 
+<li>Cheating is immoral. Cheaters that are caught will be punished as
+    is required under University policy.  Please report all instances
+    of cheating you see to the professor.  This is an unpleasant task
+    but the alternative to not reporting it is worse.
+<li>Clear-cut cases of cheating will be reported to the Undergraduate
+    Academic Ethics Board, or to the WSE Dean if the student is a
+    graduate student.  If a student is found guilty, this information is
+    placed on their permanent academic record. 
+<li>If some action seems a grey area to you, <em>please ask first</em>
+    before proceeding!
+</ul>
+
+</div>
+
+<!--#include virtual="/~scott/pl/footer.html" -->

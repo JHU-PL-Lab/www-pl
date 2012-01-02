@@ -1,0 +1,44 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content"> <h2>Contact Information</h2>
+
+<p>
+
+
+<br><strong>For quickest response, post to the course bboard</strong>.
+For private issues, email the professor and/or TA directly.
+<p>
+
+<strong>Professor</strong>&nbsp; Scott F. Smith<br>
+<strong>email</strong>&nbsp; <a href="mailto:scott@cs.jhu.edu">scott@cs.jhu.edu</a><br>
+<strong>phone</strong>&nbsp; 410-516-5299 <br>
+<strong>office</strong>&nbsp; NEB 214 <br>
+<strong>office hours</strong>
+    <ul>
+      <li>Right after class; 
+      <li>any other time I am in my office; 
+      <li>email to schedule an
+appointment, including a 
+requested time(s) to meet in your initial email; 
+      <li>24/7 by email
+    </ul>
+<p>
+&nbsp;<br>
+
+    <strong>Teaching Assistant</strong> Zach Palmer<br/>
+<strong>email</strong>&nbsp;<a href="mailto:zachary.palmer@jhu.edu">zachary.palmer@jhu.edu</a><br/>
+<strong>office</strong>&nbsp;NEB 219 <br/>
+<strong>office hours</strong>&nbsp; M/W 3-4 PM, Th 1-2 PM
+    <p/>
+&nbsp;<br/>
+
+<strong>Course Assistant</strong> TBA<br>
+<strong>email</strong>&nbsp;<a
+href="mailto:TBA@cs.jhu.edu">TBA@cs.jhu.edu</a><br>
+
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->

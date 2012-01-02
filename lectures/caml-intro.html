@@ -1,0 +1,1850 @@
+<html>
+<HEAD>
+<title>Introduction to Caml</title>
+</HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!-- NEED TO SPRUCE UP MODULES NOTES, THEY ARE OLD -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<!--  -->
+<h1><A NAME="xtocid111832">Introduction to Caml</A></h1>
+These lectures cover 
+<ul>
+  <li><a href="#basics">The Basics</a>
+  <li><a href="#simpletypes">Simple built-in types</a>
+  <li><a href="#functions">Functions</a> (including <a
+      href="#patterns">Patterns</a> and <a href="#higherorder">Higher-Order Functions</a>)
+  <li><a href="#types">Declared types: variants and records, etc</a>
+  <li><a href="#state">Imperative features: references, arrays,
+      exceptions</a>
+  <li><a href="#modules">Modules</a>
+  <li><a href="#separate">Separate compilation</a>
+</ul>
+The <a href="../caml/code/">Transcripts of Caml sessions run in class are available</a>.
+
+<h2><A NAME="xtocid150454">Background on ML</A></h2>
+ML is
+<ul>
+  <li> A language developed by the programming languages research
+       community (Robin Milner; Dave MacQueen; Xavier Leroy...)
+  <li> Is an "extended functional" language: has imperative features
+       built on a functional core.  (<em>pure</em> functional =
+      functions only; no assignment or
+       other mutation operator in language)
+  <li> Particularly useful for metaprogramming (writing programs that
+       manipulate programs, e.g. for compilers, interpreters etc).<br>
+
+       That was original purpose, "ML" = "MetaLanguage".
+  <li> Most current compilers run too slowly for the language to be feasible
+       for widespread use (but, OCaml compiler is pretty darn good).
+</ul>
+Versions of ML
+<ul>
+  <li>classic ML: Milner's original creation
+  <li>Standard ML (SML): an early 90's standard
+  <li>SML '97: revision of early 90's standard
+  <li>(O)Caml: French variant on classic ML; includes classes and
+      objects too
+</ul>
+We are using OCaml because it is currently the best-supported version
+of ML and it has a very fast compiler.  Unfortunately almost all the
+English books are the Standard ML dialect.
+
+
+<h3>ML Novelties</h3>
+Has some novel features relative to Java (and C++). 
+<ul>
+  <li>all variables are themselves immutable<br>
+--their values are fixed.
+  <li>everything is an expression (commands also return values)
+  <li>completely higher-order functions<br>
+      --functions can be defined anywhere in the code, passed as arguments,
+      and returned as values.
+  <li>dynamic top-loop programming environment (a la Lisp/Scheme/Smalltalk)<br>
+      --can type/compile/load little bits of new code into the system incrementally.
+  <li>automated inference of most type declarations,
+  <li>data pattern matching,
+  <li>parametric polymorphism, 
+  <li>functors (higher-order modules), ... 
+</ul>
+These are all conceptually more advanced ideas. 
+<a name="basics"></a><h2>Caml Basics</h2>
+Read the <a href="../caml/htmlman/manual003.html">Core
+Language</a> section of the manual to suppplement these notes.  For
+more depth and examples, read (mainly) Chapter 2 of the online <a
+href="http://caml.inria.fr/oreilly-book/html/index.html">O'Reilly Book</a>.
+<h3><A NAME="xtocid150455">The top loop</A></h3>
+<ul>
+  <li>The concept of a <em>top loop</em> is found in many languages:
+      Lisp, Scheme, Smalltalk, ML
+  <li>OCaml is a top-loop based system; 
+
+  <li>It is an interactive compile-load-run-printResult loop: type in some code, and
+      its directly compiled, loaded, and run, and the result printed.  Repeat.
+  <li>This code is loaded into the context there from the previous
+      compile-load-run commands typed into ocaml, so some variables
+      may already have values. 
+  <li>Lisp, Scheme and Smaltalk have a <strong>stateful</strong> top-loop and Caml has
+      a <strong>declarative</strong> top-loop; this subtlety we will 
+deal with later.
+</ul>      
+OCaml's top loop:
+<ul>
+  <li> Commands are typed in to the top loop, with the system
+      providing a "<code><font color=black>#</font></code>" prompt.  
+  <li>The 
+dual semicolon "<code>;;</code>" signifies the end of input to the top
+loop, which the system will immediately process.
+  <li>Note, when you use the <a href="../caml/emacs">emacs
+      Caml mode</a>, you "submit" the code you select to the top
+      loop, and need not directly type it in at the prompt.
+
+</ul>
+
+Here is a Caml top-loop session, starting from a UNIX prompt.
+(In these notes, 
+<code><font color=blue>blue typewriter</font></code> font is typed by the user, and
+<code><font color=maroon>maroon typewriter</font></code> font is the computer reply.)
+<pre><font color=blue><font color=black>%</font> ocaml
+<font color=maroon>        Objective Caml version 3.06
+</font>
+<font color=black>#</font> let x = 3+4;;
+<font color=maroon>val x : int = 7
+</font></font></pre>
+<ul>
+  <li>Here the incredibly simple OCaml program <code>let x = 3+4</code> is compiled, loaded, run,
+and the result printed.
+  <li>
+<code>val x : int = 7</code> means "the return <em>value</em> of the
+      expression is 7", and <code>int</code> is the (automatically
+      inferred) type of the return value.<p> 
+
+</ul>
+<pre><font color=blue><font color=black>#</font> x+4;;
+<font color=maroon>- : int = 11
+</font></font></pre>
+<ul>
+  <li>The system knows now that <code>x</code> was declared to be
+<code>7</code>, from the previous entry into the top loop.
+  <li>But, the result 11 is not put in any variable (the
+      <code>-</code> indicates this anonymous variable).  Variables
+<em>must</em> be lower-case in Caml.<p>
+
+</ul>
+
+<code>let</code> syntax allows for local variable declarations in Caml:
+
+<pre><font color=blue><font color=black>#</font> let x = 4 in x+3;;
+<font color=maroon>- : int = 7</font>
+</font></pre>
+
+Declarations typed in at the top level are like an open-ended <code>let</code>:
+<pre><font color=blue>
+<font color=black>#</font> let x=4;;
+<font color=maroon>val x : int = 4</font>
+<font color=black>#</font> let y = x+3;;
+<font color=maroon>val y : int = 7</font>
+<font color=black>#</font> x*x;;
+<font color=maroon>- : int = 16</font>
+</font></pre>
+Notice how the types are being inferred for us (pretty simple to do here but
+harder for more complex programs).
+
+<h3><A NAME="xtocid150456">Simple Types</A></h3>
+<code>int, float, string, char, bool</code>  types:<p>
+<code>4, 4.3, "hi", 'c', true</code><p>
+These types have all the standard kinds of operations on them, in the
+libraries.  
+<h3>Libraries</h3> 
+<ul>
+  <li>The <a
+href="http://www.cs.jhu.edu/~scott/pl/caml/htmlman/manual032.html">Core
+library</a> contains the more core operations on basic types:
+      <code>+ - mod abs ** sqrt && || &lt;&gt;</code> etc 
+      <ul>
+	<li>  You will need to look there to see what the operator is
+to do what you want. 
+	<li> Technically,  all these core operators are
+      defined in the OCaml module <code>Pervasives</code> which is
+      always loaded.  We will cover OCaml modules later.
+      </ul>
+  <li>Other less basic operators are found in the <a
+href="http://www.cs.jhu.edu/~scott/pl/caml/htmlman/manual033.html">Standard
+Library</a>; 
+      <ul>
+	<li>There are multiple modules here such as <code>Array
+      Stream List</code>, etc.
+	<li>To use these operators, you have to refer to entities via
+	    dot notation 
+      including the module name, for example <code>Char.code</code>
+      for the <code>char -> int</code> ASCII code function.
+      <pre><font color=blue><font color=black>#</font> Char.code 'a';;
+<font color=maroon>- : int = 97</font></font></pre>
+      </ul>
+</ul>
+<h3><A NAME="xtocid111833">Int/Real non-Overloading</A></h3>
+Caml is pure in that it does not overload the meaning +/* etc to work
+on integers and floats.
+<pre><font color=blue><font color=black>#</font> 2.3 * 5.7;;
+<font color=maroon>Characters 6-9:
+This expression has type float but is here used with type int
+</font>
+<font color=black>#</font> 2.3 *. 5.7;;
+<font color=maroon>- : float = 13.110000
+</font></font></pre>
+Caml also never performs implicit coercions, all coercions must be
+explicit.
+<pre><font color=blue><font color=black>#</font> 2.3 *. 5;;
+<font color=maroon>Characters 7-8:
+This expression has type int but is here used with type float
+</font></font></pre>
+<p>
+<em>Why</em> is Caml doing this? 
+<ul>
+  <li> It is being precise
+about the types of arithmetic.  
+  <li>The original screw-up was made by
+sloppy mathematicians years ago who overloaded these symbols.
+  <li>Please raise your hand and bitch in your next math class :-)
+</ul>
+<h3><A NAME="xtocid111834">Caml is Expression-based</A></h3>
+Caml is <em>expression-based</em>, there are no pure "commands" like in
+Java/C++; instead, commands are also expressions, they return values.
+
+<pre><font color=blue><font color=black>#</font> (if (2=3) then 5 else 6) + 1;;
+<font color=maroon>- : int = 7</font>
+</font></pre>
+One sometimes annoying consequence of the above is the two branches of
+the <code>if</code> need to return the same type.
+
+<pre><font color=blue>if (2=3) then 5 else 6.5;;
+<font color=maroon>Characters 21-24:
+This expression has type float but is here used with type int
+</font></font></pre>
+
+
+<h3><A NAME="xtocid111837">Let</A></h3>
+<code>let</code> allows local declarations to be defined.
+<p>
+
+<code>let x = ... in .... </code> is somewhat analogous to local variable definition
+<pre><font color=blue>
+{
+int x = ...;
+...
+}</font></pre>
+
+in C, but the Caml variable <code>x</code> is given a value that is
+<em>immutable</em> (can never change).<p>
+
+The top-loop is analogous to an open-ended let: each entry defines a
+new nested let-scope with a new declaration, and the scope can never
+be closed.<!-- expand on this with an example -->
+
+<h2><A NAME="simpletypes">Built-in simple datatypes: lists, tuples</A></h2>
+Caml's built-in list/tuple data objects are implicitly
+allocated for you: no need to 
+<code>malloc/free</code> them.  A <em>Garbage collector</em> automatically
+collects them when they are unreachable and thus no longer used.
+
+<h3><A NAME="xtocid1504510">Lists</A></h3>
+Lists are ... lists of Caml values.  Defining a new list is a
+triviality, even easier than in Java. 
+<pre><font color=blue><font color=black>#</font> [2;1+2;4];;
+<font color=maroon>- : int list = [2; 3; 4]</font>
+</font></pre>
+<ul>
+  <li>This automatically allocates space for the list and puts in the elements.
+  <li>Caml is garbage-collected like Java so no explicit de-allocation
+      is needed.
+  <li> Notice how the type, <code>int list</code> in this case, is
+      inferred automatically.
+  <li>All elements of a list must be of the same type.
+</ul>
+
+<pre><font color=blue><font color=black>#</font> ["e"; String.concat "" ["f";"g"] ;"h"];;
+<font color=maroon>- : string list = ["e"; "fg"; "h"]
+</font></font></pre>
+Notice how the function call <code>String.concat
+["f";"g"]</code> does not 
+require <code>( ... )</code> around the function's arguments, and how
+they are space- and not comma-separated.  Thats because
+<ul>
+  <li>You don't need parentheses for function arguments in OCaml:
+      <code>sin 0.3</code>
+  <li>Multiple arguments can be passed in <em>Curried</em> form which
+      means they are separated by spaces: <code>max 3 4</code>.
+  <li>This is a deep issue, more on it later.
+</ul>
+
+
+Lists must be uniform in their type ("homogenous").
+<pre><font color=blue><font color=black>#</font> [3;"e"];;
+<font color=maroon>Characters 3-6:
+This expression has type string but is here used with type int
+</font></font></pre>
+
+List operations are numerous.
+
+<pre><font color=blue><font color=black>#</font> let x = [2;3];;
+<font color=maroon>val x : int list = [2; 3]
+</font><font color=black>#</font> let y = 1::x;; (* this is called "consing" an element on to a list *)
+<font color=maroon>val y : int list = [1; 2; 3]
+</font><font color=black>#</font> x;;
+<font color=maroon>val x : int list = [2; 3] (* y is a NEW list; the
+list x is IMMUTABLE  and didn't change *)</font>
+<font color=black>#</font> x @ y;;        (* appending lists *)
+<font color=maroon>- : int list = [2; 3; 1; 2; 3]
+</font><font color=black>#</font> List.hd x;; (* head: first element of a list *)
+<font color=maroon>- : int = 2
+</font><font color=black>#</font> List.tl x;;  (* the tail or rest of a list *)
+<font color=maroon>- : int list = [3]
+</font></font></pre>
+The hd/tl operations are not in the core library (the module name must be
+used when referring to them) because you should generally not use
+them. (And, we will penalize any use of them in homeworks).
+Instead, use <em>pattern matching</em>:
+<pre><font color=blue><font color=black>#</font> match x with h::t -> h;;
+<font color=maroon>Characters 0-22:
+Warning: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+[]
+- : int = 2
+</font></font></pre>
+<ul>
+  <li>The <code>match</code> forces x to match pattern <code>h::t</code>, a
+list with head and tail, and then we grab the head <code>h</code>.
+  <li>The warning indicates we didn't match the case of an empty list,
+      which will cause <code>List.hd</code> to blow up (raise an excaption).
+  <li><code>List.hd</code>/<code>List.tl</code> are bad because you
+      really should deal with all possible patterns (more later on that).
+</ul>
+Tail is very similar:
+<pre><font color=blue><font color=black>#</font> match x with h::t -> t;;
+<font color=maroon>Characters 0-22:
+Warning: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+[]
+- : int list = [3]
+</font></font></pre>
+<h3><A NAME="xtocid1504511">Tuples</A></h3>
+Tupes are fixed-length lists, but the fields may be of differing types
+("heterogenous"). 
+<pre><font color=blue><font color=black>#</font> let x = (2,"hi");;
+<font color=maroon>val x : int * string = 2, "hi"
+</font><font color=black>#</font> match x with (y,z) -> y;;
+<font color=maroon>- : int = 2
+</font></font></pre>
+Note tuple type syntax: <code>int * string</code>, etc.<p>
+
+All the data mentioned so far is <em>immutable</em> - it is impossible
+to change 
+an entry in an existing list, tuple, or record! <br>
+Also, all variables are immutable.  Thus the language described so far
+is a <em>pure functional</em> subset of ML.<br>
+
+Mutable features will be discussed later.
+
+
+<h2><A NAME="functions">Caml Functions</A></h2>
+Here is a simple
+recursive fibonnaci function definition.
+<pre><font color=blue><font color=black>#</font>let rec fib n =
+   if n < 2 then 1 else fib(n-1) + fib(n-2);;
+<font color=maroon>val fib : int -> int = &lt;fun&gt;</font>
+<font color=black>#</font>   fib 33;;
+<font color=maroon>- : int = 5702887</font></font></pre>
+<ul>
+  the function name is
+  <code>fib</code> and the parameter is <code>n</code>.</li>
+  <li>The optional <code>rec</code> keyword must be added to a recursive
+function.  If there is no <code>rec</code>, the function can't call
+itself.  <code>n</code> here is the argument, which also doesn't need to
+be in parens.
+  <li>When you invoke a function you don't need <code>( .. )</code>
+      around the argument: <pre><font color=blue>sin 0.34;;</font></pre>
+  <li>There is no <code>return</code> statement; instead, the value of
+      the whole body-expression is implicitly what gets returned.
+  <li>
+Function types are grammatically printed and read in the form
+"<code>domain -> range</code>"  Their values (yes, functions are
+      expressions with values, too!) are always printed as
+<code>&lt;fun&gt;</code>.
+  <li>"officially", Caml functions can take only one argument(!)
+      Multi-argument functions are possible by some tricks to be
+      explained below.
+</ul>
+Other important aspects of Caml functions
+<ul>
+  <li>Functions can be defined anywhere in the code via function expressions:
+      <pre><font color=blue><font color=black>#</font> ((function x -> x+1) 4) + 7;;
+<font color=maroon>- : int = 12</font></font></pre>
+      <pre><font color=blue><font color=black>#</font> let f =
+      (function x -> x+1;; (* identical to "let f x = x+1;;" *)
+      <font color=maroon>val f : int -> int = &lt;fun&gt;</font></font></pre>
+     These <em>anonymos functions</em> (they aren't given names) end
+      up being very useful as we will see.
+  <li>Functions can be passed to and returned from functions
+  <li>In immutable programming, for/while loops are useless (they
+  either loop never or forever since the test is the same) and so
+  <em>recursion</em> is the only means of iteration.
+</ul>
+
+Multiple-argument functions are not built-in; generally use
+<em>Currying</em> to define them.
+<pre><font color=blue><font color=black>#</font> let rec comb n m = (* assumes 0 <= m <= n *)
+                        if m=0 or m=n then 1
+                        else comb (n-1) m + comb (n-1) (m-1);;
+   <font color=maroon>val comb : int -> int -> int = &lt;fun&gt;</font>
+<font color=black>#</font> comb 10 4;;
+- : int = 210
+</font></pre>
+Look at the type of comb: <code>int -> int -> int</code> which is
+<code>int -> (int -> int)</code>: it takes an integer and returns a
+<em>function</em> which expects another integer!  Lets test this:
+<pre><font color=blue><font color=black>#</font> let comb10 = comb 10;;
+<font color=maroon>val comb10 : int -> int = &lt;fun&gt;</font>
+<font color=black>#</font> comb10 4;;
+<font color=maroon>- : int = 210</font>
+<font color=black>#</font> comb10 3;;
+<font color=maroon>- : int = 120</font></font></pre>
+Indeed, we can give <code>comb</code> only one argument, in which
+case it returns a <em>function</em> that we can later use.  More on
+Currying below.
+<p>
+Mutually recursive functions must be defined simultaneously:
+<pre><font color=blue>let rec
+        take(l) = match l with [] -> []
+                | hd :: tl ->  hd::skip tl
+and
+        skip(l) = match l with [] -> []
+                | hd :: tl -> take tl;;
+          val take : 'a list -> 'a list = &lt;fun&gt;
+val skip : 'a list -> 'a list = &lt;fun&gt;
+<font color=black>#</font> take [1;2;3;4;5;6;7;8;9;10];;
+- : int list = [1; 3; 5; 7; 9]
+<font color=black>#</font> skip [1;2;3;4;5;6;7;8;9;10];;
+- : int list = [2; 4; 6; 8; 10]</font></pre>
+This example also shows a pattern match with multiple cases, either
+empty list or nonempty list.  More on patterns now.
+<h3><A NAME="patterns">Patterns</A></h3>
+<em>Patterns</em> make function definitions much more succinct, as we
+just saw.
+<pre><font color=blue>
+let rec rev l =
+  match l with [] -> []
+  |   x::xs -> rev xs @ [x];;
+</font></pre>
+The pattern matching process
+<ul>
+  <li>In this function definition, <code>[]</code> and <code>x::xs</code>
+are <em>patterns</em> against which the value passed to the function
+is matched. 
+  <li>
+<code>[]</code> matches any empty
+list argument.   <code>x::xs</code> 
+matches any list, and binds <code>x</code> to the head and
+<code>xs</code> to the tail. <p>
+</ul>
+
+<ul>
+  <li> You can only use so-called <em>constructors</em> in a pattern (<code>(x,4),
+3::y, {e = 4, f = x}</code>).  
+  <li> 
+Patterns can be deep: <code>x::y::z</code>.  
+  <li> "<code>|</code>" separates the different possible patterns.
+  <li> First successful match is taken if more than one pattern
+  matches
+<pre><font color=blue><font color=black>#</font> match [1;2;3] with x::y -> true
+      | x::y::z -> false
+      | [] -> true;;
+<font color=maroon><font color=black>#</font> match [1;2;3] with x::y -> true
+        | x::y::z -> false
+          ^^^^^^^
+        | [] -> true;;
+Warning: this match case is unused.
+- : bool = true</font></font></pre>
+  <li> Warning generated at compile time if patterns don't cover all
+       possibilities.  We saw this earlier with our <code>hd/tl</code>
+      implementations. <pre><font color=blue><font color=black>#</font> let myhd x = match x with x::y -> x;;
+<font color=maroon>Toplevel input:
+<font color=black>#</font> let myhd x = match x with x::y -> x;;
+             ^^^^^^^^^^^^^^^^^^^^^^
+Warning: this pattern-matching is not exhaustive.
+Here is an example of a value that is not matched:
+[]
+val myhd : 'a list -> 'a = &lt;fun&gt;</font></font></pre>
+  <li> Exception generated at run time if no match possible (only
+       happens when previous warning generated)
+      <pre><font color=blue>
+<font color=black>#</font> myhd [];;
+<font color=maroon>Exception: Match_failure ("", 11, 33).</font>
+</font></pre>
+  <li> <code>_</code> is
+an anonymous pattern that matches anything; for something thrown away.
+      <pre><font color=blue><font color=black>#</font> let x = [1;2];;
+<font color=maroon>val x : int list = [1; 2]
+</font><font color=black>#</font>  match x with x::y::z::w -> 5
+       | _ -> 7;;
+<font color=maroon>  - : int = 7</font></font></pre>
+</ul>
+
+Patterns also can be defined in <code>let</code> to attribute values to
+multiple variables:
+<pre><font color=blue>
+let l = [1;2;3;4;5;6;7;8;9;10];;
+<font color=maroon>val l : int list = [1; 2; 3; 4; 5; 6; 7; 8; 9; 10]</font>
+<font color=black>#</font> let (evens,odds) = (skip l, take l);; (* skip and take defined above *)
+<font color=maroon>val evens : int list = [2; 4; 6; 8; 10]
+val odds : int list = [1; 3; 5; 7; 9]</font></font></pre>
+Similarly patterns can be used in function definitions.
+<pre><font color=blue>
+<font color=black>#</font> let add (x,y) = x + y;;
+<font color=maroon>val add : int * int -> int = &lt;fun&gt;</font>
+<font color=black>#</font> add (2,3);;
+<font color=maroon>- : int = 5
+</font></font></pre>
+This looks like a function of two arguments, but its a function of one
+argument which matches a pair pattern.  Note, in Caml it is better to
+use Curried function definitions for multiple-argument functions, not tuples.
+
+<h3><A NAME="xtocid1504516">Immutable Declarations</A></h3>
+<ul>
+  <li>Important feature of <code>let</code>-defined variable values in Caml:
+they cannot change their value later.
+  <li>Helps in reasoning about programs---we <em>know</em> the  
+variable's value is fixed.  
+  <li> Smalltalk also forces method arguments to
+be immutable; C++'s <code>const</code> and Java's <code>final</code>
+      on fields has a similar effect.   
+</ul>
+<em>Don't forget</em> <code>let</code> is immutable; its bound to
+screw you up at some point.
+<pre><font color=blue>
+let x = 5 in
+  let f y = x + 1 in
+    let x = 7 in f 0 ;;
+<font color=maroon>- : int = 6 (* old value of x is what f refers to *)
+</font></font></pre>
+Here's the one that will mess with your mind: the same thing as above
+but with the declarations typed into the top loop (the top loop is
+conceptually an open-ended series of <code>let</code>s which never close).
+<pre><font color=blue><font color=black>#</font> let x = 5;;
+<font color=maroon>val x : int = 5
+</font><font color=black>#</font> let f y = x + 1;;
+<font color=maroon>val f : 'a -> int = &lt;fun&gt;
+</font><font color=black>#</font> f 0;;
+<font color=maroon>- : int = 6</font>
+<font color=black>#</font> let x = 7;; (* not an assignment to above x -- a new declaration *)
+<font color=maroon>val x : int = 7
+</font><font color=black>#</font> f 0;;
+<font color=maroon>- : int = 6</font>
+</font></pre>
+<strong>Programming moral:</strong> When interactively editing a group
+of functions that call each other, re-submit <em>all</em> of the
+functions to the top loop when you change <em>any one</em> of them.   <br>
+
+Here is another example of let:
+
+<pre><font color=blue>
+let hundredthPower x =
+   let four = x*.x*.x*.x in
+   let twenty = four*.four*.four*.four*.four in
+        twenty*.twenty*.twenty*.twenty*.twenty;;
+          <font color=maroon>val hundredthPower : float -> float = &lt;fun&gt;</font>
+<font color=black>#</font> hundredthPower(2.0);;
+<font color=maroon>- : float = 1.26765060023e+30</font>
+</font></pre>
+
+<h3><A NAME="higherorder">Higher-Order Functions</A></h3>
+
+ML is highly tuned to allowing higher-order functions, functions that
+either take other functions as argument or return
+functions as results, or both.  <p>
+
+<strong>Higher-order functions are an important component of a
+programmer's toolkit.</strong>
+<ul>
+  <li>  It allows for "pluggable" programming by
+passing in and out chunks of code. 
+  <li>  Many new programming design patterns are possible.  
+  <li> It greatly increases the reusability of code. <p>
+</ul>
+The classic example of a function that takes another function as
+argument is the <code>map</code> function on lists.  It
+takes a list and a function and applies the function to every element
+of the list.
+
+<pre><font color=blue>let rec map f l =
+match l with []    -> []
+      |      x::xs -> f(x) :: map f xs;;
+<font color=maroon>val map : ('a -> 'b) -> 'a list -> 'b list = &lt;fun&gt;
+</font></font></pre>
+The
+<code>'a/'b</code> types are polymorphic ("any") type, more on them below.
+<pre><font color=blue><font color=black>#</font> map (function x -> x*10) [4;2;7];;
+<font color=maroon>- : int list = [40; 20; 70]
+</font></font></pre>
+<code>map</code> is so common it is built into Caml as
+<code>List.map</code>.
+<p>
+
+</ul>
+Perhaps the simplest higher-order function is the composer, in mathematics
+expressed as <em>g o f</em>.  it takes two functions and returns a new
+function which is their composition:
+<pre><font color=blue>
+let circle g f = (function x -> g(f(x)));;
+<font color=maroon>val circle : ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b = &lt;fun&gt;
+</font></font></pre>
+
+Here is an example of <code>circle</code> in action.
+<pre><font color=blue><font color=black>#</font> let plus3times2 = circle (function x -> x*2) (function x -> x+3);;
+<font color=maroon>val plus3times2 : int -> int = &lt;fun&gt;</font>
+<font color=black>#</font> plus3times2 10;;
+<font color=maroon>- : int = 26</font>
+</font></pre>
+As we have seen before, functions are just expressions so can also be
+immediately applied after being defined:
+<pre><font color=blue>
+<font color=black>#</font> circle (function x -> x*2) (function x -> x+3) 10;;
+<font color=maroon>- : int = 26
+</font></font></pre>
+Oddly enough, this looks like application of a three-argument function
+<code>circle</code>, but <code>circle</code> only takes two arguments! All three arguments
+to circle are in fact <em>Curried</em>: one is applied, the result is
+a function, and then that function is immediately applied to the next
+argument.  Let us focus on this topic now.
+<h3>Currying</h3>
+<em>Currying</em> is an important concept of functional programming;
+it is named after logician Haskell Curry.  Multi-argument functions
+as defined thus far are Curried, lets look at what is really happening.
+<p>
+Here is a two-argument function defined in our usual manner.
+<pre><font color=blue>
+<font color=black>#</font> let myadd x y = x + y;;
+<font color=maroon>val myadd : int -> int -> int = &lt;fun&gt;</font>
+<font color=black>#</font> myadd 3 4;;
+<font color=maroon>- : int = 7
+</font>
+</font></pre>
+
+Here is another completely equivalent way to define the same function:
+<pre><font color=blue>
+<font color=black>#</font> let myadd x =
+  function y  -> x + y;;
+<font color=maroon>  val myadd : int -> int -> int = &lt;fun&gt;
+</font>    (* the -> type constructor associates to the RIGHT: int -> (int -> int) *)
+<font color=black>#</font> myadd 3 4;; (* parenthesized as (myadd 3) 4 *)
+<font color=maroon>- : int = 7
+</font>
+<font color=black>#</font> let inc3 = myadd 3;;
+<font color=maroon>val inc3 : int -> int = &lt;fun&gt;
+</font>
+<font color=black>#</font> inc3 4;;
+<font color=maroon>- : int = 7 (* same result as myadd 3 4 in the end *)
+</font></font></pre>
+The main observation is <code>myadd</code> is a function returning a
+function, so the way we supply two arguments is
+<ul>
+  <li>invoke the function, get a function back
+  <li>then invoke the returned function passing the second argument.
+  <li>Our final value is returned, victory.
+  <li><code>(myadd 3) 4</code> is an inlined version of this where
+      the function returned by <code>myadd 3</code> is not put in any variable
+</ul>
+<p>
+
+Here is a third equivalent way to define <code>myadd</code>, as an
+anonymous function returning another anonymous function.
+<pre><font color=blue>
+<font color=black>#</font>let myadd = function x -> function y -> x + y;;
+<font color=maroon>val myadd : int -> int -> int = &lt;fun&gt;
+</font> </font></pre>
+
+<ul>
+  <li>With Currying, all functions "really" take exactly one argument
+<li>Currying also
+naturally arises when functions return functions, as in the
+<code>map</code> application above showed.
+<li>Multiple-argument functions should always be written in curried
+form; all the library functions are curried.
+<pre><font color=blue><font color=black>#</font> List.map;;
+<font color=maroon>- : ('a -> 'b) -> 'a list -> 'b list = &lt;fun&gt;</font>
+</font></pre></ul>
+Note thus far we have curried only two-argument functions; in general,
+n-argument currying is possible.<p>
+
+Functions can also take pairs as arguments to achieve the effect of a
+two-argument function:
+<pre><font color=blue><font color=black>#</font> let mypairadd (x,y) = x+y;;
+<font color=maroon>val mypairadd : int * int -> int = &lt;fun&gt;
+</font><font color=black>#</font> mypairadd (2,3);;
+<font color=maroon>- : int = 5</font></font></pre>
+So, either we can Curry or we can pass a pair.
+We can also write higher-order functions to switch back and forth
+between the two forms.
+
+<pre><font color=blue><font color=black>#</font> let curry f = function x -> function y -> f (x,y);;
+<font color=maroon>val curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c = &lt;fun&gt;
+</font><font color=black>#</font> let uncurry f = function (x,y) -> f x y;;
+<font color=maroon>val uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c = &lt;fun&gt;</font>
+<font color=black>#</font> uncurry myadd;;
+<font color=maroon>- : int * int -> int = &lt;fun&gt;
+<font color=black>#</font> curry mypairadd;;
+<font color=maroon>- : int -> int -> int =  &lt;fun&gt;</font>
+</font><font color=black>#</font> uncurry map;; (* map defined above *)
+<font color=maroon>
+- : ('_a -> '_b) -> '_a list -> '_b list = &lt;fun&gt;
+</font>
+<font color=black>#</font> curry(uncurry myadd);; (* a no-op *)
+<font color=maroon>- : int -> int -> int = &lt;fun&gt;</font>
+</font></pre>
+Look at the types: these mappings in both directions in some sense
+"implement" 
+the well-known isomorphism on sets: <em>A * B -> C = A -> B -> C</em>
+<p>
+
+<h4>A bigger example</h4>
+Here is a more high-powered example of the use of currying.
+<p>
+<pre><font color=blue>
+<font color=black>#</font> let rec foldr f l y =
+match l with [] -> y 
+  |   x::xs -> f x (foldr f xs y);;
+   <font color=maroon>  val foldr : ('a -> 'b -> 'b) -> 'a list -> 'b -> 'b = &lt;fun&gt;</font>
+<font color=black>#</font> let prod = foldr (function a -> function x -> a * x);;
+<font color=maroon>val prod : int list -> int -> int = &lt;fun&gt;</font>
+<font color=black>#</font> let prod0 = prod [1;2;3;4];;
+<font color=maroon>val prod0 : int -> int = &lt;fun&gt;</font>
+<font color=black>#</font> (prod0 1, prod0 2);;
+<font color=maroon>- : int * int = 24, 48
+</font></font></pre>
+Here is an analysis of this recursive function.<br>
+for the arbitrary 2-element list <code>[x1;x2]</code>, the
+call <pre><font color=blue>foldr f [x1; x2] y</font></pre> computes to <pre><font color=blue>f x1 (foldr f [x2]
+y)</font></pre> which in turn computes to  <pre><font color=blue>f x1 (f x2 (foldr f []
+y)))</font></pre> which computes to <pre><font color=blue>f x1 (f x2 y)</font></pre>
+From this we can assert that the general result returned from
+<code>foldr f [x1;x2;...;xn] y</code> is
+<pre><font color=blue>
+f x1 (f x2  f ...(f xn y)...))))
+</font></pre>
+Currying allows us to specialize foldr to a particular function f, as
+with <code>prod</code> above.
+<p>
+<h4>Proving program properties by induction</h4>
+We should in fact be able to prove this property by induction. Its
+easier if we reverse the numbering of the list.
+<p>
+<strong>Lemma.</strong> <code>foldr f [xn;...;x1] y</code>
+computes to <code>f xn (f xn-1  f ...(f x1 y)...)))</code> for n
+greater than 0.<br>
+<strong>Proof.</strong> Proceed by induction on the length of the
+list [xn;..;x1].  <br>
+<strong>Base Case</strong> n=1, i.e. the list is <code>[x1]</code>.
+The function computes to <code>f x1 (foldr f [] y)</code> which computes to <code>f x1 y</code>
+as hypothesized. <br>
+
+<strong>Induction Step.</strong>  Assume <pre><font color=blue>foldr f [xn;...;x1] y</font></pre>
+computes to <pre><font color=blue>f xn (f xn-1  f ...(f x1 y)...)))</font></pre> and show
+<pre><font color=blue>foldr f [xn+1;xn;...;x1] y</font></pre> 
+computes to <pre><font color=blue>f xn+1 (f xn  f ...(f x1 y)...))))</font></pre>
+Computing
+<pre><font color=blue>foldr f [x1;x2;...;xn;xn+1] y</font></pre>, it matches the
+pattern with x being xn+1 and xs being [xn;...;x1].
+<br>
+Thus the
+recursive call is <pre><font color=blue>foldr f [xn;...;x1] y</font></pre> which by our
+inductive assumption computes to
+<pre><font color=blue>f xn (f xn-1  f ...(f x1 y)...)))</font></pre>
+And, given this result for the recursive call, the
+whole function then returns
+<pre><font color=blue>f xn+1 (...result of recursive call...)</font></pre>
+which is
+<pre><font color=blue>f xn+1 (f xn (f xn-1  f ...(f x1 y)...)))</font></pre>
+which is what we needed to show.<br>
+<strong>QED.</strong>
+<p>
+
+The above implementation is inefficient in that f is explicitly passed
+to every recursive call.  Here is a more efficient version with
+identical functionality.
+<pre><font color=blue>let efficientfoldr f =
+ let rec localfun l y =
+      match l with [] -> y 
+      |   x::xs -> f x (localfun xs y)
+ in localfun
+;;
+</font></pre>
+This function
+also illustrates how functions may be defined in
+a local scope.  Observe <code>localfun</code> is defined locally but then
+exported since it is the return value of <code>f</code>.<p>
+
+Question: How does the return value <code>localfun</code> know
+where to look for <code>f</code> when its called??
+<pre><font color=blue><font color=black>#</font> let summate = efficientfoldr (function a -> function x -> a+x);;
+<font color=maroon>val summate : int list -> int -> int = &lt;fun&gt;</font>
+<font color=black>#</font> summate [1;2;3;4] 0;;
+<font color=maroon>- : int = 10</font></font></pre>
+--summate is just localfun, but somehow it "knows" that <code>f</code>
+is <code>(function a -> function x -> a+x)</code>, even though <code>f</code>
+is undefined at the top level:
+<pre><font color=blue><font color=black>#</font> f;;
+<font color=maroon>Characters 0-1:
+Unbound value f
+</font></font></pre>
+<code>localfun</code> in fact knew the right f to call, so it must
+have been kept somewhere: in a <em>closure</em>.<p>
+
+<blockquote>At function definition point, the current values of
+variables not local to the function definition are remembered
+in a <em>closure</em>.<br>
+</blockquote>
+Function values in ML are thus <em>really</em> a pair consisting of
+the function (pointer) and the closure.
+<p>
+Without making a closure, higher-order functions will do unexpected things.
+Java, C++, C can pass and return function (pointers), but all functions are
+defined at the top level so they have no closures.  <p>
+
+<h3>Submitting functions to the top loop</h3>
+You should <em>never</em> type code directly in the top loop!  Its
+impossible to fix errors.  Instead, you should edit in a file.  There
+are several reasonable modes to interact with caml:
+
+<ol>
+  <li> Use any editor, and save each group of interlinked functions in
+       a separate file, for example "myfunctions.ml".  Then, from the
+       top loop type <pre><font color=blue><font color=black>#</font> #use "myfunctions.ml";;</font></pre> -- this will
+       submit everything in the file to the top loop.  Note its
+  <code>#use</code>, not just <code>use</code>.
+  <li> Use any editor, and copy-and-paste code into caml.  This is great
+       for smaller functions but eventually you want to use the method above.
+  <li> (best if you are using UNIX; may even work under Windows now:)
+      Use the emacs editor and the caml 
+       mode documented on the <a href="../caml/emacs.html">course emacs
+       web page</a>.  Edit in the manner of 1. above, with groups of
+       functions in a file.  Then, use the
+       <pre><font color=blue>
+C-c C-e		caml-eval-phrase
+C-c C-r		caml-eval-region
+C-c C-s		caml-show-subshell
+C-c `		caml-goto-phrase-error</font></pre>
+ commands of caml mode to submit the current definition (phrase) to caml, the
+      selected region to caml, to show the actual shell window,  and to find
+       your errors respectively.  When you are playing with little examples, just
+       type a small bit in any emacs buffer and click on it and use the
+       caml-eval-phrase command to send it to caml. caml-eval-phrase
+      at the end of a file submits all the expressions in the file.
+</ol>
+<h3><A NAME="xtocid111838">Print</A></h3>
+<pre><font color=blue>
+print_string("hi\n");;
+<font color=maroon>hi
+- : unit = ()</font></font></pre>
+Caml has a print_x function for the atomic
+types x.  Again there is no overloading of meaning here.
+
+
+<a name="types"><h2>Caml Types</h2></a>
+We have generally been ignoring the type aspect of Caml up to now.
+Its time to focus on typing in more detail.
+<h3>Type Declarations</h3>
+Caml infers types for you, but you can add explicit type declarations
+if you like.
+<pre><font color=blue>
+let myadd (x:int) (y:int) = x + y;;
+<font color=maroon>val myadd : int -> int -> int = &lt;fun&gt;</font>
+</font></pre>
+You can in fact put type assertions on any variable in an expression to
+clarify what type the variable has:
+<pre><font color=blue>
+let myadd (x:int) (y:int) = (x:int) + y;;
+<font color=maroon>val myadd : int -> int -> int = &lt;fun&gt;</font>
+</font></pre>
+
+<h3>Type abbreviations</h3>
+You can also make up your own name for any type
+<pre><font color=blue><font color=black>#</font> type intpair = int*int;;
+<font color=maroon>type intpair = int * int</font>
+<font color=black>#</font> let f (p : intpair) = match p with (l,r) -> l+r;;
+<font color=maroon>val f : intpair -> int = &lt;fun&gt;</font>
+<font color=black>#</font> f (2,3);;
+<font color=maroon>- : int = 5
+</font></font></pre> 
+<h3><A NAME="xtocid111839">Polymorphic Types and Type Inference</A></h3>
+<pre><font color=blue>
+<font color=black>#</font> let id x = x;;
+<font color=maroon>val id : 'a -> 'a = &lt;fun&gt;</font>
+<font color=black>#</font> id 3;;
+<font color=maroon>- : int = 3</font>
+<font color=black>#</font> id true;;
+<font color=maroon>- : bool = true</font></font></pre>
+
+<ul>
+  <li>Since <code>id</code> was not used as any type in particular, the type
+of the function is <em>polymorphic</em> ("many forms").
+  <li><code>'a</code> is a <em>type variable</em>, meaning some arbitrary
+type <code>'a</code>. 
+  <li> Polymorphism is really <em>needed</em> with
+type inference -- inferring <code>int -> int</code> would not be
+      completely general.
+</ul>
+<strong>Parametric and object polymorphism</strong>
+<ul>
+  <li>The form of polymorphism in ML is to be precise <em>parametric
+polymorphism</em> -- the type above is parametric in <code>'a</code>:
+what comes out is the same type as what came in.  <em>Generics</em> is
+      another term for parametric polymorphism.
+  <li>Java has no parametric polymorphism but does have <em>object
+      polymorphism</em> (unfortunately this is 
+      often just called <em>polymorphism</em> by some writers) in that
+      a subclass object can fit into a superclass-declared variable.
+  <li>When you want parametric polymorphism in Java you declare the
+      variable to be of type <code>Object</code>, but you have to cast
+      when you get it out which requires a run-time check.  
+  <li> The Java JDK version 1.5 will have generic types in it.
+</ul>
+The general intuition to have about the type inference algorithm is
+everything starts out as having arbitrary types <code>'a</code>,
+<code>'b</code>, etc, but then the 
+operations infer constraints that "this thing has the same type as
+that thing". <p>
+
+Use of type-specific atomic operators obviously restricts polymorphism:
+
+<pre><font color=blue>let doublenegate x = not (not x);;
+<font color=maroon>val doublenegate = function : bool -> bool
+</font></font></pre>
+
+When a function is defined via <code>let</code> to have polymorphic
+type, every use can be at a different type:
+<pre><font color=blue>
+<font color=black>#</font> let id = (function x -> x) in
+    match id(true) with true -> id(3) | false -> id(4);;
+<font color=maroon>  - : int = 3
+</font></font></pre>
+Note that if the function is not declared via let, polymorphism is not
+allowed.  The following code would run just like the code above (if
+it would typecheck):
+<pre><font color=blue><font color=black>#</font> (function id -> match id(true) with true -> id(3) | false -> id(4))(function x -> x);;
+<font color=maroon>                                                 ^
+This expression has type int but is here used with type bool
+</font></font></pre>
+
+<h3><A NAME="xtocid1118311">Variant Type declarations</A></h3>
+
+Variant types in ML are the analogue of union/variant types in C/Pascal.
+Following in the ML tradition of lists and tuples, they are
+not mutable.  <p> 
+
+ML variant types must be declared.  <br> Why?  Variant Types are often
+recursive, and recursive 
+types cannot be inferred in ML.  <p>
+
+Here is a really simple variant type declaration to get warmed up:
+<pre><font color=blue>
+type height = Tall | Medium | Short
+<font color=maroon>type height = Tall | Medium | Short
+</font></font></pre>
+
+Three <em>constructors</em> have been defined.
+These are now official constants.  Constructors <em>must be capitalized</em>,
+and variables must be lower-case in Caml.
+
+<pre><font color=blue>Tall;;
+<font color=maroon>- : height = Tall
+</font></font></pre>
+
+The previous type is only an enumerated type.  Much more interesting
+variant types can be defined.
+
+Lists could have been predefined as a variant type:
+<pre><font color=blue>
+<font color=black>#</font> type 'a mylist = Nil | Cons of 'a * 'a mylist;;
+<font color=maroon>type 'a mylist = Nil | Cons of 'a * 'a mylist
+</font></font><font color=black>#</font> Cons (3, Cons (3+1,Nil));;
+<font color=maroon>- : int mylist = Cons (3, Cons (4, Nil))
+</font></font> 
+</font></pre>
+This form of type has several new features: 
+<ul>
+  <li> As in C/Pascal, the variants can
+have values and they can be recursively defined, <em>plus</em>,
+  <li> polymorphic variant types can be defined; <code>'a</code> here is a type
+argument.  
+  <li> Note how there is no need to use pointers in defining
+recursive variant types.  The compiler does all that mucking around for you. 
+  <li> Also note how <code>Cons</code> is actually
+defined as a so-called <em>constructor function</em>.
+</ul>
+
+<p>
+Trees:
+<pre><font color=blue>
+type 'a tree = EmptyTree | Node of 'a * 'a tree * 'a tree
+</font></pre>
+
+Patterns are also variant type-constructor-friendly:
+<pre><font color=blue>
+let rec myappend p =
+ match p with (Nil,l2)  -> l2
+     |  (Cons(x,xs),l2) -> Cons (x, append(xs,l2))
+<font color=maroon>  val myappend : 'a mylist * 'a mylist -> 'a mylist = &lt;fun&gt;</font>
+<font color=black>#</font> let rec myreverse l =
+ match l with Nil  -> Nil
+     |  Cons(x,xs) -> myappend(myreverse xs , Cons (x,Nil));;
+<font color=maroon>val myreverse : 'a mylist -> 'a mylist = &lt;fun&gt;</font>
+<font color=black>#</font> myreverse (Cons (3, Cons(4, Cons(2, Nil))));;
+<font color=maroon>- : int mylist = Cons (2, Cons (4, Cons (3, Nil)))
+</font>
+</font></pre>
+<p>
+Variant types are extremely happy with polymorphism; observe how
+myreverse above is polymorphic over <code>'a mylist</code>s.
+<h3><A NAME="xtocid1504512">Record Declations</A></h3>
+<ul>
+  <li>Records are tuples with labels on fields.  
+  <li>They are very similar to
+<code>strtuct</code>s of C/C++.  
+  <li>Their types are declared just like
+variants. 
+  <li>They can be used in pattern matches as well.
+</ul>
+<pre><font color=blue>type onetwo =  {one : int; two : string};;
+<font color=maroon>type onetwo = { one : int; two : string; }</font>
+<font color=black>#</font> let x = {one = 2; two = "hi"};;
+<font color=maroon>val x : onetwo = {one=2; two="hi"}</font>
+<font color=black>#</font> x.one;;
+<font color=maroon>- : int = 2
+</font><font color=black>#</font> match x with {one = x; two = s} -> x;;
+<font color=maroon>- : int = 2</font></font></pre>
+
+
+
+<h2><A NAME="state">State</A></h2>
+Variables
+in ML are <em>never</em> directly mutable themselves; they are only
+(indirectly) mutable if they hold an
+<ul>
+  <li>array, 
+  <li>a reference, 
+  <li>or a mutable record.
+</ul>
+Indirect mutability means the variable itself can't change, but
+<em>what it points to</em> can.<br>
+
+And, items are immutable unless their
+mutability is explicitly declared. <p>
+
+References are the simplest unit of mutability.
+<pre><font color=blue><font color=black>#</font> let x = ref 4;;
+<font color=maroon>val x : int ref = {contents=4}
+</font></font></pre>
+This allocates a fresh mutable location named <code>x</code>.  Records
+can have mutable fields, and so a reference is in fact implemented in
+Caml as a little record
+with one mutable field, <code>contents</code>:
+<pre><font color=blue><font color=black>#</font>type 'a ref = { mutable contents: 'a };; (* a type abbreviation; its how ref is defined in OCaml *)
+<font color=maroon>type 'a ref = { mutable contents : 'a; }</font> </font></pre>
+references are records so you can't directly operate on them.
+<pre><font color=blue><font color=black>#</font> x+1;;
+Characters 0-1:
+This expression has type int ref but is here used with type int
+<font color=black>#</font> x.contents + 1;; (* x is a record *)
+<font color=maroon>- : int = 5
+</font><font color=black>#</font> !x + 1;;    (* shorthand notation for the above *)
+<font color=maroon>- : int = 5
+</font></font></pre>
+ref variables may be modified by assignment:
+<pre><font color=blue><font color=black>#</font> x.contents &lt;- 6;;  (* mutate the contents record field *)
+<font color=maroon>- : unit = ()
+</font><font color=black>#</font> x := 6;; (* equivalent shorthand notation for the above *)
+<font color=maroon>- : unit = () (* (), the empty tuple of type unit, is the result *)
+</font><font color=black>#</font> !x + 1;;
+<font color=maroon>- : int = 7
+</font></font></pre>
+Only ref typed variables or mutable records may be assigned to. The
+notion of immutable variables is one of the great strengths of ML. <p>
+Note, <code>let</code> doesn't turn into a mutation operator with
+refs, either:
+<pre><font color=blue>
+let x = ref 5;;
+<font color=maroon>val x : int ref = {contents = 5}
+</font>let f () = !x;;
+<font color=maroon>val f : unit -> int = <fun>
+</font>let x = ref 6;; (* not an assignment to x *)
+<font color=maroon>val x : int ref = {contents = 6}
+</font>f ();;
+<font color=maroon>- : int = 5
+</font> </font></pre>
+<p>
+Mutable records of general form can be created by putting
+<code>mutable</code> in front of mutable fields:
+<pre><font color=blue>
+<font color=black>#</font>type mutable_point = { mutable x: float; mutable y: float };;
+<font color=maroon>type mutable_point = { mutable x : float; mutable y : float; } 
+</font> 
+<font color=black>#</font>let translate p dx dy =
+   p.x &lt;- p.x +. dx; p.y &lt;- p.y +. dy;;
+<font color=maroon>val translate : mutable_point -> float -> float -> unit = &lt;fun&gt;
+</font> 
+<font color=black>#</font>let mypoint = { x = 0.0; y = 0.0 };;
+<font color=maroon>val mypoint : mutable_point = {x=0.000000; y=0.000000}
+</font> 
+<font color=black>#</font>translate mypoint 1.0 2.0;;
+<font color=maroon>- : unit = ()
+</font> 
+<font color=black>#</font>mypoint;;
+<font color=maroon>- : mutable_point = {x=1.000000; y=2.000000}</font></pre>
+</font>Now that we have references, the while loop construct becomes useful
+(without references, a while loop would either never execute or loop
+infinitely -<font color=black>#</font> pretty useless!):
+<pre><font color=blue><font color=black>#</font>  (x := 1; (while !x &lt; 10 do x := !x + 1 done); !x);;
+<font color=maroon>- : int = 10
+</font></font></pre>
+<br>
+<ul>
+  <li>Why immutability is good: programmer can depend on
+the fact that something will never be mutated when writing code.
+  <li>ML still lets you express mutation, but its extra so you only
+      use it when its really needed.
+  <li>Haskell is a <em>pure functional</em> language: there is no
+      mutation whatsoever.
+</ul>
+<h3><A NAME="xtocid1119916">Arrays</A></h3>
+Caml arrays are fairly self-explanatory.  Their syntax isn't the
+greatest, and they have to be initialized before you can use them.
+<pre><font color=blue><font color=black>#</font> Array.make 10 "hi";; (* size and initial value are the params here *)
+<font color=maroon>- : string array =
+[|"hi"; "hi"; "hi"; "hi"; "hi"; "hi"; "hi"; "hi"; "hi"; "hi"|]
+</font><font color=black>#</font> let arr = [| 4; 3; 2 |];;
+<font color=maroon>val arr : int array = [|4; 3; 2|]
+</font><font color=black>#</font> arr.(2);;
+<font color=maroon>- : int = 2
+</font><font color=black>#</font> arr.(2) &lt;- 55;;
+<font color=maroon>- : unit = ()
+</font><font color=black>#</font> arr;;
+<font color=maroon>- : int array = [|4; 3; 55|]
+</font></font></pre>
+<h2><A NAME="xtocid1118315">Exceptions</A></h2>
+Exceptions are a criticial
+component of a modern programming language.
+<ul>
+  <li>Exceptional cases in processes are a fundamental part of what a
+      process is
+  <li>Real-world examples:
+      <ul>
+	<li> You miss your airline flight and need to rebook.
+	<li> Car wreck on the way to school, morning classes
+	    aborted.  Resume normally with afternoon classes.
+      </ul>
+  <li>In the programming world, exceptions stop the current immediate
+      task and look for a handler in the current call context.
+  <li>Exceptions are much better than goto, they go back to a context you
+      came from, not to any context at all.
+  <li>Exceptional cases raised forces you to deal with them.  Just
+      returning e.g. 0 for division by 0 can hide errors.
+</ul>
+
+Example uses
+<ul>
+  <li> Matrix algorithm must abort a particular calculation method
+       since singularities have resulted
+  <li> Network connection has accidentally closed and so the database
+       backup (or whatever) has to gracefully fail 
+  <li> Attempted to delete and element from a set that was not there
+       to begin with.
+</ul>
+
+<pre><font color=blue>
+exception Foo;;
+<font color=maroon>exception Foo
+</font><font color=black>#</font> let f _ = raise Foo;;
+<font color=maroon>val f : 'a -> 'b = &lt;fun&gt;
+</font>
+<font color=black>#</font> f ();;
+<font color=maroon>Uncaught exception: Foo.
+-</font> </font></pre>
+As you can see, exceptions are top-level definable units.
+
+Exceptions can be <em>handled</em>.  This means
+even though something bad happened, the program can detect this fact,
+recover, and continue:
+<pre><font color=blue>
+<font color=black>#</font> let g _ = try f () with Foo -> print_string("exception raised; returning 5\n"); 5 ;;
+<font color=maroon>val g : 'a -> int = &lt;fun&gt;
+</font><font color=black>#</font> g();;
+<font color=maroon>exception raised; returning 5
+- : int = 5
+</font></font></pre>
+The call <code>f()</code> followed by handle is syntax for handling errors
+that may arise when <code>f()</code> is called (including errors that
+may arise if 
+<code>f</code> in turn calls some other function etc).  <p>
+
+Exception <code>foo</code> is <em>only</em> handled when it happens in
+the call to <code>f()</code> in <code>g</code>.  <br>
+Exception handling thus always has a <em>scope</em>.<p>
+
+<strong>Exceptions that pass up an argument. </strong>  <br>
+Useful both for print
+diagnostics and error recovery.
+<pre><font color=blue>
+exception Goo of string;;
+<font color=maroon>exception Goo
+-</font>let f _ = raise (Goo "bad stuff");;
+<font color=maroon>val f : 'a -> 'b = &lt;fun&gt;
+<font color=black>#</font> </font>f ();;
+<font color=maroon>Uncaught exception: Goo "bad stuff".</font>
+<font color=black>#</font> let g () = try f () with Goo s ->
+                  (print_string("exception raised: ");print_string(s);print_string("\n"));;
+<font color=maroon>  val g : unit -> unit = &lt;fun&gt;
+<font color=black>#</font> </font>g();;
+<font color=maroon>exception raised: bad stuff
+- : unit = ()
+</font>
+</font></pre>
+
+<h2>Examples</h2>
+See <a href="../caml/examples/oc/basics/">Basic Examples</a> for some
+simple programs.
+<ul>
+  <li>The example <a
+      href="../caml/examples/oc/basics/sieve.ml">sieve.ml</a> shows
+      recursive functions on lists.
+  <li>The example <a
+      href="../caml/examples/oc/basics/reversefile.ml">reversefile.ml</a> is a more imperative program which reverses lines of a file via arrays.
+</ul>
+
+<h2><A NAME="modules">Modules</A></h2>
+
+<ul>
+  <li>Modules are an important dimension of programming language design.
+  <li>A modules is a larger level of program abstraction: functional units or
+library.  
+  <li>You all know modules in the form of Java packages
+</ul>
+Examples:
+<ul>
+  <li> Stack data structure module (small)
+  <li> UNIX file I/O module (medium size)
+  <li> Windowing system interface module (huge, probably a module of modules)
+</ul>
+Why?
+<ul>
+  <li>Its like why you need a bookshelf if you have 50 books: if you
+      have too much stuff, you have to organize it for easier use.
+  <li>The Java API is a particularly good example: imagine all the
+      classes there were in one big soup, not in separate packages.
+</ul>
+
+Fundamentals of module structure:
+<ul>
+  <li>Modules have names they can be referred to by.
+  <li>A module itself contains declarations of functions, classes,
+      types, etc.
+  <li>The module has an interface in which it <em>imports</em> some
+      things (e.g. other modules) from the outside and
+      <em>exports</em> some things it has declared for outsiders to use,
+      implicitly hiding the rest.
+</ul>
+Desirable features not always found:
+<ul>
+  <li>Module names are also around at run-time.
+  <li>Should have an explicit <em>interface</em>, one place to look
+      to see what the code is importing and exporting<br>
+---its easy to find out
+      what a given module imports and exports by looking in one spot.
+  <li> Should allow for separate compilation
+</ul>
+The C/C++ module system
+<ul>
+  <li>Informal use of files and filesystem directories as modules (Java makes
+      this more formal)
+  <li>.h file declaring what is externally visible of a modules;
+      someone importing the module <code><font color=black>#</font>include</code>s that
+      <code>.h</code> file
+  <li>Also, for global variables they are treated differently: declare
+      <code>extern</code> in the file using them, no need to
+      explicitly export
+</ul>
+Problems with it
+<ul>
+  <li>There is a global space of function names, so there can be name clashes
+  <li> There is no strict relation enforced between the .c and .h
+       files, lots of room for error.
+   <li>This stuff works and great programmers can use it well, but
+  since its informal its very easy to totally screw up and not realize it.
+  <li>Conclusion: <strong>YUCK!</strong>
+</ul>
+
+The Java module system: packages
+<ul>
+  <li>A cleaner version of the C/C++ spirit of module
+  <li>Directory is explicitly a module; allows for nested modules
+  <li>Implicit .h file in the public decls on classes/methods
+  <li>No need to mess with extern
+  <li>import of other modules by ... 
+  <li>Separate namespaces for each module, avoiding name clashes
+  <li>But, still have to poke around to figure out the imports/exports
+  <li>Also,
+  have to have at least the .class files of the imports around to
+  compile
+  <li>And, need the javadoc to see types of what you are importing
+  <li>Conclusion: Much better than C/C++ but with a few rough edges
+</ul>
+
+Some languages with good module systems: Modula-2, 
+ML, Ada.<p>
+
+<h3><A NAME="xtocid1119914">The Caml module system</A></h3>
+See <a href="../caml/htmlman/manual004.html">The Caml manual Chapter
+4</a>.
+<p>
+Basic entites of Caml modules: <em>structures</em> and <em>functors</em>
+<ul>
+  <li> Caml distinguishes between modules with unresolved imports
+  (functors) and modules without imports or with all imports resolved
+  (structures).
+  <li>In all other languages, you only see the structure form---you can't
+  load a module without resolving the imports during the load.
+  <li>In Caml, linking of modules with imports (functors) is done
+  after loading them.
+  <li>First we do structures, and deal with imports and import
+  resolution (functors) later.
+</ul>
+
+<h4><A NAME="xtocid2170346">Structures and Signatures</A></h4>
+Structures
+<ul>
+  <li>Structures are collections of 
+definitions (functions, types, otheer structures, exceptions, values,
+  ... ) given a name.   
+  <li>Structures <em>themselves</em> have types, called
+<em>signatures</em>. 
+  <li>the signature lists names and types of structure components.
+  <li>The signature of a structure is what outsiders can see; if its
+  not in the signature they can't access it
+</ul>
+Here is an example.
+<pre><font color=blue>module Mapping = 
+  struct
+
+     exception NotFound
+
+     (* create the empty mapping *)
+
+     let create = []
+
+     (* lookup(d,M) finds the range value r such that
+        (d,r) is a pair in mapping M *)
+
+     let rec lookup pr = 
+       match pr with (d,[]) -> raise NotFound
+       |               (d,(e,r)::es) -> 
+	   if d=e then r
+	   else lookup(d,es)
+
+     (* insert(d,r,M) puts (d,r) in mapping M and removes
+        any other pair (d,s) that was present in M *)
+
+     let rec insert triple =
+       match triple with (d,r,[]) -> [(d,r)]
+       |   (d,r,(e,s)::es) ->
+             if d = e then (d,r)::es
+             else (e,s)::insert(d,r,es)
+     end;;
+</font></pre>
+(Note this example should probably use curried functions, not tuple arguments)
+<br>
+Signatures can be inferred if not declared.  For the above, the
+signature inferred is:
+<pre><font color=maroon>module Mapping :
+  sig
+    exception NotFound
+    val create : 'a list
+    val lookup : 'a * ('a * 'b) list -> 'b
+    val insert : 'a * 'b * ('a * 'b) list -> ('a * 'b) list
+  end
+</font></pre>
+
+Observe the syntactic details.  
+<ul>
+  <li> Structures are written between <code>struct
+... end</code>, and the declarations are pretty much what one can type into
+the top loop (and, may even include other modules).  
+  <li> Structures and signatures are declared (named) by
+      "<code>module</code>" (you cant say "let S = struct ..."
+  --structures aren't expressions)
+  <li> Signatures are
+written as <code>sig ... end</code>.  
+  <li>Signatures are very vaguely like a .h file: function headers and type
+      declarations. 
+  <li> Signatures are declared by "<code>signature</code>". 
+  <li> The exception is <em>both</em> declared in the structure and in
+       the signature.  type declarations similarly appear in
+       both places.  These entities need to be in both places because
+       both the structure and the signature may need to refer to them.
+</ul><p>
+
+Structure internals may be referenced by qualified names
+<code>Mapping.insert</code>, etc: 
+<pre><font color=blue><font color=black>#</font> Mapping.insert(4,"tru",Mapping.create);;
+<font color=maroon>- : (int * string) list = [4, "tru"]
+</font><font color=black>#</font> let m1 = Mapping.insert(4,"tru",Mapping.create);;
+<font color=maroon>val m1 : (int * string) list = [4, "tru"]
+</font><font color=black>#</font> let m2 = Mapping.insert(44,"ru",m1);;
+<font color=maroon>val m2 : (int * string) list = [4, "tru"; 44, "ru"]
+</font><font color=black>#</font>
+</font></pre>
+The whole structure may be made available at the "top level" of
+the namespace by the declaration <code>open Mapping</code>:
+
+<pre><font color=blue><font color=black>#</font> open Mapping;;
+<font color=black>#</font> insert;;
+<font color=maroon>- : 'a * 'b * ('a * 'b) list -> ('a * 'b) list = &lt;fun&gt;
+</font></font></pre>
+Built-in Caml modules: the standard library.
+<ul>
+  <li><a href="caml/htmlman/manual033.html">The
+Standard Library</a> lists all the built-in modules and their signatures.
+  <li>Some built-ins include a rich array of operations on the
+      built-in data types: modules <code>Array</code>,
+<code>Int32</code>, <code>Char</code>, <code>List</code>.  
+  <li>Other modules provide implementations of standard datatypes:
+<code>Stack</code>, <code>Map</code>,
+<code>Set</code>, <code>Queue</code>, <code>Hashtbl</code>, <code>Sort</code>
+  <li>Other built-in modules: <code>Filename</code>, <code>Sys</code>
+      (system interface), etc.
+</ul>
+
+Signatures can be explicitly declared as follows:
+<pre><font color=blue><font color=black>#</font> module type INSERTMAPPING =
+  sig
+    exception NotFound
+    val create : 'a list
+    val insert : 'a * 'b * ('a * 'b) list -> ('a * 'b) list
+  end;;
+<font color=maroon>module type INSERTMAPPING =
+  sig
+    exception NotFound
+    val create : 'a list
+    val insert : 'a * 'b * ('a * 'b) list -> ('a * 'b) list
+  end
+</font> </font></pre>
+This (stupid) signature leaves out the <code>lookup</code> operation
+-- this is how internal functions can be hidden.  You probably
+wouldn't want to hide <code>lookup</code> but you get the idea.<p>
+
+Once you have declared a signature, you can restrict a structure to
+that signature as follows:
+
+<pre><font color=blue><font color=black>#</font> module InsertOnlyMapping = (Mapping : INSERTMAPPING);;
+<font color=maroon>module InsertOnlyMapping : INSERTMAPPING
+</font><font color=black>#</font> InsertOnlyMapping.insert;;
+<font color=maroon>- : 'a * 'b * ('a * 'b) list -> ('a * 'b) list = &lt;fun&gt;
+</font><font color=black>#</font> InsertOnlyMapping.lookup;; (* this guy is hidden *)
+<font color=maroon>Characters 0-24:
+Unbound value InsertOnlyMapping.lookup
+</font> </font></pre>
+
+The above module includes some functions, a value, and an exception
+declared. Modules will often also include type declarations, as we
+will see later.
+
+<h4><A NAME="xtocid2170347">Functors</A></h4>
+<ul>
+  <li>A Bad Thing is possible in structure definitions: some
+values used may be defined outside the structure. 
+  <li>This is possible because structures are just typed into the top
+  loop, and can use any variables defied previously in the top loop</li> 
+  <li>This kind of variable use breaks separate understanding and
+  compilation of modules: YUCK!</li>
+</ul>
+<pre><font color=blue>
+let lt(x,y) = String.lowercase x < String.lowercase y
+
+module StringBST = struct
+
+  type 'label btree =
+      Empty |
+         Node of 'label * 'label btree * 'label btree
+      
+  let rec lookup(x, tree) = 
+    match tree with Empty -> false
+    |   Node(y,left,right) ->
+             if lt(x,y) then lookup(x, left)
+             else if lt(y,x) then lookup(x, right)
+             else (* x=y *) true
+
+  let rec insert(x, tree) = 
+    match tree with Empty -> Node(x,Empty,Empty)
+     |   Node(y,left,right) as t ->
+             if lt(x,y) then Node(y,insert(x,left),right)
+             else if lt(y,x) then Node(y,left,insert(x,right))
+             else (* x=y *) t (* do nothing; x was
+                                  already there *)
+
+     exception EmptyTree
+
+     (* deletemin(T) returns a pair consisting of the least
+        element y in tree T and the tree that results if we
+        delete y from T.  It is an error if T is empty *)
+
+     let rec deletemin l =
+       match l with Empty -> raise EmptyTree
+     |   Node(y,Empty,right) -> (y,right) (* The
+                 critical case.  If the left subtree is empty,
+                 then the element at current node is min. *)
+     |   Node(w,left,right) ->
+             let
+                 (y,l) = deletemin(left)
+             in
+                 (y, Node(w,l,right))
+
+     
+     let rec delete(x, tree) = 
+       match tree with Empty -> Empty
+     |   Node(y,left,right) ->
+             if lt(x,y) then Node(y,delete(x,left),right)
+             else if lt(y,x) then Node(y,left,delete(x,right))
+             else (* x=y *)
+                 match (left,right) with
+                     (Empty,r) -> r |
+                     (l,Empty) -> l |
+                     (l,r) ->
+                         let
+                             (z,r1) = deletemin(r)
+                         in
+                             Node(z,l,r1)
+
+end;;
+<font color=maroon>val lt : string * string -> bool = &lt;fun&gt;
+module StringBST :
+  sig
+    type 'a btree = Empty | Node of 'a * 'a btree * 'a btree
+    val lookup : string * string btree -> bool
+    val insert : string * string btree -> string btree
+    exception EmptyTree
+    val deletemin : 'a btree -> 'a * 'a btree
+    val delete : string * string btree -> string btree
+  end
+</font></font></pre>
+
+<ul>
+  <li>Before getting into the problems here, observe in this example
+      that there is a <em>type</em> in the signature.  So,
+      <code>StringBST.Empty : 'a StringBST.btree</code>.
+  <li>The above definition (unfortunately in a way) works, but <code>lt</code> had
+better be defined already. So, the structure isn't explicitly
+  declaring its imports: BAD.
+  <li>Solution: explicitly import outside
+information; this turns the structure into a <em>functor</em>.
+  <li>Functors are like structures, but also explicitly import some other structures.</li>
+  <li>The view is particularly mathematical: a <em>functor</em> is
+   a kind of mathematical function, which a structure as 
+argument (the <em>imported structure</em>) and returns a structure.
+ <li>
+The more "proper"
+way to define the BST structure is thus to use a <em>functor</em> which
+imports a module <code>StringLess</code> which defines <code>lt</code>.
+</ul>
+
+<pre><font color=blue>
+<font color=black>#</font> module type STRINGLESS = 
+ sig 
+   val lt : string * string -> bool 
+ end;;
+<font color=maroon>module type STRINGLESS = sig val lt : string * string -> bool end
+</font>
+<font color=black>#</font> module StringLess : STRINGLESS = (* can give signature at declaration time *)
+struct
+ let lt(x,y) = String.lowercase x < String.lowercase y
+end;;
+<font color=maroon>module StringLess : STRINGLESS
+</font>
+<font color=black>#</font> module StringBSTFunctor=
+  functor (StringLt : STRINGLESS) ->
+  struct
+
+  type 'label btree =
+      Empty |
+         Node of 'label * 'label btree * 'label btree
+      
+  let rec lookup(x, tree) = 
+    match tree with Empty -> false
+    |   Node(y,left,right) ->
+             if StringLt.lt(x,y) then lookup(x, left)
+             else if StringLt.lt(y,x) then lookup(x, right)
+             else (* x=y *) true
+
+  let rec insert(x, tree) = 
+    match tree with Empty -> Node(x,Empty,Empty)
+     |   Node(y,left,right) as t ->
+             if StringLt.lt(x,y) then Node(y,insert(x,left),right)
+             else if StringLt.lt(y,x) then Node(y,left,insert(x,right))
+             else (* x=y *) t (* do nothing; x was
+                                  already there *)
+
+     exception EmptyTree
+
+     (* deletemin(T) returns a pair consisting of the least
+        element y in tree T and the tree that results if we
+        delete y from T.  It is an error if T is empty *)
+
+     let rec deletemin l =
+       match l with Empty -> raise EmptyTree
+     |   Node(y,Empty,right) -> (y,right) (* The
+                 critical case.  If the left subtree is empty,
+                 then the element at current node is min. *)
+     |   Node(w,left,right) ->
+             let
+                 (y,l) = deletemin(left)
+             in
+                 (y, Node(w,l,right))
+
+     
+     let rec delete(x, tree) = 
+       match tree with Empty -> Empty
+     |   Node(y,left,right) ->
+             if StringLt.lt(x,y) then Node(y,delete(x,left),right)
+             else if StringLt.lt(y,x) then Node(y,left,delete(x,right))
+             else (* x=y *)
+                 match (left,right) with
+                     (Empty,r) -> r |
+                     (l,Empty) -> l |
+                     (l,r) ->
+                         let
+                             (z,r1) = deletemin(r)
+                         in
+                             Node(z,l,r1)
+
+end;;
+<font color=maroon>module StringBSTFunctor :
+  functor (StringLt : STRINGLESS) ->
+    sig
+      type 'a btree = Empty | Node of 'a * 'a btree * 'a btree
+      val lookup : string * string btree -> bool
+      val insert : string * string btree -> string btree
+      exception EmptyTree
+      val deletemin : 'a btree -> 'a * 'a btree
+      val delete : string * string btree -> string btree
+    end
+</font>
+</font></pre>
+Observations about functor declarations:
+<ul>
+  <li>similar to structures but say <code>functor .. end</code>
+      instead of <code>struct ... end</code>
+  <li>They have an explicit paramater list which are other structures
+      -- the <em>imports</em>.
+  <li>For those parameters, you must give the structure name <em>and</em> its
+      type (i.e., signature) -- this allows the functor to be
+      separately compiled, but requires extra work you didn't need to
+      do in Java.
+</ul>
+What state are we in now, after defining this functor?
+<ul>
+  <li>The functor is loaded, but we can't do anything with the innerds
+because we don't have all imports resolved.  
+  <li>In Java, etc, you don't
+have such half-alive beasts around.
+  <li>In Caml you can't do much with them, so generally thet should be
+      linked to their imports
+  <li>One cool thing that <em>is</em> possible with a functor is to
+      create two different versions, with different imports.
+</ul>
+Here is how you resolve the imports and make a structure.
+<pre><font color=blue><font color=black>#</font> module StringBST = StringBSTFunctor (StringLess) (* apply functor to make structure *)
+;;
+<font color=maroon>
+module StringBST :
+  sig
+    type 'a btree =
+      'a StringBSTFunctor(StringLess).btree =
+        Empty
+      | Node of 'a * 'a btree * 'a btree
+    val lookup : string * string btree -> bool
+    val insert : string * string btree -> string btree
+    exception EmptyTree
+    val deletemin : 'a btree -> 'a * 'a btree
+    val delete : string * string btree -> string btree
+  end
+</font></font></pre>
+<ul>
+  <li>This guy is a structure and behaves like any other structure.
+  <li>In particular, you can give it an abstracted signature.
+</ul>
+<p>
+
+Type declarations are particularly useful in signatures: you can hide the
+details of a type by declaring <pre><font color=blue> type 'a btree</font></pre> alone in the
+signature, hiding what <code>'a btree</code> really is (this makes
+<code>btree <em>abstract</em>)</code>:
+<pre><font color=blue><font color=black>#</font> module type STRINGBST =
+  sig
+    type 'a btree  (* hide the details of the btree type in the signature *)
+    val lookup : string * string btree -> bool
+    val insert : string * string btree -> string btree
+    exception EmptyTree
+    val deletemin : 'a btree -> 'a * 'a btree
+    val delete : string * string btree -> string btree
+  end;;
+<font color=maroon>module type STRINGBST =
+  sig
+    type 'a btree
+    val lookup : string * string btree -> bool
+    val insert : string * string btree -> string btree
+    exception EmptyTree
+    val deletemin : 'a btree -> 'a * 'a btree
+    val delete : string * string btree -> string btree
+  end
+<font color=black>#</font></font> module AbstractStringBST = (StringBST : STRINGBST);;
+<font color=maroon>module AbstractStringBST : STRINGBST
+</font><font color=black>#</font></font></pre>
+In the above example, we applied the functor
+<code>StringBSTFunctor</code> and then hid some elements of the
+result.  What you probably want to do is fix
+<code>StringBSTFunctor</code> to always produce the abstract type in
+the result.  That is done as follows.
+<pre><font color=blue>
+<font color=black>#</font> module AbstractStringBSTFunctor = (StringBSTFunctor : functor(Lt:STRINGLESS) -> STRINGBST);;
+<font color=maroon>module AbstractStringBSTFunctor : functor (Lt : STRINGLESS) ->
+STRINGBST</font>
+</font></pre>
+
+<h4>Problems with functors</h4>
+<ul>
+  <li>In terms of the import/export module model, functors map imports to their
+exports.  Often this is fine, but it disallows circular dependencies,
+where two modules import from each other.
+  <li>Explicit signatures or arguments need to be supplied. So, you
+      need to have all of these signatures lying around.
+  <li>There is a run-time aspect to building structures with
+      functors, e.g. it allows things to be implicitly imported from
+      the current state like
+      the <code>lt</code> operator above.
+</ul></font></pre>
+<a name="separate"><h3>Separate Compilation</h3></a>
+<ul>
+  <li>Even though we typed all the modules above into the top-loop, Caml in
+fact allows modules (structures in particular) to be separately
+compiled. 
+  <li> This methodology is useful when very large pieces of software are
+being developed.
+  <li>It avoids many of the pitfalls of functors.
+  <li>It is similar to Java' packages but
+      <ul>
+	<li>Java implicitly pulls the interfaces out of the .class
+	    code files; in ocamlc they are in their own files.
+	<li>You hide information by declaring a restricted signature
+	    in a .mli file, not through use of
+	    private/protected/package protected declarations
+      </ul>
+</ul>
+Coding in the separate compilation method in Caml is a lot closer to
+the C/Java programming style.
+<ul>
+  <li>In a <code>.ml</code> file,  everything you type is
+      implicitly wrapped in a struct .. end: it defines a struct.  File
+      <code>snork.ml</code> always makes a structure named
+      <code>Snork</code>, so the naming is implicit.
+  <li>In a <code>.mli</code> file, its the analogous concept for a
+      signature: everything you type is implicitly wrapped in a <code>sig
+      .. end</code>.  (You
+      don't need an <code>.mli</code> file for each <code>.ml</code>
+      file: its inferred if its not there)
+  <li><code>.ml</code> files are analogous to
+      <code>.c/.cc/.java</code> files, and <code>.mli</code> files,
+      analogous to <code>.h</code> files.
+  <li><code>.ml</code> files compile to  <code>.cmo</code> object files,
+      analogous to how <code>.c/.java</code> files produce <code>.o/.class</code>
+      files.  <code>.mli</code> files are <em>also</em> compiled
+      (unlike <code>.h</code> files) and produce <code>.cmi</code>
+      files.
+</ul>
+
+Here is an example, the file <code>stack.ml</code> implementing
+stacks in the ocaml library:
+
+<pre>type 'a t = { mutable c : 'a list }
+exception Empty
+let create () = { c = [] }
+let clear s = s.c <- []
+let copy s = { c = s.c }
+let push x s = s.c <- x :: s.c
+let pop s =
+  match s.c with
+    hd::tl -> s.c <- tl; hd
+  | []     -> raise Empty
+let top s =
+  match s.c with
+    hd::_ -> hd
+  | []     -> raise Empty
+let is_empty s = (s.c = [])
+let length s = List.length s.c
+let iter f s = List.iter f s.c
+</pre>
+And, here is the interface file, <code>stack.mli</code>:
+<pre>
+type 'a t
+exception Empty
+val create : unit -> 'a t
+val push : 'a -> 'a t -> unit
+val pop : 'a t -> 'a
+val top : 'a t -> 'a
+val clear : 'a t -> unit
+val copy : 'a t -> 'a t
+val is_empty : 'a t -> bool
+val length : 'a t -> int
+val iter : ('a -> unit) -> 'a t -> unit
+</pre>
+Notice the interface hides the type <code>'a t</code> and so outsiders will not be
+able to directly manipulate the stack data structure.
+<h4>Compiling</h4>
+<ul>
+  <li>The name of the compiler is <code>ocamlc</code>
+      <pre><font color=blue>   <font color=black>%</font>  ocamlc stack.ml  
+</font></pre>   will make file stack.cmo, and <pre><font color=blue>   <font color=black>%</font>  ocamlc stack.mli  
+</font></pre> will make file stack.cmi.  If there is no .mli file,
+      compiling the <code>.ml</code> file will make both the
+      <code>.cmi</code> and <code>.cmo</code> files.
+  <li> Suppose you have a file myprog.ml that has a function
+      <code>main</code> defined in it.  Then,
+      <pre><font color=blue>   <font color=black>%</font>  ocamlc myprog.ml -o myprog 
+</font></pre>   will make files myprog.cmi, myprog.cmo, and myprog.  Then,
+      <code>./myprog</code> will execute <code>main</code>. 
+  <li>Syntax <code>open MyStruct</code> at the top of a
+      <code>.ml</code> file will open that structure, so you won't
+      need to write
+      <code>MyStruct.myfunction</code> (similar to <code>use</code>
+      of Java).
+  <li>For structures using other structures, define a load order so
+      the structures a given structure is dependent on are always loaded
+      before it.  If two structures are mutually recursive, you are
+      out of luck, unfortunately.
+  <li><code>ocamlc</code> produces bytecode which is interpreted.
+      There is also <code>ocamlopt</code> which is an optimizing
+      compiler that produces much faster binary code.
+  <li>See <a href="../caml/htmlman/manual022.html">the
+      manual chapter 8</a> for more on batch compilation.
+</ul>
+<address></address>
+<!-- hhmts start -->
+Last modified: Fri Jan 29 08:19:19 EST 2010
+<!-- hhmts end -->
+</BODY> </html>

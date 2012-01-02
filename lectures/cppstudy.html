@@ -1,0 +1,125 @@
+<HTML> <HEAD> <TITLE>Study of C++</TITLE> </HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h2>Study of C++</h2>
+<h3>Multiple Inheritance - the fantastic and the horrible</h3>
+<ul>
+  <li>Multiple inheritance is great: it simultaneously gives you 
+      <ul>
+	<li>Interfaces for free: an interface is an abstract class will null methods.
+	<li>A form of <a
+	    href="http://en.wikipedia.org/wiki/Mixin">Mixin
+	    classes</a> (fancier example: <a
+	    href="http://www.artima.com/weblogs/viewpost.jsp?thread=132988">Mixin
+	    classes in C++</a>)<br>
+ -  (mixins are an idea originating in CLOS, the  Common Lisp Object System)
+      </ul>
+      -- we will discuss both of these briefly.
+  <li>The major technical  hiccup is <a
+href="http://en.wikipedia.org/wiki/Diamond_problem">The Diamond
+Problem</a>.  Blech!  We will briefly review the C++ solutions to this
+      problem, including <a href="http://en.wikipedia.org/wiki/Virtual_inheritance">virtual inheritance</a>.
+</ul>
+<h3><a
+href="http://en.wikibooks.org/wiki/C++_Programming/RTTI">Dynamic
+Typing in C++: RTTI</a></h3>
+RTTI is RunTime Type Infomation.
+<ul>
+  <li>This is a simple concept, objects carry their originating class
+  names around at runtime.
+  <li>(Recall that declared types and runtime types may differ in
+      languages with subtyping: the static type there means "this type or a
+      subclass / implementing class")
+  <li>In Java this always happens due to its need to ensure safety of
+  downcasts (raise an exception if they are  bad).
+  <li>The downside is there is extra runtime overhead on adding this
+      information to objects.
+  <li>In C++ the runtime type information is only added by the
+  compiler if you need it (you are using RTTI on that object).
+</ul>
+We will briefly look at some  of the code linked above to see how it
+is  done in practice.
+<h3><a href="http://en.wikipedia.org/wiki/Generic_programming#Templates_in_C.2B.2B">Templates</a></h3>
+<ul>
+  <li>The C++ answer to parametric  polyorphism / generics
+  <li>Unlike other parametric types, templates are really just a
+      fancier macro mechanism for C++
+  <li>Templates are all instantiated by a preprocessor at compile-time
+      with the actual types, then  that  expanded code is what is compiled
+  <li>There is no need for fancy bounded subtyping like in Java -
+      just instantiate and compile; the final code may have a type
+      error due to a subtyping error
+  <li>The latter point makes it hard to debug type errors in
+      templates -- you need to explicitly think about staged
+      compilation (see below) to understand what the compiler is doing!
+  <li>But, Java generics get really complicated as well due to all of
+      the sub-sub-sub cases and various needed extensions.
+</ul>
+<h3><a
+      href="http://en.wikipedia.org/wiki/Template_metaprogramming">Template
+      Metaprogramming</a>
+ </h3>
+Template metaprogramming in C++ is part of a larger topic: <em>staged
+computation</em>.
+<ul>
+  <li>Partial evaluation: evaluate some of the program code at compile
+      time,  e.g. apply functions if (enough) arguments are known at compile-time.
+      This is a whole subfield of research. 
+  <li><a
+      href="http://www.usenix.org/events/dsl99/full_papers/sheard/sheard_html/node3.html">MetaML</a>
+      is a cleaner and more general notion than C++ template
+      metaprogramming - code is first-class, can
+      be combined almost like strings, but in a well-typed way.
+      <ol>
+	<li>Run the first stage, which can do arbitrary computations;
+	    the result returned is the second-stage program.
+	<li>run the second stage, returning third stage program.
+	<li>etc - run until the final program results.
+	<li>... then run that to do the actual application task.
+      </ol>
+Observe
+      <ul>
+	<li>     In terms of this model, C++ template metaprogramming is a 2-stage process.
+	<li> Also the default is reversed: unlabelled C++ code is
+	analogous to the &lt;bracketed&gt; code in MetaML since its
+	running is delayed.
+      </ul></ul>
+We will go through the C++ example above.
+
+<h3><a
+href="http://en.wikipedia.org/wiki/Generic_programming#Template_specialization">Template
+Specialization</a></h3>
+Another handy feature of templates, it allows implementations to be
+specialized at instantiation time.
+
+<a
+href="http://www.codersource.net/cpp_class_templates_specialization.html">an
+example</a>.
+<h3><a href="http://en.wikipedia.org/wiki/Operator_overloading">C++ Overloading</a></h3>
+The overloading debate is longstanding.
+<ul>
+  <li>Overloading is great: such compact syntax with such great power!
+  <li>Overloading is horrible: I have no idea  which operators were
+      overloaded where so I don't know what the heck this program is doing!
+</ul>
+In general this topic is part of the debate of minimal vs maximal
+feature sets for languages.
+<br>
+"How many handy dandy special cases should be supported by <em>FaveLang</em>?"
+<ul>
+  <li><strong>LOTS!</strong> - but, now you have to worry about all of the contentious
+      overlap between fancy feature 1 and fancy feature 2.
+  <li><strong>LITTLE!</strong> - but, now you have to write more code for various
+      patterns, over and over and over...
+</ul>
+<h3><a href="http://en.wikibooks.org/wiki/Haskell/Class_Declarations">Haskell Type Classes</a></h3>
+Overloading done right in Haskell.
+<p>
+The above webpage has good examples.
+
+<hr>
+<address></address>
+<!-- hhmts start -->
+Last modified: Fri Apr 25 13:20:38 EDT 2008
+<!-- hhmts end -->
+</BODY> </html>
+

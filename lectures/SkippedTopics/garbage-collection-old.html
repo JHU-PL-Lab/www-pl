@@ -1,0 +1,131 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title></title>
+</head>
+
+<body>
+<h1></h1>
+
+<h1>Special Topic: Garbage Collection</h1>
+
+<pre>Implicit memory management: never explicitly allocate of free memory.
+Smalltalk, Lisp, Scheme, ML, Java, ...
+
+Definitions.
+Root set = set of pointers which are all the memory locations which
+are pointers directly accessible now or at some future point by the
+program.
+
+Roots usually include all pointers on the call stack (available after function
+return), and any pointers in registers, temporaries (often on the
+stack so not a special case) or globals.   
+
+Garbage = a data item inaccessible by traversing pointers from the
+roots.
+
+GC: automatically find and free garbage memory.
+
+Question: whats wrong with stack allocation?
+
+Fact: can't easily do GC incrementally: in general a global search is
+required to see if a location is pointed to.
+
+Simple & Inefficient GC:  Heap-based Mark & Sweep
+(never used; for didactic purposes only)
+
+Heap of pointers to free memory and size of free blocks kept (as with C heap)
+Object created =-> request space from heap of appropriate size
+
+(do a picture of following)
+
+Mark and Free Garbage collection algorithm:
+
+When there is no more free space in the heap,
+
+1 Stop all processing
+
+2 Assume we have a special bit for marks in each memory object.
+
+3 Unmark all data in the heap
+
+4 Mark each object reachable from roots by traversing all pointers (mark phase)
+
+5 All unmarked data is by default free: add it to free list for heap
+
+End
+
+Mucho Problemo: HUGE number of new objects dynamically created, not like C 
+AND, alloc is not inexpensive: O(n log n)(?)
+
+Better solutions are required.
+
+Stop & Copy
+
+Divide memory into two equal partitions (semi-spaces)
+Only one partition occupied at any time, other free (wasteful)
+
+0 the used semi-space is too full: time to collect some garbage
+1  Traverse from roots of occupied partition
+2  copy all reached data to new partition
+  2a compacts in the process
+  2b At old location, put forwarding pointer to new location:
+    "forward to X"
+3 Update all pointers in copied region to they point to new locations, not old:
+  follow all pointers
+  change pointer to point to forwarding location instead.
+
+Old partition now unoccupied.
+Allocate new objects in partly occupied partition
+
+
+Advantage: allocation is trivial.  
+
+GC in Smalltalk
+goals: no big pauses (simple Mark&Copy GC's were a nightmare)
+       no big drain on system (like heap is)
+
+{{{ Use Ungar Ch. 5.7 reference next time }}}
+
+{{{ VW Smalltalk uses an object table to refer to all objects; how
+  else could become be so fast on different-sized objects? }}}
+
+5-tier GC scheme 
+main insight: 95% of new data garbage almost immediately (e.g. temps), pay
+  attention to age of garbage
+put all new stuff in separate NewSpace
+    consists of eden & two subspaces (200K + 2*40K)
+    eden: objects created here
+    two subspaces: survivor spaces, one empty always (mark&copy style)
+    most frequent action: scavenging.  Idea is: pause not noticable
+    eden full ->
+       mark reachable objects in eden & used surv space
+          to speed up, all objects not in NewSpace pointing to
+          NewSpace kept in special table (infrequent enough)
+            -- roots are those objects plus StackSpace
+       eden & used surv objects still reachable (marked) 
+          moved to empty surv space
+    surv space full: move data to OldSpace(s); a heap-based structure
+      free list with free locations & size
+      Why? objects infrequently moved to OldSpace, heap is O-K
+  some data is very big (images etc): LargeSpace
+    all big objects here; saves time of copying them
+  some data never collected, no reason to check (system): PermSpace
+  
+Collectors
+Scavenger: covered already; main collector
+Incremental GC: mainly mark&copy on old space; runs usu. when system
+   idle.
+Global & compacting collector: globally mark & copy, pauses whole
+ system but removes fragments: do before saving an image
+ only runs on request
+OldSpace Data Compactor: defrags OldSpace; runs fast.
+
+</pre>
+a
+
+<hr>
+<address></address>
+<!-- hhmts start -->
+Last modified: Thu May  3 12:47:23 EDT 2001
+<!-- hhmts end -->
+</body> </html>

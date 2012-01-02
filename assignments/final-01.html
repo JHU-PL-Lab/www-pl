@@ -1,0 +1,107 @@
+<html>
+<HEAD>
+<title>PL Final</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Programming Languages
+<br> Spring 2001
+<br> Final Examination
+<br> 
+</h3>
+<hr>
+You can use one handwritten 8.5x11 cheat sheet.
+<p>
+<strong>Good Luck!</strong>
+<ol>
+  <h4>Short Answer, 4 pts each</h4>
+<li>Why won't the program <code>(function x -> (x x) 5)</code>
+    typecheck in Caml? 
+<li>For each language component of TDSRX
+    (<code>Int/Bool/Function/Record/Exception/State</code>), state whether that
+    component's semantics involves side-effects or not. Also, how
+    about DOB <code>Object</code>s?
+<li>In Caml and D, variables are <em>immutable</em>.  What does that mean, and
+    why did the language designers make this decision?
+<li>The language design philosophy of Caml (and D) is
+    "everything is an expression", and evaluation can occur anywhere.
+    Give two places in the D syntax where the above philosophy differs
+    from the Java/C/C++ philosophy.
+<li>What would be the effect of evaluating
+    <pre>
+    Let Exception xn1 In Let Exception xn2 in Raise xn1(Raise xn2(0))
+        </pre>
+    in DX?  In particular, which exception would get raised if any?
+    And, how about evaluating
+    <pre>
+    Try
+      Try
+         Let Exception xn1 In Let Exception xn2 in Raise xn1(Raise xn2(0))
+      With xn1(x) -> 0
+    With xn2(y) -> 0
+    </pre>
+<br>
+<h4>Longer Answer</h4>
+<li>(15 points) Write an interpreter <code>eval</code> for DL, D
+    with lists <code>[[e1;..;en]]</code> which mirror the lists in Caml.
+    (Note: I am using double brackets <code>[[....]]</code> to represent DL lists and
+    <code>1::::[[0]]</code> to represent DL consing so we don't confuse DL
+    and Caml)
+    In order to 
+    make things easy, the only syntax you need to support is
+    <ul>
+      <li><code>[[]]</code>, the empty list, 
+      <li><code>a :::: b</code> to make lists
+    (so, express <code>[[1;2;3]]</code> as <code>1::::(2::::(3::::[[]])</code>)
+    and 
+      <li><code>Match l With [[]] -> e | x::::xs -> e'</code> (this is a
+	  5-ary term, not Caml's general match; in abstract syntax it would
+	  be <code>Match(l,e,x,xs,e')</code>).
+    </ul>
+    You can write in pseudo-ML using the concrete DL syntax, and need not
+    give any cases in your interpreter except the list cases.
+<li>(10 points) Write a typechecker for TDL, TD with the above list
+    syntax (note there is no need for any additional type declaration
+    so the list syntax for TDL is the same as for DL). TDL in addition
+    to the types of TD has types <code>tau List</code>.  In your function
+    <code>TypeCheck(gamma,e)</code>, cases for the list constructs
+    alone must be given.
+<li>(8 points) If our compilers were retargeted to TDSR from DSR, the
+    compilation 
+    task would be considerably aided by the presence of types in the
+    source program.  The compiler would be easier to write, and the
+    compiled programs would run faster.  Elaborate on this by
+    outlining the changes that could be made and how it would improve
+    performance. 
+<li>(9 points) Consider the example of encoding point/colorpoint classes in DSR:
+    <pre>
+    Let pointClass = Function _ ->
+             { x = Ref 3; y = Ref 4;
+             magnitude = Function self -> Function _ -> sqrt(!(self.x) + !(self.y));
+             isnull = Function self -> Function _ ->   self.magnitude(self) = 0
+             setx = Function self -> Function newx -> (self.x) := newx;
+             sety = ... }
+    In 
+    Let colorPointClass = Function _ ->
+          Let super = pointClass () In
+             { x = super.x; y = super.y;
+             color = Ref  { red = 45; green = 20; blue = 20 };
+             magnitude =
+                Function self -> Function _ -> super.magnitude self () *
+                                   self.brightness self;
+             isnull = super.isnull;
+             brightness = Function self -> Function _ -> ... compute brightness  ...;
+             setx = super.setx
+             sety = super.sety; setcolor = ... }
+In ...
+</pre>
+    (a) For a warm-up, write followon code which creates a colorPoint
+    object and sends it the isnull message. <br>
+(b) In your code from (a), <code>magnitude</code> is <em>dynamically
+    dispatched</em>.  Elaborate on what this means.<br>
+(c) modify the example to implement non-dynamic dispatch, giving the
+    effect in C++ of defining <code>magnitude</code> as
+    non-<code>virtual</code>. 
+</ol> 
+
+
+</BODY> </html>

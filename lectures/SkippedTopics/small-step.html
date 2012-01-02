@@ -1,0 +1,29 @@
+(stuff I removed - not doing this now. )
+
+<h2><A NAME="xtocid2170322">Small Step Operational Semantics</A></h2>
+The small step view of computation shows directly the steps that occur
+and the order they occur in.<p>
+
+Two examples of small-step computation:
+<pre>
+3 + 4 * 2 -> 3 + 8 -> 11
+
+(Fn x => x + 2) (3 + 2 + 5) -> (Fn x => x + 2) (5 + 5) ->(Fn x => x + 2) (10) -> 10 + 2 -> 12 </pre>
+
+<ul>
+  <li> Computation is carried out by transforming (rewriting) the
+program text
+  <li> Functions are applied by textually replacing the parameter
+       variable with the actual argument (<em>substitution</em>)
+  <li> Each <code>-></code> is an atomic "step" of computation
+  <li> Steps occur linearly, one after another, in the course of computing
+  <li> Eventually no more steps are possible: a <em>value</em> has
+       been reached.
+</ul>
+Advantage of transformational view: operational semantics for a big
+language can be defined in a page of text.
+  
+Linear, stepwise view given above:  models precisely the ordering
+of events in time.  <br>
+This is known as the <em>small-step</em>
+representation of computation, each step <code>-></code> is small.<p>

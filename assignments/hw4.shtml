@@ -1,0 +1,215 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+<div id="content">
+
+
+<h2>Programming Languages Assignment 4</h2>
+<h4>Due: Wednesday April 6th</h4>
+<p/>
+
+<ol>
+	<li>
+		<b>10 points</b>
+		<p>
+			For each of the following F&#x266d; programs, show a proof tree that uses the operational semantics rules to demonstrate how it is evaluated.  Make sure that your proof uses the F&#x266d; operational semantics rules correctly; don't skip any steps.
+		</p>
+		<ol type="a">
+            <li><tt>True And (False Or True) And True</tt></li>
+            <li><tt>3 + (If 3 = 3 Then 1 + 2 Else 2)</tt></li>
+            <li><tt>Function x -> x + 1</tt></li>
+			<li><tt>(Function a -> a) (Function b -> b + b) 5</tt></li>
+		</ol>
+		<p/>
+	</li>
+	<li>
+        <b>15 points</b>
+        <p>
+            Write F&#x266d; functions to encode a binary tree structure.  You must provide the following definitions:
+        </p>
+        <ol type="a">
+            <li><tt>tempty</tt>: Represents the empty tree.</li>
+            <li><tt>tbuild v l r</tt>: Creates a tree with the provided data value and the specified left and right children.</li>
+            <li><tt>tleft tree</tt>: Retrieves the left child from a tree node.</li>
+            <li><tt>tright tree</tt>: Retrieves the right child from a tree node.</li>
+            <li><tt>tdata tree</tt>: Retrieves the data value from a tree node.</li>
+            <li><tt>tisempty tree</tt>: Evaluates to <tt>True</tt> if the tree is the empty tree or <tt>False</tt> if it is not.</li>
+        </ol>
+        <p>
+            Passing these definitions to the following F&#x266d; program should cause it to iterate over a tree and sum all nodes it contains.  (Below, <tt>Y</tt> is assumed to be the Y-combinator.)
+        </p>
+        <pre>
+(Y (Function this -> Function tree ->
+    If tisempty tree Then 0 Else
+    (tdata tree) + (this (tleft tree)) + (this (tright tree))
+)))
+        </pre>
+        <p>
+            For instance, we would expect <tt>55</tt> if the following tree were provided to it:
+        </p>
+        <pre>
+tbuild 10
+    (tbuild 20
+        (tbuild 2 tempty tempty)
+        (tbuild 4 tempty tempty))
+    (tbuild 7
+        (tbuild 12 tempty tempty)
+        tempty)
+        </pre>
+        <p>
+            To make life easier, you may use the definitions of <tt>pr</tt>, <tt>left</tt>, and <tt>right</tt> which appear in &#x00a7;2.3.4 of the book.  (You are not required to submit this answer in a source file, but you may want to test your answer in the F&#x266d; toploop.)
+        </p>
+	</li>
+	<li>
+        <b>25 points</b>
+        <p>
+            Write operational semantics rules for the language F&#x266d;r: F&#x266d; with rings.  These rules must do the actual work; they cannot be simple encodings.  The rings in F&#x266d;r are a new kind of value; thus, the types of values in F&#x266d;r are functions, integers, booleans, and rings.  A ring is like a circular list; a cell in a ring has a forward link and a backward link.  All rings must contain at least one element.  The syntax of F&#x266d; is extended as follows, using the non-terminal <i>e'</i> to represent the expression non-terminals from F&#x266d;.
+        </p>
+        <ul>
+            <li><i>e</i> ::= <i>e'</i>
+                                | <tt>Left</tt> e | <tt>Right</tt> e
+                                | <tt>RingAdd</tt> e<sub>1</sub> e<sub>2</sub>
+                                | <tt>RingDrop</tt> e | <tt>RingGet</tt> e
+                                | <tt>Ring</tt> e<sub>1</sub> <tt>@</tt> ... <tt>@</tt> e<sub>n</sub>
+
+        </ul>
+        <p>
+            The <tt>Ring</tt> value links a series of expressions together, with the last expression being linked to the first.  The <tt>Left</tt> and <tt>Right</tt> operations cycle the ring.  <tt>RingAdd</tt> adds a new value at the current position in the ring while <tt>RingDrop</tt> drops the current value in a ring (resulting in the cell to its right).  <tt>RingGet</tt> retrieves the value in the current cell.
+        </p>
+        <p>
+            The following examples should help you understand the behavior of these syntactic constructs.
+        </p>
+        <ul>
+            <li><tt>Ring 5 @ 3</tt> represents a ring containing two elements: <tt>5</tt> and <tt>3</tt></li>
+            <li><tt>Ring 2 @ 1 @ True</tt> represents a three-element ring.  Note that there is no type system to enforce that rings must have homogenously-typed contents.</li>
+            <li><tt>Ring 1 + 2 @ 3 + 4</tt> &#x21d2; <tt>Ring 3 @ 7</tt>.  Observe that rings are eagerly evaluated; we do <i>not</i> wait for a <tt>RingGet</tt> to evaluate a ring element.
+            <li><tt>Left (Ring 1 @ 2 @ 3)</tt> &#x21d2; <tt>Ring 2 @ 3 @ 1</tt></li>
+            <li><tt>Left Left Left (Ring 1 @ 2 @ 3)</tt> &#x21d2; <tt>Ring 1 @ 2 @ 3</tt></li>
+            <li><tt>Right (Ring 1 @ 2 @ 3)</tt> &#x21d2; <tt>Ring 3 @ 1 @ 2</tt></li>
+            <li><tt>Left (Ring 0)</tt> &#x21d2; <tt>Ring 0</tt></li>
+            <li><tt>RingAdd (Ring 1 @ 2) False</tt> &#x21d2; <tt>Ring False @ 1 @ 2</tt></li>
+            <li><tt>RingDrop (Ring 1 @ 2 @ 3)</tt> &#x21d2; <tt>Ring 2 @ 3</tt></li>
+            <li><tt>RingDrop (Ring 1)</tt> diverges (because rings must always have at least one element)</li>
+            <li><tt>RingGet (Ring 2 @ 4)</tt> &#x21d2; <tt>2</tt></li>
+        </ul>
+        <p>
+            Remember to consider peculiar cases when writing your rules.  Since F&#x266d;r does not have exceptions, you should diverge when appropriate.
+        </p>
+    </li>
+    <li>
+        <b>10 points</b>
+        <p>
+            Now write the rules for F&#x266d;Sr: F&#x266d; with rings and state.  (This is actually relatively straightforward.  For examples of stateful operational semantics rules, see Section 4.1 of the book.)  Note that we're not specifically trying to create mutable rings; we're simply adding the rings to a stateful language.  (If we wanted a mutable ring, we could create a ring of cells.)
+        </p>
+    </li>
+    <li>
+        <b>30 points</b>
+        <ol type="a">
+            <li>
+                <b>15 points</b>
+                <p>
+                    For each of the following pairs of expressions, indicate whether or not the stated operational equivalence holds in F&#x266d;.  If it does not, show some context that evaluates differently dependent upon which of the two expressions you use.  (Remember: it only takes one of the infinitely many contexts to make the two expressions operationally <b>inequivalent</b>, so think hard about any context you could put the code in.)
+                </p>
+                <ol type="i">
+                    <li><tt>True And x</tt> &cong; <tt>x</tt></li>
+                    <li><tt>Function x -> x</tt> &cong; <tt>Function y -> y</tt></li>
+                    <li><tt>Function x -> x x</tt> &cong; <tt>Function x -> x x x</tt></li>
+                    <li><tt>Function f -> Function x -> (f x) + (f x)</tt> &cong; <tt>Function f -> Function x -> (Function y -> y + y) (f x)</tt></li>
+                    <li><tt>Function f -> Function x -> (Function y -> x) (f x)</tt> &cong; <tt>Function f -> Function x -> x</tt></li>
+                </ol>
+            </li>
+            <li>
+                <b>15 points</b>
+                <p>
+                    Repeat the above exercise but for F&#x266d;SR.
+                </p>
+            </li>
+        </ol>
+        <p/>
+    </li>
+    <li>
+        <b>10 points</b>
+        <p>
+            F&#x266d; programs are quite prone to type errors, such as trying to apply an integer as a function or adding an integer to a boolean, which cause divergence.  While Chapter 6 of the book discusses basic type systems and how they can prevent this sort of problem, one simple (if sloppy) approach is to add a construct for checking the type of a value at runtime.  We can imagine the F&#x266d;C language: F&#x266d; extended with runtime type checking.  This language contains three new keywords: <tt>IsFunction</tt>, <tt>IsInt</tt>, and <tt>IsBool</tt>.  We could then imagine defining an integer list as simply as:
+        </p>
+        <table border="0">
+            <tr><td align="right"><tt>empty</tt> def=</td><td><tt>False</tt></td></tr>
+            <tr><td align="right"><tt>cons x y</tt> def=</td><td><tt>pr x y</tt></td></tr>
+            <tr><td align="right"><tt>head lst</tt> def=</td><td><tt>left lst</tt></td></tr>
+            <tr><td align="right"><tt>tail lst</tt> def=</td><td><tt>right lst</tt></td></tr>
+            <tr><td align="right"><tt>isempty lst</tt> def=</td><td><tt>IsBool lst</tt></td></tr>
+        </table>
+        <p>
+            (The definition of <tt>length</tt> remains the same as in the book.)  This would obviously be inappropriate for lists of booleans (since we are using a boolean as a sentinel value), but it would work well for integers and functions.  Consider the following definitions of the operational semantics for F&#x266d;C:
+        </p>
+        <div style="text-align:center; float:left; width:48%">
+            <center>
+                <table>
+                    <tr><td style="text-align:center"><i>e</i> &#x21d2; <tt>True</tt></td></tr>
+                    <tr><td style="border-top-style:solid;border-top-width:1px"><tt>IsBool </tt><i>e</i> &#x21d2; <tt>True</tt></td></tr>
+                </table>
+            </center>
+        </div>
+        <div style="text-align:center; float:right; width:48%">
+            <center>
+                <table>
+                    <tr><td style="text-align:center"><i>e</i> &#x21d2; <tt>False</tt></td></tr>
+                    <tr><td style="border-top-style:solid;border-top-width:1px"><tt>IsBool </tt><i>e</i> &#x21d2; <tt>True</tt></td></tr>
+                </table>
+            </center>
+        </div>
+        <br style="clear:both"/>
+        <div style="text-align:center; float:left; width:48%">
+            <center>
+                <table>
+                    <tr><td style="text-align:center"><i>e</i> &#x21d2; <tt>v</tt> &nbsp; &nbsp; <tt>v</tt> &#x2208; &#x2124;</td></tr>
+                    <tr><td style="border-top-style:solid;border-top-width:1px"><tt>IsInt </tt><i>e</i> &#x21d2; <tt>True</tt></td></tr>
+                </table>
+            </center>
+        </div>
+        <div style="text-align:center; float:right; width:48%">
+            <center>
+                <table>
+                    <tr><td style="text-align:center"><i>e</i> &#x21d2; <tt>Function x -> e</tt></td></tr>
+                    <tr><td style="border-top-style:solid;border-top-width:1px"><tt>IsFunction </tt><i>e</i> &#x21d2; <tt>True</tt></td></tr>
+                </table>
+            </center>
+        </div>
+        <br style="clear:both"/>
+        <ol type="a">
+            <li>
+                <b>5 points</b>
+                <p>
+                    What is wrong with the rules as they are defined here?
+                </p>
+            </li>
+            <li>
+                <b>5 points</b>
+                <p>
+                    Provide a correct set of operational semantics rules for F&#x266d;C.
+                </p>
+            </li>
+        </ol>
+    </li>
+</ol>
+
+
+
+<h3>Submission Method</h3>
+<p>
+Submit your homework via Blackboard.  If you hand-wrote your homework, you will
+need to scan it.  There is a scan-to-email copier in NEB224 if you don't have
+access to a scanner.
+</p>
+<p>
+If you wish to use LaTeX for your homework, you may be interested in the
+<a href="http://cristal.inria.fr/~remy/latex/">mathpartir</a> package which
+provides (among other things) support for typesetting proof trees and logical
+rules.  (Debian and Ubuntu users merely need to install the mathpartir package;
+other users may need to download the .sty file and use it directly.)
+</p>
+
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->

@@ -1,0 +1,383 @@
+<HTML> <HEAD> <TITLE>Concurrency</TITLE> </HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h2>Concurrency</h2>
+Concurrent computers work on more than one thing at once.
+
+The <a href="http://en.wikipedia.org/wiki/Parallel_computing">Wikipedia
+article on parallel computing</a> provides an overview.
+
+Concurrent execution can be loosely grouped into three implementation
+categories, in order of loosest to tightest coupling.
+<ul>
+  <li>Distributed concurrent computation (cluster computing or MPP
+      (massive parallel processing) or grid computing) - on multiple computers which
+      share no memory and are sending messages between each other
+  <li>Distributed shared memory (aka SMP, symmetric multiprocessor)  -
+      different processes running on different processors but sharing
+      some special memory via a memory bus.
+  <li>Multithreaded computation - multiple threads of execution
+      sharing a single memory which is local.
+</ul>
+
+<p>
+The <a
+href="http://en.wikipedia.org/wiki/Thread_%28computer_science%29">Wikipedia
+article  on threads</a> clarifies how threads and processes differ.
+
+<h4>Forms of concurrency we are  not covering</h4>
+<ul>
+  <li>Vector processing - computers that can do an operation on a
+      whole array in one step.  Used to be called SIMD (single
+      instruction multiple data). 
+   <li>Stream processing - the modern version of vector processing
+      which can work on more than just arrays in parallel (e.g. sparse
+      arrays).   These guys are called GPGPUs (general purpose
+      graphics processing units) since they arose as generalizations
+      of specialized graphics processors.
+  <li>FPGA's - field programmable circuits: create your own
+      (parallel) logic circuitry on the fly.
+</ul>
+<h3>PLs and concurrency</h3>
+<ul>
+  <li>Historically, concurrent programming arose as various library
+extensions to existing languages.
+  <li>Early models included UNIX sockets for IPC, and process forking
+      in C.
+  <li>While some concurrency is indeed best as  libraries, some should
+      belong in the PL.
+</ul>
+
+
+<h3>Threads in general</h3>
+<ul>
+  <li>Multithreaded programming is coming on in a big way - newer CPUs
+      have multiple cores and can run multiple threads simultaneously.
+  <li>Mulithreaded programming is  also a disaster waiting to happen -
+      the programs are just too hard to debug.
+  <li>Main problem is the bizarre cases of overlap that  can occur
+      when  accessing the shared memory.
+</ul>
+
+The main Bad Things:
+<ul> <li>Race condition: two operations are interleaved and leave the
+  data in an inconsistent state.  Example: double variable update
+  where one thread set the hi word and another thread set the low word
+  due to near- simultaneous access - the double's value is not a
+  sensible value from either thread.
+
+<li>Deadlock: threads may need to wait for resources to free up (they
+    were locked to begin with to prevent race conditions), and can get in a
+<em>cycle</em> of waiting: A waits for B waits  for C  waits for A</ul>
+
+<h4>Locking</h4>
+Avoiding races with locks of various kinds
+<ul>
+  <li>Monitors - regions of mutual exclusion in the source program,
+      only one thread can execute a monitor block at any one point.
+      Similar to synchronized in Java.
+  <li>Semaphore - a low-level locking mechanism: grab a lock before a
+      critical operation; block if someone else has lock; once you
+      have the lock you know you are  the only one accessing; free it
+      when you are done.  General semaphores allow n threads to
+      simultaneously access, not  just 1.
+</ul>
+
+<h4>Atomicity</h4>
+Atomicity is a key design concept
+<ul>
+  <li>An atomic region is a region of code that may have been interleaved with
+      other thread executions, but you can't tell -- it <em>always
+      appears to have run atomically </em> (in one step)
+  <li>The more atomicity you can get in your language design the fewer
+      interleavings need to be considered in debugging and the fewer bugs.
+</ul>
+<a name="java"><h3>Java Threads</h3></a>
+<a href="http://java.sun.com/docs/books/tutorial/essential/concurrency/index.html">The Java concurrency tutorial.</a>
+<ul>
+  <li>An implementation of the standard notion of thread: shared
+      memory but concurrent threads of control (i.e., multiple runtime
+      stacks).
+  <li><code>synchronized</code> declarations declare zones of mutual
+      exclusion; they are a form of monitor
+</ul>
+Synchronized in detail
+<ul>
+  <li>They can be declared as <code>synchronized</code> methods, or as
+      blocks of code. 
+  <li>When a synchronized method/block is running, no other synchronized
+      method/block for that object  can start from another thread -
+      any such threads have to 
+      wait until the currently running method/block finishes.
+  <li>Plus: object-based which is a good level of abstraction for locking
+  <li>Minus: only gives mutual exclusion, not atomicity
+</ul>
+Other Java concurrency control features.  Much is in the new
+<code>java.util.concurrent</code> package.
+<ul>
+  <li>Atomic integers, floats, etc - there  will never be any race
+      conditions  on setting or getting the value from
+      <code>AtomicInteger</code> etc.
+  <li>Locks - <code>java.util.concurrent.locks.Lock</code>
+  <li>Concurrent collections - e.g. <code>ConcurrentHashMap</code>
+      which supports concurrent add/lookup atomically.
+</ul>
+
+Problems with Java threads
+<ul>
+  <li>lack of atomicity mentioned above
+  <li>complexity of Java memory model: need to know how operations
+      that are not atomic may mess things up, e.g. if "half an
+      integer" is written.
+</ul>
+<h3>The Actor Model</h3>
+History: Hewitt's idea; elaborated by many others including  yours truly.
+<ul>
+  <li>Actors are autonomous distributed agents
+  <li>Actors have names which are not forgeable
+  <li>asynchronous messages; arrival order nondeterminism
+  <li>local state only
+  <li>actors can create other actors
+  <li>If  an actor is busy when a message arrives is it put in a
+  message queue.
+  <li>No faults: all messages eventually arrive (but they may take
+      arbitrarily long)
+  <li>Finite local processing: each actor processes each message in a
+      finite amount of time.
+  <li><strong>Atomicity</strong>: multiple actors can be running in
+      parallel, but any interleaved run is equivalent to a run where
+      each actor runs all of its steps in one big step.
+</ul>
+
+<h3>AFbV: Actors on FbV</h3>
+
+We will add an actor layer on top of the <strong>FbV</strong> language:
+<strong>AFbV</strong>.  We need the "V" to have variants to define
+messages.<p> Recall <strong>FbV</strong> variants are like OCaml's
+inferred variants - <code>`foo(4)</code> is the variant
+<code>foo</code> with argument <code>4</code>.  Notice how we can also
+view this as the <em>message</em> <code>foo</code> with argument
+<code>4</code>.  <strong>FbV</strong> variants always  have exactly one
+argument only, for simplicity.
+
+<h4>Syntax of AFbV</h4>
+<strong>AFbV</strong> expressions are the following.
+
+<pre>e ::= ( ... all the FbV stuff ) | e <- e  | Create(e,e') | a </pre>
+where <code>a</code> are the atomic actor names.  They are like the cells
+<code>c</code> of <strong>DS</strong>, they cannnot  appear in source
+programs but can show up at runtime, and there are infinitely  many
+unique  ones; they are just  names (nonces).
+<ul>
+  <li><code>e <- e'</code> is a message send and expects <code>e</code> to be an actor name,
+and sends it the message which is the value of <code>e'</code>.
+  <li><code>Create(e,e')</code> creates an actor with behavior
+      <code>e</code>,  and with initial data <code>e'</code>.  <code>e</code> should evaluate to a function
+      and that function is the (whole) code for the actor.  The
+      <code>create</code> returns the (new) name of  this new actor as
+      its result.
+</ul>
+Some unusual aspects of <strong>AFbV</strong>
+<ul>
+  <li>Each message response is functional -- there is no state within
+      an actor in the form of fields.
+  <li>The code of an actor is nothing but one  function.  You write
+      your  own dispatch code using the <code>Match</code> of
+      <strong>FbV</strong>.  <br>
+This is the dual encoding to objects as
+      records -- its objects  as functions and messages as variants.
+  <li>In order to allow actors to know  themselves, at creation time
+      they get passed their own name.
+  <li>At the end of processing each message, the actor goes idle; the
+      behavior  it is  going to have upon receiving the next message
+      is <em>the value at the end of the previous message send</em>.
+</ul>
+
+<h4>An Example</h4>
+Before getting into the operational semantics lets do an example.
+Here is an actor that gets a start message and then counts down from
+its initial  value to 0:
+<pre>
+Function myaddr ->
+  Y (Function this -> Function localdata -> Function msg ->
+      Match msg With
+         `main(n) -> myaddr <- `count(n); this(_) 
+       | `count(n) -> If n = 0 Then this(_) Else
+                               myaddr <- `count(n-1);
+                               this(_) /* set the function to respond to next message */
+</pre>
+Here  is a code fragment that another actor could use to fire up a new
+actor with the above behavior  and get it started. Suppose the above
+code we abbreviated <code>CountTenBeh</code>.
+<pre>Let x = create(CountTenBeh,_)  /* _ is the <code>localdata</code> - its unused in this example */
+  In x <- `main(10)
+</pre>
+
+Here is an alternative way to count down, where  the
+<code>localdata</code> field holds the value, and its not in the message.
+
+<pre>
+Function myaddr ->
+  Y (Function this -> Function localdata -> Function msg ->
+      Match msg With
+        `count(_) -> If localdata = 0 Then _ Else
+                               myaddr <- `count(_);
+                               this(localdata - 1) /* set the function to respond to next message/
+</pre>
+Suppose the above
+code was abbreviated <code>CountTenBeh2</code>; using it is then
+<pre>Let x = create(CountTenBeh2,10)  /* 10 is  the localdata */
+  In x <- `count(_)
+</pre>
+
+The latter example is the correct way to give actors local data -- in
+the former example the counter value had to be forwarded along every message.<p>
+
+Here is another usage  fragment for the first example:
+<pre>Let x = create(CountTenBeh,_)  /* _ is the <code>localdata</code> - its unused in this example */
+  In x <- `main(10); x <- `main(5)
+</pre>
+In this case the actor <code>x</code> will in parallel and
+independently counting down from 10 .. 0 and 5 .. 0 - these counts may
+also interleave in random ways.  For the second example an analogue
+might be:
+
+<pre>Let x = create(CountTenBeh2,10)  /* 10 is  the localdata */
+  In x <- `count(_); x <- `count(_)
+</pre>
+This does nothing  but get one more count message queued up; since the
+  actor sends a new one out each time it gets  one until 0, the effect
+  will be to have a leftover message at the end.
+<h4>Operational Semantics of Actors</h4>
+The operational semantics for actors has two layers: the local
+  computation, which is not to different than <strong>FbV</strong>, and
+  the concurrent global stepping of all the actors.  Lets do the
+  latter first.
+<p>
+
+<ul>
+  <li>A <em>global state</em> G is a soup of the active actors and
+  sent messages (note we are using "U" to mean set union here):
+<br>
+{ <code>&lt;a,v&gt;</code> | <code>a</code> is  an actor name,
+<code>v</code> is its behavior } U<br>
+{ <code>[a &lt;- v]</code> | <code>a</code> is  an actor name,
+<code>v</code> is the message sent to <code>a</code> } 
+  <li>Actor systems can run forever, there is no notion of a final
+  value.  So, the system does <em>small steps</em> of computation:<br>
+G1 --&gt; G2 --&gt; G3 --&gt; ... <br>
+-- this indicates <em>one step</em> of computation; in each single step <em>one</em>
+  actor competely processed <em>one</em> message.  
+  <li> --&gt;* is then the reflexive, transitive closure of --&gt; --
+  many steps of actor computation.  
+  <li>In general this continues
+  infinitely since actor  systems may not terminate.   The final
+  meaning of a run of an actor system is this infinite stream of states.
+</ul>
+
+<h4>The Local Rules</h4>
+Lets start with the local rules.  They are defined with a similar
+relation ==&gt; as in <strong>FbV</strong> operational semantics, but
+the local executions additionally have <em>side effects</em> of the
+actors they create and messages they send.  We will make any such side
+effects be <em>labels</em> on this arrow relation.  So we have
+<ul>
+  <li>Local compuration relation <code>==&gt;^S</code> (<code>S</code>
+      should be written on the top;
+      html won't allow that easily)
+  <li>S here is the soup of effects; in fact each S is a subset of a
+      G.  It contains two kinds of elements,
+      <ul>
+	<li><code>[a &lt;-v]</code> indicating a send to <code>a</code>
+	    of message <code>v</code>that this  local
+	    actor performed over its execution, and
+	<li><code>&lt;a,v&gt;</code> indicating a new actor it
+	    created, named <code>a</code>, with behavior (body)
+	    <code>v</code>.
+      </ul>
+</ul>
+
+Here then are the rules for <code>==&gt;^S</code>.  Most of the rules
+are nearly identical to <strong>FbV</strong>, we just give  the
+<code>+</code> rule to show the change:
+
+<pre>
+e ==>^S n     e' ==>^S' n'
+--------------------------
+e + e' ==>^(S U S') n''  where  n'' is the sum of integers n and n'
+</pre>
+- since <code>e/e'</code> could in theory have each created actors or sent
+messages, we need to append their effects to the final result.  These
+effects are like state, they are on the side.  A major difference with
+<strong>DS</strong> is the effects here  are "write only" -- they
+don't change the local computation in any way, they are only spit
+out.  In that sense local actor computation stays functional.<p>
+
+Here is the send rule:
+
+<pre>
+e ==>^S a     e' ==>^S' v
+---------------------------------
+e <- e' ==>^(S U S' U {[a &lt;-v]}) v
+</pre>
+The main consequence is the message <code>[a &lt;-v]</code> is added
+to the soup.  (The return result <code>v</code> here is largely irrelevant, the goal
+of a message send is the side effect added to the list.)
+
+<p>
+Here is the create rule:
+
+<pre>
+e ==>^S v     e' ==>^S' v'   v a v' ==>^S'' v'' 
+-----------------------------------------------
+Create(e, e') ==>^(S U S' U S'' U {&lt;a,v''&gt;}) a    for a a fresh actor name
+</pre>
+This time the return result matters - it is the name of the new
+actor.  The running of <code>v a v'</code> passes the actor its own name  and its initial values to
+initialize it.
+
+<h4>The Global Rule</h4>
+
+Here is the global single-step rule for one actor in the soup
+processing in its entirety one message:<br><br>
+
+
+<code>(G U {[a &lt;- v']} U {&lt;a,v&gt;})</code> &nbsp;--> &nbsp;
+<code>(G U {&lt;a,v''&gt;} U S )</code>
+if <code>(v v' ==>^S v'')</code>
+<p>
+This is  the only global rule.  It matches an actor with a message in
+the global soup that is destined for it, uses the local semantics to
+run that actor (in isolation), and throws back into the soup all of
+the S, which contains all the messages sent by this one actor run as
+well as any new actors created by this one actor run.  A global actor
+run is just the repeated application of this rule.  Notice  how  the
+actor behavior  which was  <code>v</code> is changed to
+<code>v''</code>, the result of this run.
+<p>
+
+To test these rules you can run the example programs above.
+
+<h4>The Atomicity of Actors</h4>
+<ul>
+  <li>The above semantics has actors executing atomically: each actor runs
+independently to completion.  
+  <li>However, it would be possible to make an
+alternative semantics in which multiple actors run in parallel
+  <li>Since the actors are completely local in their executions, the
+      two semantics  should  be provably equivalent.
+</ul>
+
+
+
+
+<br>
+<br>
+
+<br>
+<hr>
+<address></address>
+<!-- hhmts start -->
+Last modified: Fri May  1 13:32:17 EDT 2009
+<!-- hhmts end -->
+</BODY> </html>
+

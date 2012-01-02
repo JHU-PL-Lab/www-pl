@@ -1,0 +1,18 @@
+Yunus
+Set types: 
+set rule OK but antecedent slow
+membership: good with minor glitch
+
+Interpreter:
+glitch or two but OK
+
+Operational equivalence on sets
+Right informal definition of opeq
+Not formal definition
+Got non-opeq of contexts.
+
+Got set union
+
+----------------------------------------------------------------------
+
+Sudhir

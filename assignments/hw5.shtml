@@ -1,0 +1,155 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+
+<h2>Programming Languages Assignment 5
+</h2>
+<h4>Due: Wednesday April 20th</h4>
+<p/>
+
+<ol>
+	<li>
+        <b>(25 points)</b>
+        <p>
+            For this problem, we will discuss for-loops in F&#x266d;S.  We use
+            the syntax <tt>For</tt> <i>x</i> <tt>In</tt> <i>e</i> <tt>To</tt> <i>e</i> <tt>Do</tt> <i>e</i> <tt>Done</tt>
+            to describe a for-loop.
+        </p>
+        <p>
+            For example, consider the following code:
+        </p>
+        <pre>
+Let c = Ref 0 In
+Let junk =
+    For x In 1 To 10 Do
+        c := !c + x
+    Done
+In !c
+        </pre>
+        <p>
+            This expression should evaluate to <tt>55</tt>.  Observe the following points:
+        </p>
+        <ul>
+            <li>The actual value of the <tt>For</tt>... expression is unspecified, but its effects on state are important.</li>
+            <li>We assume that the first two expression arguments should evaluate to integers.  If they are not, the loop may diverge.</li>
+            <li>We assume that the loop always <i>increments</i> by one.  If the first argument is greater than the second, your loop may diverge.</li>
+            <li>The loop variable should, of course, be bound in its body on each iteration.</li>
+        </ul>
+        <p>
+            With that in mind, complete the following:
+        </p>
+        <ol type="a">
+            <li>
+                <b>(10 points)</b>
+                <p>
+                    First, show that the above syntax can be encoded in F&#x266d;S.  (You may use <tt>Let</tt>...<tt>In</tt> and <tt>Let Rec</tt> syntax to make your life easier.)
+                </p>
+            </li>
+            <li>
+                <b>(15 points)</b>
+                <p>
+                    Now, write the operational semantics rule (or rules) implementing for-loops in F&#x266d;SF.  Remember that operational semantics rules are not encodings; this rule won't look like your answer to (a) above.
+                </p>
+            </li>
+        </ol>
+    </li>
+    <li>
+        <b>(10 points)</b>
+        <p>
+            Show a proof of evaluation of the following F&#x266d;X expression:
+        </p>
+        <pre>
+            (Function x ->
+                Try
+                    If x = 0 Then Raise #Go 7 Else Raise #Stop 5
+                With #Go n -> n
+            ) 0
+        </pre>
+    </li>
+    <li>
+        <b>(40 points + 10 <i>bonus</i> points)</b>
+        <ol type="a">
+            <li>
+                <b>(15 points)</b>
+                <p>
+                    Recall the language F&#x266d;r from Homework 4: F&#x266d; with rings.  We will now add an additional piece of syntax to F&#x266d;r: <tt>RingSize</tt> <i>e</i> (which produces an F&#x266d; integer describing how big the ring is).
+                </p><p>
+                    We will now define the language TrF&#x266d;r; F&#x266d; with rings, type annotations, and <tt>Let Rec</tt>.  This language has the type grammar:
+                </p>
+                <p>
+                    <i>&#x03c4;</i> ::= <tt>Int</tt> | <tt>Bool</tt> | <i>&#x03c4;</i> <tt>-&gt;</tt> <i>&#x03c4;</i> | Ring <i>&#x03c4;</i>
+                </p>
+                <p>
+                    Give the type rules for this language.  These rules should cover all of the ring syntax from Homework 4 -- <tt>Left</tt>, <tt>Right</tt>, <tt>RingAdd</tt>, <tt>RingDrop</tt>, <tt>RingGet</tt>, and <tt>Ring</tt> -- as well as the new <tt>RingSize</tt> syntax.  You may assume that TrF&#x266d;r includes all of the TF&#x266d; rules in the book (including <tt>Let Rec</tt> rule).
+                </p>
+            </li>
+            <li>
+                <b>(5 points)</b>
+                <p>
+                    Write a function in TrF&#x266d;r which takes a ring of integers and calculates their sum.  (You will need Let Rec somewhere because you can't type the Y-combinator.)  Why would it not be possible to write this function in TrF&#x266d;r without the <tt>RingSize</tt> operator?
+                </p>
+            </li>
+            <li>
+                <b>(15 points)</b>
+                <p>
+                    We now consider the TrF&#x266d;H: F&#x266d; with type annotations, <tt>Let Rec</tt>, and <i>heterogeneous</i> rings!  This language will permit rings to have contents of different types (like the original F&#x266d;r did) but will statically assure that no ring is used in a type-incorrect fashion.  The type grammar for this language is:
+                </p>
+                <p>
+                    <i>&#x03c4;</i> ::= <tt>Int</tt> | <tt>Bool</tt> | <i>&#x03c4;</i> <tt>-&gt;</tt> <i>&#x03c4;</i> | Ring <i>&#x03c4;</i> <tt>@</tt> ... <tt>@</tt> <i>&#x03c4;</i>
+                </p>
+                <p>
+                    Note that the type of rings has gotten considerably more complicated to accommodate this new requirement.  For instance, we would say that the expression <tt>Ring 1 @ 2 @ True</tt> has the type <tt>Ring Int @ Int @ Bool</tt>.  Write the type rules for this language.  (These type rules are considerably more complex than those for TrF&#x266d;r.)
+                </p>
+            </li>
+            <li>
+                <b>(5 points)</b>
+                <p>
+                    To our dismay, we discover that it is no longer possible to write a function which sums a ring of integers!  Explain why this is the case.
+                </p>
+            </li>
+            <li>
+                <b>(up to 10 <i>bonus</i> points)</b>
+                <p>
+                    Devise a strategy by which you could enhance TrF&#x266d;H so that writing a function which sums over a ring of integers is again possible.  There are many such strategies available to you.  Your bonus will be determined by the clarity, correctness, and elegance of your solution.
+                </p>
+            </li>
+        </ol>
+    </li>
+    <li>
+		<b>(10 points)</b>
+        <p>
+            Write a subtype of the following type:
+        </p>
+        <pre>
+( { x:Int; y:{z:Bool} } -> { x: Int; y: {z: Int -> Int } } ) ->
+{} ->
+{ a: { x:Int; y:{z:Bool} }; b: { x: Int; y: {z: Int -> Int } } }
+        </pre>
+        <p>
+            Your answer must not contain the types
+            <tt>{ x:Int; y:{z:Bool} }</tt> or
+            <tt>{ x: Int; y: {z: Int -> Int } }</tt>.
+        </p>
+	</li>
+	<li>
+        <b>(15 points)</b>
+        <p>
+            Write an EF&#x266d; type derivation of the following code:
+        </p>
+        <pre>     (Function f -> Function x -> f x) (Function z -> z + z)</pre>
+        <p>
+            Then, show that this expression has type <tt>Int -> Int</tt> by computing the closure of the constraint set and solving the constraints as described in the book.
+        </p>
+        <p>
+            Be very careful to calculate the right resulting type and constraint set.  As a hint, your constraint set should have three pairings in it by the time you are done and, obviously, you should be able to complete the closure algorithm to discern that this expression has the type <tt>Int -> Int</tt>.
+        </p>
+	</li>
+</ol>
+
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->

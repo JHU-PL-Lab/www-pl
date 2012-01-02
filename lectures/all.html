@@ -1,0 +1,3690 @@
+<h3>Caml</h3>
+<ul>
+  <li>The top loop and simple types
+  <li>Expression-based aspect of Caml
+  <li>Built-in simple datatypes: lists, tuples
+  <li>Caml Functions: first-order, recursive, higher-order, curried
+  <li>Patterns
+  <li>Caml Types: type declarations, records and variants, polymorphic
+      types, type inference 
+  <li>State
+  <li>Exceptions
+  <li>Modules: structures, functors, signatures
+  <li>Separate compilation
+  <li>
+</ul>
+
+<h3>Operational Semantics</h3>
+      <ul>
+	<li>Basics: expressions, evaluation relation
+	<li>D language operational semantics; substitution
+	<li>Abstract vs concrete syntax
+	<li>D interpreter
+	<li>Programming in D: encoding various features
+	<li>Recursion and the logical paradoxes
+</ul>
+Here is the idea:
+<ul>
+  <li>Invariant: for every recursive function, always keep around two
+      identical copies of the function: one to use, and one to copy again.
+  <li>When you do a recursive call, pass along a copy of the function
+  <li>In the recursive call, make two more copies.  Use one of the copies
+      to compute with,  and save the other to pass on for a future
+      recursive call.
+  <li>etc: each recursive call uses one copy but duplicates another so
+      there is always a spare.
+</ul>
+<hr>
+Here is how a summation function can be defined around these ideas
+which summates the numbers 0..n for agrument n.
+First define
+<pre>
+summate0 = Function this -&gt; Function arg -&gt;
+  If arg = 0 Then 0 Else arg + this(this)(arg-1) + 1
+</pre>
+Then we can write a function call as
+<pre>  summate0(summate0)(7) (* summates numbers 0 .. 7 *)
+</pre>
+<ul>
+  <li><code>summate0</code> always expects its first argument
+<code>this</code> to be itself
+  <li> it can then use one copy fir the
+recursive call (the first <code>this</code>) and pass another copy for
+future duplication.  
+  <li><code>summate0(summate0)</code> primes the pump
+by giving it an initial extra copy of itself.
+<p>
+
+</ul>In general, we can write the whole thing in <strong>D</strong> as
+<pre>
+let summate =
+  Let summ = (Function this -&gt; Function arg -&gt;
+    If arg = 0 Then 0 Else arg + this(this)(arg-1) + 1)
+  In
+    Function arg -&gt; summ(summ)(arg)</pre>
+and invoke as
+<pre>summate 7 (* summates numbers 0..7 *)</pre>
+so we don't have to let the world see the self-passing business.
+<p>
+<hr>
+<strong>The Y-Combinator.</strong> The Y-combinator is a further abstraction on this: <code>summ</code>
+can be abstracted to be some abstract <code>body</code> passed in
+itself as a higher-order function. 
+<pre>
+almosty = Function body -&gt; 
+      Let fun = (Function this -&gt; Function arg -&gt;
+        body(this)(arg))
+      In
+        Function arg -&gt; (fun fun)(arg)</pre>
+-- the body of <code>summ</code> above contains <code>arg</code> and
+<code>this</code>, so the abstract body <code>body</code> gets those
+things passed to it.
+<code>almosty</code> can be used by defining <code>summate</code> as
+<pre>
+summate = almosty (Function thisthis -&gt; Function arg -&gt;
+    If arg = 0 Then 0 Else arg + this(this)(arg-1) + 1)</pre>
+The Y-combinator actually goes one more step and passes
+<code>this(this)</code> as argument, not just <code>this</code>,
+simplifying what we pass to Y:
+<pre>
+y = Function body -&gt; 
+      Let fun = (Function this -&gt; Function arg -&gt;
+        body(this this)(arg))
+      In
+        Function arg -&gt; (fun fun)(arg)</pre>
+This combinator can then be used to define <code>summate</code> as
+<pre>
+summate = y (Function thisthis -&gt; Function arg -&gt;
+    If arg = 0 Then 0 Else arg + thisthis(arg-1) + 1)</pre>
+-- the parameter thisthis is exactly used for a recursive call.<p>
+
+The above is almost the Y combinator given in the  <a
+href="../caml/code/D-examples.ml">D-examples.ml</a> file; the major difference is
+that version has fun inlined (repeated twice) instead of being defined
+via <code>Let</code>.
+<hr>
+
+
+<h3><A NAME="xtocid1118327">Call-by-name Parameter Passing</A></h3>
+<ul>
+  <li>In call by name parameter passing, the argument to the function is not
+evaluated at function call time; it is only evaluated if it is used.
+  <li>This style of parameter passing is largely of historical interest now,
+Algol uses it but no modern languages do.  
+  <li>It is much harder to write
+efficient compilers if call-by-name parameter passing is used.
+</ul>
+<strong>Definition</strong> Define a call-by-name evaluation relation
+<code>==></code> for D by replacing the Function application rule with the following rule.
+<blockquote>
+<strong>call-by-name Function application rule</strong><br>
+<code>e<sub>1</sub></code> <code>==></code> <code>Function x -&gt; e</code>,  <code>e[e<sub>2</sub>/x]</code> <code>==></code> <code>v</code><br>
+------------------------------------------------------<br>
+<code>e<sub>1</sub> e<sub>2</sub></code> <code>==></code> <code>v</code><p>
+
+And, similarly a new rule for <code>Let Rec</code> is needed.
+</blockquote>
+
+Freezing and Thawing, defined above, is a way to get
+call-by-name behavior in a call-by-value language.
+<br>
+Consider then the computation of  
+<pre>(Function x -&gt; Thaw(x) + Thaw(x))Freeze(3-2)
+</pre>
+-- <code>3-2</code> is not evaluated until we are inside the body of the function
+where it is thawed, and it is then evaluated two separate times.  This
+is precisely the behavior of call-by-name parameter passing, so Freeze
+and Thaw can encode it by this means.  The
+fact that <code>3-2</code> is executed twice shows the main weakness of call by
+name: repeated evaluation of the function argument.  <p>
+<hr>
+
+<em>Lazy</em> or <em>call-by-need</em> evaluation is a version of
+call-by-name that caches evaluated function arguments the first time
+they are evaluated so it doesn't have to re-evaluate them in
+subsequent uses.  Haskell is a pure functional language with lazy evaluation.
+<hr>
+
+<h3><A NAME="xtocid2170339">The (pure) lambda-calculus</A></h3>
+A classic simple language with only functions: take <strong>D</strong>
+and remove the numbers, booleans, and conditional.  <p>
+
+It is called the <em>lambda-calculus</em> because functions are written
+<code>lambda x.e</code> (using the Greek lambda character) instead of
+<code>Function x -&gt; e</code>. <p>
+
+<strong>Fact:</strong> Numbers, booleans, and conditional can be
+encoded in the pure lambda-calculus.
+<p>
+Execution in the pure lambda calculus
+<ul>
+  <li>Even programs with free variables can execute (<em>reduce</em>
+      in lambda-calculus terminology)
+  <li>Execution can happen anywhere, e.g. inside a function body that
+      hasn't been called yet
+  <li><code>(Function x -&gt; e) e'</code> ==>
+      <code>e[e'/<code>x</code>]</code> is the (only) execution rule,
+      called <em>beta</em> reduction
+</ul>
+This form of computation is interesting conceptually but is more
+distant from how actual computer languages execute.
+<hr>
+<a name="opeq"><h2><A NAME="xtocid1118329">Operational Equivalence</A></h2>
+In this course we are taking a mathematical view of programs.  What is
+a primary relation defined over a space of mathematical objects?
+<strong>Equivalence!</strong><p>
+
+<ul>
+  <li>We can imagine an equivalence <code>=~</code> (written on the board as
+<code>=</code> with a <code>~</code> above it) defined for all
+<strong>D</strong> programs. 
+  <li> The initial idea is that two programs
+are equivalent if they always lead to the same results when used.  
+</ul>
+<strong>Examples.</strong>
+<ul>
+  <li>Eta
+conversion is one example of an interesting equivalence:
+<pre>
+<em>(eta-conversion)</em> (Function x -&gt; e)  =~  (Function z -&gt; (Function x -&gt; e) z) for z not free in e.
+</pre>
+This equivalence is similar to the proxy pattern in object-oriented
+programming.
+  <li>
+A closely related law for our <code>Freeze/Thaw</code> syntax is
+<pre>
+Thaw(Freeze(e)) =~ e
+</pre>
+One of these programs may be replaced by the other without ill
+effects (besides perhaps changing execution time),  so they are equivalent.
+<p>
+
+</ul>
+<strong>Equivalence is important!</strong>
+<ul>
+  <li>Equivalence is an important concept because it allows programs to be
+transformed by replacing bits with equal bits and the programmer need
+not even be told since the observed behavior will be the
+same. 
+  <li>Thus, they are transformations that can be performed 
+by a compiler.  
+  <li>Operational equivalence provides a rigorous foundation for
+compiler optimization.
+
+</ul><p>
+<hr>
+<h3><A NAME="xtocid1118330">Defining Operational Equivalence</A></h3>
+We define equivalence in a manner dating all the way back to <a href="http://www-groups.dcs.st-andrews.ac.uk/~history/Mathematicians/Leibniz.html">Leibniz</a>:
+<blockquote>Two programs are <em>equivalent</em> if and only if one
+can be replaced with the other at any place, and no external change in
+behavior will be noticed.</blockquote>
+
+<ul>
+  <li>We wish to study equivalence for
+possibly open programs, because there are good equivalences such as <code>x
+      + 1 - 1 =~ x</code>.
+  <li>We define "at any place" by the notion of a <em>program
+      context</em>, a <strong>D</strong> program with some "holes" *
+punched in it.
+  <li>Then, to test if <code>e1 =~ e2</code>,
+      <ol>
+	<li>First place <code>e1</code> in the <code>*</code> position
+	    and run the program;
+	<li>Then do the same thing for <code>e2</code>.
+	<li>If any observable result is the same, they are equal,
+	    otherwise not.
+      </ol>
+</ul>  <p>
+
+<h4>A more precise definition of equivalence</h4>
+We define the notion of contexts <code>C</code> as follows.
+<ul>
+  <li>Take a <strong>D</strong> program with some "holes" <code>*</code>
+punched in it: replace some subterm(s) of any expression with
+      <code>*</code>.
+  <li>Then, <em>hole filling</em>, <code>C[e]</code>, means
+mean place <code>e</code> in the holes <code>*</code> in <code>C</code>
+  <li>Hole filling is like substitution, <em>BUT</em> there is no
+      bound/free variable issue: direct replacement, no conditions
+</ul>
+
+<strong>Examples of contexts and hole filling</strong>
+<p>
+Contexts:
+<pre>
+  (Function z -&gt; (Function x -&gt; *) z)
+  (Function q -&gt; e)(*)
+</pre>
+Hole filling:
+<pre>
+(Function z -&gt; (Function x -&gt; *) z)[x+2]</pre>
+Means "put <code>x+2</code> in the hole(s) in the <code>(Function z
+.. )</code>term"; the result is
+<pre>(Function z -&gt; (Function x -&gt; x+2) z)</pre>
+<ul>
+  <li>Note <code>e</code> may have free variables in it
+which become bound under substitution ; this is known as
+<em>capture</em>. 
+  <li>Variable <code>x</code> in <code>x+2</code> is <em>captured</em> in the above
+      example.  
+</ul>
+<hr>
+Operational equivalence is defined simply as follows: <p>
+<strong>Definition</strong> <code>e =~ e'</code> if and only if for
+all contexts <code>C</code>, <code>C[e]</code> <code>==></code>
+<code>v</code> for some <code>v</code> if and only if
+<code>C[e']</code> <code>==></code> <code>v'</code> for some
+<code>v'</code>.<p>
+
+<ul>
+  <li>So, two expressions are equivalent if in <em>any</em> possible context C, the
+one terminates if the other does.
+  <li> This equivalence is known
+as <em>operational equivalence</em> because its definition is based on
+the interpreter for the language.
+  <li>
+Note that nothing is said about the values <code>v</code> and <code>v'</code>, they could in
+theory be different. 
+</ul>
+v and v' can be anything because a bigger context could always
+test them some more: the context
+<pre>Function x -&gt;C'[x](C[e])</pre>
+
+would first compute to <code>C'[v]</code>, and then <code>v</code> is
+tested by context <code>C'</code>.  So, <code>v</code> and
+<code>v'</code> above are going to have to be quite similar, and in
+fact it is easy to show that they must be identical if they are not
+functions.  <p>
+
+<ul>
+  <li>The only problem with this definition of equivalence is its
+"incestuous" nature--there is no absolute standard of equivalence
+removed from the language.  
+  <li><em>Domain Theory</em> is a mathematical
+discipline which defines an algebra of programs in terms of existing
+mathematical objects (complete and continuous partial orders).
+  <li>We are not going to
+study domain theory here: it doesn't generalize well to proramming languages with
+side effects (exceptions, state, input/output), and we don't have the
+      time to cover it. 
+</ul><hr>
+
+<h3><A NAME="xtocid1118331">Example Equivalences</A></h3>
+Some general equivalence principles for <strong>D</strong> programs are defined.<p>
+
+Here are some laws.
+<ul>
+  <li> reflexivity <code>e =~ e</code>, symmetry <code>e =~ e'</code>
+       if <code>e' =~ e</code>, transitivity <code>e =~ e''</code> if
+       if <code>e =~ e'</code> and <code>e' =~ e''</code>
+  <li> <code>C[e] =~ C[e']</code> if <code>e =~ e'</code> (congruence)
+  <li> <code>(Function x -&gt; e)(v) =~ e{v/x}</code> (this is
+      <em>beta</em>-equivalence; <code>e{v/x}</code> is capture-avoiding
+      substitution, defined below)
+  <li> <code>(Function x -&gt; e) =~ (Function z -&gt; (Function x -&gt; e) z)</code> (eta)
+  <li> <code>(Function x -&gt; e) =~ (Function y -&gt; e{y/x})</code> (alpha)
+  <li> <code>n + n' =~</code> the sum of numbers <code>n</code> and
+       <code>n'</code>, and similar laws for <code>-, And, Or, 
+       Not, =</code>;
+  <li> <code>If True Then e else e' =~ e</code>, and similar for <code>If False</code>...
+  <li> If <code>e</code> <code>==></code> <code>v</code> then <code>e
+       =~ v</code> (evaluation)
+</ul>
+
+Equivalence transformations on programs can be used to justify results
+of computations instead of directly computing with the evaluator; it
+is often easier.<p>
+
+An important equation relating <code>Y</code>:
+<pre>Y f x =~ f (Freeze(Y f)) x</pre> 
+
+An important component of compiler optimization is applying
+transformations such as the above that preserve equivalence.<p>
+<hr>
+
+<strong>Technical Issue: capture-avoiding substitution </strong>
+<ul>
+  <li> The annoying <em>variable
+capture</em> problem has raised its ugly head in the beta rule above.  
+  <li>We use <em>renaming substitution</em> <code>e{e'/x}</code> to
+      deal with capture.  
+  <li>Renaming
+substitution <code>e{e'/x}</code> is a generalized form of
+substitution that differs from our previously defined substitution
+operation <code>e[e'/x]</code> in that <code>e'</code> does not have
+to be closed.  
+  <li>In such a case, we want to replace <code>x</code> with
+<code>e'</code>, but <strong>avoid</strong> capture from occurring.
+This is implemented by renaming any capturing variable bindings in
+<code>e</code>.  
+</ul>For example,
+
+<pre> (Function z -&gt; (Function x -&gt; y + x) z){x + 2/y} = (Function z -&gt; (Function x1 -&gt; x + 2 + x1) z)
+</pre>
+Observe about this example
+<ul>
+  <li><code>x + 2</code> would be captured if we just stuffed
+      <code>x + 2</code> in for <code>y</code>, a bad thing.
+  <li>Its bad because be congruence we should be able to replace one
+      =~ thing with the other anywhere; but in
+      <pre> Function x -&gt;(Function z -&gt; (Function x -&gt; y + x) z)(x + 2)</pre>
+      if we ignored capture the beta rule would give us 
+ <pre> Function x -&gt;(Function z -&gt; (Function x -&gt; (x + 2) + x) z)</pre> which is clearly <em>not</em> equivalent to the above program.
+  <li>To avoid this problem,
+the capture-avoiding substitution operation renames
+<code>x</code> to a fresh 
+variable not occurring in <code>e</code> or <code>e', x1</code> in
+      this case.
+
+</ul><hr>
+
+<h4>Proving Equivalences Hold</h4>
+<ul>
+  <li>It is surprisingly difficult to actually prove any of these
+equivalences hold!  
+  <li>Even <code>1 + 1 =~ 2</code> is hard to prove.
+  <li>If we had more time we would take a closer look at this topic.
+</ul>
+<p>
+<!-- hhmts start -->
+Last modified: Tue Apr  2 17:41:29 EST 2002
+<!-- hhmts end -->
+</body></html>
+<html>
+<HEAD>
+<title>Advanced Interpreters: Records and State</title>
+</HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+
+
+<a name="tuples"></a>
+<h1><A NAME="xtocid1118332">Advanced Interpreters: Records and State</A></h1>
+<h2><A NAME="xtocid1118334">2-Tuples (Pairs)</A></h2>
+(We are skipping this topic in lecture this year)<p>
+
+Pairing is the most fundamental form of data aggregation in programming.  With
+pairing you build just about anything you want.
+<ul>
+  <li>  Get
+tripling <code>(x,y,z)</code> via <code>(x,(y,z))</code> etc.
+  <li> Records/structs only add labeled names.
+  <li> Objects.  Well, objects can be built up with pairing but it is
+       stretching it (in a similar manner to how encoding tuples as
+       functions stretched things)
+</ul>
+
+
+
+Earlier we showed pairs could be encoded in D, but those pairs will
+not be very efficient, and they can be applied like functions so have
+some wrong behavior.  To add "real" pairs, extend the
+D <code>expr</code> type by adding 
+<pre>
+... | Pr of expr * expr | Left of expr | Right of expr
+</pre>
+
+Extend the <code>eval</code> function by adding clauses
+<pre> 
+eval Pr(expr1,expr2) = Pr(eval(expr1),eval(expr2))
+eval Left(expr) = match eval(expr) with
+                         Pr(expr1,expr2) -> expr1
+                          ...
+eval Right(expr) = ...
+</pre>
+This is an "eager" pair, the components of the pair are evaluated.
+Caml 2-tuples are eager, <code>(2,3+4)</code> evalues to
+<code>(2,7)</code>.  <p> 
+
+<strong>Question:</strong> if we
+wanted any <code>(e,e')</code> to be considered a value immediately,
+how would our evaluator be written? 
+<p>
+
+The space of <em>values</em> is now bigger: The values are now either
+<ul>
+  <li> numbers 0 1 -1 2 -2 ..., 
+  <li> booleans True False, 
+  <li> functions Function x -> e, or
+  <li> pairs (v,v')
+</ul>
+where v and v' are themselves values (a recursive
+definition).<p>
+Recall that 3-tuples can be encoded via two-tuples <code>Pr(e,Pr(e',e''))</code>,
+and similarly for 4-tuples etc.
+<p>
+
+Operational semantics rules for tuples: an exercise.
+
+<h2><A NAME="records">Records</A></h2>
+Records are a variation on tuples where the fields have names.  <p>
+What advantages do records have over tuples?
+<ul>
+  <li>Software engineering aspect: named field "zipcode" is better than "..third
+      thing in the tuple".
+  <li>Object polymorphism aspect: via record polymorphism, we may or may
+      not have some fields at any point in the program; hard to do
+      this with tuples. (we will use records to model objects later,
+      so this is particularly important).
+</ul>
+But, if
+records are always statically (at the time we write our code) known to
+be of fixed size, then we may as well map the labels to numbers and
+make a tuple:
+<blockquote>
+Record <code>{x = 5; y = 7; z = 6}</code> maps to tuple <code>(5,(7,6))</code><br>
+<code>.x</code> maps to <code>Left</code>, <code>.y</code> maps to <code>Function x -> Left(Right(x))</code>, <code>.z</code> maps to <code>Function x -> Right(Right(x))</code>.
+</blockquote>
+Obviously this makes ugly, hard-to-read code, but it works.  For
+C-style structs, this encoding would work.
+<p>
+
+But, in the case where records can grow or shrink, this encoding is
+fundamentally too weak.  C++ structs can be subtypes of one another,
+so some fields that are not declared may in fact be present at
+run-time.<p> 
+
+Recall Caml records are of the form
+<pre>{size = 7; weight = 245.3; name = "Buzz"}</pre>
+They can have any number of fields.  Values are selected by syntax
+<code>record.size</code>.  <p>
+
+We will use the same syntax in our <strong>D</strong> language
+extension, which we will name <strong>DR</strong>.<p>
+
+<h4>Record or subtype polymorphism</h4>
+<ul>
+  <li>Records do add more than just readability: if
+you have records
+<pre>{size = blah; weight = blah}</pre>
+and
+<pre>{weight = blah; name = blah}</pre>
+either record can be passed to a function <code>Function x ->
+x.weight</code>. 
+  <li>
+This is known (in a typed language) as <em>subtype polymorphism</em>:
+<code>x</code> is any record with a <code>weight</code> field.
+  <li>
+Order of record fields does not matter as with tuples.
+  <li>for the case of subtype polymorphism on records, we call that
+      <em>record polymorphism</em>.
+  <li>
+In object-oriented programming, subtype polymorphism on objects is called
+<em>object polymorphism</em> or just <em>polymorphism</em> (the latter is
+unfortunately confusing w.r.t the <em>parametric polymorphism</em> of Caml).
+  <li>Caml disallows subtype polymorphism and so the above will not
+typecheck.
+
+</ul><br>
+<h3>Operational Semantics for Records</h3>
+Exercise.  We are going to concentrate on the interpreter here.
+<h3><A NAME="xtocid135556">The DR Datatype in Caml</A></h3>
+Record labels are symbols.  we could use our identifiers (Ide "size")
+as labels, but it is better to think of record labels as a different
+sort.  For instance, labels are never bound or substituted for.  So,
+make a new type
+<pre>
+type label = Lab of string
+</pre>
+Records may be of arbitrary length, so a Caml list of label, expr
+pairs must be used to define record syntax.  The <strong>DR</strong>
+expr type is 
+<pre>
+type expr = ...
+| Record of (label * expr) list | Select of   expr * label</pre>
+The concrete syntax
+<pre>{size = 7; weight = 245}</pre>
+is then encoded as abstract syntax within Caml as
+<pre>
+Record [(Lab "size", (Int 7)); (Lab "weight", (Int 245))]
+</pre>
+and  e.size as Select(e,Lab"size").<p>
+
+The definition of values is extended from the values of <strong>D</strong>:<br>
+ Records <code>{field1 = v1; ..; fieldn = vn}</code>
+are values provided <code>v1</code> through
+<code>vn</code> are values. 
+<p>
+
+Finally, we extend the D interpreter to a <strong>DR</strong>
+interpreter.
+<pre>
+let rec eval e = match e with
+...
+| Record(body) -> Record(evalRecord(body))
+| Select(exp,lab) -> match eval(exp) with
+                         Record(fieldList) -> lookupRecord(fieldList,lab)
+                          ...
+...
+
+and evalRecord l = match l with
+  [] -> []
+| (Lab l,exp)::xs = (Lab l,eval(exp))::evalRecord(xs)
+
+and lookupRecord (record,Lab s) = match record with
+ [] -> raise FieldNotFound 
+ | (Lab s1,v)::xs -> if s1 = s then v else
+                  lookupRecord(xs,Lab s)
+</pre>
+Is <code>{}</code> or <code>Record []</code>, the empty record, OK? <br>
+ Yes, according to the above
+evaluator; it computes to itself and is also a value by the definition
+of value.  <br>
+Just don't try to select any fields from it!  <br>
+</a>
+
+<h2><A NAME="xtocid1118344">State-Based Languages</A></h2>
+
+Now we exit the world of pure functional programming and start
+considering <em>side effects</em>.  
+<p>
+
+We will study <strong>DS</strong>, a language obtained by adding
+<code>Ref e</code> (reference creation), <code>e := e'</code> (set),
+and <code>!e</code> (get) syntactic operations to <strong>D</strong>.  
+<p>
+
+State is our first example of a side effect in programming:
+the effect of assigning is not local since distant parts of the
+program may have the same cell and thus see the change.<p>
+
+Other side effects:
+<ul>
+  <li> Exceptions - non-local change in flow of control
+  <li> goto or loop break - similar to exceptions
+  <li> input/output
+  <li> distributed message passing.
+</ul>
+Languages without side effects, like <strong>D</strong> and
+<strong>DR</strong> are <em>pure functional</em> languages.  Once we
+add any effect they are not pure functional any more.<p>
+
+An example of the nonlocal nature of side effects.
+<pre>let x  = ref 9 in
+        let f z = x := !x + z in
+           x:= 5; f(5); !x
+     ;;
+<em>    - : int = 10
+</em></pre>
+Since side effects are not local, they can make programs a lot more
+difficult to understand.
+<blockquote><strong>Programming Moral:<br>
+Be spare in your use of side effects</strong></blockquote>
+
+Reference cell side effects: 
+<ul>
+  <li> each cell is a junction box
+  <li> each assignment is a path into the junction
+  <li> each read is a path going out of the junction
+  <li> the junction sits on the side of the program and allows distant
+       parts of the program to communicate with one another.
+</ul>
+<a name="DSopsem">
+<h3><A NAME="xtocid1118345">Operational Semantics for <strong>DS</strong></A></h3>
+Since memory is a significant modification to the language we go back
+to operational semantics before discussing the interpreter.  <br>
+
+<ul>
+  <li>The operational evaluation relation
+<pre> e ==> v </pre>
+wont work in the presence of memory.  
+  <li>Assignment produces side-effects, so we need a place on the side to store these changes, a
+<em>store</em>. 
+  <li> In C, the store is a stack and heap, and memory locations are
+referred to by their address.  
+  <li>Here we have only heap memory, so there needs to be an abstract
+heap sitting around as we compute.
+</ul>
+<strong>Definition.</strong> A <em>store</em> S maps <em>cell names</em> (denoted by
+the letter c) to their values.  <br>
+<ul>
+  <li>Cell names <code>c</code> are an abstract form of memory location.
+  <li>A store is an abstract representation of a run-time heap; the C
+      heap is a low-level realization of a store where cell names are
+      numerical memory locations.
+  <li>Officially, S is a <em>finite map</em> from cell names to values,
+called a <em>dictionary</em> when viewed as a data structure.
+  <li>We write <code>Dom(S)</code> to refer to the domain of the finite map,
+the set of all cells that it maps.
+<br>
+
+</ul><strong>Definition.</strong> The (concrete) <strong>DS</strong> syntax extends
+the <strong>D</strong> syntax by adding <code>Ref e</code>, <code>e :=
+e'</code>, <code>!e</code>, and cell names <code>c</code>. <br>
+<ul>
+  <li>Cell names <code>c</code> are required: "<code>Ref 5</code>"
+      returns a reference to a heap location, which has to be some
+      kind of name for a spot in the heap.
+  <li>Since cell names refer to heap locations and the heap is
+      initially empty, when programs start running they have no cell
+      names in them.
+</ul><p>
+
+We write
+
+<pre>
+S { c |-> v }
+</pre>
+
+to indicate the store <code>S</code> modified/extended so cell
+<code>c</code> maps to value <code>v</code>.<br> 
+
+<code>S(c)</code> is the value of cell <code>c</code> in store <code>S</code>.  <br>
+Evaluation for <strong>DS</strong> is written
+
+<pre>
+&lt e,S0 &gt ==> &lt v,S &gt
+</pre>
+
+where at the start of the computation <code>S0</code> is an <em>initial</em>
+(empty) store and <code>S</code> is the final store when the computation
+terminates.  <p>
+
+In the process of evaluation, cells <code>c</code> will begin to
+appear in the program syntax, as references to memory locations.
+<br>
+Cells are values since they do not need to be evaluated,  
+so the space of <strong>DS</strong> values also includes cells
+<code>c</code>. <p>
+
+<h4><A NAME="xtocid135559">Evaluation Rules for DS</A></h4>
+
+The different evaluation rules are modified with the store in mind.
+<p>
+
+The store is <em>threaded</em> along the flow of control.<p>
+
+There becomes more dependency between the rules, even the ones that
+don't directly manipulate the store.
+
+From the function application rule you should get an idea of the
+change needed to the other
+rules.
+
+<blockquote>
+...<br>
+<strong>Function application rule</strong><br>
+<code>&lt;e<sub>1</sub>, S1 &gt ==> &lt;Function x -> e, S2 &gt,
+&lt;e<sub>2</sub>,S2 &gt ==> &lt;v<sub>2</sub>, S3 &gt,
+&lt;e [v<sub>2</sub>/ x ], S3 &gt ==> &lt;v, S4 &gt</code> <br>
+------------------------------------------------------<br>
+<code>&lt;e<sub>1</sub> e<sub>2</sub>, S1 &gt;  ==> &lt;v, S4 &gt </code><p>
+</blockquote>
+
+Note how the store here is <em>threaded</em> through the different
+evaluations, showing how changes in the store in one place propagate
+to the store in other places, and in a fixed order that reflects the
+intended evaluation order.<p>
+
+Rules for the memory operations are as follows. 
+<p>
+
+<blockquote>
+...<br>
+<strong><code>Ref e</code> rule</strong><br>
+<code>&lt;e, S1 &gt ==> &lt;v, S2 &gt<br></code>
+------------------------------------------------------<br>
+<code>&lt;Ref e, S1 &gt ==> &lt;c, S2 { c |-> v } &gt</code> for <code>c</code> not
+in <code>Dom(S2)</code>, i.e. a new cell name<p>
+<p>
+
+<strong><code>!e</code> rule</strong><br>
+<code>&lt;e, S1 &gt ==> &lt;c, S2 &gt</code><br>
+------------------------------------------------------<br>
+<code>&lt;!e, S1  ==> &lt;v, S2 &gt</code> where <code>S2(c) = v</code> <p>
+<p>
+
+<strong><code>e := e'</code> rule</strong><br>
+<code>&lt;e1, S1 &gt ==> &lt;c, S2 &gt, &lt;e2, S2 &gt ==> &lt;v, S3 &gt</code><br>
+------------------------------------------------------<br>
+<code>&lt;e1:= e2, S1  ==> &lt;v, S3 { c |-> v } &gt</code> <p>
+</blockquote>
+Here are some examples of execution with state to ponder.  Note these
+work identically in Caml.
+<ul>
+  <li> <code>!(!(Ref Ref 5)) + 4</code>
+  <li> <code>(Function y -> If !y = 0 Then y Else 0)(Ref 7)</code>
+  <li> <code>Let x = ref 4 In Let y = ref 5 In (If !x = 0 Then
+       x Else y) := 6</code>
+  <li> <code>Let y = Ref 0 In ((Function x -> y := x)(Ref 5)) := 6; !!y</code>
+</ul>
+We write out in more detail the evaluation of the second example.<p>
+
+We show <code>&lt;(Function y -> If !y = 0 Then y Else 0)(Ref 7),empty &gt
+==> &lt;0, {c |-> 7} &gt</code>.<br>
+This matches the conclusion of the function application rule, provided
+we show three things:
+<ol>
+  <li> <code>&lt;(Function y -> If !y = 0 Then y Else 0),empty &gt
+==> &lt;(Function y -> If !y = 0 Then y Else 0),empty &gt </code>
+  <li> <code>&lt;Ref 7,empty &gt
+==> &lt;c, {c |-> 7} &gt</code>
+  <li> <code>&lt;(If !y = 0 Then y Else 0)[c/y], {c |-> 7} &gt
+==> &lt;0, {c |-> 7} &gt</code>
+</ol>
+The first follows by the value rule (values evaluate to themselves and
+do not change the store; hereafter we will not show uses of the value rule);<br>
+the second follows by the <code>Ref</code>
+rule above; lets work further on the third.<p>
+
+<code>&lt;If !c = 0 Then c Else 0, {c |-> 7} &gt
+==> &lt;0, {c |-> 7} &gt</code>
+because by the <code>If</code> rule,<br>
+
+<code>&lt;!c = 0, {c |-> 7} &gt ==> &lt;False, {c |-> 7} &gt</code>,<br>
+
+which follows in turn by the <code>=</code> rule because<br>
+
+<code>&lt;!c, {c |-> 7} &gt ==> &lt;7, {c |-> 7} &gt</code>.
+<p>
+
+
+<h3><A NAME="xtocid1118346">A Caml Interpreter for <strong>DS</strong>
+</A></h3>
+(We skipped this topic in lecture)<p>
+
+The operational semantics clearly defines the meaning of <strong>DS</strong>
+programs, but we would also like to briefly consider how the
+interpreter may be implemented in Caml.
+Here is the abstract syntax.
+<pre>
+type ident = Ident of string
+
+type expr = 
+ Var of ident | Function of ident * expr | Appl of expr * expr |
+ Letrec of ident * ident * expr |
+ Plus of expr * expr | Minus of expr * expr | Equal of expr * expr | 
+ And of expr * expr| Or of expr * expr | Not of expr |  
+ If of expr * expr * expr | Int of int | Bool of bool 
+ Ref of expr | Set of expr * expr | Get of expr | Cell of int
+</pre>
+<ul>
+  <li>We need to define new <em>cell</em> values, corresponding to the cell
+names <code>c</code> from the operational semantics.  
+  <li> We will use consecutive integer numbers for cells: e.g., <code>Cell(1)</code>,<code>Cell(2)</code>,<code>Cell(3)</code>,<code>Cell(4)</code>,...
+  <li>
+Programs should not have any <code>Cell</code>s in them before they
+start executing, but as memory is allocated, <code>Cell</code> values
+will start appearing.
+
+</ul><p>
+
+We have two choices in writing an interpreter for <strong>DS</strong>.  
+<ul>
+  <li> We could
+choose to mimic the operational semantics, and define evaluation on a
+expr and a store together.  This produces a functional interpreter.
+       <code>eval(e,s)</code> for expr <code>e</code> and state
+       <code>s</code> will return <code>(v,s')</code>, the final state
+       and final value.  
+  <li> We could implement an interpreter that keeps the state in
+       a global, mutable dictionary data structure, much as in an actual
+       implementation.
+</ul>
+Second will be a lot more efficient so we take that route here.<br>
+Desired theorem: the two approaches produce the same result.
+
+<a name="dsinterp"><h4>a Functional Interpreter</h4></a>
+We use a finite mapping from integer keys to values to model the store.  <br>
+We define a structure for the interpreter, with a skeleton like
+<pre>
+(* declare all the expr, etc types globally (too hard to do it "right") *)
+
+(* put the store functionality in a separate module.  *)
+
+module type STORE = 
+  sig
+   (* ... *)
+  end
+
+(* the Store structure implements a (functional) store.  A simple
+implementation could be via a list of pairs such as
+<code>[((Cell 2),(Int 4)); ((Cell 3),Plus((Int 5),(Int 4))); ... ]</code>
+module Store : STORE =
+
+type store = (* ... *)
+
+ struct
+  let empty = (* initial empty store *)
+  let fresh = (* a simple object which returns a fresh Cell name *)
+    let count = ref 0 in
+    function () -> ( count := !count + 1; Cell(!count) )
+  (* note: this is not purely functional!  its difficult to make fresh
+     purely functional *)
+
+(* look up value of cell c in store s *)
+   let lookup (s,c) = (* ... *)
+
+(* add or modify aCellName to aValue in store s, returning new store *)
+  let  modify(s,c,v) =  (* ... *)
+  end
+
+(* evaluator is then a functor taking a store module *)
+
+module DSEvalFunctor =
+  functor (Store : STORE) ->
+  struct
+    
+    (* ... *)
+
+
+    let eval (e,s) = match e with 
+      (Int n) -> ((Int n),s) (* values don't modify store *)
+    | Plus(e,e') -> 
+	let (Int n,s') = eval(e,s) in
+	let (Int n',s'') = eval(e',s') in
+	(Int (n+n'),s'')
+	
+(* other cases such as application are a similar store threading *)
+	
+    | Ref(e) -> let (v,s') = eval(e,s) in
+                let c = Store.fresh() in
+                   (c,Store.modify(s',c,v))
+    | Get(e) -> let (Cell(n),s') = eval(e,s) in
+      (Store.lookup(Cell(n)),s)
+    | Set(e,e') ->  (* exercise *)
+
+  end
+
+module DSEval = DSEvalFunctor(Store)
+
+</pre>
+
+<h4>Imperative Interpreters</h4>
+The interpreter above was interpreting <em>stateful</em> langauge, but in a
+<em>functional</em> way.
+<ul>
+  <li>It was <em>threading</em> the state through the computation
+  <li>This idea is due to Strachey in the 1970's
+  <li>An operational semantics is (always) purely functional since
+      thats the only way you can write it.
+  <li>Imperative-style programming can be hacked into a pure
+      functional language by exactly this means
+  <li>There are regular methods for threading a state through any
+      functional program: a <em>monad</em>.
+  <li>A direct stateful Caml interpreter for DS would be more
+      efficient: no threading needed.
+</ul>
+Sketch for imperative implementation of a DS interpreter:
+<ul>
+  <li>Store is an imperative dictionary (e.g. HashMap of C++ STL (?)
+      and Java)
+  <li>eval requires no extra store parameter as long as it has a
+      reference to this imperative dictionary
+  <li>non-store evaluation (<code>Plus</code>, etc) is totally
+      ignorant of the store 
+  <li>store evaluation (<code>Ref/Set/Get</code>) imperatively
+      extends/updates the store
+  <li>A good evaluator would also <em>garbage collect</em>:
+      periodically remove unneeded store elements.
+</ul>
+
+
+<h3><A NAME="xtocid135560">Side Effecting Operators</A></h3>
+Now that we have a mutable store, code has a property besides the
+value returned: it may have <em>side effects</em>.  Syntax for
+sequencing, "<code>;</code>", <code>while</code> and
+<code>for</code>-loops, thus becomes relevant
+(<strong>Question:</strong> why was it previously irrelevant??).  <p>
+
+These syntactic concepts
+are easily defined as macros, so we do not add them as official syntax:
+<blockquote>
+<code>e1 ; e2</code> = <code>(Function x -> e2)(e1)</code><br>
+<code>While e Do e' </code> = <code>(Let Rec f x = If e Then f(e') Else e)(0)</code><br>
+...
+</blockquote>
+
+<h3><A NAME="xtocid135561">Cyclical Stores</A></h3>
+It is also possible to make a <em>cyclical</em> store structure, where
+a cell's contents itself contains a pointer to itself.
+<pre>
+Let x = Ref 0 In x := x
+</pre>
+This is the simplest store cycle, a cell that points directly to itself.<br>
+<strong>Question:</strong> for the above cell <code>x</code>, what
+does <code>!!!!!!!!!!! x</code> return?<p>
+
+<strong>Question:</strong> Can such a form of a cycle be written in Caml?<p>
+
+A more subtle form of cycle is when a function is placed in a cell,
+and the body of that function refers to the cell.
+<pre>
+Let c = Ref 0 In c := (Function x -> If x = 0 Then 0 Else 1 + !c(x-1)); !c(10)</pre>
+--cell <code>c</code> contains a function which refers to the cell,
+and thus the function.  <br>
+This is another way of implementing recursion, the method used in practice in
+most compilers: <em>tying the knot</em>.<br>
+Also often how objects are made self-aware. C++ however explicitly
+passes the self, which is like the Y combinator.
+</a>
+<h3><A NAME="xtocid1118347">The "Normal" Kind of State</A></h3>
+Languages you are more used to (C, C++, Java, Scheme, etc) have a
+different form for expressing mutation.  
+<ul>
+  <li>There is no need for the
+explicit <code>!x</code> operator to get the value in a cell.
+  <li>It is a bit trickier to write an interpreter, variables mean
+something different if they are on the left or the right of an
+assignment statement (<em>l-value or r-value</em>). 
+      <ul>
+	<li><em>l-values</em> occur on the <em>left</em> of an assignment
+      and are <em>memory locations</em>, and
+	<li><em>r-values</em> occur on the right of assignments and
+	    elsewhere, and are actual values
+      </ul>
+
+</ul>
+  Consider the Java/C/C++ assignment
+statement <code>x = x + 1</code>.  
+<ul>
+  <li>The <code>x</code> on the left of the assignment is an l-value,
+      and the <code>x</code> in <code>x + 1</code> is an r-value
+  <li>In ML this would have been written <code>x
+:= !x + 1</code>.  
+  <li>ML is explicit on whether the cell (<code>x</code> for x a ref
+      type) or its
+value (<code>!x</code>) is being referred to
+<ul>
+  <li> For a Java l-value <code>x = </code> (l = left of the assignment), the
+<em>cell</em> <code>x</code>is needed to perform the store, and 
+  <li> for a Java r-value <code>x + 1</code>, the <em>value in the
+       cell</em> is needed, so <code>!x + 1</code> is written.
+</ul>
+<p>
+
+</ul>
+
+l- and r-values are distinct.
+<ul>
+  <li> some expressions have both l- and r-values
+(<code>x</code>, <code>x[3]</code> (array)), 
+  <li> but other expressions
+only have r-values (<code>5</code>, <code>0 == 1</code>,
+<code>sin(4.3)</code>). 
+  <li>So, in the language grammar, l- and r-values are different:
+      l-values are a subset of the full r-value expressions.
+  <li>Example showing the shortcomings of the restriced grammar in
+      Java/C/C++:
+      <ul>
+	<li>In ML you can code e.g. <code>f(3) := 7</code>, where
+      <code>f</code> is a function returning a cell. 
+	<li> You can't write that in Java, method results are r-values
+	    and can't be assigned to.
+      </ul></ul> 
+
+Here is a very simple revised grammar which restricts l-values to be
+      directly a variable
+<pre>type expr = 
+...
+Ref of expr | Set of var * expr | Get of expr 
+</pre>
+For the variable on the left hand side of an assignment, we need the
+      address and not the contents of the variable. <p> 
+
+<h4>Uninitialized Variables</h4>
+Another issue in the standard notion of state of C etc is (mutable)
+variables are not required to be initialized, so another run-time
+error of uninitialized value is possible.
+
+
+<h3>Automatic Garbage Collection</h3>
+Memory that is allocated also may at some point be freed.
+<ul>
+  <li>C/C++: explicit <code>free()</code>
+  <li>Java/Caml/Smalltalk/Scheme/Lisp: automatic free of unused
+      memory: <em>garbage collection</em>.
+</ul>
+sketch of implementation
+<ul>
+  <li>Something triggers GC (e.g. store too full)
+  <li>Suspend <code>eval</code>-uation
+  <li>Scan through current computation to find the list of all cells
+      directly used, the <em>root set</em>.
+  <li>Initially call all cells in the store except the root set <em>free</em>.
+  <li>Then, recursively traverse the memory graph; any cell reachable from the
+      root set is marked <em>not free</em>. 
+  <li>At the end of the traversal, memory still marked as free can be reused.
+  <li>Many different ways to reuse memory; details skipped.
+</ul>
+<h2><A NAME="xtocid2170354">Environment-based Interpreters</A></h2>
+
+<strong>(we didn't have time to cover this topic in lecture)</strong><p>
+
+We are briefly going to touch on some efficiency issues in our
+interpreters as we have been defining them.<p>
+
+Goal: get rid of explicit substitutions.  A "low level"
+interpreter would never be copying the function argument to each
+position in the function body. To compute
+<pre>
+(Function x -> x x x)(whopping expr)
+</pre>
+<pre>
+(whopping expr)(whopping expr)(whopping expr)
+</pre>
+is computed, tripling the size of the data.
+<p>
+
+<a name="explicitEnv">
+So, we define a more efficient <strong>explicit environment
+interpreter</strong>. 
+This means rather than substitute for x, we don't substitute but keep
+track of what variables "really" are in a <em>run-time
+environment</em>, a mapping from variables to values.  We will write
+environments as { x |-> e1, y |-> e2 } meaning variable x maps to
+value e1 and variable y maps to e2.  For the
+above example,
+to compute
+<pre>
+(Function x -> x x x)(whopping expr)
+</pre>
+<pre>
+(x x x) in environment {x |-> whopping expr} is thus computed.
+</pre>
+
+<ul>
+  <li>It turns out that the simple substituting interpreters don't
+actually copy the data; there will be only one copy of <code>whopping
+expr</code> from above and three pointers to it. 
+  <li>This is because immutable data can <em>always</em> be passed by
+      reference since it never changes
+  <li>But, in a compiler you can't just copy code around, so something
+      else needs to be done, along the lines described here.
+
+</ul>
+There is a possibility for some anomalies with the above scheme.  They
+arise when a function is returned as the result of another function,
+and that function has local variables in it.  Consider the example
+<pre>
+F = Function x -> if x = 0 then Function y -> y else Function y -> x * y
+</pre>
+when F(3) is computed.  the environment binds x to 3 while the body is
+computed, so the result returned is
+<pre>
+Function y -> x * y
+</pre>
+BUT it would be a mistake just to return this as the value because the
+fact that x is in fact 3 would have been lost.<p>
+
+<strong>Solution:</strong>  when a function is returned as a value,
+the <em>closure</em> of the function is in fact returned.  <p>
+
+A <em>closure</em> consists of a function and an environment.  The
+idea is all free variables in the function are bound to values in the
+environment.  For the above case, return the closure
+
+<pre>
+(Function y -> x * y, "x |-> 3")
+</pre>
+
+So, a environment-based evaluator along these lines can be defined
+(we won't consider the details here).
+<p>
+
+<strong>Theorem.</strong>  A substitution-based evaluator and an
+explicit environment evaluator for D are equivalent:
+all D programs either terminate on both evaluators or compute forever on
+both evaluators.
+
+<p>
+
+The closure view of function values is critical to be able to write a
+compiler: compilers can't be doing substitutions of code on the fly!<p>
+</a>
+
+<h2><A NAME="xtocid225355">The DSR Language</A></h2>
+We can now define the language <strong>DSR</strong>.  It is a
+call-by-value language that includes the basic features of <strong>D</strong>, with in
+addition the extensions added for records (<strong>DR</strong>), and state
+(<strong>DS</strong>).<p>
+
+We will study translations for <strong>DSR</strong>.  Missing language
+features that we will study later (and not consider when studying
+translations) include objects and classes, exceptions, and types.
+<p>
+
+Here are the official <strong>DSR</strong> expr types. 
+<a name="DSR-type"><pre>
+type label = Lab of string
+
+type ident = Ident of string
+
+type expr = 
+ Var of ident | Function of ident * expr | Appl of expr * expr |
+ Letrec of ident * ident * expr |
+ Plus of expr * expr | Minus of expr * expr | Equal of expr * expr | 
+ And of expr * expr| Or of expr * expr | Not of expr |  
+ If of expr * expr * expr | Int of int | Bool of bool 
+ Ref of expr | Set of expr * expr | Get of expr | Cell of int |
+ Record of (label * expr) list | Select of  label * expr |
+ Let of ident * expr * expr</pre>
+</a>
+<p>
+<!-- hhmts start -->
+Last modified: Thu Apr 18 12:28:10 EDT 2002
+<!-- hhmts end -->
+</body></html>
+<html>
+<HEAD>
+<title>Programming Languages: Compilation by Translation</title>
+</HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h1><A NAME="xtocid1441469">Compilation by Program Transformation</A></h1>
+Goal: understand some of the concepts behind compilation by writing a
+high-level transformational compiler.
+<ul>
+  <li>Compilers are faster than interpreters by several orders of magnitude.
+  <li>Probably about 90% of the prodution software running is compiled
+  <li>Compilation is a very complex process
+  <li>Compilers these days all perform multiple passes on a program
+      to get source code to target code.
+  <li>Our goal: understand the most basic concepts behind compilation,
+      skipping over issues needed to write a fast, efficient compiler.
+</ul>
+Our compiler: 
+<ul>
+  <li>Compile <strong>DSR</strong> to a very limited subset of C ("<em>pseudo-assembly</em>")
+  <li>Use a series of <em>program transformations</em> to express compilation
+  <li>Program transformations map <strong>DSR</strong> programs to
+      equivalent <strong>DSR</strong>programs.
+  <li> These program
+       transformations remove 
+       high-level features one at a time:
+      <ul>
+	<li>Closure conversion
+	<li>A-Translation
+	<li>Function hoisting
+      </ul>
+  <li> After transformations, arrive at something very close to assembly language, but still
+       in the form of a <strong>DSR</strong> program;
+  <li> Lastly, translate the primitive <strong>DSR</strong> program
+      directly to C.
+</ul>
+Real compilers:
+<ul>
+  <li>Lots of technology for producing efficient code: optimization
+  <li>Not so many passes on the program as out compiler
+  <li>But, more passes at the lower levels for optimization
+  <li>real compilers stop at some third language in the middle:
+      three-address code.
+  <li>Real languages are huge so the engineering effort is significant.
+</ul>
+
+Some points about the approach we will take.
+
+<ul>
+  <li> Main goal here is pedagogy: understand the gaps seperating
+high- and low-level languages by bridging them one by one.  Each
+transformation bridges one gap.
+  <li> Program transformations are interesting in their own
+right, as they give insights into the <strong>DSR</strong> language.
+  <li>Due to lack of time we will give short shrift to optimization,
+even though much compiler code is for this purpose.
+  <li> 
+The SML/NJ ML compiler is in fact implemented as a transformational compiler, so the
+methodology here is not purely pedagogical.  
+  <li> Our focus is more on higher-order languages, not C/C++; issues
+there are somewhat different.
+  <li>We will not try to catch run-time type errors or garbage collect
+      unused memory.
+</ul>
+
+<p>
+
+Desired <strong>Soundness Property</strong> for program translations:
+programs before and after translation have the same execution
+behavior (in our case, termination and same numerical output, but in
+general the same i/o behavior).<p> 
+
+
+<h2><A NAME="xtocid1022878">The Transformations</A></h2>
+The <strong>DSR</strong> transformations are now covered in the order
+they are applied to the source program.
+
+<h2><A NAME="xtocid37370">Closure Conversion</A></h2>
+<ul>
+  <li>Closure conversion is a transformation which gets rid of nonlocal
+variables in functions (<code>x</code> in <code>Function y -> x * y</code>
+is nonlocal: it is not the parameter and is used in the body).
+  <li>In C/C++ there are no nonlocal variables: functions can't be
+      nested so variables are either local or global.
+  <li>So, closure conversion is not relevant to C/C++ compilation.
+      Inner classes have a form of nonlocal variable and
+      closure-conversion-like transformation.
+  <li><em>After</em> closure conversion the functions will look like
+      C/C++ functions: variables are all local
+  <li>Functions still could be defined anywhere in the code, so there
+      is more work to do on them later. 
+</ul>
+
+Consider the example of a curried addition function.
+<pre>
+add = Function x -> Function y -> x + y
+</pre>
+In the body <code>x + y</code>, <code>x</code> is nonlocal and
+<code>y</code> is local.<p>
+
+What should <code>add 3</code> return?
+<ul>
+  <li> <code>
+Function y -> x + y
+</code> would be stupid because the variable <code>x</code> would not
+       have a value.
+  <li> <code>
+Function y -> 3 + y
+</code> amounts to a substitution, something a compiler <em>can't do</em> since
+compiled code should be fixed (<em>code is not mutable</em>).
+</ul><p>
+
+Answer: return a <em>closure</em>, consisting of the function and an
+<em>environment</em> which remembers the values of the nonlocal
+variables for later use:
+<pre>
+(Function y -> x + y, { x |-> 3 })
+</pre>
+Some more structure than this is needed in order for the function to
+get its <code>x</code> value when invoked; we cover that next.<p>
+
+<em>Closure conversion</em> is a global program transformation that
+explicitly performs this 
+operation in the language itself. Core ideas
+<ul>
+  <li>Function values are not just <code>Function .. </code>, they
+      are <em>closures</em>, i.e. tuples of the function and an environment remembering the
+      values of nonlocal variables 
+  <li>When calling one of these new-style function values,
+      <em>explicitly pass it the nonlocals environment</em> which is
+      in the closure so it can
+      use it to find values of the nonlocals!
+</ul>
+
+The translation is introduced by way of example.
+<code>add</code> above translates to 
+<pre>
+add' = { fn = Function xx ->
+   { fn = Function yy -> (yy.envt.x) + (yy.arg); envt = { x = xx.arg } };
+      envt = {} }
+</pre>
+Whew!  This is a pretty complicated operation.  Some comments.
+<ul>
+  <li>Closures we define as tuples in the form of records
+      <pre>{ fn = Function ...; envt = {x = ...; ...}}</pre>,
+       consisting of the 
+       original function (<code>fn</code> field) and the nonlocals
+      environment (<code>envt</code> field).
+  <li>in the nonlocals environment <code> { x = xx.arg }</code>,
+      <code>x</code>  was a nonlocal variable and its value is
+      remembered in this record under a label of the same name, <code>x</code>.
+  <li> Functions that used to take an argument <code>y</code> are
+       modified to take an argument named 
+       <code>yy</code> (double up the original
+       variable name).  Note we don't really have to change the name
+      but it can help save confusion.
+  <li> The new arguments <code>yy</code> etc are always expected to
+       be records of the form
+       <code>{ envt = ..; arg = ..}</code>, passing both the
+      environment and the original argument to 
+       the function.
+  <li> Within the body of the revised function, 
+       <ul>
+	 <li> <code>yy.envt.x</code> is the new way to access what
+	      was a nonlocal variable <code>x</code> in the function
+	      body (where the function had parameter previously named
+	      <code>y</code>); 
+	 <li> <code>yy.arg</code> is the new way to access what was
+	      the (single) argument to the function <code>y</code>.
+       </ul>
+  <li>Note, in <code>{ x = xx.arg }</code>, the left <code>x</code> is a label
+and the right <code>xx</code> a variable. 
+</ul>
+<strong>Translation of function calls</strong><p>
+
+Function call <code>add 3</code> after closure conversion then must <em>pass in the
+environment</em> since the caller needs to know it.
+<pre>
+(add'.fn)({ envt = add'.envt; arg = 3})
+</pre>
+Translation of <code>add 3 4</code> takes the result of the above, which is 
+a function closure <code>{ fn = ...; envt = ... }</code>, and does the
+same trick to apply 4 to it:
+<pre>
+Let add3' = (add'.fn)({ envt = add'.envt; arg = 3}) In
+  (add3'.fn)({ envt =  add3'.envt; arg = 4})
+</pre>
+and the result would be 12, the same as the original result,
+confirming the soundness of the translation in this case. 
+<p>
+In general,
+<ul>
+  <li> At function call time, the remembered environment in the
+      closure is passed to the function in the closure.
+  <li>Thus, for the <code>add' 3</code> closure above,
+      <code>add3'</code>, when
+       it is applied later to e.g. <code>7</code>, the
+       <code>envt</code> will know it is <code>3</code> that is to be
+       added to <code>7</code>.
+</ul>
+
+<strong>One more level of nesting</strong><p>
+Well, its even slightly more complicated if we consider one more level
+of nesting of functions, for example
+<pre>
+triadd = Function x -> Function y -> Function z -> x + y + z</pre>
+--the <code>z</code> function needs to get the <code>x</code> value,
+and since that function is defined in the <code>Function y</code>,
+that function has to be an intermediary which passes <code>x</code>.<p>
+Here is the translation.
+<pre>
+triadd' =
+  { fn = Function xx ->
+    { fn = Function yy -> 
+      { fn = Function zz -> (zz.envt.x) + (zz.envt.x)  + (zz.arg);
+        envt = { x = yy.envt.x; y = yy.arg } };
+      envt = { x = xx.arg } };
+    envt = {} }
+</pre>
+Some observations about this example
+<ul>
+  <li>The inner <code>z</code> function has nonlocals <code>x</code>
+      and <code>y</code> so those need to be in its environment;
+  <li>The <code>y</code> function doesn't directly use nonlocals, but
+      it has nonlocal <code>x</code> because the function inside it,
+      <code>Function z</code>, needs it.  So its envt has
+      <code>x</code> in it.
+  <li><code>Function z</code> can get <code>x</code> into its
+      environment from y's environment, as <code>yy.envt.x</code>.
+      This is <code>y</code> being middleman to get <code>x</code> to
+      <code>z</code>.  Whew!
+</ul>
+
+<h3><A NAME="xtocid37371">The official translation</A></h3>
+With that example in mind, we can write out the official closure
+conversion translation.  We will use the notation <code>clconv(e)</code>
+to express the closure conversion function, defined inductively as 
+follows (this code is informal, it uses concrete DSR syntax which
+in the case of e.g. records looks like Caml syntax).<p>
+
+<ol>
+  <li> <code>clconv(x) = x</code> (* variables *)
+  <li> <code>clconv(n) = n</code> (* numbers *)
+  <li> <code>clconv(b) = b</code> (* booleans *)
+  <li> <code>clconv(Function x -> e) = </code> letting <code>x, x1, ...,
+      xn</code> be precisely the free variables in <code>e</code>, the
+      result is the <strong>DSR</strong> expression
+      <pre>
+      { fn = Function xx -> SUB[clconv(e)], 
+        envt = { x1 = x1; ...; xn = xn } } </pre>
+       where <code>SUB[clconv(e)]</code> is <code>clconv(e)</code> with
+      substitutions <code>(xx.envt.x1)/x1,...,(xx.envt.xn)/xn</code>
+      and <code>(xx.arg)/x</code> performed on it, but
+      <em>not</em> substituting in <code>Function</code>'s inside
+      <code>clconv(e)</code> (stop substituting when you hit a <code>Function</code>). 
+  <li> <code>clconv(e e') = Let f = clconv(e) In (f.fn){ envt = f.envt;
+       arg = clconv(e')}</code> 
+  <li> <code>clconv(e op e') = clconv(e) op clconv(e')</code> for all other
+       operators in the language (the translation is <em>homormorphic</em> in
+       all of the other operators).  This is pretty clear in every
+       case except maybe records which we will give just to be sure...
+  <li> <code>clconv( { l1 = e1; ...; ln = en } ) = { l1 = clconv(e1);...; ln = clconv(en) }</code>
+</ol>
+
+From the above example, <code>clconv(add) = add'</code>.<p>
+
+The desired soundness result is<br>
+
+<strong>Theorem:</strong> <code>e</code> computes to a value if and only if <code>clconv(e)</code>
+computes to a value.  Additionally, if one returns numerical value n,
+the other returns the same numerical value n.
+<p>
+
+This operation results in a language that has no nonlocal variables in
+functions, more like the C/C++ languages.  We are getting closer to
+machine code.
+
+<h2><A NAME="xtocid37372">The A-translation</A></h2>
+<ul>
+  <li>Machine language programs are a linear sequence of simple instructions
+  <li>The A-translation rephrases expression-based programs to show
+      linear order of operations
+  <li>Translation does this by using multiple <code>Let</code>
+      statements to evaluate expressions in the 
+order indicated by the operational semantics.
+</ul>
+The idea should be self-evident from the case of
+arithmetic expressions. 
+Consider for instance
+<pre>
+4 + (2 * (3 + 2))
+</pre>
+Our interpreter defined a tree-notion of evaluation order on such
+expressions. The order in which evaluation happens on this program can be made
+explicitly linear by using <code>Let</code> to factor out the parts that are
+evaluated first:
+
+<pre>
+Let v1 = 3 + 2 In
+Let v2 = 2 * v1 In
+Let v3 = 4 + v2 In
+ v3
+
+</pre>
+<ul>
+  <li>Notice how similar this is to 3-address machine code: its a
+      linear sequence and operations are directly applied to variables
+  <li>The <code>v1</code> etc variables are <em>temporaries</em>; in
+      machine code they generally end up being registers
+  <li>These temporaries are not re-used (re-assigned to) above; its not
+      possible in <strong>DSR</strong> but its also how real 3-address
+      intermediate language works.  In the final machine code
+      generation are temporaries re-used ("register allocation").
+  <li> This translation did not
+change the meaning of the program
+</ul>
+<p>
+We are in fact going to define a more simple translation, that also
+first assigns constants and variables to other variables:
+<pre>
+Let v1 = 4 In
+Let v2 = 2 In
+Let v3 = 3 In
+Let v4 = 2 In
+Let v5 = v3 + v4 In
+Let v6 = v2 * v5 In
+Let v7 = v1 + v6 In
+ v7
+
+</pre>
+Some points
+<ul>
+  <li>This simple translation very closely corresponds to the
+operational semantics--every node in a derivation of <code>e |-->
+v</code> is a <code>Let</code> in the above (Exercise: write out the
+operational semantics derivation and compare).
+  <li>
+This translation has the advantage that every operation will be
+between variables.  In the previous example above, <code>4+v2</code> may not be
+low-level enough for some machine languages since there may be no add
+immediate instruction.
+  <li>
+<code>Let</code> is a primitive in <code>DSR</code> -- this is not
+strictly necessary, but if <code>Let</code> were defined in terms of
+application, the A-translation results would be harder to manipulate.
+  <li>
+One easy optimization would avoid making fresh variables for constants.
+</ul>
+
+Next consider some code with higher-order functions.
+<pre>
+((Function x -> Function y -> y)(4))(2)
+</pre>
+the function that <code>2</code> is being applied to first needs to be
+computed.  We can make this explicit as well:
+<pre>
+Let v1 = (Function x -> Function y -> y)(4) In
+Let v2 = v1(2) In
+ x
+
+</pre>
+The A-translation given below does even more linearization on
+this example: 
+<pre>
+Let v1 =
+  (Function x ->
+     Let v1' = (Function y -> Let v1'' = y in v1'') In v1') In
+Let v2 = 4 In
+Let v3 = v1 v2 In
+Let v4 = 2 In
+Let v5 = v3 v4 In
+ v5
+
+</pre>
+
+<!-- deal with problem of what to do about variables  -->
+
+Every other evaluation construct can be linearized in this fashion.
+Except <code>If</code>:
+<pre>
+If (3 = x + 2) Then 3 Else 2 * x
+</pre>
+can be turned into (approximately)
+<pre>
+Let v1 = x + 2 In
+Let v2 = (3 = v1) In
+If v2 Then 3 Else Let v1 = 2 * x In v1 
+</pre>
+but the <code>If</code> still has a branch in it.  <br>
+However we 
+can implement this simple form of <code>If</code> in machine code as
+<pre>
+v1 := x + 2
+v2 := 3 = v1
+BRANCH v2, L2
+L1: v3 := 3
+GOTO L3
+L2: v4 := 4
+L3:
+</pre>
+So, this form is quite close to machine code.<p>
+
+We will  give the A-translation the core <strong>DSR</strong> syntax.<br>
+
+The intermediate result of the translation is a list of tuples
+<pre>
+[(v1,e1); ...; (vn,en)] : (ide * term) list
+</pre>
+which is intended to represent
+<pre>
+Let v1 = e1 In .. In Let vn = en In vn ...
+</pre>
+but is a form easier to manipulate in Caml since lists of declarations will be
+appended together at translation time. In your compilers, you may or
+may not want to use this intermediate form, it is not much harder to
+write the functions to work directly on the <code>Let</code>
+representation. 
+<p>
+
+<h3><A NAME="xtocid1022882">The Official A-translation</A></h3>
+We define the A-translation as a Caml function,
+<code>atrans(e) : term -> term</code>.  We will always apply A-translation to the
+result of closure conversion, but we really don't need to be aware of
+that now.  We now sketch the translation for the core
+primitives.<p>
+
+We assume auxiliary functions:
+<ul>
+  <li>  <code>newid()</code> which returns a
+fresh <strong>DSR</strong> variable every time called, 
+  <li> the function <code>letize</code> 
+which converts from the list-of-tuples form to the actual <code>Let</code> form,
+and 
+  <li> <code>resultId</code> which for list
+<code>[(v1,e1); ...; (vn,en)]</code> returns result identifier <code>vn</code>.
+</ul>
+<pre>
+let atrans e = letize (atrans0 e)
+
+and atrans0(e) = match e with
+    (Var x)  -> [(newid(),Var x)] |
+    (Int n)  -> [(newid(),Int n)] |
+    (Bool b) -> [(newid(),Bool b)] |
+    Function(x,e) -> [(newid(),Function(x,atrans e)] |
+    Appl(e,e') -> let a = atrans0 e in let a' = atrans0 e' in
+                           a @ a' @ [(newid(),Appl(resultId a,resultId a')] |
+    ...
+   (* all other D binary operators + - = AND etc of form identical to Appl *)
+    ...
+    If(e1,e2,e3) -> let a1 = atrans0 e1 in
+               a1 @ [(newid();If(resultId a1,atrans e2,atrans e3)] |
+    ...
+</pre>
+
+
+At the end of the A-translation, the code is all "linear" in the way
+it runs in the interpreter, not as a tree.  <br>
+Machine code is also linearly ordered; we are getting much closer to
+machine code.
+<p>
+
+<strong>Theorem:</strong> The A translation is sound, i.e. <code>e</code>
+and  <code>atrans(e)</code> both either compute to values or both diverge.
+
+<h3><A NAME="xtocid37373">The A-Translation for the full DSR language</A></h3>
+
+The extra syntax of <strong>DSR</strong> (records, reference cells) does not
+provide any major complication for the A-translation. 
+<p>
+
+<!--
+<pre&&&
+let atrans0(Var x) = [(newid(),Var x)] |
+    ...
+    atrans0(Raise(xn,e)) = let a = atrans0 e in a @ [(newid(),Raise(xn,resultId a)] |
+    atrans0(Handle(e,xn,ide,e')) =
+          let a0 = atrans0 e in val e0' = atrans e' in val x = newid() in
+            a0 @ [(newid(),Handle(resultId a0,xn,ide,e0')]
+</pre&&&                          
+-->
+
+<h2><A NAME="xtocid388281">Function hoisting</A></h2>
+
+So far, the compiler has performed closure
+conversion and A-translation in turn:
+<pre>let intermedresult e = atrans(clconv(e))</pre>  
+
+<ul>
+  <li>Functions now have no nonlocal variables
+  <li>So, we can now <em>hoist</em> all
+functions in the program body to the start of the program
+  <li>This makes a
+C-esque program structure. 
+  <li>The leftover code is then made into the <code>main</code> function.
+  <li>This transformation is done by the <code>hoist</code> function.
+</ul>
+Informally, the operation is quite simple: take e.g. 
+
+<pre>
+4 + (Function x -> x + 1)(4)
+</pre>
+and replace it by
+<pre>
+Let f1 = Function x -> x + 1 In 4 + f1(4)
+</pre>
+--in general, hoist all functions to the front of the code and give
+them a name via <code>Let</code>.<br>
+The transformation is always sound if there are no free variables in
+the function body, a property guaranteed by closure conversion.
+
+<p>
+We will define this process in a simple iterative (but inefficient)
+manner:<p>
+
+<blockquote><code>let hoist e =</code>
+<br>
+<code>if</code> <code>e = e1[(Function ea -> e')/f]</code> for some
+<code>e1</code> with  
+<code>f</code> free in it, and <code>e'</code> contains no functions
+(i.e. <code>Function ea -> e'</code> is an innermost
+function)<br>
+<code>then</code>
+<code>Let f = (Function ea -> e') In hoist(e1)</code><br>
+<code>else</code> <code>e</code>.
+</blockquote>
+<ul>
+  <li>If functions are not hoisted out innermost-first, then there will
+still be some nested functions in the hoisted definitions.  So, the
+order of hoisting is important.
+  <li>You don't want to implement hoisting as sketched above -- its
+      too inefficient.  Instead, do it all in one pass through the
+      program, accumulating a list of the functions and replacing them
+      by variables as you go.
+
+</ul>
+Resulting programs will be of the form
+<pre>
+Let f1 = Function ea -> e1 In
+       ...
+    fn = Function ea -> en In
+  e
+
+</pre>
+Where each <code>e1,...,en,e</code> contain no function constants.
+<p>
+
+<strong>Theorem:</strong> <code>e</code> computes to a value if and
+only if <code>hoist(e)</code> computes to a value.  <p>
+This Theorem is easily proved from iterative application of the following Lemma<p>
+
+<strong>Lemma:</strong>
+<code> (e1[(Function ea -> e')/f])  ~= (Let f = (Function ea -> e') In e1)</code>
+<p>
+
+We lastly transform the program to 
+<pre>
+Let f1 = Function x1ea -> e1 In
+       ...
+    fn = Function -> Function xnea -> en In
+    main = Function dummy -> e In
+    main(anything)
+
+</pre>
+So, the program is officially nothing but a collection of functions.
+This brings the program closer to the form of a C program.
+
+<h2><A NAME="xtocid388282">Final C translation</A></h2>
+To summarize up to now, we have
+<pre>let frontend e =  hoist(atrans(clconv(e)))</pre> 
+<ul>
+  <li>We have done about all the translation that is possible within the
+language.  
+  <li>Programs at this point can be viewed as a collection of
+      functions including a distinguished <code>main</code> function
+  <li>Each function consists of a linear sequence of atomic operations (with
+      exception of <code>If</code> which is a branch).  
+</ul>
+The translation outline:
+<ul>
+  <li> Map each function to a C function 
+  <li>for each function body, map each atomic tuple to a primitive C
+statement.
+</ul>
+<h4>The atomic tuples we have now</h4>
+Before giving the translation, we enumerate all possible right-hand
+sides of <code>Let</code> variable assignments that come out of the
+A-translation (in the following <code>vi, vj, vk, f</code> are variables).
+<strong>Fact:</strong> DSR programs that have passed through the first
+three phases should have function bodies consisting of tuple lists
+where each tuple is of one of the following forms only:
+<ol>
+  <li> <code>x</code> for variable <code>x</code>
+  <li> <code>n</code> for number <code>n</code>
+  <li> <code>b</code> for boolean <code>b</code>
+  <li> <code>vi vj</code> (application)
+  <li> <code>vj + vk</code>
+  <li> <code>vj - vk</code>
+  <li> <code>vj And vk</code>
+  <li> <code>vj Or vk</code>
+  <li> <code>Not vj</code>
+  <li> <code>vj = vk</code>
+  <li> <code>Ref vj</code>
+  <li> <code>vj := vk</code>
+  <li> <code>!vj</code>
+  <li> <code>{ l1 = v1; ... ; ln = vn }</code>
+  <li> <code>vi.l</code>
+  <li> <code>If vi Then tuples1 Else tuples2</code> <br>
+where <code>tuples1</code> and <code>tuples2</code> are the lists of
+variable assigments for the <code>Then</code> and <code>Else</code>
+bodies. 
+</ol>
+
+
+<ul>
+  <li> Functions and LetRecs all should have been hoisted to the top
+so there will be none of those in the tuples.
+  <li>Observe that some of the records/selections are from the original
+      program, and others are the ones we created ourselves by closure
+      conversion.  Who cares, they are all the same now.
+</ul>
+All we need to do now is generate code for each of the above
+tuples.
+<h3><A NAME="xtocid388283">Memory Layout</A></h3>
+Before writing any compiler, you should always design the memory layout
+scheme for objects at run-time.
+<ul>
+  <li>Every compiler has to have a firm convention for memory layout.
+  <li> It is extremely important to
+carefully design the strategy beforehand.
+  <li>Simple compilers use simple schemes, but for efficiency it is better
+to use a more complex scheme.
+<p>
+</ul>
+Lets consider briefly how memory is laid out in C.<br>
+
+Values can be stored in a couple different ways:
+<ul>
+  <li>In registers. 
+      <ul>
+	<li> These must be temporary, as registers are generally local
+      to each function/method.  
+	<li>Also they are only one word in size
+      (or a couple words, for floats) so can't directly hold arrays, etc.
+      </ul>
+  <li>On the run-time stack in the function's <em>activation record</em>.  
+      <ul>
+	<li>The value is then referenced as the memory
+      location at some fixed offset from the stack pointer (which is
+      in a register)
+	<li> Here is some C-ish code to give you the idea of how the
+	    stack pointer <code>sp</code> is used
+      <pre>
+      { register int sp; /* compiler will assign sp to a register */
+        *(sp - 5) = 33;
+        printf(*(sp - 5));
+      }      </pre>
+	<li>
+      Stack-stored entities are also temporary in that they will be
+      junk when the function/method returns.
+      </ul>
+  <li>In fixed memory locations (globals).  
+  <li>In dynamically allocated (malloc'ed) memory locations (on the heap).
+</ul>
+
+An important issue is whether to <em>box</em> or <em>unbox</em> various values.<p>
+
+
+<strong>Definition. </strong>A register/memory location
+<code>vi</code>'s value is stored <em>boxed</em> if <code>vi</code>
+holds a pointer to a block of memory containing the actual value.<br>
+A variable's value is <em>unboxed</em> if it is directly in the
+register/memory location <code>vi</code>.
+<p> For multi-word
+entities, storing them unboxed means variables directly hold a pointer
+to the first word of the sequence of space.
+<p>
+
+Here is C's memory layout convention:
+<ul>
+  <li>Variables may be declared either as globals, register (the
+      register directive is a request to put in a register only), or on
+      the call stack (all variables declared inside a function are kept on the stack).
+  <li>Variables directly holding ints, floats, structs, and arrays are
+      all unboxed <br>
+(examples: <code>int x; float x; int arr[10]; snork
+      x</code> for <code>snork</code> a <code>struct</code>.)
+  <li>There is no such thing as a variable directly holding a
+      function; variables in C may only hold pointers to functions.
+      Variables in C are all mutable, and code resides in a read-only
+      section of memory and so its fundamentally impossible to store
+      functions unboxed in C.
+      It is possible to write "<code>v = f</code>" in C for f a
+      previously declared function and not
+      "<code>v = &f</code>", but that is because the former is really
+      syntactic sugar for the latter.  A pointer to a function is in
+      fact a pointer to the start of the code of the function.
+  <li>Boxed variables in C are declared explicitly, as pointer variables:<br>
+(examples: <code>int *x; float *x; int *arr[10]; snork
+      *x</code> for <code>snork</code> a <code>struct</code>.)
+  <li>All malloc'ed structures must be stored in a pointer variable
+      because they are boxed: variables can't 
+      directly be heap entities.  Variables are static and the heap is dynamic.
+</ul>
+Here is an example of a stupid C program and the SPARC assembly output
+which gives some impressionistic idea of these concepts:
+<pre>int glob;
+main()
+{
+	int x;
+        register int reg;
+	int* mall;
+	int arr[10];
+
+	x = glob + 1;
+	reg = x;
+	mall = (int *) malloc(1);
+	x = *mall;
+	arr[2] = 4;
+/*	arr = arr2; -- illegal in C -- arrays not boxed so can't do this */
+}
+</pre>
+Assembly (<code>%o1</code> is a register, <code>[%o0]</code> means
+dereference, <code>[%fp-24]</code> means subtract 24 from frame
+pointer register <code>%fp</code>and dereference)
+<pre>main:
+	sethi	%hi(glob), %o1
+	or	%o1, %lo(glob), %o0 /* load global address glob into %o0 */
+	ld	[%o0], %o1  /* dereference */
+	add	%o1, 1, %o0 /* increment */
+	st	%o0, [%fp-20] /* store in [%fp-20], the memory 20 back from fp -- this is x */
+                              /* note x directly contains a number, not a ptr */
+	ld	[%fp-20], %l0 /* %l0 IS reg (its in a register directly) */
+	mov	1, %o0
+	call	malloc, 0 /* call malloc.  resulting address to %o0 */
+	 nop
+	st	%o0, [%fp-24] /* put newspace location in mall ([%fp-24]) */
+	ld	[%fp-24], %o0 /* load mall into %o0 */
+	ld	[%o0], %o1 /* this is a malloced structure -- UNBOX! */
+	st	%o1, [%fp-20] /* store into x */
+	mov	4, %o0
+	st	%o0, [%fp-56] /* array is directly a sequence of memory on stack - no indirection needed */
+.LL2:
+	ret
+	restore
+</pre>
+<strong>Memory layout for our compilers</strong><p>
+<ul>
+  <li>DSR is higher-level than C, there is no direct declaration of
+      whether values will be boxed or unboxed
+  <li>We will use a simple, uniform scheme in our compilers: 
+<ul>
+  <li>Box refs and records and function values
+  <li> Keep bools and ints unboxed
+</ul></ul>
+Aside: Java memory layout
+<ul>
+  <li>All object references are boxed pointers to heap locations
+  <li>primitive int and bool and float types are unboxed
+</ul>
+<p>
+Observations:
+<ul>
+  <li><code>ref</code>s must be boxed to be heap-allocated since they can be referred to after a
+      function returns:
+      <pre>Let f = (Function x -> Ref 5) In !f(_) + 1</pre>
+      --if 5 were stored on the stack, after the return it could be
+      wiped out.
+  <li>All of the <code>Let</code>-defined entities in our tuples (the
+      <code>vi</code>) can
+      be either in registers or on the call stack:
+      <ul>
+	<li>none of those variables are directly used outside the function due
+	    to lexical scoping;
+	<li>They don't directly contain values that should stay alive
+	    after the fucntion returns
+	<li>For efficiency, declare all of them as <code>register
+	    Word</code> variables:
+	    <pre>register Word v1, v2, v3, v4, ... ;</pre>
+      </ul>
+  <li>Boxed values will almost always be larger than one word (our one
+exception is we box references and they, as pointers, are only one
+word).  
+  <li>But, under this simple scheme means every variable is a 1-word
+      assignment.  
+  <li> This scheme is not very efficient, and real compilers optimize significantly.
+</ul>
+All that remains is to come up with a scheme to compile each
+of the above <em>atomic tuples</em> and we are done.  Records are the
+most difficult so we will consider them before writing out the full
+translation.  
+
+<h4><A NAME="xtocid388284">Compiling untyped records</A></h4>
+
+<ul>
+  <li>Recall from when we covered records that the fields present in a
+      record cannot be known in advance if there is no type system
+  <li>Consider for example
+      <pre>
+      (Function x -> x.l)(If y = 0 Then {l = 3} Else {a = 4; l = 3})
+      </pre>
+      --field <code>l</code> will be in two different positions in these
+      records so the selection will not know where to look.
+  <li>Thus we will need to use a hashtable for record lookup
+  <li>In a typed language such as ML this problem is avoided: the
+      above code is not well-typed in ML because the if-then can't be typed.
+  <li>Note that the problems with records are closely related to problems
+with objects: <strong>Objects = records + refs</strong>.
+
+</ul>
+
+<strong>Aside:</strong> This brings out some important properties of typing and compilation
+<ul>
+  <li> Types are important for compilers as well as
+programmers!
+  <li> Our compilers are going to core dump on e.g.  <code>4
+      (5)</code>; 
+  <li>in Lisp/Smalltalk/Scheme these errors would be
+      caught at run-time but would slow down execution; 
+  <li>in a typed
+      language, the compiler would throw out the program 
+  <li>Thus for typed languages they will both be faster and safer.
+</ul>
+
+
+<strong>Our Records Compilation</strong><p>
+
+<ul>
+  <li>We must give records
+a heavy implementation, as <em>hash tables</em> (i.e., a set of
+      key-value pairs, where the keys are label names). 
+  <li>In order to make the implementation simple, records are boxed so
+      they take one word of memory (as mentioned above when we covered boxing)
+  <li>A record selection operation <code>vk.l</code> is implemented by hashing on key
+      "l" in the hashtable <code>vk</code> points to (at <em>run-time</em>). 
+  <li>This is also pretty much how Smalltalk message send is implemented,
+      since records are similar to objects and Smalltalk is untyped.
+</ul>
+The above is less than optimal because
+<ul>
+  <li> Space will be needed for the hashtable;
+  <li> Record field accessing will be <em>much</em> slower than e.g. struct
+      access in C.
+  <li>Since closures are records, this will also
+significantly slow down function call.  A simple optimization would be to
+treat closure records specially since the field positions will always
+be fixed, and use a struct implemetation (create a different
+<code>struct</code> type for each function).
+</ul>
+<p>
+
+For instance,
+<pre>
+(Function x -> x.l)(If y = 0 Then {l = 3} Else {a = 4; l = 3})
+</pre>
+the code <code>x.l</code> will invoke a call of approximate form
+<code>hashlookup(x,"l")</code>.  <code>{a = 4; l = 3}</code> will create a
+new hash table and add mappings of <code>"a"</code> to 4 and <code>"l"</code> to 3.
+
+<h3><A NAME="xtocid388285">The translation</A></h3>
+We are now ready to write the final translation to C, via functions
+<ul>
+  <li><code>toCTuple</code> mapping an atomic tuple to a C statement string, 
+  <li><code>toCTuples</code> mapping a list of tuples to C statements,
+  <li><code>toCFunction</code> mapping a primitive DSR function to a
+      string defining a C function,
+  <li><code>toC</code> mapping a list of prmitive DSR functions to a
+      string of C functions.
+</ul>  <p>
+The translation as informally written below takes a few liberties for simplicity.
+<ul>
+  <li> Strings <code>"..."</code> below are sloppily written, for
+      instance <code>"vi = x"</code>
+      is sloppy shorthand for <code>tostring(vi) ^
+      " = " ^ tostring(x)</code>
+  <li> The tuples <code>Let x1 = e1 In Let ... In Let xn = en In xn
+      </code> of function and then/else bodies are assumed to have
+       been converted to lists of tuples
+       <code>[(x1,e1),...,(xn,en)]</code>, and 
+       similarly for the list of top-level function definitions. In
+       your compilers, it probably will be easier just to keep them in
+       <code>Let</code> form, but the choice is yours.
+</ul>
+<pre>
+    toCTuple(vi = x) =           "vi = x;" (* x is a DSR variable *)
+    toCTuple(vi = n) =           "vi = n;"
+    toCTuple(vi = b) =           "vi = b;"
+    toCTuple(vi = vj + vk) =     "vi = vj + vk;"
+    toCTuple(vi = vj - vk) =     "vi = vj - vk;"
+    toCTuple(vi = vj And vk ) =  "vi = vj && vk;"
+    toCTuple(vi = vj Or vk ) =   "vi = vj || vk;"
+    toCTuple(vi = Not vj ) =     "vi = !vj;"
+    toCTuple(vi = vj = vk) =     "vi = (vj == vk);"
+    toCTuple(vi = (vj vk) =      "vi = *vj(vk);"
+    toCTuple(vi = Ref vj) =      "vi = malloc(WORDSIZE); *vi = vj;"
+    toCTuple(vi = vj := vk) =    "vi = *vj = vk;"
+    toCTuple(vi = !vj) =         "vi = *vj;"
+    toCTuple(vi = { l1 = v1; ... ; ln = vn }) =
+             /* 1. malloc a new hashtable at vi
+                2. add mappings l1 -> v1 , ... , ln -> vn  */
+
+    toCTuple(vi = vj.l) =        "vi = hashlookup(vj,"l");"
+    toCTuple(vi = If vj Then tuples1 Else tuples2) =
+
+              "if (vj) { toCTuples(tuples1) } else { toCTuples(tuples2) };"
+
+    toCtuples([]) = ""
+    toCtuples(tuple::tuples) = toCtuple(tuple) ^ toCtuples(tuples)
+
+    toCFunction(f = Function xx -> tuples) =
+                  "Word f(Word xx) {" ^ ... declare temporaries ...
+                     toCtuples(tuples) ^
+                     "return(resultId tuples); };"
+
+    toCFunctions([]) = ""
+    toCFunctions(Functiontuple::Functiontuples) = toCFunction(Functiontuple) ^ toCFunctions(Functiontuples)
+
+    toC then invokes toCFunctions on its list of functions.
+</pre>
+<strong>Question:</strong> why is a fresh memory location malloc'ed
+for a <code>Ref</code>??  This is a subtle issue, but the code
+<code>vi = &vj</code> would definately not work for the
+<code>Ref</code> case.<p>
+
+This translation sketch above leaves out many details.  Here is some
+elaboration.
+<p>
+For <strong>typing</strong>
+<ul>
+  <li>We designed out memory layout so that every entity takes up one
+      word.  So, every variable is of some type that is one word in size.
+   <li> Type all variables as 
+       <code>Word</code>'s, where <code>Word</code> is a 1-word type
+       (defined as e.g. <code>typedef Word char *</code>). 
+  <li> Many type casts need to be inserted; we are basically turning off
+       the type-checking of C, but there is no "switch" that can be
+       flicked. 
+  <li>So for instance <code>vi = vj + vk</code> will really
+      be <code>vi = (Word (int vj) + (int vk))</code> -- cast the
+       words to ints, do the addition, and cast back to a word.
+ <li> To cast to a function pointer is a tongue-twister: in C you
+       can use <code>(*((Word (*)()) f))(arg)</code>.        
+</ul>
+Some <strong>global issues</strong> you will need to deal with
+<ul>
+  <li>You will need to print out the result returned by the
+      <code>main</code> function (so, you probably want the DSR main
+      function to be called something like <code>DSRmain</code> and
+      then write your own <code>main()</code> by hand which will call
+      <code>DSRmain</code>);
+ <li> The C functions need to declare all the temporary variables
+       they use.  One solution is to declare in the function header a
+       C array 
+       <pre>Word v[22]</pre>  where 22 is the number of temporaries
+       needed in 
+       this 
+       particular function, and use names <code>v[0], v[1],</code> etc
+      for the temporaries.  Note, this works well only if
+       the <code>newid()</code> function is instructed to start
+       numbering temporaries at zero again upon compiling each new
+       function. 
+ <li>Every compiled program is going to have to come with a standard
+     block of C code in the header, including the record hash
+     implementation, <code>main()</code> as alluded to above, etc.
+     
+</ul>
+Other subtle points.
+<ul>
+  <li>Record creation is only sketched; but there are many C hash set
+      libraries you can reuse if you like.
+  <li>  The final result (<code>resultId</code>) of the
+       <code>Then</code> and <code>Else</code> 
+        tuples needs to be in the <em>same</em> variable
+      <code>vi</code>, which is also the variable where the result of
+      the tuple is put,  for the
+       <code>If</code> code to be correct; your A-translation should
+       put <code>If</code> tuples in this form to make this phase
+      correct so go back and patch it.
+</ul>
+
+<h3><A NAME="xtocid652586">Compilation to Assembly code</A></h3> This
+C code is very close to assembly code.  It would be conceptually easy
+to translate into assembly, but we skip the topic due to the large
+number of cases that arise in the process (saving registers,
+allocating space on the stack for temporaries.
+
+<h2><A NAME="xtocid652587">Summary</A></h2>
+
+<pre>
+let frontend e =  hoist(atrans(clconv(e)));;
+let translator e = toC(frontend(e));;
+</pre>
+
+We can assert the correctness of our translator.
+<strong>Assert:</strong> <code>DSR</code> program <code>e</code>
+terminates in the <strong>DSR</strong> operational semantics (or
+evaluator) just when the C program <code>translator(e)</code>
+terminates, provided the C program does not run out of memory. Core
+dump or other run-time errors are equated with nontermination.
+Furthermore, if DSR's <code>eval(e)</code> returns a number
+<code>n</code>, the compiled <code>translator(e)</code> will also
+produce numerical output <code>n</code>. <p>
+
+<h2><A NAME="xtocid388286">Optimization</A></h2>
+
+Optimization can be done at all phases of the translation process.
+The above translation is embarrasingly inefficient.
+In the phases before C code is produced, optimizations consist of
+replacing chunks of the program with operationally equivalent chunks.
+<p>
+
+Some simple optimizations include
+<ul>
+  <li> Implement the special closure records <code>{fn = .., envt = .. }</code>
+       as a pointer to a C <code>struct</code> with <code>fn</code>
+       and <code>envt</code> fields, instead of using the very slow
+       hash method.   Records which do not not have field names
+       overlapping with other records can also be implemented in this
+       manner (there can be two different records with the same
+       fields, but not two different records with some fields the same
+       and some different).
+  <li> Modify the A-translation to avoid making tuples for variables
+       and constants.
+  <li> Fold together constant expressions such as <code>3 + 4</code>.
+</ul>
+
+More fancy optimizations require a global <em>flow analysis</em> be
+performed.  Simply put, a flow analysis finds all possible
+<em>uses</em> of a particular definition, and all possible
+<em>definitions</em> corresponding to a particular use.  <br>
+A definition
+is a record, a <code>Function</code>, or a number or boolean, and a use is a
+record field selection, function application, or numerical or boolean
+operator.<p>
+
+<!-- give example of use of flow information here -->
+
+<h2><A NAME="xtocid652589">Garbage Collection</A></h2>
+Our compiled code malloc's but never frees.  We will eventually run
+out of memory.  A garbage collector is needed.<p>
+
+<strong>Definition:</strong> In a run-time image, memory location n is
+<em>garbage</em> if it never will be read or written to again.<p>
+
+There are many notions of garbage detection.  The most common is to
+be somewhat more conservative and take garbage to be memory locations
+which are not pointed to by any known ("root") object.
+
+<p>
+<!-- hhmts start -->
+Last modified: Mon May  6 17:31:10 EDT 2002
+<!-- hhmts end -->
+</body></html>
+
+
+<html>
+<HEAD>
+<title> Programming Languages: Types
+and Modules</title>
+</HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h1><A NAME="xtocid225356">Types</A></h1>
+We now study types.
+
+<ul>
+  <li>A <em>type</em> is a property a program is decorated with (implicitly
+or explicitly) before run-time.
+  <li>Type declarations give <em>invariants</em> that hold for
+      <em>all</em> executions 
+      of a program:
+      <ul>
+	<li> a variable always holds a <code>String</code>
+      object, 
+	<li>a function always returns a <code>tree</code> type, etc.
+      </ul>
+</ul>
+<hr>
+Advantages of typed languages:
+<ul>
+  <li> Many uncaught programming errors arise without types.  In
+       particular, few run-time type errors arise in ML but many
+       could arise in untyped languages.  So, types aid in debugging.
+  <li> Types (and Module signatures) specify invariant properties of
+      the program, and this serve as precise
+       and descriptive comments on the functionality of the code.  So,
+       types are a huge aid in large software development.
+  <li> Types help a compiler produce much faster code:
+       more information is known at compile-time.  For example,
+       The records implementation we were
+       forced to use in our compilers (via hashing) is not needed in
+      C++ due to its static type system.<br>
+
+       Smalltalk is very slow, and the lack of a type system counts
+       for much of the slowness.  
+  <li> In an untyped language its easier to do very ugly hacking.  For
+       instance, a list <code>[1,true,2,false,3,true]</code> can be
+       programmed in 
+       an untyped language, but this is dangerous and it would be much
+       preferred to represent this as <code>[(1,true),(2,false),(3,true)] :
+       (int * bool) list</code>
+</ul>
+The main advantage of an untyped language is greater
+<em>expressiveness</em>:
+<ul>
+  <li> Our DOB encoding in DSR would only partly work in Caml since Caml
+doesn't have record polymorphism.
+  <li>A simply typed version of <strong>D</strong> is in fact a
+very weak language because recursion cannot be defined: the
+<code>Y</code>-combinator cannot be typed!
+</ul>
+<hr>
+Different dimensions of types you know:
+<ul>
+  <li>Atomic types: <code>int</code>, <code>float</code>, ..
+  <li>Type constructors, which produce types from types: <code>'a -> 'b</code>, <code>'a * 'b</code>
+  <li>Caml-style type constructor definitions via <code>type</code>
+  <li>C-style type definitions via <code>struct</code> and <code>typedef</code>
+  <li>Object-oriented types: <code>Class ...</code>, <code>Object ...</code>
+  <li>Module types (signatures)
+  <li>Java-style interfaces
+  <li>Exception types (the <code>raises SnorkFail</code> on Java methods)
+  <li>Parametric polymorphism: <code>'a -> 'a</code>
+  <li>Record/Object polymorphism: pass a <code>ColorPoint</code> to a
+      function which expects a <code>Point</code>.
+</ul>
+<hr>
+New dimensions of program invariants (types) that are currently active
+research topics: 
+<ul>
+  <li>Effect types: <code>int -x,y-> int</code> indicating variables x
+      and y assigned to in this function (the <code>raises
+      SnorkFail</code> is a form of effect type)
+  <li>Concrete class analysis: for variable <code>x:Point</code>, a
+      concrete class analysis produces a set such as
+      <pre>{Point, ColorPoint, SnorkPoint}</pre>
+This means at
+      run-time <code>x</code> could 
+      either be a <code>Point</code>, a <code>ColorPoint</code>, or a
+      <code>SnorkPoint</code> (<em>and</em>, no other).  Useful in optimization.
+  <li>Typed Assembly Language: put types on assembly-level code and
+      have a type system that guarantees no unsafe pointer operations.
+  <li>Logical assertions in types: <code>int -> { x:int | odd(x)
+      }</code> for a function returning odd numbers.  
+</ul>
+<hr>
+<strong>Statically typed vs Dynamically typed vs untyped</strong> 
+<ul>
+  <li>The standard notion of
+type found in Caml/Java/C/ is a <em>static</em> type system: types are
+      checked by the compiler and type-unsafe programs fail compilation.
+  <li> <em>Dynamic</em> type systems refer to checking type
+information at run-time; 
+      <ul>
+	<li>Lisp, Scheme, and Smalltalk are
+in fact dynamically typed.
+	<li>Any time you use a function it makes sure its a function
+	    first; an integer, makes sure its an integer first, etc.
+	<li>These languages run slowly due to the overhead of the checks
+      </ul> 
+  <li>Our DSR compiler-produced C programs are de facto
+      <em>untyped</em>: the C typechecker has been turned off via
+      casts and there are no run-time checks for type mismatches.
+      Machine language is also untyped.
+  <li> There are also some dynamic typings hiding in
+statically typed languages. 
+      <ul>
+	<li>Java downcasts are verified at run-time and can raise exceptions
+	<li>Array accesses out-of-bounds are also checked at run-time
+	    in Java/Caml (so, they are dynamically typed in Java/Caml, but
+	    <em>untyped</em> in C since no check is performed at
+	    all).  So, the type of an array is statically checked, but
+	    the <em>size</em> is dynamically checked.
+      </ul><p>
+</ul>
+
+<hr>
+<p>
+We will
+use the "<strong>T</strong>" prefix to indicate a typed version of an
+untyped language 
+previously studied.  Thus, we have <strong>TD</strong>,
+<strong>TDS</strong>, <strong>TDR</strong>,
+<strong>TDSR</strong>, <strong>TDOB</strong>, <strong>TDX</strong>,
+<strong>TDSRX</strong>, ... <br>
+There are too many languages to look at,
+so we consider only <strong>TD</strong> for a warm-up, and then do
+full-blown <strong>TDSRX</strong>.
+<p>
+<hr>
+
+<h2>Design Issues</h2>
+
+Before we begin the investigation of typing issues for particular
+languages, there are some general design issues to address.<p>
+
+<strong>How much explicit type information?</strong>  How much type
+information is the program text to be decorated 
+with, and how much is inferred by the compiler?  A spectrum of
+possibilities exists. 
+<ul>
+  <li> No decoration, stick with our untyped language syntax.  Then,
+       the types must be <em>inferred</em>.
+  <li> Limited decoration, partial inference.  There is a wide range
+       of possibilities.  Pascal and C for instance require function
+       argument and return types to be specified, and declared
+       variables to be given types.  However, within the body of a
+       function, individual expressions do not need to be typed as
+       those types may be inferred.  Some languages only require
+       function <em>argument</em> types be declared, and the return
+       values of functions is then inferred. 
+  <li> ...
+  <li> Every subexpression and identifier is decorated with its type.
+      <br> --Too much!
+</ul>
+The Caml type system is quite flexible in that the whole spectrum is
+possible:
+<pre>
+# function x -> x;;
+<em>- : 'a -> 'a = &lt;fun>
+</em>
+# ((function (x : int) -> (x : int)) : int -> int);;
+<em>- : int -> int = &lt;fun>
+</em></pre>
+We will concentrate on the C/Pascal view.<p>
+
+<hr>
+<strong>Type checking and Type inference algorithms</strong><p>
+
+For a typed language, the compiler should typecheck the program before
+generating code.
+<ul>
+  <li>A <em>type inference algorithm</em> both infers types and
+checks the program body has no type errors (Caml).
+  <li>A <em>type checker</em>
+generally just checks the body is
+well-typed given the types listed on declarations (C/Java).<br>
+(technically C and Java are also inferring some types, such as the
+      type of <code>3+4</code>)
+  <li>In any case it must be possible to
+run the inference/checking algorithm quickly.  Caml in theory can take
+      exponential time to infer types.  But, in practice it is linear.
+</ul> 
+
+<p>
+<hr>
+
+
+<h2><A NAME="xtocid225357">A Typed D Language: TD</A></h2>
+
+In analogue with our development of operational
+semantics/interpreters, we will define
+<ul>
+  <li><em>type systems</em> a 
+language-independent notation for assigning types to programs, which
+      is analogous to operational semantics;
+  <li><em>type-checkers</em>, Caml implementations of the type systems
+      analogous to interpreters
+</ul>
+<h3><A NAME="xtocid246258">Type Systems</A></h3>
+
+<ul>
+  <li>Type systems are a rule-based formal system very similar to an
+      operational semantics.  
+  <li>Type systems rigorously and
+formally specify what programs have what types. 
+  <li>Type checkers are <em>implementations</em> of type system
+      <em>specifications</em>. 
+  <li> Type systems have a
+strong (and deep) parallel with formal logic.
+
+</ul><p>
+<h4>Type Assertions</h4>
+The type assertion
+<pre>Gamma |- e : tau
+</pre>
+reads "in type environment <code>Gamma</code>, <code>e</code> is of
+type <code>tau</code>". A type environment gives the types of free
+variables in <code>e</code>, and is a list 
+<pre>Gamma = x_1 : tau_1, ..., x_n : tau_n
+</pre>
+if <code>x</code> is listed twice in <code>Gamma</code>, the rightmost
+(innermost) binding is the 
+proper type.   We write <code>Gamma(x) = tau</code> to indicate that
+<code>tau</code> is the innermost type for <code>x</code> in Gamma.  
+
+<p>
+<h4>The TD Types</h4>
+The <strong>TD</strong> types <code>tau</code> in concrete syntax are
+<pre>tau ::= Int | Bool | tau -> tau</pre>
+In abstract syntax within Caml, they are
+<pre>
+type dtype = Int | Bool | Arrow of dtype * dtype
+</pre>
+The expressions of <strong>TD</strong> are almost identical
+<strong>D</strong>, but functions differ slightly in that they come
+with type decoration:
+<pre>
+Function x : tau -> e : tau'
+</pre>
+which in the abstract syntax is
+<pre>Function of ide * dtype * expr * dtype</pre>
+
+<h4>The TD Type Rules</h4>
+Here are the rules for generating valid typing assertions.
+<pre>
+
+------------------------ (Hyp)
+Gamma  |- x : tau                 for Gamma(x) = tau 
+
+
+----------------------------- (Int)
+Gamma  |- n : Int                 for n an integer
+
+
+----------------------------- (Bool)
+Gamma  |- b : Bool                for b either True or False
+
+
+Gamma  |- e : Int , Gamma  |- e' : Int                 
+---------------------------------------- (+)
+Gamma  |- e + e' : Int                
+
+
+Gamma  |- e : Int , Gamma  |- e' : Int                 
+---------------------------------------- (-)
+Gamma  |- e - e' : Int                
+
+
+Gamma  |- e : Int,     Gamma  |- e' : Int            
+-------------------------------------------- (=)
+Gamma  |- e = e' : Bool                
+
+(note, equality only typechecks for integers, not booleans.)
+
+(And, Or, NOT rules should be obvious)
+
+Gamma  |- e : Bool,  Gamma  |- e' : tau,  Gamma  |- e'' : tau
+------------------------------------------------------------------ (If)
+Gamma  |- If e Then e' Else e'' : tau
+
+
+Gamma, x : tau |- e : tau'
+------------------------------------------------    (Function)
+Gamma  |- (Function x : tau  -> e : tau') : tau -> tau'
+
+
+Gamma  |- e : tau -> tau', Gamma  |- e' : tau 
+-------------------------------------------------- (Appl)
+Gamma  |- e e' : tau'
+
+<!--
+Gamma |- e : tau,  Gamma |- e' : tau'
+-----------------------------------------          (Pair)
+Gamma  |- &lt e,e' &gt : tau * tau'
+
+
+Gamma  |- e : tau * tau'
+--------------------------------------------------  (Fst, Snd)
+Gamma |- fst(e) : tau, Gamma |- snd(e') : tau'
+-->
+</pre>
+Just as in operational semantics, a <em>derivation</em> of
+<code>Gamma  |- e : tau</code> is a tree of rule applications where the leaves are
+axioms (<code>Hyp, Int or Bool</code> rules) and the root is <code>Gamma  |- e : tau</code>.<p>
+<hr>
+<h4>Example Derivations</h4>
+
+<pre>
+|- (Function x : Int -> (Function y : Bool -> (If y Then x Else x+1) :
+Int) : Bool -> Int) : Int -> Bool -> Int
+  Because by the function rule, it suffices to prove
+  x:Int |- Function y: Bool -> (If y Then x Else x+1): Int) : Bool->Int
+    Because by the function rule again, it suffices to prove
+    x:Int, y: Bool |- If y Then x Else x+1 : Int  
+      Because by the If rule, it suffices to prove
+      x:Int, y: Bool |- y : Bool
+      x:Int, y: Bool |- x : Int
+      x:Int, y: Bool |- x+1 : Int
+      all of which either follow by the hypothesis rule or + and hypothesis.
+</pre>
+Given the above and letting
+<pre>
+f = (Function x : Int -> (Function y: Bool -> (If y Then x Else x+1): Int) : Bool->Int)</pre>
+we then have
+<pre>
+|- f 5 True : Int
+  Because by the application rule,
+  |- f : Int -> Bool -> Int
+    (which we derived above)
+  |- 5 : Int by the Int rule
+  And thus
+  |- f 5 :  Bool -> Int by the application rule.
+  Given this and
+  |- True : Bool by the Bool rule
+  we can get
+  |- f 5 True :  Int by the application rule.
+ </pre>
+<hr>
+<strong>Recursion and TD</strong>
+<ul>
+  <li>As mentioned above, this language is very weak: no recursive
+functions can be defined. 
+  <li> In fact, all programs are guaranteed to
+halt, a <em>normalization</em> property. 
+  <li>As an exercise try to type the <code>Y</code> combinator.
+  <li>If we really wanted to use this language we would add
+      recursion.  We do add recursion to <strong>TDSRX</strong> below
+      to show how to type it.
+</ul>
+
+<h4>An interpreter for TD</h4> 
+Its easy to write an interpreter for
+<strong>TD</strong>: it is nearly a <strong>D</strong> interpreter,
+the type information is ignored at run-time.  
+
+<hr>
+<h4>Type Soundness</h4>
+The following theorem asserts that our type system indeed prevents
+run-time errors from occurring.<p>
+
+
+<strong>Theorem (Type Soundness)</strong> If <code>|- e : tau</code> then
+in the process of evaluating <code>e</code>, a stuck state is never reached.
+<p>
+<ul>
+  <li>A stuck state is e.g. <code>0 (Function x -> x)</code> or <code>(Function x -> x)
++ 4</code> 
+  <li>we won't define this concept precisely.  
+  <li>In terms of your <strong>D</strong> interpreter, its the cases
+      that would throw an exception.
+</ul>
+<hr>
+
+<h3><A NAME="xtocid656159">From Type Systems to Type Checkers</A></h3>
+We can now play a similar game that we did when defining interpreters:
+given the language-independent type rules, define a type checking
+algorithm in a particular language, namely Caml.  <br>
+<ul>
+  <li>The type checker
+program, <code>typeCheck</code>, should take a type environment <code>Gamma</code>
+and expression <code>e</code> as input and either return its type or raise
+an exception 
+indicating <code>e</code> is not well-typed in environment Gamma.
+  <li>
+Note that some type systems  do <em>not</em> have an easy
+corresponding type-checking algorithm.
+  <li>
+In <strong>TD</strong>, we are fortunate that the type checker mirrors
+the rules in an almost direct fashion: notice 
+that, like was the case for the interpreter, the rule that applies is
+dictated by the outermost structure of the expression.  
+  <li>
+The flow of the
+recursion is that we pass the environment <code>Gamma</code> and expression <code>e</code> <em>down</em>, and
+expect the result type <code>tau</code> back <em>up</em>.   
+</ul>
+<hr>
+<a name="td"><h4>Sketch of a TD Typechecker</h4></a>
+Here is a
+first 
+pass at a <strong>TD</strong> type checker, <code>typecheck : envt *
+expr -> dtype</code>. <p>
+<code>gamma : envt</code> can be implemented as a
+<code>(ide * dtype) list</code>, with the most recent item at the
+front of the list. 
+<pre>
+let typecheck gamma e = match e with
+   Var x => lookup gamma x (* look up first mapping of x in list gamma *)
+ | Function(Ide x,t,e,t') =>
+                  if typecheck ((Ide x),t):: gamma) e  = t'
+                  then Arrow(t,t') else raise TypeError |
+ | Appl(e1,e2) => let  Arrow(t1,t2) = typecheck gamma e1 in
+                                         if typecheck gamma e2  = t1
+                                         then t2 else raise TypeError 
+ | Plus(e1,e2) => if typecheck gamma e1 = Int
+                                     and typecheck gamma e2  = Int
+                                     then Int else raise TypeError 
+    ...
+</pre>
+
+The typechecker should faithfully implement the <strong>TD</strong>
+type system:
+<p>
+
+<strong>Lemma (faithfulness of typechecker):</strong> 
+<ul>
+  <li><code>|- e : tau</code> if and only if
+<code>typecheck [] e</code> returns <code>tau</code>, and 
+  <li>if <code>typecheck [] e</code>
+raises a <code>typeError</code> exception, <code>|- e : tau</code> is
+not provable for any <code>tau</code>. 
+</ul>
+This Lemma implies the <code>typecheck</code> function is a sound
+implementation of the type system for <strong>TD</strong>.
+<hr>
+
+<h2><A NAME="xtocid656160">A Type System for <strong>TDSRX</strong></A></h2>
+There is not all that much deep going on with these type systems.  So,
+let us consider next the <strong>TDSRX</strong> language.
+<p>
+We include just about every piece of syntax we have used up to now,
+except the <strong>DOB</strong> classes and objects.  Here is the
+abstract syntax defined in terms of a Caml type.
+<pre>
+type expr = 
+ Var of ident | Function of ident * dtype * expr * dtype | Appl of expr * expr |
+ Letrec of ident * ident * dtype * expr * dtype |
+ Plus of expr * expr | Minus of expr * expr | Equal of expr * expr | 
+ And of expr * expr| Or of expr * expr | Not of expr |  
+ If of expr * expr * expr | Int of int | Bool of bool 
+ Ref of expr | Set of expr * expr | Get of expr | Cell of int |
+ Record of (label * expr) list | Select of  label * expr |
+ LetExn of ident * dtype * expr |
+ Raise of expr * expr | TryWith of expr * expr * ident * dtype * expr | Exn of int
+
+and
+
+dtype = Int | Bool | Arrow of dtype * dtype |
+           Rec of label * dtype list | Rf of dtype | Ex of dtype
+</pre>
+
+Now we will proceed to define the rules (whew!) for <strong>TDSRX</strong>.
+
+<h4>The Type Rules for TDSRX</h4>
+<pre>
+(( insert all of the TD rules here ))
+
+Gamma, f : tau -> tau', x : tau |- e : tau'  f : tau -> tau' |- e' : tau''
+-------------------------------------------------------------------------------    (LetRec)
+Gamma  |- (Let Rec f x : tau  = e : tau')  : tau''
+
+
+
+Gamma  |- e1 : tau1, ..., Gamma  |- en : taun
+--------------------------------------------------------------------- (Record)
+Gamma  |- { l1 = e1, ..., ln = en  } : { l1 : tau1, ..., ln : taun}
+
+
+Gamma  |- e : { l1 : tau1, ..., ln : taun}
+-------------------------------------------------------- (Projection)
+Gamma  |- e.li : taui,  for i a number between 1 and n
+
+
+Gamma  |- e : tau
+-------------------------------------------- (Ref)
+Gamma  |- Ref e : tau Ref
+
+
+Gamma  |- e : tau Ref,   Gamma  |- e' : tau
+-------------------------------------------- (Set)
+Gamma  |- e := e' : tau 
+
+
+Gamma  |- e : tau Ref
+-------------------------------------------- (Get)
+Gamma  |- !e : tau
+
+
+Gamma, xn : tau Exn |- e : tau'
+-----------------------------------------------    (LetExn)
+Gamma  |- (LetExn xn : tau Exn  In e )  : tau'
+
+
+Gamma  |- xn : tau exn  Gamma  |- e' : tau
+-------------------------------------------- (Raise)
+Gamma  |- Raise (xn(e')) : tau' (any type OK)
+
+
+Gamma  |- xn : tau' Exn,  Gamma  |- e : tau,    Gamma, x : tau' |- e' : tau
+--------------------------------------------------------------------------  (Try)
+Gamma  |- Try e with xn(x : tau') -> e' :  tau
+</pre>
+
+<!-- DO THE EXCEPTION RULES: they are sort of complicated.  -->
+
+(Question: why is there no typechecking rule for <code>Cell</code>'s?
+Another question: why is there actually no need for <code>Let Rec f
+x</code> syntax in <strong>TDSRX</strong> to write recursive
+functions?)<p>
+
+
+Exercise: attempt to type some of the untyped programs we have studied
+up to now, e.g. the <code>Y</code> combinator, <code>Let</code> and
+sequencing abbreviations, the factorial example, and the encoding of
+lists. 
+<hr>
+
+<h2><A NAME="xtocid1137661">Advanced Type Systems: Subtyping</A></h2>
+
+<ul>
+  <li>The above system is reasonably adequate, but there are still lots of
+programs that have no run-time errors that will nonetheless not be
+type-checkable.  
+  <li>The first extension we would like to consider is what
+is known as <em>subtyping</em>.
+  <li>Main important appplication: it allows object/record
+      polymorphism to typecheck. 
+  <li>Example:
+      <pre>{ m : Int; n : Int } <:  { m : Int }</pre> where
+      <code>&lt;:</code> means "subtype of".
+  <li>So, you have already seen subtyping in Java and C++ (subclasses
+      are subtypes, and extending or implementing an interface gives a subtype)
+<p>
+
+</ul>
+Consider the function for example
+<pre>
+Function x -> x.l + 1
+</pre>
+This function takes as argument a record with field <code>l</code> of
+type <code>Int</code>.  So, we could write it in a typed form as
+
+<pre>
+Function x : {l : Int} -> (x.l + 1) : Int
+</pre>
+In the untyped <strong>DR</strong> language the record passed into the
+function could also include other fields besides <code>l</code>, and
+the call
+<pre>
+(Function x -> x.l + 1) {l = 4; l' = 6}
+</pre>
+would generate no run-time errors.  However, this would not type-check
+by our <strong>TDSRX</strong> rules: the function argument type is different from the
+type of the values passed.<p>
+
+<strong>Solution:</strong>  Let us re-consider record types such as
+<code>{ m : Int; n : Int }</code> to mean a record with <em>at least</em> m and
+n fields of type <code>Int</code>, but possibly other fields as well,
+of unknown type.  Think about the previous record operations and their
+types: under this interpretation of record typing, the (Record) and
+(Projection) rules both still make sense.<p>
+<hr>
+
+Now, the old rules are sound but we need a new rule to reflect this
+new understanding:
+<pre>
+Gamma  |- e : { l1 : tau1; ...; ln : taun}
+-------------------------------------------------------- (Sub-Rec)
+Gamma  |- e : { l1 : tau1; ...; ln : taum} for m less than n
+</pre>
+This rule not as good as we could do.  Consider the following example.
+
+<pre>F = Function f -> f ({ x = 5; y = 6; z = 3}) +  f({x = 6; y = 4})</pre>
+
+Here the function <code>f</code> informally should take a record with at
+least <code>x</code> and <code>y</code> fields, but also other fields
+could be present. 
+Let us try to type the function <code>F</code>.
+
+<pre>F : ({x : Int; y : Int} -> Int) -> Int</pre>
+Consider the application <code>F G</code> for
+<pre>G = Function r -> r.x + r.x</pre>
+Now, however, consider the type-checking of this function G at
+<pre>G : {x : Int} -> Int</pre>
+
+This does not exactly match the type of <code>F</code>'s argument,
+<code>{x : Int; y : Int} -> Int</code>, and so the type-check fails.
+<p>
+In fact we <em>could</em> have typed <code>G</code> a type <code>{x : Int; y
+: Int} -> Int</code>  by the DSRX rules, but its too late to know that
+was the type we should have used.
+<p>
+The (Sub-Rec) rule is of no help here.  What we need is a rule
+that says a function of record type argument may have fields
+<em>added</em> to its record argument type, as those fields will be
+ignored:
+
+<pre>
+Gamma  |- e : { l1 : tau1; ...; ln : taun} -> tau
+------------------------------------------------------------------ (Sub-Function)
+Gamma  |- e : { l1 : tau1; ...; ln : taun; ...; lm : taum} -> tau 
+</pre>
+Using this rule, <code>F G</code> will indeed type-check. <p>
+
+We need still other rules, though.  Consider records inside of
+records: 
+
+<pre>{pt = {x = 4; y = 5}; clr = 0} : { pt : {x : Int}; clr : Int }</pre>
+should be a valid typing since the <code>y</code> field will be
+ignored.  However, there is no rule to allow this typing, either!<p>
+<hr>
+
+<h3>The STD type system: TD with Subtyping</h3>
+<!-- These notes are really weak, did MUCH more in lecture in 02. -->
+
+The solution is to have a seperate set of <em>subtyping</em> rules
+just to determine 
+when one type can be used in the place of another.  
+<code>tau &lt;: tau'</code> is read "<code>tau</code> is a subtype of
+<code>tau'</code>", and means that an object of type <code>tau</code>
+may also be considered an object of type <code>tau'</code>.  The rule
+added to the TD type system is
+<pre>
+Gamma  |- e : tau, |- tau <: tau'
+------------------------------------------------------------------ (Sub)
+Gamma  |- e : tau'
+</pre>
+(in place of the above subsumption rules)
+The STD subtyping rules used to determine if <code>tau <: tau'</code> are
+
+<pre>
+----------------------------------------(Sub Refl)
+|- tau <: tau
+
+
+|- tau <: tau',     |- tau' <: tau''
+----------------------------------------(Sub Trans)
+|- tau <: tau''
+
+
+|- tau0' <: tau0,     |- tau1 <: tau1'
+----------------------------------------(Sub Function)
+|- tau0 -> tau1 <: tau0' -> tau1'
+
+|- tau1 <: tau1'   ...  |- taun <: taun'
+-------------------------------------------------------------------(Sub Record)
+|- { l1 : tau1; ...; ln : taun; ... ; lm : taum} <: { l1 : tau1'; ...; ln : taun'}
+</pre>
+
+For all of the examples discussed up to now, it should be clear that
+this set of more general rules will work. 
+<hr>
+<h3><A NAME="xtocid1137662">Implementing an STD type-checker</A></h3>
+<ul>
+  <li>Automated type checking for STD is difficult.
+  <li>Solution 1: add extra type declarations to help out the typechecker
+  <li>Solution 2: completely infer the types in a <em>constraint</em>
+      form (a topic covered below).
+</ul>
+(rest of this topic skipped in lecture)
+<p>
+
+We briefly sketch how the <code>typecheck</code> function for STD may
+be written.
+The TD type-checker requires certain types to be identical, e.g. the
+function domain type must be identical to the type of the function
+argument in an application <code>e e'</code>.
+
+<pre>Gamma  |- e : tau -> tau', Gamma  |- e' : tau 
+-------------------------------------------------- (Appl)
+Gamma  |- e e' : tau'
+</pre>
+In STD, at this point
+we will instead see if subtyping is possible:
+<code>typecheck(e')</code> returns 
+<code>tau''</code> for some type <code>tau''</code>, and then
+<code>tau'' <: tau</code> is 
+checked via a function <code>areSubtypes(tau'',tau)</code>.  This produces a
+valid proof because
+<pre>
+                           Gamma  |- e' : tau''
+                           --------------------- (Sub)
+Gamma  |- e : tau -> tau', Gamma  |- e' : tau 
+-------------------------------------------------- (Appl)
+Gamma  |- e e' : tau'
+</pre>
+is a valid typing derivation.  Other rules where the TD rules require
+a type match similarly are 
+generalized to allow the (Sub) rule to be used.  <p>
+
+Writing the <code>areSubtypes</code> function: exercise.  
+<p>
+There may be a question as to whether <code>typecheck(e)</code> does
+not sometimes raise a <code>typeError</code> exception when the
+program is in fact typable.  it is only using the subsumption rule in
+certain spots.  However, this is not the case, it suffices to use the
+subsumption rule in these spots only.
+
+<hr>
+<p>
+<strong>Subtyping and Java/C++ types</strong><p>
+<ul>
+  <li>The subclassing of Java/C++ is a form of subtyping (objects are
+      records; recall our encoding of DOB)
+  <li>All subtyping is <em>declared</em> there, via two means:
+      <ol>
+	<li>Subclasses are subtypes
+	<li>(Java only) A class is a subtype of an interface it implements
+      </ol>
+  <li>Java/C++ are thus more restrictive: Suppose there were classes
+      with structure <code>{x: Int; y: Int; color:Int}</code> and
+      <code>{x: Int; y: Int}</code> that weren't one of the two cases
+      above; then, they aren't subtypes but they are in STD.
+  <li>Declared subtyping is good however: subtyping either needs to be
+      explicitly declared or inferred.
+</ul>
+<strong>Subtyping in other languages</strong>
+<ul>
+  <li>OCaml is more flexible in that there is no restriction to a
+      hierarchy, but its also less flexible in that there is really no
+      polymorphism -- an explicit coercion of a ColorPoint to a Point
+      is required.
+  <li>There are several research languages with type inference and
+      subtyping, but the types are often hard to read.
+</ul>
+<hr>
+<h2><A NAME="xtocid1137663">Hindley-Milner Type Inference and Polymorphism</A></h2>
+Lets look
+under the hood and see what Caml is doing to infer types.  
+<ul>
+  <li>Type inference was originally discovered by Robin Milner (and
+      independently by logician Hindley), the original creator of ML.  
+  <li>The key idea of Milner's "Algorithm W" is to 
+      <ul>
+	<li>initially give all
+      variables arbitrary types <code>'a</code> and then
+	<li>
+      <em>unify</em> (equate) types if indicated by the program.
+	<li>Example: application <code>f arg</code> -- if
+	    <code>f</code> has type <code>'a -> 'b</code> and <code>arg</code> has
+	    type <code>'c</code>, unify (equate) <code>'a</code> and <code>'c</code>.
+      </ul>
+  <li>We study full type inference: programs will come with no declared 
+type information.  
+</ul>
+<hr>
+
+<h4>Type inference and polymorphism</h4>
+Type inference goes hand-in-hand with parametric polymorphism. Consider
+<code>
+Function x -> x
+</code>
+<ul>
+  <li>Without polymorphism, what type could be inferred for this function?
+  <li>Int -> Int is a flawed answer because it could very well be incorrect.
+  <li>With type inference we can achieve something called a <em>principal
+type</em>.
+</ul>
+<h4>Principal Types</h4>
+<strong>Definition:</strong> A <em>principal type</em> <code>tau</code> for expression <code>e</code>
+(where <code>|- e : tau</code>) has the following property:
+
+<br> for any other type <code>tau'</code> such that <code>|-
+e : tau'</code>, for any context <code>C</code> for which
+
+<pre> |- C[e : tau'] : tau''</pre> (for any <code>tau''</code>), then
+
+
+<pre>|- C[e : tau] : tau'''</pre> as well, for some
+<code>tau'''</code>.<p>
+
+<ul>
+  <li>What principality means is no other typing will let more uses of the
+      program typecheck, so the principal typing will always be best. 
+  <li>
+The desired property of our type inference algorithm is that it will
+always infer principal types.  
+  <li><strong>Key Corollary:</strong> With a principal-type algorithm,
+      we know inference will never "get in the 
+way" of the programmer by e.g. inferring Bool -> Bool for the identity
+function when the programmer wants to use it on Int -> Int.  
+  <li>Caml
+infers the type <code>'a -> 'a</code> for the identity function, which
+can be shown to be a principal
+type for it.
+  <li>In fact, Caml type inference always infers principal types.
+</ul>
+
+<hr>
+<h3>An Equational Type System: ED</h3>
+We are going to present type inference in a nonstandard way.
+<ul>
+  <li>Milner's Algorithm W: <em>eagerly</em> unify <code>'a</code> and
+      <code>'c</code>: replace one with the other everywhere.
+  <li>Equational inference: <em>lazily</em> accumulate equations such
+      as <code>'a = 'c</code> and then solve them at the end.
+</ul>
+
+We will now define <strong>ED</strong>, a simple equationally typed
+version of the <strong>D</strong> language.  <br>
+
+<ul>
+  <li><strong>ED</strong> uses the <strong>D</strong> grammar for
+expressions since expressions will not be decorated with any types.
+  <li>
+<strong>ED</strong> Types: 
+<pre>tau ::= Int | Bool | tau -> tau | 'a | 'b | ...</pre>
+  <li>
+<strong>ED</strong> types during inference are going to include an
+extra set of <em>constraining equations</em>, <code>E</code>,
+which constrain the behavior of the type variables. 
+  <li>Type judgements for <strong>ED</strong> are thus of the form <code>Gamma |- e : tau \
+      E</code>, the same as before but tacking a set of equations on
+      the side.
+  <li>Each member of
+<code>E</code> is an equation like <code>'a = 'c</code>.<p>
+
+</ul>
+Equational types will be used to aid inference: the overall approach is to
+<ol>
+  <li> Infer equational types for the whole programs;
+  <li> If the equations are inconsistent, pronounce that there is a
+       type error;
+  <li> If the equations are not inconsistent, simplify them to
+       give an inferred type as given by Caml.
+  <li>(Implicit fact: if there are no inconsistencies in the
+      equations, they can always be simplified to give an
+      equation-free type)
+</ol>
+ <hr>
+
+<strong>Definition:</strong> An <em>equational type</em> is a type of the
+form
+
+<pre>tau \ { tau1 = tau1' , ..., taun = taun' }</pre>
+
+Each <code>tau = tau'</code> is an equation on types, meaning
+<code>tau</code> and <code>tau'</code> have the 
+same meaning as types.  We will let <code>E</code> mean some arbitrary set of type
+equations.  For instance,
+
+<pre>
+Int -> 'a \ { 'a = Int -> 'a1, 'a1 = Bool }
+</pre>
+
+is an equational type.  If you think about it, this is really the same
+as the type
+
+<pre>
+Int -> Int -> Bool</pre>
+when = is substituted for =.  This is a step we are going to want to
+perform, so-called <em>equational simplification</em>.  It is also
+possible to write "senseless" types like
+
+<pre>
+Int -> 'a \ { 'a = Int -> 'a1, 'a = Bool }
+</pre>
+which cannot be types since they imply functions and booleans are the
+same type!  Such equation sets are deemed <em>inconsistent</em>, and
+will be equated with failure of type inference.
+
+There are also possibilities for circular (self-referential) types
+that don't quite look inconsistent:
+
+<pre>
+Int -> 'a \ { 'a = Int -> 'a }
+</pre>
+
+<ul>
+  <li>Caml doesn't allow for such types.  
+  <li>To follow Caml we will also
+disallow them initially.  
+  <li>These types can't be simplified away, thats the main reason why
+      Caml disallows them (users of the language would have to see
+      some type equations).
+</ul>
+
+<hr>
+<h4>The ED Type System</h4>
+The <strong>ED</strong> system is the following set of rules.  <br>
+(Note that
+<code>Gamma</code>  is as in the <code>TD</code> rules, asserting
+e.g. <code>x : tau</code> for variable <code>x</code>; the type
+<code>tau</code> is a simple (non-equational) type.)
+
+
+<pre>
+Gamma(x) = tau 
+------------------------------- (Hyp)
+Gamma  |- x : tau \ E
+
+
+----------------------------- (Int)
+Gamma  |- n : Int \ emptyset            for n an integer
+
+
+----------------------------- (Bool)
+Gamma  |- b : Bool \ emptyset           for b either True or False
+
+
+Gamma  |- e : tau \ E , Gamma  |- e' : tau' \ E'                
+---------------------------------------------------------------------- (+)
+Gamma  |- e + e' : Int \ E union E' union {tau = Int, tau' = Int }
+
+
+Gamma  |- e : tau \ E  , Gamma  |- e' : tau'  \ E'                 
+-------------------------------------------------------------------- (-)
+Gamma  |- e - e' : Int  \ E union E' union {tau = Int, tau' = Int }               
+
+
+Gamma  |- e : tau \ E ,     Gamma  |- e' : tau'  \ E'           
+-------------------------------------------- (=)
+Gamma  |- e = e' : Bool   \ E  union E' union {tau = Int, tau' = Int }             
+
+(And, Or, NOT rules should be obvious)
+
+Gamma  |- e : tau \ E ,  Gamma  |- e' : tau' \ E' ,  Gamma  |- e'' : tau'' \ E'' 
+------------------------------------------------------------------------------------------------- (If)
+Gamma  |- If e Then e' Else e'' : 'd \ E union E' union E'' union {tau = Bool, tau' = tau'' = 'd}
+
+
+Gamma, x : 'a |- e : tau \ E 
+---------------------------------------------------------    (Function)
+Gamma  |- Function x  -> e : 'a -> tau \ E 
+
+
+Gamma  |- e : tau \ E , Gamma  |- e' : tau'  \ E'
+--------------------------------------------------------------- (Appl)
+Gamma  |- e e' : 'a \ E union E' union { tau = tau' -> 'a }
+
+</pre>
+<ul>
+  <li>These rules almost directly define the equational type inference procedure: the
+proof can pretty much be built from the bottom (leaves) on up.
+  <li>
+So, <em>every</em> program may be inferred an equational type. 
+  <li>Each equation added denotes two types that should be equal.
+</ul>
+<hr>
+
+<h3><A NAME="xtocid1137664">Solving the equations</A></h3>
+
+<ul>
+  <li>Note that <em>any</em> program may be typed by these rules! 
+  <li>No matching/correspondence of types is forced like in the
+      <strong>TD</strong> rules, all that happens is more constraints
+are accumulated.
+  <li>We must in addition solve the resulting equations to produce a valid
+Caml-style type.  
+  <li>So, type inference for <strong>ED</strong> consists of 
+      <ol>
+	<li>Running the rules to infer equations
+	<li>Checking the equations for inconsistency
+	<li>Simplifying them to an equation-free type
+      </ol>
+</ul>
+To solve the equations, we
+<ol>
+  <li> Compute the <em>closure</em> of the equations, producing new equations
+       that hold by transitivity, etc;
+  <li> Check for any inconsistent equations like <code>Int =
+       Bool</code> which denote type errors;
+</ol>
+
+<!-- Insert some example here to show the algorithm idea before presenting it. -->
+
+<strong>Computing <code>Closure(E)</code>, the Equational closure of set E</strong>
+<br>
+Repeat the following:
+<ul>
+  <li> For each equation <code>tau0 -> tau0' = tau1 -> tau1'</code> in <code>E</code>, add
+       <code>tau0 = tau1</code> and <code>tau0' = tau1'</code> to <code>E</code>
+  <li> For equations <code>tau0 = tau1</code> and <code>tau1 =
+       tau2</code>, add <code>tau0 = tau2</code> to <code>E</code> (transitivity) 
+</ul>
+<br>
+Until no more equations can be added to <code>E</code> (note, we
+implicitly will use the symmetry property on these equations).<p>
+
+The closure serves to uncover inconsistencies.  For instance
+<pre>
+Closure({ 'a = Int -> 'b , 'a = Int -> Bool, 'b = Int}) =
+        { 'a = Int -> 'b , 'a = Int -> Bool, 'b = Int,
+          Int -> 'b = Int -> Bool, Int = Int, 'b = Bool, Int = Bool }
+</pre>
+directly uncovering the inconsistency <code>Int = Bool</code>.
+<p>
+<strong>Fact:</strong> the closure of <code>E</code> can always be
+quickly computed.<p>
+
+After computing the closure, the constraints are <em>consistent</em>
+if 
+<ol>
+  <li>No immediate inconsistency was
+uncovered (such as <code>Int = Bool</code>, <code>Bool = tau -> tau'</code>,
+or <code>Int = tau -> tau'</code>), 
+  <li>No self-referential equations exist.  (We will deal with this
+      issue below, ignore for now).
+</ol>
+<hr>
+
+<h4>Solving the Equations</h4>
+If inference produces consistent equations, we then solve the
+equational constraints by substituting type 
+variables with types as follows.
+<p>
+
+<strong>Definition:</strong> Equation solution algorithm
+<br>
+Given <code>tau \ E</code>,
+<br>
+<blockquote><strong>Repeat</strong>
+<br>
+replace some type variable <code>'a</code> in <code>tau</code> with <code>tau'</code>,
+provided  <code>'a = tau'</code> or <code>tau' = 'a</code> occurs in E
+and either 
+<ol>
+  <li>  <code>tau'</code> is not a type 
+variable, or 
+  <li> <code>tau'</code> is a type variable <code>'b</code>
+which is lexicographically 
+after <code>'a</code>.
+</ol>
+<strong>Until</strong> no more such replacements are possible.
+</blockquote>
+
+This resulting type is the type inferred by Caml.<p>
+
+This algorithm is flawed, however:  it may be that these replacements
+may continue forever.  This is the case when there is a circular type
+in E.  Recall the above example
+<pre>
+Int -> 'a \ { 'a = Int -> 'a }
+</pre>
+--this produces the nonterminating chain
+<pre>
+Int -> Int -> 'a  \ { 'a = Int -> 'a }
+Int -> Int -> Int -> 'a  \ { 'a = Int -> 'a }
+Int -> Int -> Int -> Int -> 'a  \ { 'a = Int -> 'a }
+...
+</pre>
+<strong>Solution: </strong> Check for cycles in the equations before
+solving them as above.
+<br>
+<strong>Cycle Detection Algorithm:</strong>
+      <ol>
+	<li>Define a directed graph <code>G </code>based on <code>E</code>.
+	<li>Nodes  in G are type 
+       variables in <code>E</code> 
+	<li>There is a edge from the <code>'a</code> node to the <code>'b</code>
+       node if there is an equation <code>'a = tau'</code> in
+       <code>E</code>, and  <code>'b</code> occurs in 
+       <code>tau'</code>.  
+	<li>Raise <code>typeError</code> if there is a
+      cycle in G for which there is at least one edge representing a
+      constraint that isn't just between type variables (<code>'a = 'b</code>).
+      </ol>
+
+<strong>The complete ED type inference algorithm</strong>
+<br>
+Given e,
+<ol>
+  <li> Produce a proof <code>|- e : tau \ E</code> (such a proof always exists)
+  <li> Extend E by closing:  <code>E := Closure(E)</code>.
+  <li> Check if <code>E</code> is immediately inconsistent; if so, raise typeError 
+  <li> Check for cycles in <code>E</code> using the above algorithm; raise typeError if there
+      is a cycle.
+  <li> Solve <code>E</code> by the above equation solution algorithm.  This
+       algorithm will always terminate if there are no cycles in <code>E</code>.
+  <li> Output: the solution type <code>tau'</code> for <code>e</code> produced by
+       the solution algorithm.
+</ol>
+
+<strong>Fact:</strong> The typings produced by the above algorithm are
+<em>principal</em>.
+<p>
+<hr>
+
+<h3><A NAME="xtocid1441465">PED: ED with Let-polymorphism</A></h3>
+We still don't have polymorphism, all we have is type
+variables.  Consider
+<pre>
+Let x = Function y -> y In x True; x 0
+</pre>
+in Caml, this program would type-check: different uses of <code>Function y ->
+y</code> can have different types.  However, consider <strong>ED</strong>'s behavior:
+expanding the definition of Let, we get
+<pre>
+(Function x -> x True; x 0) (Function y -> y)  
+</pre>
+<pre>
+|- (Function x -> x True; x 0) : 'a -> 'c \ {'a = Bool -> 'b, 'a = Int -> 'c }
+</pre>
+But by the closure we get <code>Int = Bool</code>: BAD!!<p>
+The problem in this case:
+<ul>
+  <li>Each use of x in the <code>Let</code> body
+used the same type variable <code>'a</code>
+  <li>In fact when we type
+<code>Function y -> y</code> we know that <code>'a</code> can be anything.
+  <li>So, for different uses <code>'a</code> can be different things.
+  <li>All we have to do is put this intuition into our type system.
+</ul>
+So we define <strong>PED</strong>, which is <strong>ED</strong> with
+<code>Let</code> and let-polymorphism
+<hr>
+<h4>The PED Let Typing Rule</h4>
+We will add <code>Let</code> syntax to <strong>PED</strong>, and
+include a special typing rule for <code>Let</code>.
+
+<pre>
+Gamma  |- e : tau  \ E,    Gamma, x : forall 'a1...'an. tau' |- e' : tau'' \ E' , 
+----------------------------------------------------------------------------------- (Let)
+Gamma  |- Let x = e in e' : tau'' \ E' 
+   Where tau' is a solution of |- e : tau \ E using the above algorithm,
+   and tau' has free type variables 'a1, .. 'an that do not occur in Gamma.
+</pre>
+<ul>
+  <li>Note: the <em>only</em> place to get polymorphism in Caml is at Let.
+  <li>Technical point: since we are invoking the above simplification
+      algorithm in this rule, it means the full algorithm is not the
+      clean 3-pass infer-closure-simplify form give above: the rules
+      need to call close-simplify on some sub-derivations.
+</ul><p>
+
+<strong>Type Schema</strong>
+<ul>
+  <li>Gamma here has been extended to have types
+<pre>forall 'a1..'an. tau
+</pre>
+  <li>
+These are called <em>type schemas</em> and are not types tau but are a
+special variety of type which may appear in Gamma only
+  <li>  An example type schema is
+<code>forall 'a. 'a -> 'a</code>.  
+  <li>Note that the type variables <code>'a1,..., 'an</code> are considered
+      <em>bound</em>by this type expression. 
+</ul>
+We also need to add the rule
+<pre>
+------------------------------------------------------------ (Let-Inst)
+Gamma, x : forall 'a1...'an. tau' |- x : R(tau') \ emptyset
+
+where <code>R(tau')</code> is a renaming of the variables <code>'a1..'an</code> to fresh names.
+</pre>
+Since these names are fresh each time x is used, the different uses
+won't conflict like above.
+<p>
+
+<strong>Example:</strong> lets type the <code>Let</code> version of
+the program
+<pre>
+Let x = Function y -> y In (Function x -> x True; x 0) 
+</pre>
+from above.
+<pre> |- Function y -> y : 'a -> 'a \ emptyset</pre>
+This constraint set trivially has the solution type <code>'a -> 'a.</code>
+Thus, we then typecheck the <code>Let</code> body under the assumption
+that <code>x</code> has type <code>forall 'a. 'a -> 'a</code>.
+<pre>
+x : forall 'a. 'a -> 'a |- x : 'b -> 'b \ emptyset
+</pre>
+by <code>(Let-Inst)</code> and then
+<pre>
+x : forall 'a. 'a -> 'a |- x True : 'c \ { 'b -> 'b = Bool -> 'c }
+</pre>
+Similarly,
+<pre>
+x : forall 'a. 'a -> 'a |- x 0 : 'e \ { 'd -> 'd = Int -> 'e }
+</pre>
+The key in the above is <em>this</em> use of <code>x</code> gets a
+different type variable, <code>'d</code>, by the
+<code>(Let-Inst)</code> rule.  Putting the two together, the type is
+something like 
+<pre>
+x : forall 'a. 'a -> 'a |- x True; x 0 : 'e \ { 'b -> 'b = Bool -> 'c, 'd -> 'd = Int -> 'e }
+</pre>
+which by the <code>(Let)</code> rule then produces
+<pre>
+|- Let x = Function y -> y In (Function x -> x True; x 0) 
+    : 'e \ { 'b -> 'b = Bool -> 'c, 'd -> 'd = Int -> 'e }
+</pre>
+Since <code>'b</code> and <code>'d</code> are different variables, we
+don't get the conflict we got previously.
+<p>
+<hr>
+
+<h3><A NAME="xtocid1441466">Constrained Type Inference</A></h3>
+There was a reason why we presented Hindley-Milner type inference in
+the form above: if we replace equality constraints by subtyping
+constraints <:, we can perform <em>constrained type inference</em>.
+To understand why it is useful to perform this generalization, it is
+easiest to just look at the rules.  <p>
+
+D is not the best system to show off the power of replacing equality
+with subtyping: since the language does not have records, there is not
+any interesting subtyping that could happen!  To show the usefulness
+of subtyping, we thus define the constraints in an environment where
+we have records, DRec.  DRec pluc constraints is CDRec.  We can
+contrast CDRec with the EDRec language which we did not study but you
+could imagine.
+
+Instead of types tau \ E for a set of equations E, CDRec has types
+<pre>tau \ { tau1 <: tau1', .., taun <: taun' }</pre>
+We will use the letter C to refer to a set of subtyping constraints.<p>
+
+CDRec has the following set of type rules.   These are direct
+generalizations of the ED rules, replacing = by <:.  the <: is always
+in the direction of information flow.
+<pre>
+Gamma(x) = tau 
+------------------------------- (HYP)
+Gamma  |- x : tau \ C
+
+
+----------------------------- (Int)
+Gamma  |- n : Int \ emptyset            for n an integer
+
+
+----------------------------- (Bool)
+Gamma  |- b : Bool \ emptyset           for b either True or False
+
+
+Gamma  |- e : tau \ C , Gamma  |- e' : tau' \ C'                
+------------------------------------------------------- (+)
+Gamma  |- e + e' : Int \ C union union C' {tau <: Int, tau' <: Int }
+
+
+Gamma  |- e : tau \ C  , Gamma  |- e' : tau'  \ C'                 
+--------------------------------------- (-)
+Gamma  |- e - e' : Int  \ C union union C' {tau <: Int, tau' <: Int }               
+
+
+Gamma  |- e : tau \ C ,     Gamma  |- e' : tau'  \ C'           
+-------------------------------------------- (=)
+Gamma  |- e = e' : Bool   \ C  union C' union {tau <: Int, tau' <: Int }             
+
+(And, Or, Not rules should be obvious)
+
+Gamma  |- e : tau \ C ,  Gamma  |- e' : tau' \ C' ,  Gamma  |- e'' : tau'' \ C'' 
+------------------------------------------------------------------------ (If)
+Gamma  |- If e Then e' Else e'' : 'd \ C union C' union C'' union {tau <: Bool, tau' <: 'd,  tau'' <: 'd}
+
+
+Gamma  |- e1 : tau1 \ C1, ..., Gamma  |- en : taun \ C2
+--------------------------------------------------------------------- (Record)
+Gamma  |- { l1 = e1, ..., ln = en  } : { l1 : tau1, ..., ln : taun} \ C1 union C2
+
+
+Gamma  |- e : tau \ C
+-------------------------------------------------------- (Projection)
+Gamma  |- l.e : 'a \ C union { tau <: { l : 'a } }
+
+
+Gamma, x : 'a |- e : tau \ C 
+---------------------------------------------------------    (Function)
+Gamma  |- Function x  -> e : 'a -> tau \ C 
+
+
+Gamma, f : 'a -> 'b ,  x : 'a |- e : tau \ C
+------------------------------------------------------------    (Rec)
+Gamma  |- Rec f = Function x  -> e : 'a -> tau \ C union { tau <: 'b }
+
+
+Gamma  |- e : tau \ C , Gamma  |- e' : tau'  \ C'
+---------------------------------------------------------- (Appl)
+Gamma  |- e e' : 'a \ C union C' union { tau <: tau' -> 'a }
+
+</pre>
+These rules almost directly define the type inference procedure: the
+proof can pretty much be built from the bottom (leaves) on up.
+<p>
+<hr>
+
+Consider the simple example program
+<pre>
+(Function r -> r.l + 1) {l = 5, m = True}
+</pre>
+This program will need subtyping because intuitively the function will
+only need a record with <code>l</code> field, but a record with
+<code>l,m</code> fields is supplied.
+
+The function types as
+<pre>
+|- Function r -> r.l + 1 :  'a -> Int \ {'a <: {l: 'b}, 'b <: Int}
+</pre>
+and the application then has type
+<pre>
+|- (Function r -> r.l + 1) {l = 5, m = True} : 'c \
+  {'a <: {l: 'b}, 'b <: Int, 'a -> Int <: {l : Int, m : Bool} -> 'c, Int <: 'c}
+</pre>
+From the closure of this constraint set we get the constraints
+<pre>
+{l : Int, m : Bool} <: 'a <: {l: 'b}
+</pre>
+and so we get
+<pre>
+{l : Int, m : Bool} <: {l: 'b}
+</pre>
+which is fine since we can always ignore record fields.<p>
+
+
+The type inference algorithm for constraints is similar to the
+equational algorithm, but no solution is found for the constraints,
+for reasons we will see below.
+<p>
+<hr>
+<strong>Complete type inference algorithm</strong>
+<br>
+Given e,
+<ol>
+  <li> Produce a proof |- e : tau \ C (recall, such a proof always
+       exists for any e)
+  <li> Extend C by closing:  C := Closure(C).
+  <li> Check if C is immediately inconsistent; if so, raise typeError 
+  <li> Check for cycles in C as defined below; if cycles found, raise typeError
+  <li> The inferred type is e : tau \ C
+</ol>
+
+Here are the closure and cycle detection algorithms, the obvious
+generalizations. 
+<strong>Computing Closure(C), the closure of constraint set C</strong>
+<br>
+Repeat
+<ul>
+  <li> For each constraint {l1 : tau1, ..., ln : taun, ...,lm : taum } <: {l1 : tau'1,
+       ..., ln : tau'n } in C, add tau1 <: tau'1, ..., taun <: tau'n
+       tau1 <: tau0 and tau0' <: tau1' to C
+  <li> For each constraint tau0 -> tau0' <: tau1 -> tau1' in C, add
+       tau1 <: tau0 and tau0' <: tau1' to C
+  <li> For constraints tau0 <: tau1 and tau1 <: tau2, add tau0 <: tau2 to C (transitivity)
+</ul>
+<br>
+Until no more equations can be added to C.
+A constraint set is <em>immediately inconsistent</em> if 
+tau <: tau' and tau and tau' are different kinds of type (function and
+record, Int and function, etc), or two records are ordered by <: and
+the right record has a field the left record does not.
+
+<p> <hr>
+<strong>Cycle detection in C</strong>
+Define a directed graph G where nodes are type variables in C.  Run an
+edge from the 'a node to the 'b node if there is an equation 'a <:
+tau' in C, and 'b occurs in tau'.  Run an edge from 'b to 'a if tau'
+<: 'a occurs in C and 'b occurs in tau'.  C has a cycle just when G has
+a cycle.
+<p>
+
+
+<strong>Q:</strong> Why didn't we solve the constraints??
+<br>
+<strong>A:</strong> Any substitution proceeds with possible loss of
+generality.  Consider e.g. constraint <code>'a <: tau</code>, and the
+possibility of substituting <code>'a</code> with <code>tau</code>.
+Well, this precludes the possiblity that the <code>'a</code> position
+be a subtype of <code>tau</code>, as the substitution in effect
+asserted the equality of <code>'a</code> and <code>tau</code>.
+<p>
+Weakness of constrained types: need to keep constraints around so types
+are hard to read.
+<hr>
+
+<h3><A NAME="xtocid37367">Constrained Polymorphic Types</A></h3>
+We have the same shortcomings as in the equational case at this point:
+there is as of yet no polymorphism.  The solution used in the
+equational case won't work here, as it required the constraints to be
+solved.<p>
+
+Solution:  <em>constrained polymorphic types</em>
+<code>forall 'a1,...,'an.tau \ C</code> in the assumptions Gamma, in
+place of the polymorphic types (type schemes) we had in the equational
+version. Skip the details, they are involved.<p>
+
+Constrained polymorphic types are "very good" object types.
+Polymorphism needed to type inheritance.
+<hr>
+
+<h2>Modules</h2>
+ (goal of covering this topic in the future)
+
+<hr>
+<h2><A NAME="xtocid1441468">Skipped Topics</A></h2>
+<ul>
+  <li> Imperative features and type inference.  Having
+       <code>Ref</code> cells and polymorphism leads to some
+       conflicts; Caml has the let-value restriction to get around this problem.
+  <li> Object types.  This is a very difficult problem in general.
+       Constrained type inference is one good object typing scheme.
+  <li> Module types.  Caml union types.
+</ul>
+
+We will very briefly cover the polymorphic references issue.  In
+short, it is not possible to have a polymorphic value inside a
+reference cell.
+Why not?  Consider the program
+<pre>
+let val x = ref (Function x -> x) in (x := (Function x: int -> x + 1)); !x true end
+</pre>
+
+Recall the way polymorphic functions were typechecked in ED: x will
+have the polymorphic type <pre>forall 'a. 'a -> 'a ref</pre>, which
+means each use of x can pick a different type for 'a.  In the above
+example, the first use of x can pick int for <code>'a</code>, and the
+second can pick bool for <code>'a</code>, and the program will
+typecheck.  OOPS!  the program will produce a run-time error!!  What
+Caml does in this case is it does not let the type of x be polymorphic:
+it is type <code>'a -> 'a</code> for some PARTICULAR, FIXED
+<code>'a</code>, and the program thus does not typecheck.
+<p>
+
+SML has a special kind of type variable, the <em>imperative type
+variables</em> of the form <code>'1a</code>.  These type variables
+indicate their values will be placed in cells, so they may only be
+instantited with monotypes (type variable-free types).  For example,
+
+<pre>- Function x -> ref x;
+<em>val it = Function : '1a -> '1a ref
+</em></pre>
+--since x is placed in a cell, it gets a type '1a.  It is polymorphic
+but in a restricted sense.
+Now lets try 
+<pre>- it (Function x -> x);
+<em>std_in:17.1-17.14 Error: nongeneric weak type variable
+  it : ('0Z -> '0Z) ref
+</em>
+</pre>
+
+-- this attempted to instantiate <code>'1a</code> to be <code>'a ->
+'a</code>, an illegal move since <code>'a -> 'a</code> contains the
+type variable <code>'a</code>.  However,
+
+<pre>- it 4;
+<em>val it = ref 4 : int ref
+</em></pre>
+is perfectly legal since <code>4</code> is of type <code>int</code>
+which contains no type variables.
+
+
+<p>
+
+This issue shows how polymorphism would be very difficult in the C/Scheme
+language framework, as there all variables may behave as cells.  This
+is perhaps the major reason why polymorphism is a relatively recent
+phenomenon in programming language design.
+<p>
+
+<center>
+<script language=javascript>
+document.write("<i>PL Lecture Notes / ");
+document.write("notes last modified " + document.lastModified + " by <A HREF=\"mailto:scott@cs.jhu.edu\">Scott Smith</A><br>");
+</script>
+</center>
+
+</body></html>
+

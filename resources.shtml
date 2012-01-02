@@ -1,0 +1,69 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+<h2>PL Supplementary Resources </h2>
+<p>
+Here is a list of the best resources to supplement the
+material presented in lecture.  There is a wide range of notation used
+so for each reference you will have to spend some time to get used to
+the notation.   There also is an amazing amount of material we are not
+covering in this course; each reference below overlaps only slightly
+with what we will be covering.
+
+<h2>References by topic</h2>
+
+<h3>ML/Caml</h3>
+<p>
+See the <a
+href="caml/">Course Caml Page</a>.
+
+<h3> Operational Semantics </h3>
+<p>
+See the <a
+href="http://en.wikipedia.org/wiki/Operational_semantics">Wikipedia
+entry</a> for good references.<p>
+
+
+<a href="http://homepages.inf.ed.ac.uk/gdp/publications/sos_jlap.pdf">Plotkin's
+Structured Operational Semantics Notes</a> is the classic tutorial
+reference on operational semantics.
+<p>
+
+The book <cite>The Semantics of Programming Languages </cite> by
+Matthew Hennessy.  This book is a sophmore-level treatment of
+operational semantics.  If you are in need of a tutorial on
+operational semantics this book is highly recommended.  It is <a
+href="http://www.cogs.susx.ac.uk/users/matthewh/semnotes.ps.gz">available
+online</a> as well.<p>
+
+<h3>Simple Interpreters</h3>
+<p>
+The book <cite>Essentials of Programming Languages </cite> by
+Friedman, Wand, and Haynes includes many implementations of small
+interpreters of the sort we study.  The book is written in the Scheme
+language however, so requires a significant initial investment if you
+don't already know Scheme.
+
+
+<H3>Type Systems and Type Inference</H3>
+<p>
+<cite>Semantics of Programming Languages</cite> by Carl Gunter.
+Chapter 2 gives a nice introduction to the typed lambda calculus.
+Chapter 7 covers type inference.<p>
+
+<cite>Types and Programming Languages </cite> by
+Benjamin C. Pierce is the leading advanced reference.
+
+<p>
+Dave Schmidt has a book, <cite>The Structure of Typed Programming 
+Languages </cite>
+which I am not very familiar with but should cover the basic concepts.  
+<p>
+
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->

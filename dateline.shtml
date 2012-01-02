@@ -1,0 +1,541 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+
+<h2>Dateline for Programming Languages, Spring 2011</h2>
+
+This dateline is close to what will actually happen and will be
+updated as we go in the event we deviate.<p>
+<p>
+<table width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#CCCCCC">
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="heading"><strong>Day</strong></div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="heading"><strong>Date</strong></div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="heading">&nbsp;<strong>Lecture</strong></b></div>
+          </td>
+            <td width="22%"> 
+            <div align="center" class="heading"><strong>Assignment out</strong></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="heading"><strong>Assignment due</strong></div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Jan 31</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Introduction;<br>&nbsp; Caml I:
+        basic data, lists, let</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Feb 2</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Caml II: tuples,
+        patterns, functions </div> 
+          </td>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Feb 7</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Caml III: more functions,
+        types, records, refs, arrays</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body"><a
+href="assignments/hw1.shtml">HW1 (Caml)</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Feb 9</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Caml IV: exceptions, Modules</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Feb 14</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Caml V: Modules, ocamlc</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Feb 16</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Operational Semantics I: Logic</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body"><a
+	  href="assignments/hw2.shtml">HW2 (Caml)</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">HW1</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Feb 21</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Opsem II: Fb Syntax, Semantics</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Feb 23</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Opsem III: Fb Interpreter</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Feb 28</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Opsem IV: Fb Programming</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body"><a
+        href="assignments/hw3.shtml">HW3 (Fb interpreter)</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">HW2</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Mar 2</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Records</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Mar 7</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Operational Equivalence</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Mar 9</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;State; Exceptions</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+	
+       <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Mar 14</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Exceptions; Objects I</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">HW3</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Mar 16</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Objects II</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+
+		  <tr> 
+          <td width="8%" height="2"> 
+            <div align="center" class="body">Mar 21-25</div>
+          </td>
+          <td width="8%" height="2"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td colspan="3" height="2"> 
+            <div align="center" class="body"><b>Spring Break</b></div>
+          </td>
+
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Mar 28</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Types I: TFb</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body"><a href="assignments/hw4.shtml">HW4</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Mar 30</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Types II:
+	  Implementing Type Checkers</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 4</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Types III: Subtyping</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 6</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
+          </td>  
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body"><a
+          href="assignments/hw5.shtml">HW5</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">HW4</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 11</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Concurrency I</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 13</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">Concurrency II</div>
+          </td>	<!-- added this to get weeks back in synch. -->
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 18</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body"><a href="lectures/fiftythou.shtml">The 50,000 foot view of PLs</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 20</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;<a href="lectures/javastudy.shtml">Study of Java</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body"><a href="assignments/hw6.shtml">HW6</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">HW5</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 25</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;<a href="lectures/cppstudy.shtml">Study of C++</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 27</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;<a
+          href="lectures/dynamic-lang-study.shtml">Study of dynamic languages</a>; <a href="lectures/implementation.shtml">Implementation Issues</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">May 2</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Implementation continued; <a href="lectures/haskellstudy.shtml">Study of Haskell</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">May 4</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Exam Pre-Cram Session</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">HW6 (May 6th)</div>
+          </td>
+        </tr>
+	<tr> 
+          <td width="8%"> 
+            <div align="center" class="body">May 13,
+        5-6PM</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Fri</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;<strong>Review,
+Shaffer 202</strong></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body"><a
+          href="assignments/final-study.shtml">Study Guide</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+	<tr> 
+          <td width="8%"> 
+            <div align="center" class="body">May 16,
+        9AM-noon</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;<strong>Final Exam,
+Shaffer 202</strong></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+  </table>
+
+
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->

@@ -1,0 +1,774 @@
+<html>
+<HEAD>
+<title>Advanced Interpreters: Records and State</title>
+</HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+
+
+<a name="tuples"></a>
+<h1><A NAME="xtocid1118332">Advanced Interpreters: Records and State</A></h1>
+<h2><A NAME="xtocid1118334">2-Tuples (Pairs)</A></h2>
+(We are skipping this topic in lecture this year)<p>
+
+Pairing is the most fundamental form of data aggregation in programming.  With
+pairing you build just about anything you want.
+<ul>
+  <li>  Get
+tripling <code>(x,y,z)</code> via <code>(x,(y,z))</code> etc.
+  <li> Records/structs only add labeled names.
+  <li> Objects.  Well, objects can be built up with pairing but it is
+       stretching it (in a similar manner to how encoding tuples as
+       functions stretched things)
+</ul>
+
+
+
+Earlier we showed pairs could be encoded in D, but those pairs will
+not be very efficient, and they can be applied like functions so have
+some wrong behavior.  To add "real" pairs, extend the
+D <code>expr</code> type by adding 
+<pre>
+... | Pr of expr * expr | Left of expr | Right of expr
+</pre>
+
+Extend the <code>eval</code> function by adding clauses
+<pre> 
+eval Pr(expr1,expr2) = Pr(eval(expr1),eval(expr2))
+eval Left(expr) = match eval(expr) with
+                         Pr(expr1,expr2) -> expr1
+                          ...
+eval Right(expr) = ...
+</pre>
+This is an "eager" pair, the components of the pair are evaluated.
+Caml 2-tuples are eager, <code>(2,3+4)</code> evalues to
+<code>(2,7)</code>.  <p> 
+
+<strong>Question:</strong> if we
+wanted any <code>(e,e')</code> to be considered a value immediately,
+how would our evaluator be written? 
+<p>
+
+The space of <em>values</em> is now bigger: The values are now either
+<ul>
+  <li> numbers 0 1 -1 2 -2 ..., 
+  <li> booleans True False, 
+  <li> functions Function x -> e, or
+  <li> pairs (v,v')
+</ul>
+where v and v' are themselves values (a recursive
+definition).<p>
+Recall that 3-tuples can be encoded via two-tuples <code>Pr(e,Pr(e',e''))</code>,
+and similarly for 4-tuples etc.
+<p>
+
+Operational semantics rules for tuples: an exercise.
+
+<h2><A NAME="records">Records</A></h2>
+Records are a variation on tuples where the fields have names.  <p>
+What advantages do records have over tuples?
+<ul>
+  <li>Software engineering aspect: named field "zipcode" is better than "..third
+      thing in the tuple".
+  <li>Object polymorphism aspect: via record polymorphism, we may or may
+      not have some fields at any point in the program; hard to do
+      this with tuples. (we will use records to model objects later,
+      so this is particularly important).
+</ul>
+But, if
+records are always statically (at the time we write our code) known to
+be of fixed size, then we may as well map the labels to numbers and
+make a tuple:
+<blockquote>
+Record <code>{x = 5; y = 7; z = 6}</code> maps to tuple <code>(5,(7,6))</code><br>
+<code>.x</code> maps to <code>Left</code>, <code>.y</code> maps to <code>Function x -> Left(Right(x))</code>, <code>.z</code> maps to <code>Function x -> Right(Right(x))</code>.
+</blockquote>
+Obviously this makes ugly, hard-to-read code, but it works.  For
+C-style structs, this encoding would work.
+<p>
+
+But, in the case where records can grow or shrink, this encoding is
+fundamentally too weak.  C++ structs can be subtypes of one another,
+so some fields that are not declared may in fact be present at
+run-time.<p> 
+
+Recall Caml records are of the form
+<pre>{size = 7; weight = 245.3; name = "Buzz"}</pre>
+They can have any number of fields.  Values are selected by syntax
+<code>record.size</code>.  <p>
+
+We will use the same syntax in our <strong>D</strong> language
+extension, which we will name <strong>DR</strong>.<p>
+
+<h4>Record or subtype polymorphism</h4>
+<ul>
+  <li>Records do add more than just readability: if
+you have records
+<pre>{size = blah; weight = blah}</pre>
+and
+<pre>{weight = blah; name = blah}</pre>
+either record can be passed to a function <code>Function x ->
+x.weight</code>. 
+  <li>
+This is known (in a typed language) as <em>subtype polymorphism</em>:
+<code>x</code> is any record with a <code>weight</code> field.
+  <li>
+Order of record fields does not matter as with tuples.
+  <li>for the case of subtype polymorphism on records, we call that
+      <em>record polymorphism</em>.
+  <li>
+In object-oriented programming, subtype polymorphism on objects is called
+<em>object polymorphism</em> or just <em>polymorphism</em> (the latter is
+unfortunately confusing w.r.t the <em>parametric polymorphism</em> of Caml).
+  <li>Caml disallows subtype polymorphism and so the above will not
+typecheck.
+
+</ul><br>
+<h3>Operational Semantics for Records</h3>
+Exercise.  We are going to concentrate on the interpreter here.
+<h3><A NAME="xtocid135556">The DR Datatype in Caml</A></h3>
+Record labels are symbols.  we could use our identifiers (Ide "size")
+as labels, but it is better to think of record labels as a different
+sort.  For instance, labels are never bound or substituted for.  So,
+make a new type
+<pre>
+type label = Lab of string
+</pre>
+Records may be of arbitrary length, so a Caml list of label, expr
+pairs must be used to define record syntax.  The <strong>DR</strong>
+expr type is 
+<pre>
+type expr = ...
+| Record of (label * expr) list | Select of   expr * label</pre>
+The concrete syntax
+<pre>{size = 7; weight = 245}</pre>
+is then encoded as abstract syntax within Caml as
+<pre>
+Record [(Lab "size", (Int 7)); (Lab "weight", (Int 245))]
+</pre>
+and  e.size as Select(e,Lab"size").<p>
+
+The definition of values is extended from the values of <strong>D</strong>:<br>
+ Records <code>{field1 = v1; ..; fieldn = vn}</code>
+are values provided <code>v1</code> through
+<code>vn</code> are values. 
+<p>
+
+Finally, we extend the D interpreter to a <strong>DR</strong>
+interpreter.
+<pre>
+let rec eval e = match e with
+...
+| Record(body) -> Record(evalRecord(body))
+| Select(exp,lab) -> match eval(exp) with
+                         Record(fieldList) -> lookupRecord(fieldList,lab)
+                          ...
+...
+
+and evalRecord l = match l with
+  [] -> []
+| (Lab l,exp)::xs = (Lab l,eval(exp))::evalRecord(xs)
+
+and lookupRecord (record,Lab s) = match record with
+ [] -> raise FieldNotFound 
+ | (Lab s1,v)::xs -> if s1 = s then v else
+                  lookupRecord(xs,Lab s)
+</pre>
+Is <code>{}</code> or <code>Record []</code>, the empty record, OK? <br>
+ Yes, according to the above
+evaluator; it computes to itself and is also a value by the definition
+of value.  <br>
+Just don't try to select any fields from it!  <br>
+</a>
+
+<h2><A NAME="xtocid1118344">State-Based Languages</A></h2>
+
+Now we exit the world of pure functional programming and start
+considering <em>side effects</em>.  
+<p>
+
+We will study <strong>DS</strong>, a language obtained by adding
+<code>Ref e</code> (reference creation), <code>e := e'</code> (set),
+and <code>!e</code> (get) syntactic operations to <strong>D</strong>.  
+<p>
+
+State is our first example of a side effect in programming:
+the effect of assigning is not local since distant parts of the
+program may have the same cell and thus see the change.<p>
+
+Other side effects:
+<ul>
+  <li> Exceptions - non-local change in flow of control
+  <li> goto or loop break - similar to exceptions
+  <li> input/output
+  <li> distributed message passing.
+</ul>
+Languages without side effects, like <strong>D</strong> and
+<strong>DR</strong> are <em>pure functional</em> languages.  Once we
+add any effect they are not pure functional any more.<p>
+
+An example of the nonlocal nature of side effects.
+<pre>let x  = ref 9 in
+        let f z = x := !x + z in
+           x:= 5; f(5); !x
+     ;;
+<em>    - : int = 10
+</em></pre>
+Since side effects are not local, they can make programs a lot more
+difficult to understand.
+<blockquote><strong>Programming Moral:<br>
+Be spare in your use of side effects</strong></blockquote>
+
+Reference cell side effects: 
+<ul>
+  <li> each cell is a junction box
+  <li> each assignment is a path into the junction
+  <li> each read is a path going out of the junction
+  <li> the junction sits on the side of the program and allows distant
+       parts of the program to communicate with one another.
+</ul>
+<a name="DSopsem">
+<h3><A NAME="xtocid1118345">Operational Semantics for <strong>DS</strong></A></h3>
+Since memory is a significant modification to the language we go back
+to operational semantics before discussing the interpreter.  <br>
+
+<ul>
+  <li>The operational evaluation relation
+<pre> e ==> v </pre>
+wont work in the presence of memory.  
+  <li>Assignment produces side-effects, so we need a place on the side to store these changes, a
+<em>store</em>. 
+  <li> In C, the store is a stack and heap, and memory locations are
+referred to by their address.  
+  <li>Here we have only heap memory, so there needs to be an abstract
+heap sitting around as we compute.
+</ul>
+<strong>Definition.</strong> A <em>store</em> S maps <em>cell names</em> (denoted by
+the letter c) to their values.  <br>
+<ul>
+  <li>Cell names <code>c</code> are an abstract form of memory location.
+  <li>A store is an abstract representation of a run-time heap; the C
+      heap is a low-level realization of a store where cell names are
+      numerical memory locations.
+  <li>Officially, S is a <em>finite map</em> from cell names to values,
+called a <em>dictionary</em> when viewed as a data structure.
+  <li>We write <code>Dom(S)</code> to refer to the domain of the finite map,
+the set of all cells that it maps.
+<br>
+
+</ul><strong>Definition.</strong> The (concrete) <strong>DS</strong> syntax extends
+the <strong>D</strong> syntax by adding <code>Ref e</code>, <code>e :=
+e'</code>, <code>!e</code>, and cell names <code>c</code>. <br>
+<ul>
+  <li>Cell names <code>c</code> are required: "<code>Ref 5</code>"
+      returns a reference to a heap location, which has to be some
+      kind of name for a spot in the heap.
+  <li>Since cell names refer to heap locations and the heap is
+      initially empty, when programs start running they have no cell
+      names in them.
+</ul><p>
+
+We write
+
+<pre>
+S { c |-> v }
+</pre>
+
+to indicate the store <code>S</code> modified/extended so cell
+<code>c</code> maps to value <code>v</code>.<br> 
+
+<code>S(c)</code> is the value of cell <code>c</code> in store <code>S</code>.  <br>
+Evaluation for <strong>DS</strong> is written
+
+<pre>
+&lt e,S0 &gt ==> &lt v,S &gt
+</pre>
+
+where at the start of the computation <code>S0</code> is an <em>initial</em>
+(empty) store and <code>S</code> is the final store when the computation
+terminates.  <p>
+
+In the process of evaluation, cells <code>c</code> will begin to
+appear in the program syntax, as references to memory locations.
+<br>
+Cells are values since they do not need to be evaluated,  
+so the space of <strong>DS</strong> values also includes cells
+<code>c</code>. <p>
+
+<h4><A NAME="xtocid135559">Evaluation Rules for DS</A></h4>
+
+The different evaluation rules are modified with the store in mind.
+<p>
+
+The store is <em>threaded</em> along the flow of control.<p>
+
+There becomes more dependency between the rules, even the ones that
+don't directly manipulate the store.
+
+From the function application rule you should get an idea of the
+change needed to the other
+rules.
+
+<blockquote>
+...<br>
+<strong>Function application rule</strong><br>
+<code>&lt;e<sub>1</sub>, S1 &gt ==> &lt;Function x -> e, S2 &gt,
+&lt;e<sub>2</sub>,S2 &gt ==> &lt;v<sub>2</sub>, S3 &gt,
+&lt;e [v<sub>2</sub>/ x ], S3 &gt ==> &lt;v, S4 &gt</code> <br>
+------------------------------------------------------<br>
+<code>&lt;e<sub>1</sub> e<sub>2</sub>, S1 &gt;  ==> &lt;v, S4 &gt </code><p>
+</blockquote>
+
+Note how the store here is <em>threaded</em> through the different
+evaluations, showing how changes in the store in one place propagate
+to the store in other places, and in a fixed order that reflects the
+intended evaluation order.<p>
+
+Rules for the memory operations are as follows. 
+<p>
+
+<blockquote>
+...<br>
+<strong><code>Ref e</code> rule</strong><br>
+<code>&lt;e, S1 &gt ==> &lt;v, S2 &gt<br></code>
+------------------------------------------------------<br>
+<code>&lt;Ref e, S1 &gt ==> &lt;c, S2 { c |-> v } &gt</code> for <code>c</code> not
+in <code>Dom(S2)</code>, i.e. a new cell name<p>
+<p>
+
+<strong><code>!e</code> rule</strong><br>
+<code>&lt;e, S1 &gt ==> &lt;c, S2 &gt</code><br>
+------------------------------------------------------<br>
+<code>&lt;!e, S1  ==> &lt;v, S2 &gt</code> where <code>S2(c) = v</code> <p>
+<p>
+
+<strong><code>e := e'</code> rule</strong><br>
+<code>&lt;e1, S1 &gt ==> &lt;c, S2 &gt, &lt;e2, S2 &gt ==> &lt;v, S3 &gt</code><br>
+------------------------------------------------------<br>
+<code>&lt;e1:= e2, S1  ==> &lt;v, S3 { c |-> v } &gt</code> <p>
+</blockquote>
+Here are some examples of execution with state to ponder.  Note these
+work identically in Caml.
+<ul>
+  <li> <code>!(!(Ref Ref 5)) + 4</code>
+  <li> <code>(Function y -> If !y = 0 Then y Else 0)(Ref 7)</code>
+  <li> <code>Let x = ref 4 In Let y = ref 5 In (If !x = 0 Then
+       x Else y) := 6</code>
+  <li> <code>Let y = Ref 0 In ((Function x -> y := x)(Ref 5)) := 6; !!y</code>
+</ul>
+We write out in more detail the evaluation of the second example.<p>
+
+We show <code>&lt;(Function y -> If !y = 0 Then y Else 0)(Ref 7),empty &gt
+==> &lt;0, {c |-> 7} &gt</code>.<br>
+This matches the conclusion of the function application rule, provided
+we show three things:
+<ol>
+  <li> <code>&lt;(Function y -> If !y = 0 Then y Else 0),empty &gt
+==> &lt;(Function y -> If !y = 0 Then y Else 0),empty &gt </code>
+  <li> <code>&lt;Ref 7,empty &gt
+==> &lt;c, {c |-> 7} &gt</code>
+  <li> <code>&lt;(If !y = 0 Then y Else 0)[c/y], {c |-> 7} &gt
+==> &lt;0, {c |-> 7} &gt</code>
+</ol>
+The first follows by the value rule (values evaluate to themselves and
+do not change the store; hereafter we will not show uses of the value rule);<br>
+the second follows by the <code>Ref</code>
+rule above; lets work further on the third.<p>
+
+<code>&lt;If !c = 0 Then c Else 0, {c |-> 7} &gt
+==> &lt;0, {c |-> 7} &gt</code>
+because by the <code>If</code> rule,<br>
+
+<code>&lt;!c = 0, {c |-> 7} &gt ==> &lt;False, {c |-> 7} &gt</code>,<br>
+
+which follows in turn by the <code>=</code> rule because<br>
+
+<code>&lt;!c, {c |-> 7} &gt ==> &lt;7, {c |-> 7} &gt</code>.
+<p>
+
+
+<h3><A NAME="xtocid1118346">A Caml Interpreter for <strong>DS</strong>
+</A></h3>
+(We skipped this topic in lecture)<p>
+
+The operational semantics clearly defines the meaning of <strong>DS</strong>
+programs, but we would also like to briefly consider how the
+interpreter may be implemented in Caml.
+Here is the abstract syntax.
+<pre>
+type ident = Ident of string
+
+type expr = 
+ Var of ident | Function of ident * expr | Appl of expr * expr |
+ Letrec of ident * ident * expr |
+ Plus of expr * expr | Minus of expr * expr | Equal of expr * expr | 
+ And of expr * expr| Or of expr * expr | Not of expr |  
+ If of expr * expr * expr | Int of int | Bool of bool 
+ Ref of expr | Set of expr * expr | Get of expr | Cell of int
+</pre>
+<ul>
+  <li>We need to define new <em>cell</em> values, corresponding to the cell
+names <code>c</code> from the operational semantics.  
+  <li> We will use consecutive integer numbers for cells: e.g., <code>Cell(1)</code>,<code>Cell(2)</code>,<code>Cell(3)</code>,<code>Cell(4)</code>,...
+  <li>
+Programs should not have any <code>Cell</code>s in them before they
+start executing, but as memory is allocated, <code>Cell</code> values
+will start appearing.
+
+</ul><p>
+
+We have two choices in writing an interpreter for <strong>DS</strong>.  
+<ul>
+  <li> We could
+choose to mimic the operational semantics, and define evaluation on a
+expr and a store together.  This produces a functional interpreter.
+       <code>eval(e,s)</code> for expr <code>e</code> and state
+       <code>s</code> will return <code>(v,s')</code>, the final state
+       and final value.  
+  <li> We could implement an interpreter that keeps the state in
+       a global, mutable dictionary data structure, much as in an actual
+       implementation.
+</ul>
+Second will be a lot more efficient so we take that route here.<br>
+Desired theorem: the two approaches produce the same result.
+
+<a name="dsinterp"><h4>a Functional Interpreter</h4></a>
+We use a finite mapping from integer keys to values to model the store.  <br>
+We define a structure for the interpreter, with a skeleton like
+<pre>
+(* declare all the expr, etc types globally (too hard to do it "right") *)
+
+(* put the store functionality in a separate module.  *)
+
+module type STORE = 
+  sig
+   (* ... *)
+  end
+
+(* the Store structure implements a (functional) store.  A simple
+implementation could be via a list of pairs such as
+<code>[((Cell 2),(Int 4)); ((Cell 3),Plus((Int 5),(Int 4))); ... ]</code>
+module Store : STORE =
+
+type store = (* ... *)
+
+ struct
+  let empty = (* initial empty store *)
+  let fresh = (* a simple object which returns a fresh Cell name *)
+    let count = ref 0 in
+    function () -> ( count := !count + 1; Cell(!count) )
+  (* note: this is not purely functional!  its difficult to make fresh
+     purely functional *)
+
+(* look up value of cell c in store s *)
+   let lookup (s,c) = (* ... *)
+
+(* add or modify aCellName to aValue in store s, returning new store *)
+  let  modify(s,c,v) =  (* ... *)
+  end
+
+(* evaluator is then a functor taking a store module *)
+
+module DSEvalFunctor =
+  functor (Store : STORE) ->
+  struct
+    
+    (* ... *)
+
+
+    let eval (e,s) = match e with 
+      (Int n) -> ((Int n),s) (* values don't modify store *)
+    | Plus(e,e') -> 
+	let (Int n,s') = eval(e,s) in
+	let (Int n',s'') = eval(e',s') in
+	(Int (n+n'),s'')
+	
+(* other cases such as application are a similar store threading *)
+	
+    | Ref(e) -> let (v,s') = eval(e,s) in
+                let c = Store.fresh() in
+                   (c,Store.modify(s',c,v))
+    | Get(e) -> let (Cell(n),s') = eval(e,s) in
+      (Store.lookup(Cell(n)),s)
+    | Set(e,e') ->  (* exercise *)
+
+  end
+
+module DSEval = DSEvalFunctor(Store)
+
+</pre>
+
+<h4>Imperative Interpreters</h4>
+The interpreter above was interpreting <em>stateful</em> langauge, but in a
+<em>functional</em> way.
+<ul>
+  <li>It was <em>threading</em> the state through the computation
+  <li>This idea is due to Strachey in the 1970's
+  <li>An operational semantics is (always) purely functional since
+      thats the only way you can write it.
+  <li>Imperative-style programming can be hacked into a pure
+      functional language by exactly this means
+  <li>There are regular methods for threading a state through any
+      functional program: a <em>monad</em>.
+  <li>A direct stateful Caml interpreter for DS would be more
+      efficient: no threading needed.
+</ul>
+Sketch for imperative implementation of a DS interpreter:
+<ul>
+  <li>Store is an imperative dictionary (e.g. HashMap of C++ STL (?)
+      and Java)
+  <li>eval requires no extra store parameter as long as it has a
+      reference to this imperative dictionary
+  <li>non-store evaluation (<code>Plus</code>, etc) is totally
+      ignorant of the store 
+  <li>store evaluation (<code>Ref/Set/Get</code>) imperatively
+      extends/updates the store
+  <li>A good evaluator would also <em>garbage collect</em>:
+      periodically remove unneeded store elements.
+</ul>
+
+
+<h3><A NAME="xtocid135560">Side Effecting Operators</A></h3>
+Now that we have a mutable store, code has a property besides the
+value returned: it may have <em>side effects</em>.  Syntax for
+sequencing, "<code>;</code>", <code>while</code> and
+<code>for</code>-loops, thus becomes relevant
+(<strong>Question:</strong> why was it previously irrelevant??).  <p>
+
+These syntactic concepts
+are easily defined as macros, so we do not add them as official syntax:
+<blockquote>
+<code>e1 ; e2</code> = <code>(Function x -> e2)(e1)</code><br>
+<code>While e Do e' </code> = <code>(Let Rec f x = If e Then f(e') Else e)(0)</code><br>
+...
+</blockquote>
+
+<h3><A NAME="xtocid135561">Cyclical Stores</A></h3>
+It is also possible to make a <em>cyclical</em> store structure, where
+a cell's contents itself contains a pointer to itself.
+<pre>
+Let x = Ref 0 In x := x
+</pre>
+This is the simplest store cycle, a cell that points directly to itself.<br>
+<strong>Question:</strong> for the above cell <code>x</code>, what
+does <code>!!!!!!!!!!! x</code> return?<p>
+
+<strong>Question:</strong> Can such a form of a cycle be written in Caml?<p>
+
+A more subtle form of cycle is when a function is placed in a cell,
+and the body of that function refers to the cell.
+<pre>
+Let c = Ref 0 In c := (Function x -> If x = 0 Then 0 Else 1 + !c(x-1)); !c(10)</pre>
+--cell <code>c</code> contains a function which refers to the cell,
+and thus the function.  <br>
+This is another way of implementing recursion, the method used in practice in
+most compilers: <em>tying the knot</em>.<br>
+Also often how objects are made self-aware. C++ however explicitly
+passes the self, which is like the Y combinator.
+</a>
+<h3><A NAME="xtocid1118347">The "Normal" Kind of State</A></h3>
+Languages you are more used to (C, C++, Java, Scheme, etc) have a
+different form for expressing mutation.  
+<ul>
+  <li>There is no need for the
+explicit <code>!x</code> operator to get the value in a cell.
+  <li>It is a bit trickier to write an interpreter, variables mean
+something different if they are on the left or the right of an
+assignment statement (<em>l-value or r-value</em>). 
+      <ul>
+	<li><em>l-values</em> occur on the <em>left</em> of an assignment
+      and are <em>memory locations</em>, and
+	<li><em>r-values</em> occur on the right of assignments and
+	    elsewhere, and are actual values
+      </ul>
+
+</ul>
+  Consider the Java/C/C++ assignment
+statement <code>x = x + 1</code>.  
+<ul>
+  <li>The <code>x</code> on the left of the assignment is an l-value,
+      and the <code>x</code> in <code>x + 1</code> is an r-value
+  <li>In ML this would have been written <code>x
+:= !x + 1</code>.  
+  <li>ML is explicit on whether the cell (<code>x</code> for x a ref
+      type) or its
+value (<code>!x</code>) is being referred to
+<ul>
+  <li> For a Java l-value <code>x = </code> (l = left of the assignment), the
+<em>cell</em> <code>x</code>is needed to perform the store, and 
+  <li> for a Java r-value <code>x + 1</code>, the <em>value in the
+       cell</em> is needed, so <code>!x + 1</code> is written.
+</ul>
+<p>
+
+</ul>
+
+l- and r-values are distinct.
+<ul>
+  <li> some expressions have both l- and r-values
+(<code>x</code>, <code>x[3]</code> (array)), 
+  <li> but other expressions
+only have r-values (<code>5</code>, <code>0 == 1</code>,
+<code>sin(4.3)</code>). 
+  <li>So, in the language grammar, l- and r-values are different:
+      l-values are a subset of the full r-value expressions.
+  <li>Example showing the shortcomings of the restriced grammar in
+      Java/C/C++:
+      <ul>
+	<li>In ML you can code e.g. <code>f(3) := 7</code>, where
+      <code>f</code> is a function returning a cell. 
+	<li> You can't write that in Java, method results are r-values
+	    and can't be assigned to.
+      </ul></ul> 
+
+Here is a very simple revised grammar which restricts l-values to be
+      directly a variable
+<pre>type expr = 
+...
+Ref of expr | Set of var * expr | Get of expr 
+</pre>
+For the variable on the left hand side of an assignment, we need the
+      address and not the contents of the variable. <p> 
+
+<h4>Uninitialized Variables</h4>
+Another issue in the standard notion of state of C etc is (mutable)
+variables are not required to be initialized, so another run-time
+error of uninitialized value is possible.
+
+
+<h3>Automatic Garbage Collection</h3>
+Memory that is allocated also may at some point be freed.
+<ul>
+  <li>C/C++: explicit <code>free()</code>
+  <li>Java/Caml/Smalltalk/Scheme/Lisp: automatic free of unused
+      memory: <em>garbage collection</em>.
+</ul>
+sketch of implementation
+<ul>
+  <li>Something triggers GC (e.g. store too full)
+  <li>Suspend <code>eval</code>-uation
+  <li>Scan through current computation to find the list of all cells
+      directly used, the <em>root set</em>.
+  <li>Initially call all cells in the store except the root set <em>free</em>.
+  <li>Then, recursively traverse the memory graph; any cell reachable from the
+      root set is marked <em>not free</em>. 
+  <li>At the end of the traversal, memory still marked as free can be reused.
+  <li>Many different ways to reuse memory; details skipped.
+</ul>
+<h2><A NAME="xtocid2170354">Environment-based Interpreters</A></h2>
+
+<strong>(we didn't have time to cover this topic in lecture)</strong><p>
+
+We are briefly going to touch on some efficiency issues in our
+interpreters as we have been defining them.<p>
+
+Goal: get rid of explicit substitutions.  A "low level"
+interpreter would never be copying the function argument to each
+position in the function body. To compute
+<pre>
+(Function x -> x x x)(whopping expr)
+</pre>
+<pre>
+(whopping expr)(whopping expr)(whopping expr)
+</pre>
+is computed, tripling the size of the data.
+<p>
+
+<a name="explicitEnv">
+So, we define a more efficient <strong>explicit environment
+interpreter</strong>. 
+This means rather than substitute for x, we don't substitute but keep
+track of what variables "really" are in a <em>run-time
+environment</em>, a mapping from variables to values.  We will write
+environments as { x |-> e1, y |-> e2 } meaning variable x maps to
+value e1 and variable y maps to e2.  For the
+above example,
+to compute
+<pre>
+(Function x -> x x x)(whopping expr)
+</pre>
+<pre>
+(x x x) in environment {x |-> whopping expr} is thus computed.
+</pre>
+
+<ul>
+  <li>It turns out that the simple substituting interpreters don't
+actually copy the data; there will be only one copy of <code>whopping
+expr</code> from above and three pointers to it. 
+  <li>This is because immutable data can <em>always</em> be passed by
+      reference since it never changes
+  <li>But, in a compiler you can't just copy code around, so something
+      else needs to be done, along the lines described here.
+
+</ul>
+There is a possibility for some anomalies with the above scheme.  They
+arise when a function is returned as the result of another function,
+and that function has local variables in it.  Consider the example
+<pre>
+F = Function x -> if x = 0 then Function y -> y else Function y -> x * y
+</pre>
+when F(3) is computed.  the environment binds x to 3 while the body is
+computed, so the result returned is
+<pre>
+Function y -> x * y
+</pre>
+BUT it would be a mistake just to return this as the value because the
+fact that x is in fact 3 would have been lost.<p>
+
+<strong>Solution:</strong>  when a function is returned as a value,
+the <em>closure</em> of the function is in fact returned.  <p>
+
+A <em>closure</em> consists of a function and an environment.  The
+idea is all free variables in the function are bound to values in the
+environment.  For the above case, return the closure
+
+<pre>
+(Function y -> x * y, "x |-> 3")
+</pre>
+
+So, a environment-based evaluator along these lines can be defined
+(we won't consider the details here).
+<p>
+
+<strong>Theorem.</strong>  A substitution-based evaluator and an
+explicit environment evaluator for D are equivalent:
+all D programs either terminate on both evaluators or compute forever on
+both evaluators.
+
+<p>
+
+The closure view of function values is critical to be able to write a
+compiler: compilers can't be doing substitutions of code on the fly!<p>
+</a>
+
+<h2><A NAME="xtocid225355">The DSR Language</A></h2>
+We can now define the language <strong>DSR</strong>.  It is a
+call-by-value language that includes the basic features of <strong>D</strong>, with in
+addition the extensions added for records (<strong>DR</strong>), and state
+(<strong>DS</strong>).<p>
+
+We will study translations for <strong>DSR</strong>.  Missing language
+features that we will study later (and not consider when studying
+translations) include objects and classes, exceptions, and types.
+<p>
+
+Here are the official <strong>DSR</strong> expr types. 
+<a name="DSR-type"><pre>
+type label = Lab of string
+
+type ident = Ident of string
+
+type expr = 
+ Var of ident | Function of ident * expr | Appl of expr * expr |
+ Letrec of ident * ident * expr |
+ Plus of expr * expr | Minus of expr * expr | Equal of expr * expr | 
+ And of expr * expr| Or of expr * expr | Not of expr |  
+ If of expr * expr * expr | Int of int | Bool of bool 
+ Ref of expr | Set of expr * expr | Get of expr | Cell of int |
+ Record of (label * expr) list | Select of  label * expr |
+ Let of ident * expr * expr</pre>
+</a>
+<p>
+<!-- hhmts start -->
+Last modified: Thu Apr 18 12:28:10 EDT 2002
+<!-- hhmts end -->
+</body></html>

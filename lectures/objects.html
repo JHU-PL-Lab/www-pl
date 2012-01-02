@@ -1,0 +1,817 @@
+<html>
+<HEAD>
+<title>Objects, Classes, and Inheritance</title>
+</HEAD>
+<body LInK="#0000FF" VLInK="#800080" bgcolor="#F0FFF0">
+
+<h1><A NAME="xtocid1118332">Objects, Classes, and Inheritance</A></h1>
+
+<h2><A NAME="xtocid1118336">Simple Objects</A></h2>
+<strong>Why Objects Anyway?</strong>  
+<ul>
+  <li>Object-oriented programming doesn't fundamentally add much (it doesn't
+lead to much shorter programs)
+  <li>But, it is a style more appropriate to
+human psychology.
+</ul>
+
+<strong>Thesis:</strong> Humans as part of their basic function are
+highly adept at recognizing and interacting with everyday objects.<p>
+
+Everyday objects: Things we encounter everyday
+<p>
+<strong>Properties:</strong>
+<ul>
+  <li> active: not fully controlled by us, with internal evolving
+       <strong>state</strong>. 
+  <li> communicative: we can "send messages".
+  <li> encapsulated: some of the properties are not visible
+    (though we can learn some of it by sending messages)
+  <li> nested: complex objects have many object components
+     (which in turn have object components etc)
+  <li> uniquely named (more or less)
+</ul>
+Objects in OOP (Object-Oriented Programming) also have all of these
+features. <p>
+
+<strong>Conclusion:</strong> It is thus good to have programs create
+entities like these objects we are familiar with.<p>
+
+<h3><A NAME="xtocid1118338">The structure of an object</A></h3>
+
+An object is 
+<ul>
+  <li>Some encapsulated code (methods/operations) and
+mutable state (instances/fields) <br>
+<em>--notice that objects are inherently non-functional as defined above</em>
+  <li>With a unique name (an object reference) to refer to it;
+  <li>The methods should also be <strong>self-aware</strong>,
+aware of the name of the object it is a part of (accessed via
+<code>this</code> in Java/C++ and <code>self</code> in Smalltalk).
+  <li>Objects should be <em>polymorphic</em> in the sense that a
+      "fatter" object can always be passed to a method that needs a
+      "thinner" one only (one with fewer methods).
+</ul>
+
+<strong>Other aspects for objects</strong>
+We will come back to some of these later:
+<ul>
+  <li> Classes
+      <ul>
+	<li>Classes are an "add-on" idea and you can
+      effectively make a language without any classes (e.g. Self).
+	<li>Topics to understand: new, inheritance, method override, access to
+       overridden methods of the superclass, dynamic dispatch
+      </ul>
+  <li> Field/method information hiding: public/private/protected
+  <li> Types and Modules
+  <li> Overloading (syntactic sugar; skipped)
+</ul>
+
+We will uncover these issues by encoding
+objects in the DSR language. 
+
+<h3><A NAME="xtocid1118339">Encoding simple objects in <strong>DSR</strong></A></h3>
+
+<strong>Slogan: Objects are records of functions and refs</strong>
+<ul>
+  <li>Record labels and values are slots for either methods or fields.
+  <li>Slot with a Function represents a method
+  <li>Slot with a Reference represents an instance/field
+</ul>
+
+<strong>First pass at objects in DSR</strong><p>
+Consider a point, with <code>x, y</code> fields and methods
+<code>magnitude</code> and <code>iszero</code> with obvious functionality.
+<pre>
+point = { x = 4; y = 7; magnitude = Function _ -> ???; iszero = Function _ ->???}
+</pre>
+<ul>
+  <li><code>magnitude</code> needs access to x and
+y, but it currently has no name for them.  
+  <li>Solution: pass the object itself as argument when a method is
+      invoked <br>
+(this also happens to be how 
+C++ implements objects)
+</ul>
+Object then is
+<pre>
+point = { x = 3; y = 4;
+          magnitude = Function this -> Function _ -> sqrt(this.x + this.y);
+          iszero = Function this -> Function _ -> this.magnitude (this) = 0   
+}
+</pre>
+Message send then is
+<pre>
+point.magnitude(point){}
+</pre>
+Observations on the above.
+<ul>
+  <li>the object <code>point</code> itself is passed as an argument to the
+message send. 
+  <li><code>zero</code> is a method which calls <code>magnitude</code> --
+we need to pass along <code>this</code>, which was originally passed
+      to us, on the <code>magnitude</code> so it can know itself as well.
+  <li>This encoding of self-reference is
+called the <em>self-application encoding.</em>   
+  <li>There are a number of other encodings possible, some we cover below.
+</ul>
+
+
+We can write a message send abbreviation
+<pre>
+obj &lt;- method
+</pre>
+which stands for
+<pre>
+(obj.method) obj
+</pre>
+
+<h4>Mutable Instance Variables</h4>
+<strong>Problem:</strong> These objects are immutable! 
+<ul>
+  <li> The point
+coordinates can't change.  This equals windows that can't resize,
+sets/stacks/queues... that can't have members added or deleted, etc.
+  <li>It is good to have some fields immutable, but here we
+      have all of them immutable: too much of a good thing.
+<p>
+
+</ul>
+<strong>Solution.</strong>
+<pre>
+point = { x = Ref 3; y = Ref 4;
+             magnitude = Function this -> Function _ -> sqrt(!(this.x) + !(this.y)),
+             setx = Function this -> Function newx -> (this.x) := newx,
+             sety = ... }
+</pre>
+
+We can now say
+<pre>
+point.setx (point)(0);
+point.magnitude (point){}; (* returns 4 now, objects state changed *)
+point.x := 6;              (* directly change fields *)
+!(point.y)                 (* directly get field values *)
+</pre>
+In general, this strategy gives a faithful encoding of simple objects.<p>
+
+Let us pause a bit and map some classic notions of object on to this
+paradigm.  Consider encoding sets, stacks, students (as records in a
+database), etc.<p>
+
+<h4>Object Polymorphism</h4>
+
+<em>Object Polymorphism</em> means an object passed to a method as an
+argument can be of a form different than the form declared (or in an
+untyped language, originally intended) in the method.
+
+<p> Example:
+<ul>
+  <li>Suppose there is an abstract class <code>Person</code> with subclasses
+<code>Mother</code>, <code>Father</code>, <code>Child</code>.
+  <li> A method
+<pre>tallerThan(aPerson) =
+      this &lt;- height >= aPerson &lt;- height</pre>
+could be a method of a 
+<code>Person</code> and is passed another <code>Person</code> as
+argument.  
+  <li>But, the method also will accept a <code>Child</code>,
+<code>Mother</code>, or <code>Father</code> since they all have a
+<code>height</code>.  
+  <li>The method is thus <em>polymorphic</em> -- many
+forms of object can be passed to it.
+</ul>
+Observations
+<ul>
+  <li>We already encountered this issue for the case of records:
+      <pre>Let grabsnork = Function r -> r.snork</pre> can take any record with a
+      <code>snork</code> field:
+      <pre>.. In grabsnork ({snork = 4, moo = 4, wapp = 44})</pre>  
+  <li>Object and record
+      polymorphism is really the same thing, evidenced by how we view
+      objects as records.  So, using the above encoding of objects we
+      can obtain object polymorphism.
+      <pre>Let eqpoint =
+      { ... // all the code from point above: x,y,magnitude,...
+       equal = Function this -> Function apoint -> !this.x=!apoint.x
+                                                   And !this.y =!apoint.y}
+      In eqpoint &lt;- equal({x = Ref 3; y = Ref 7; /* anything else or nothing */})
+      </pre>
+     --the "point" passed to <code>equal</code> need only have x and
+      y.
+  <li>Object polymorphism in our embedded OO langauge is thus more powerful than
+that of C++/Java: 
+      <ul>
+	<li>
+Java and C++ look to the inheritance hierarchy to see what is allowed:
+you can always pass a subclass to a method expecting a superclass
+object, but no other choices are possible.
+	<li>suppose <code>Dinosaur</code> objects also had a
+<code>height</code> method; a <code>aPerson
+&lt;-tallerThan(aDinosaur)</code> would then execute without error.
+      </ul>
+</ul>
+
+<strong>Dispatch issues that arise with object polymorphism:</strong>
+<ul>
+  <li>Since the form of object is not completely known (in our OO language,
+its very unknown because <code>tallerThan</code> could even get
+<code>aDinosaur</code> as argument!), we don't know
+precisely where the methods will be laid out in memory. 
+  <li> Thus, hashing
+will be required to look up methods.  
+  <li>This is <em>exactly</em>  the
+same problem we encountered in our DSR compiler when we were compiling
+records. "Objects are records" again. <p>
+</ul>
+<h3>Private and protected Methods/Instances</h3>
+(we skipped this topic in lecture)<p>
+
+We want to protect some methods/instances from
+direct outside use.
+ 
+<ul>
+ <li>Aids in <em>encapsulation</em> of object data.
+  <li> This is private/protected of C++/Java; in Smalltalk,
+no instance variables may directly be set by outsiders ("protected" in C++-speak).
+  <li> For now we encode objects with hiding in <strong>DSR</strong>; for
+simple objects the relevant forms of hiding are private and public;
+protected makes sense only in the context of classes and inheritance.
+  <li> In C++/Java, its really the type system / bytecode verifier
+      that enforces privacy of data; for us we need to make it
+      inaccessible since we have no type system.
+</ul>
+
+<strong>A partial encoding of hiding in our DSR objects</strong>
+<pre>
+Let point = ... In
+Let hiddenPoint = { magnitude = point.magnitude point;
+                        setx = point.setx point;
+                        sety = point.sety point }
+</pre>
+--each method is "pre-applied" to the full point, and the
+<code>hiddenPoint</code> only contains the public methods/instances.
+Methods are now invoked simply as
+<pre>
+hiddenPoint.setx 5
+</pre>
+
+This solution is somewhat flawed.<br>
+
+Methods that return this re-expose the hidden parts.
+<pre>
+point = { x = Ref 3; y = Ref 4;
+             magnitude = Function this -> Function _ -> sqrt(!(this.x) + !(this.y));
+             setx = Function this -> Function newx -> (this.x) := newx;
+             sety = ...;
+             sneaky = Function this -> Function _ -> this }
+</pre>
+<pre>
+Let hiddenPoint = {magnitude = point.magnitude point;
+                       setx = point.setx point;
+                       sety = point.sety point;
+                       sneaky = point.sneaky point }
+</pre>
+<pre>
+hiddenPoint.sneaky {}
+</pre>
+now returns the full <code>point</code> object, oops!
+<p>
+
+<strong>A better solution</strong>
+In order to solve this problem we must use a different style of
+encoding, where we don't pass <code>this</code> evey time a method is invoked.
+Instead, the object gets a pointer to itself at the start.
+<pre>
+Let prePoint =
+  Function this -> Let privateThis = { x = Ref 3; y = Ref 4 } In
+   { magnitude = Function _ -> sqrt(!(privateThis.x) + !(privateThis.y));
+     setx = Function newx -> (privateThis.x) := newx;
+     sety = Function newy -> (privateThis.y) := newy }
+     notSneaky = Function _ -> this }
+In Let point = prePoint prePoint // make the object self-aware forevermore.
+In ...
+</pre>
+and message send simply as
+<pre>point.magnitude ()</pre>
+Method <code>notSneaky</code> returns this, but it is the public parts
+of this only.  Note, for this encoding to hide properly, you can only send
+messages to <code>privateThis</code>, not return it.<p>
+
+
+These encodings are relatively easy; encoding classes and typed
+objects as well is much more difficult.
+
+<h3><A NAME="xtocid1118340">Classes</A></h3>
+
+<ul>
+  <li>Classes are foremost templates for creating new objects: an object factory.
+  <li>Each object created from a class must have its own instance
+      variables (exception: static fields, which we ignore now).
+<p>
+
+Simple class encoding, ignoring hiding.  <br>
+Its trivial: freeze the
+object-building code so it can be repeatedly executed. 
+
+</ul><pre>
+Let pointClass = Function _ ->
+             { x = Ref 3; y = Ref 4;
+               magnitude = Function this -> Function _ -> sqrt(!(this.x) + !(this.y));
+               setx = Function this -> Function newx -> (this.x) := newx;
+               sety = ... }
+In ...
+</pre>
+To create a new object of <code>aClass</code>, just thaw the above:
+<pre>
+new aClass <em>is defined as</em> aClass ()</pre>
+
+Then, some code like
+<pre>
+Let point1 = pointClass () In point2 = pointClass () In point1.setx 5 ...
+</pre> 
+will create and use instances of <code>pointClass</code>.  
+<ul>
+  <li> <code>point1</code> and <code>point2</code> have their own
+<code>x</code> and <code>y</code> values.  
+  <li>This is good.
+  <li>Its a product of how <code>Ref</code> gives you a fresh memory
+      reference every time you use it.
+
+
+</ul>Hiding in classes: apply above freeze trick to object encodings above
+-- also easy. 
+
+<h3><A NAME="xtocid1118341">Inheritance</A></h3>
+80% of the usefulness of object-oriented programming comes from the
+above concepts: 
+<ul>
+  <li>Objects that encapsulate both the code and data for
+some functionality under a single name, 
+  <li>Object polymorphism,
+  <li>Templates for generating objects (one function of classes)
+</ul>
+20% is the idea of
+<ul>
+  <li> Inheritance
+</ul>
+As you well know,
+<ul>
+  <li>Inheritance allows related objects to be defined that share the
+      same code.
+  <li>The spirit of inheritance is "automatic re-cut-and-paste"
+      <ul>
+	<li>Suppose ColorPoint inherits from Point
+	<li>This means you can imagine all the code from
+	    <code>Point</code> pasted into <code>ColorPoint</code>
+	<li>Furthermore, if you change <code>Point</code>, that change
+	    <em>automatically</em> gets reflected in the
+	    <code>Point</code> code pasted into <code>ColorPoint</code> 
+      </ul>
+</ul>
+We can encode inheritance in <strong>DSR</strong>
+<ul>
+  <li> Grab the
+fields/methods we need from a superclass object which we have created
+as our slave.
+  <li>Every subclass object then is really two objects at run-time:
+      <ul>
+	<li>superclass slave object;
+	<li>subclass object which contains new and overridden
+	    information only
+      </ul>
+  <li>Real OO languages tend not to implement things this way, for
+      efficiency only however.
+</ul>
+<strong>Example</strong>: <code>ColorPoint</code> class.
+<pre>
+Let pointClass = ... as above ... In
+Let colorPointClass = Function _ ->
+          Let super = pointClass () (* create slave point "super" for our use *) In
+             { x = super.x; y = super.y; (* grab these fields from slave *)
+             color = Ref  { red = 45; green = 20; blue = 20 };
+             magnitude =
+                Function this -> Function _ -> super.magnitude this () *
+                                   this.brightness this;
+             brightness = Function this -> Function _ -> ... compute brightness  ...;
+             setx = super.setx (* grab method from superclass slave *)
+             sety = super.sety; setcolor = ... }
+In ...
+</pre>
+<ul>
+  <li><code>colorPointClass ()</code> will make an object with the appropriate
+methods. 
+  <li>The magnitude method has been overridden.  Inside the new
+method, the old method ("super") can be invoked by
+
+<pre>super.magnitude this ()</pre>
+
+Note how in the above interpretation all of the inherited methods are
+explicitly listed by name.  This is not the best form of encoding, but is as
+good as we can do in the current language: there is no operation to
+"tack on" fields to an arbitrary record, or to append two records.
+<p>
+
+</ul>
+Test code to think about to see if we believe the encoding above:
+<pre>
+Let cp = colorPointClass () In
+  cp.setx cp 5;
+  cp.sety cp 5;
+  cp.magnitude cp ()
+</pre>
+
+<h4>Dynamic Dispatch</h4>
+Methods are <em>dynamically dispatched</em> when its not clear from
+looking at a message send <code>o.m</code> in the code, precisely what
+method <code>m</code> will be run at run-time.
+
+<ul>
+  <li>Dynamic dispatch is related to object polymorphism: a variable
+      <code>v</code> could contain many different kinds of objects, so
+      <code>v.m</code> could be sending <code>m</code> to one of those
+      different kinds of objects and thus unless you know the object,
+      you don't know which method is being run.
+  <li>This term refers to how
+the method invoked by a message send is not fixed at compile time.  If
+we had a method <code>isNull</code> in <code>pointClass</code> and
+inherited by <code>ColorPointClass</code>, with code
+<pre>Function _ -> (this.magnitude this) = 0</pre>
+the <code>magnitude</code> method
+performed here is not 
+fixed at compile time: if <code>this</code>
+is a <code>Point</code>, the brightness is not taken into account, but
+it is if <code>this</code> is a <code>ColorPoint</code>.  This is
+known as <em>dynamic dispatch</em>.<p>
+
+</ul>
+In Java (and every other object-oriented language), you always get
+appropriate dynamic dispatch.  In C++, if you 
+don't declare a function <code>virtual</code>, you get no dynamic
+dispatch.<p>
+
+Inheritance should model the cut-and-paste view of code, and if the
+method were pasted, the dispatch would change.   This view is
+sound only if inherited methods get a revised notion of
+<code>this</code> upon inheritance.  <br>
+Does our encoding promote dynamic dispatch?
+
+<a name="DplusOO">
+<h2><A NAME="xtocid1118342">Adding Object-Orientated Features to D: DOB</A></h2>
+Now that we have given encodings for objects in terms of known syntax,
+we can study how these features may be directly added to the <STRONG>D</STRONG>
+language to give <strong>DOB</strong>, object-oriented
+<strong>D</strong>. <p>
+
+The alternative of not adding any new syntax and directly programming, is 
+simply too confusing for the programmer (esp.  after types are added!).  
+<br>
+--For example, the encoded <code>colorPointClass</code> above is just too
+hard to read.  
+
+<P>
+<STRONG>DOB</STRONG> has the following features
+
+<UL>
+<LI> classes, message send, methods, instances, super, this
+<LI> instance variables hidden (protected) and methods exposed (public), 
+as in Smalltalk
+<LI> primitive object definitions allowed
+</UL>
+
+Primitive objects aren't very common in practice;
+here is why we include them.
+<ul>
+  <li> If you want to write an interpreter for <strong>DOB</strong>,
+       the value returned by "<code>New aClass</code>" is an
+       <code>Object</code>. 
+  <li> Having primitive objects is a handy programming tool:
+       a more lightweight object, also like blocks in Smalltalk and
+       anonymous inner classes in Java.  
+  <li> With primitive objects you can get rid of functions entirely
+       (though we don't do this).
+</ul>
+Assertion: Object-oriented languages of the future should include syntax 
+for primitive objects.  Also gives much of advantage of higher-order 
+functions to object-oriented language.  Java's inner classes are about
+95% there.
+<p>
+
+
+Here is the point/colorpoint example in <STRONG>DOB</STRONG>'s concrete syntax.
+<pre>
+Let pointClass =
+      Class Extends EmptyClass
+            Inst
+              x = 3;
+              y = 4
+            Meth
+             magnitude = Function _ -> sqrt(x + y);
+             setx = Function newx -> x := newx;
+             sety = ...
+     
+In Let colorPointClass =
+      Class Extends pointClass 
+            Inst
+              x =  3;
+              y =  4;
+              color = Object Inst Meth red = 45; green = 20; blue = 20
+            Meth
+              magnitude =
+                Function _ -> Super &lt;- magnitude ()) *
+                        This &lt;- brightness;
+              brightness = Function _ -> color &lt;- red + color &lt;- green + color &lt;- blue;
+              setx = Super &lt;- setx (* explicitly inherit *)
+              sety = ...; setcolor = ... 
+     
+In Let point = New pointClass 
+In Let colorPoint = New colorPointClass In
+  point &lt;- magnitude(); point &lt;- setx 4; colorpoint &lt;- magnitude () 
+End
+</pre>
+
+This syntax is derived from the encoding of objects and classes above.
+<p>
+
+<!-- Following needs re-digesting, points all there but structure -->
+<!-- gross... -->
+
+Points to be made about the <strong>DOB</strong> language syntax details:
+<ul>
+  <li> <code>This</code> and <code>Super</code> are now "reserved
+       variables": in the encoding "<code>Function this -> </code>..." had
+       to be explicitly written; that is implicit by having <code>This</code> a
+       special variable.  
+  <li> In the encoding, we used one style of encoding for a base class
+       and another style for a class inheriting from another class.
+       Here we combine these into a single notion by having
+       a superclass always specified, but allowing the superclass to
+       be <CODE>EmptyClass</CODE>, an empty class.  
+  <li> <strong>DOB </strong>Instance variables use L/R value form  of
+       state: there is no need 
+       for ! to get the value when its used in an expression.
+       Instance variables are thus 
+       mutable, not following the ML convention that all variables be
+       immutable.  Method arguments are still immutable in
+       <strong>DOB</strong>. 
+       Since it is clear which variables are instances and
+       which are not, there is no great potential for confusion.
+       An advantage of this approach is it keeps instance variables
+       from being directly manipulated by outsiders.  The disadvantage
+       is the L/R-value confusion we discussed when dealing with state.
+  <li> There are thus two varieties of variable: immutable method/function 
+  parameters, and mutable instances.  This corresponds to Smalltalk 
+  practice.  Immutable instances can be considered methods (see the
+       color <code>Object</code> in the example above).
+  <li> Note how we still have to explicitly inherit methods.  This is not the 
+  greatest syntax, but is needed for the translation since <STRONG>DSR</STRONG> records are 
+  not extensible.
+  <li> method bodies are generally functions, but need not be; they can be 
+  any immutable, publicly available value.
+  <li> There is no constructor function; following Smalltalk, 
+  initialization is done explicitly by writing an <CODE>initialize</CODE> 
+  method.  Instance variables have to be given some initial value.  A
+       "better" implementation of the above classes would be as
+       <code>Function x -> Function y -> Class ... Inst x = x, y = y, ...</code>.
+</ul>
+
+<a name="dobdatatype"></a>Here is the datatype for <STRONG>DOB</STRONG>.
+<pre>
+datatype ide = Ide of string | This | Super (* this & super are special id's *)
+
+datatype label = Lab of string
+
+datatype term = (* ... insert D syntax elements here ... *)
+| Object of ((label * term) list) * ((label * term) list) (* instances list and methods list *)
+| Class of term * ((label * term) list) * ((label * term) list)
+| EmptyClass | New of term
+| Send of  term * label
+| InstVar of label  (* parser has to decide if a var is InstVar or just Var *)
+| InstSet of  label * term
+</pre>
+
+
+The relation is mostly clear; the one perhaps tricky bit is
+<CODE>InstSet(Lab"x",exp)</CODE> is the abstract syntax for concrete
+syntax <CODE>x := exp</CODE>, and <CODE>InstVar(Lab "x")</CODE>
+corresponds to <CODE>x</CODE> for <CODE>x</CODE> an instance variable
+access. <br>
+ Note that regular variables that are 
+parameters to functions, such as <CODE>newx</CODE> above, are just 
+<CODE>Var (Ide "newx")</CODE>.  
+<!-- Write out the point/colorpoint example in the abstract datatype. -->
+
+<h3><A NAME="xtocid10228107">Translating DOB into DSR</A></h3>
+The translation of <strong>DOB</strong> into <strong>DSR</strong>
+follows the ideas of the case-by-case informal encodings given above.
+
+Actual object-oriented compilers do not use this methodology now, but
+it is a valid one and is much more "methodological" and leads to a
+more understandable view of object-oriented language compilers.<p>
+
+This section: translate <strong>DOB</strong> into <strong>DSR</strong>
+via a function <CODE>toDSR</CODE>.  By implementing this translation,
+writing a parser for the <strong>DOB</strong> syntax, and using your
+<strong>DSR</strong> compilers, a <strong>DOB</strong> compiler is
+obtained:
+
+<pre>DOBCompile = toC o hoist o Atrans o cc o toDSR ;
+</pre>
+where <code>toC</code> etc are the components of the
+<strong>DSR</strong> compiler.
+
+<h2><A NAME="xtocid10228108">The Official Translation</A></h2>
+The <STRONG>DOB</STRONG>-to-<STRONG>DSR</STRONG> translation function is 
+inductively defined as follows.  
+<pre>
+toDSR Object Inst x1 = e1, ..., xn = en Meth m1 = e1', ... mk = ek' =
+   { inst = { x1 = Ref (toDSR e1); ....; xn = Ref (toDSR en) };
+      meth =  { m1 = Function this -> toDSR e1'; ....; mk = Function this -> toDSR ek' } }
+toDSR Class Extends e Inst x1 = e1, ..., xn = en Meth m1 = e1', ... mk = ek' =
+   Function _ -> Let super = (toDSR e)() In 
+    { inst = { x1 = Ref (toDSR e1); ....; xn = Ref (toDSR en) };
+      meth =  { m1 = Function this -> toDSR e1'; ....; mk = Function this ->  toDSR ek' } }
+    
+toDSR New e      = (toDSR e) () 
+toDSR EmptyClass = Function _ -> {} 
+toDSR Super &lt;- m =  super.meth.m this
+toDSR e &lt;- m  =  Let ob = (toDSR e) In ob.meth.m ob, for e not super
+toDSR x := e     = this.inst.x := (toDSR e)  (* notice how the LHS is an instance x, not an arb. expression *)
+toDSR x          = !(this.inst.x), for x an instance variable
+toDSR y          = y, for y a function variable
+toDSR &lt;others&gt;   = homomorphic
+</pre>
+The translation is fairly clean except message sends to <CODE>Super</CODE> 
+have to be handled slightly differently to give dynamic dispatch.
+<p>
+Instance variables <code>x</code> and method arguments <code>y</code>
+are different sorts in <strong>DOB</strong>: their translation is different.
+<p>
+As an exercise, feed the above point/colorpoint example through this 
+translation.  The code produced will be very similar to the initial 
+informal translation given.<br>
+Note, officially <CODE>f ()</CODE>, empty-argument function application, may 
+be written <CODE>f {}</CODE> (empty record application), and <CODE>_</CODE> in <CODE>Function 
+_ -> e</CODE> is any variable not occurring in <CODE>e</CODE>.
+</body></html>
+
+<h3><A NAME="xtocid1118343">A Direct Interpreter for DOB</A></h3>
+
+(this topic will be skipped in lecture)<p>
+
+
+The idea of writing the interpreter is to use the encoding as a guide.
+We will blissfully ignore dealing with stuck states properly, by using
+incomplete pattern matches.  <p>
+
+First, objects.
+
+<pre>
+...
+| eval(Object(meths,insts)) = Object(meths,evalInsts(insts))
+...
+
+and evalInsts l = (* evaluate the list of instances, return evaluated list *)
+</pre>
+
+Message send
+<pre>
+| eval(Send(term1,label)) =
+  let val1 = eval(term1) in
+  case val1 of Object(insts,meths) ->
+     subst(selectMeth(meths,label),val1,This)
+</pre>
+
+Classes (only considering the case now of an empty superclass)
+<pre>fun e(Class(super,insts,meths)) = Class(super,insts,meths)
+ |  e(New(Class(MTClass,insts,meths))) = eval(Object(insts,meths))
+</pre>
+<!-- prev. is incorrect, supers should be evaluated. -->
+...
+</a>
+
+<!-- NOTE::::::::::::::::::::::::::::::
+  transition here is rough since topics have been re-ordered; fix!!
+-->
+
+
+
+<h2><A NAME="xtocid10228110">Important features we skipped</A></h2>
+<h3>Typing</h3>
+It is relatively easy to understand objects and classes in terms of records of
+<code>Function's</code> and <code>Ref</code>'s.  It is a lot harder to
+understand typed objects in terms of <em>typed</em> records of
+<code>Function's</code> and <code>Ref</code>'s.<p>
+
+Typing objects will briefly be discussed later in the course.
+
+<h3>Class Names</h3>
+Classes in the above are not given unique names: the
+<code>Class</code> syntax has no field which is the class name.
+Pretty much every actual object-oriented language has a notion of
+class name which means something.<p>
+
+In Java, for instance, the class (and interface) names are important
+relative to casting: you can only cast an object to its super or
+sub-class.
+<h3>Constructors and Destructors</h3>
+In our language there is not so much need for constructors and
+destructors.  Functions can return classes, and that method allows a
+form of constructor to be programmed:
+<pre>
+Let Point = Function xinit -> Function yinit -> Class .... x = xinit, y = yinit, ...
+</pre>
+Then, a new point <code>(3,4)</code> is created by <code>New (Point 3
+4)</code>.
+<br>
+This is another advantage of having higher-order functions around.
+
+<h2>Objects in OCaml</h2>
+We briefly cover the OCaml object system: see <a
+href="http://www.cs.jhu.edu/~scott/pl/caml/htmlman/manual004.html">The
+Manual</a>.<p>
+Key features:
+<ul>
+  <li>classes:
+      <pre>#class point =
+   object 
+     val mutable x = 0
+     method get_x = x
+     method move d = x &lt;- x + d
+   end;;
+class point :
+  object val mutable x : int method get_x : int method move : int -> unit end
+</pre>
+      for making classes (note the type says object)
+  <li>new:
+<pre>
+#let p = new point;;
+val p : point = &lt;obj>
+</pre>
+<code>point</code> is an abbreviation for <code>&lt;get_x :
+int; move : int -> unit></code>
+  <li>Using:
+<pre>
+#p#get_x;;
+- : int = 0
+ 
+#p#move 3;;
+- : unit = ()
+ 
+#p#get_x;;
+- : int = 3
+</pre>  <li>Instead of constructors, you can define classes which take
+      parameters upon new.  In <strong>DOB</strong> this is like
+      writing
+      <pre>Function init -> Class ....</pre>
+      Here is an example:
+      <pre>#class point x_init =
+   object 
+     val mutable x = x_init
+     method get_x = x
+     method get_offset = x - x_init
+     method move d = x &lt;- x + d 
+   end;;
+class point :
+  int ->
+  object
+    val mutable x : int
+    method get_offset : int
+    method get_x : int
+    method move : int -> unit
+  end</pre>
+  <li>"this" is an explicit parameter:
+      <pre>
+ class printable_point x_init =
+   object (this)  (* declare variable this to refer to this *)
+     val mutable x = x_init
+     method get_x = x
+     method move d = x &lt;- x + d
+     method print = print_int this#get_x 
+   end;;</pre>
+  <li>Inheritance is pretty much as usual; multiple inheritance is
+      allowed.
+      <pre>
+ class colored_point x (c : string) =
+   object 
+     inherit point x
+     val c = c
+     method color = c
+   end;;</pre>
+  <li>virtual methods, private methods - skip.
+  <li>Object polymorphism.  This is one critical difference: there is
+      no implicit object polymorphism in OCaml!
+      <br>
+You must explicitly coerce e.g. a colorpoint to a point:
+      <pre>
+      #let colored_point_to_point cp = (cp : colored_point :> point);;
+val colored_point_to_point : colored_point -> point = &lt;fun>
+ 
+#let p = new point 3 and q = new colored_point 4 "blue";;
+val p : point = &lt;obj>
+val q : colored_point = &lt;obj>
+ 
+#let l = [p; (colored_point_to_point q)];;
+val l : point list = [&lt;obj>; &lt;obj>]</pre>
+</Ul>
+</body></html>

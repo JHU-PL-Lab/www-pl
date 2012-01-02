@@ -1,0 +1,299 @@
+<h2><A NAME="xtocid37374">The cps-translation</A></h2>
+<strong>(this topic was skipped in lecture)</strong><p>
+
+
+We have covered above all of the translations needed to implement a
+compiler for <strong>DSR</strong>.  As a footnote we are going to
+cover the cps translation.  It is an alternative to the A-translation.
+
+The SML/NJ compiler performs the cps-translation, not the
+A-translation.  cps succeeds in <strong>completely</strong> 
+linearizing the execution of the program, including function call and
+return, <code>If</code> and exception cases that the A translation did
+not make perfectly linear.  The emerging sentiment today is the cps
+translation is overkill.  Even machine languages have subroutine call
+and return built in as a primitive mechanism, and the <code>If</code>
+branching is a minor issue.  So, cps-translation tends to lead to less
+efficient code.  The real advantage of cps is that it can
+easily linearize exceptions.
+
+<h3><A NAME="xtocid388275">Continuations</A></h3>
+The <em>continuation</em> is the name for the "rest" of the computation
+that is waiting to be done when we are a particular point in a
+computation.  Consider for example
+<pre>
+Let FUN fact x = if x = 1 Then 1 Else x * fact (x - 1) In
+  fact 5
+</pre>
+If you think about how the interpreter (or operational semantics)
+performs this computation, it globally looks like this (let
+<code>fact</code> abbreviate the function):
+<pre>
+fact 5
+5 * fact 4
+5 * (4 * fact 3)
+5 * (4 * (3 * fact 2))
+5 * (4 * (3 * (2 * fact 1)))
+5 * (4 * (3 * (2 * 1)))
+5 * (4 * (3 * 2))
+5 * (4 * 6)
+5 * 24
+120
+</pre>
+
+In our intrerpreter and operational semantics, the <code>5 * (4 *
+...)</code> code is going to be performed when then recursive call to
+evaluate the right-hand side of the <code>*</code> operator returns.
+This global view of program execution is an important alternative to
+the tree view we have been taking in this course.  The global view has
+the advantage that it is linear (as the top-down sequence above).<p>
+
+In this global view, each state can be divided into two parts:  the
+parts from previous calls to the interpreter that are waiting for the
+current call to compute, and the current call.  For example, in
+
+<pre>5 * (4 * fact 3)
+</pre>
+The current call is <code>fact 3</code> and the parts from previous
+calls waiting to finish executing is <code>5 * (4 * ...)</code>.  Now
+we can define the 
+terminology: the current call is defined as the <em>redex</em>, and
+the parts from previous calls is the <em>continutation</em>.  The
+continuation thus denotes the "rest" of the computation to be
+performed.  The continuation as we are expressing it here takes the
+form of a term with a <em>hole</em> "..." in it.
+<p>
+Continuations are the negations of programs: they "eat" whats in the
+hole (consume), whereas programs "produce" values.<br>
+This duality of programs and continuations is a profound one that is
+not fully understood.
+<h3><A NAME="xtocid388276">Continuation-passing style (cps)</A></h3>
+
+The cps translation makes the continuation explicit.  The continuation 
+<code>5 * (4 * ...)</code> is expressible in D syntax as
+<code>Function r -> 5 * (4 * r)</code>.<p>
+
+The cps transformation then passes the continuation around explicitly.
+This is similar to how the A-translation was passing around the
+environment explicitly.  Here is an example of the factorial function
+with the continutation being passed around:
+
+<pre>
+Let FUN cpsFact x = Function cont -> if x = 1 Then cont 1 Else
+     cpsFact(x-1)(Function r -> cont (x * r)) In
+  cpsFact 3 rest
+</pre>
+What is <code>rest</code>?  It is the continuation for the rest of
+the program since the above code fragment could appear in any context.
+If the above is the whole program, rest is <code>Function r -> r</code>, a
+no-op continuation. This code then executes, from the global view, as
+<pre>
+cpsFact 3 rest
+cpsFact 2 (Function r -> rest(3 * r))
+cpsFact 1 (Function r -> (Function r -> rest(3 * r))(2 * r))
+(Function r -> (Function r -> rest(3 * r))(2 * r)) 1
+(Function r -> rest(3 * r))(2 * 1)
+rest(3 * 2)
+</pre>
+Notice how the redex is (almost) always at the top.  This recursive
+function is <em>tail-recursive</em>, the function itself completes
+execution when the recursive call finishes.  This is a more linear
+style of evaluation.<p>
+
+The <code>cpsFact</code> function is not fully in cotinuation-passing
+style; in the rigorous form, <em>every</em> operation in the language
+gets passed a continuation, does its stuff, and passes the result to
+the continuation.<p>
+
+<h3><A NAME="xtocid388277">Toward the cps function</A></h3>
+Consider for example any addition operation <code>e + e'</code>.
+With an explicit continuation, this operation is transformed to
+<pre>
+Function cont -> cps(e) (Function v1 -> cps(e') (Function v2 -> cont(v1+v2)))
+</pre>
+where cps(e) and cps(e') are the cps-converted forms of e and e',
+respectively (recall that means they are passed their continuations).
+This term deserves some thought: cps(e) should take a continuation and
+apply it to its value.  The <code>FUN v1 ->...</code> function is its
+continuation, so cps(e) should eventually pass this function its
+value, so <code>v1</code> will eventually be the value of
+<code>e</code>.  Similarly, <code>v2</code> will get the value of
+<code>e'</code>.  Strange, eh?<p>
+
+Any other primitive binary operators will have a similar cps translation.  How
+about <code>If e Then e' Else e''</code>?
+<pre>
+Function cont -> cps(e) (Function v1 -> If v1 Then cps(e') cont Else cps(e'') cont)
+</pre>
+
+Variables and constants immediately pass their value to their continuation:
+<pre>
+cps(4) = Function cont -> cont 4
+</pre>
+From what has been said so far, a rudimentary cps translation function
+can be defined:
+<ol>
+  <li> <code>cps(x) = Function cont -> cont x</code>
+  <li> <code>cps(n) = Function cont -> cont n</code> (numbers)
+  <li> <code>cps(b) = Function cont -> cont b </code> (booleans)
+  <li> <code>cps(Function x -> e) = Function x -> Function cont -> cps(e)</code>
+  <li> <code>cps(e e') = Function cont -> cps(e) (Function v1 -> cps(e') (Function v2 ->
+       v1 v2 cont))</code>
+  <li> <code>cps(e + e') = Function cont -> cps(e) (Function v1 -> cps(e') (Function v2 ->
+       cont(v1 + v2)))</code>
+  <li> <code>cps(e op e') = similar to +</code>
+  <li> <code>cps(If e Then e' Else e'') = Function cont -> cps(e) (Function v1 -> If v1 Then cps(e') cont Else cps(e'') cont)</code>
+</ol>
+This translation is a-OK, but it produces a huge number of <code>Function cont
+-> ...</code> functions and 
+applications.  It turns out most of these function applications can be
+performed, simplifying the result.  Lets look at an example to show this.<p>
+
+Consider again the example
+<pre>
+4 + (2 * (3 + 2))
+</pre>
+that we performed the A-translation on.  In cps, this is partially
+<pre>
+Function cont -> cps(4) (Function v1 -> cps(2 * (3 + 2)) (Function v2 -> cont(v1+v2))
+</pre>
+Considering first cps(4), it is <code>Function cont -> cont
+4</code>: pass 4 to the continuation.  So,
+<pre>
+Function cont -> (Function cont -> cont 4) (Function v1 -> cps(2 * (3 + 2)) (Function v2 -> cont(v1+v2)))
+</pre>
+Now, this cps gets quite messy so we will simplify by performing the
+inner evaluation (this gives an operationally equivalent computation):
+<pre>
+Function cont -> (Function v1 -> cps(2 * (3 + 2)) (Function v2 -> cont(v1+v2)))(4)
+</pre>
+which we can rewrite using the Let macro as
+<pre>
+Function cont ->
+Let v1 = 4 In
+cps(2 * (3 + 2)) (Function v2 -> cont(v1+v2))
+</pre>
+Now, we can tackle the other cps.
+<pre>
+Function cont ->
+Let v1 = 4 In
+(Function cont -> cps(2) (Function v3 -> cps(3 + 2)(Function v4 -> cont(v3 * v4))))
+  (Function v2 -> cont(v1+v2))
+</pre>
+We apply this continuation to give
+<pre>
+Function cont ->
+Let v1 = 4 In
+(cps(2) (Function v3 -> cps(3 + 2)(Function v4 -> (Function v2 -> cont(v1+v2))(v3 * v4))))
+
+</pre>
+And again the cps(2) can be expanded and simplified like above to give
+<pre>
+Function cont ->
+Let v1 = 4 In
+((Function cont -> cont 2) (Function v3 -> cps(3 + 2)(Function v4 -> (Function v2 -> cont(v1+v2))(v3 * v4))))
+
+Function cont ->
+Let v1 = 4 In
+((Function v3 -> cps(3 + 2)(Function v4 -> (Function v2 -> cont(v1+v2))(v3 * v4)) (2)
+
+Function cont ->
+Let v1 = 4 In
+Let v3 = 2 In
+ cps(3 + 2)(Function v4 -> (Function v2 -> cont(v1+v2))(v3 * v4))
+
+</pre>
+And, now working on cps(3+2), it expands to
+<pre>
+Function cont ->
+Let v1 = 4 In
+Let v3 = 2 In
+Function cont -> (Function cont -> cont 3) (Function v5 -> (Function cont -> cont 2) (Function v6 -> cont(v5+v6)))
+ (Function v4 -> (Function v2 -> cont(v1+v2))(v3 * v4))
+
+Function cont ->
+Let v1 = 4 In
+Let v3 = 2 In
+Function cont -> (Function v5 -> (Function v6 -> cont(v5+v6))(2))(3)
+ (Function v4 -> (Function v2 -> cont(v1+v2))(v3 * v4))
+
+Function cont ->
+Let v1 = 4 In
+Let v3 = 2 In
+(Function v5 -> (Function v6 -> (Function v4 -> (Function v2 -> cont(v1+v2))(v3 * v4))(v5+v6))(2))(3)
+
+Function cont ->
+Let v1 = 4 In
+Let v3 = 2 In
+Let v5 = 3 In
+Let v6 = 2 In
+(Function v4 ->
+  (Function v2 -> cont(v1+v2))(v3 * v4))
+(v5+v6)
+
+Function cont ->
+Let v1 = 4 In
+Let v3 = 2 In
+Let v5 = 3 In
+Let v6 = 2 In
+Let v4 = v5 + v6 In
+Let v2 = v3 * v4 In
+  cont(v1+v2)
+
+Function cont ->
+Let v1 = 4 In
+Let v3 = 2 In
+Let v5 = 3 In
+Let v6 = 2 In
+Let v4 = v5 + v6 In
+Let v2 = v3 * v4 In
+Let vr = v1 + v2 In
+  cont vr
+
+</pre>
+Notice this is the same result produced by the A-translation.  For
+code without functions or If, the results of the two translations are
+the same.
+<h3><A NAME="xtocid388278">The full cps function</A></h3>
+We would like to implement a cps translation that produces code like
+our manual simplification process did.
+
+<h3><A NAME="xtocid388279">Control operators in the cps framework</A></h3>
+Once programs have been placed in cps form, the flow of control can be
+manipulated by manipulating the continuation.
+Consider an <code>ABORT(e)</code> operation which has the effect of
+aborting the whole computation and returning e.  In cps form, ABORT is
+expressible directly as
+<pre>
+Function cont -> cps(e) (Function x -> x)
+</pre>
+Easy, no?
+<p>
+
+<code>Raise</code> and <code>Handle</code> may also be defined in cps!
+Let us extend the definition  of cps.  For this translation, exception
+names xn will be considered to be a variable.
+<ol>
+  <li> <code>cps(e Handle xn(x) -> e') =
+        Function cont ->
+          Let xn = (Function v -> cps(Function x -> e')(v)(cont)) In
+            cps(e)(cont)
+         </code>
+  <li> <code>cps(raise xn(e)) = cps(e)(xn)</code>
+</ol>
+The key idea is how variable xn has a continuation put into it --
+since all of these continuations are being passed around as
+first-class data, they can be put in variables.  Then, when the raise
+is performed, that continuation gets executed and the current
+continuation gets thrown away.<p>
+
+Note this translation introduces some nonlocal variables in functions
+(<code>cont</code>), so a closure conversion would also have to be
+performed on this function if we were using cps as a component of a
+compiler.
+<p>
+
+The book <a href="http://www.cs.indiana.edu:/eip/eopl.html">Essentials
+of Programming Languages</a> spends a huge amount of time on
+continuation-passing style.  So much in fact that it warps your brain
+(in the opinion of certain, unnamed, professors).

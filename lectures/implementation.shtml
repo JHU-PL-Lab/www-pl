@@ -1,0 +1,568 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content"> <h2>Implementation Issues</h2>
+
+Here we briefly survey some key issues in programming language implementation.
+
+<h3>Runtime memory models</h3>
+To review, programming language implementations have three tiers of memory:
+<ul>
+  <li>Globals (globals of C/C++, static fields and class methods of class-based languages)
+  <li>Stack (the runtime function/method call stack where local function variables are allocated)
+  <li>Dynamic store (aka the "heap")<br>
+--and, the heap can be either explicitly managed via manual alloc/free or be implictly managed by garbage collection.
+</ul>
+Additionally,
+<ul>
+  <li>Registers are a fourth tier which only C/C++ can partially access via the <code>register</code> qualifier on variable declarations.  
+  <li>The <em>cache</em> is even largely invisible at the machine code level, but has a huge impact on performance since access to memory in the cache is an order of magnitude faster than off-cache access.
+</ul>
+There are also two primary forms of the view given to programmers:
+<ul>
+  <li>Implicit memory: the programmer view is a high-level view where every variable contains a <em>reference</em> to an object, a high-level name-to-value mapping<br>
+-- in other words it is how our <strong>FbS</strong> interpreter viewed things, the memory was just a dictionary.
+  <li>Explicit memory: references are in fact memory addresses that the programmer can control: address-of an entity is a possible operation, and arrays are just pointers to a block of space.
+</ul>
+
+<h4>More on implicit memory</h4>
+Although the programmer can be unaware of it, at runtime the layout is usually different for objects and for primitive data:
+<ul>
+  <li>Primitive data (int float, etc) is <em>unboxed</em>, it can directly be on the call stack or in a global location
+  <li>Objects are <em>boxed</em>, on the stack there is just a reference to an object.
+</ul>
+The Java <code>Integer</code> performs much more slowly than the primitive type <code>int</code> for this reason.
+<h3>The call stack</h3>
+<ul>
+  <li>All function/method arguments and local variables are allocated memory on the <em>call stack</em>
+  <li>In the implicit memory model, these local variables containing object are just references to the actual object which is on the heap.
+  <li>Each function call in particular pushes a new <em>frame</em> on that stack which also stores the return point and maybe saves some register values.
+  <li>Call stacks allow recursive calls of a function to have a different copy of the local variables; in languages without recursion there is no strong need for a call stack.
+  <li>When a function returns its frame is popped.
+  <li>In the explicit memory model it is possible to still have a pointer to a record that was previously popped; this cannot happen in the implicit memory model.
+  <li>Variables on the call stack can be quickly access via one memory reference since the stack pointer itself is stored in a register (for unboxed values, boxed values will need one more indirection).
+</ul>
+
+<h4>Call stack issues relative to <strong>Fb</strong> and functional programming:
+</h4>
+<ul>
+  <li>In our <strong>Fb</strong> universe, the function locals were immutable so we in fact <em>substituted</em> instead of putting them on a stack, but this would be very inefficient in practice.
+  <li>The reason why we substituted is because <em>nonlocals</em>, variables in a function that are not arguments (and are in fact in frames further up the call stack), are difficult to deal with if there is no stack.<br>
+-- a <em>closure</em> is needed for every function definition which remembers the values of all nonlocal variables at the point the function was defined.
+</ul>
+
+<h3>Garbage Collection</h3>
+
+<ul>
+  <li>Garbage collection: implicit memory management, avoids explicit need
+to free<br>
+ (and subsequent problem of mistakenly freeing something that is in fact still in use).
+  <li> Found in: Java, Smalltalk, Lisp, Scheme, ML, ...
+  <li>Garbage collection is a key component of a modern "high-level
+language".
+</ul>
+
+
+<strong>Definition.</strong>  Garbage: something no definately live bit of memory points to<br>
+
+<strong>Garbage Collection:</strong> automatically find and free this memory.
+<ul>
+  <li>Many different methods have been proposed.
+  <li>All methods require a way to tell where
+objects start and end, and the difference between a pointer and
+immediate data (char/smallinteger/boolean/nil).
+</ul>
+
+Advantages: 
+<ul>
+  <li>No need to explicitly free
+  <li>(biggest reason really) no errors where you accidentally freed
+      something that was still in use by someone else
+</ul>
+Disadvantages:
+<ul>
+  <li>Slows down computation.
+  <li>Can cause a pause when you don't want one--a huge issue for
+      real-time systems programming, and a potentially big issue for
+      any interactive app.
+</ul>
+<hr>
+
+<h4>Reference Counting Collection</h4>
+<ul>
+  <li> Heap-based storage allocation: have a heap containing all the
+       free segments of memory.  New objects allocated space from the heap.
+  <li> Each memory item maintains a reference count (an extra say 3
+       bits of data, to store the number of objects immediately
+       pointing <em>to</em> it)
+  <li> Reference counts updated every time a pointer moves
+  <li> Any time a reference count is decremented to zero, the space is
+       "free" and added to the heap.
+</ul>
+Points about reference counting
+<ul>
+  <li>Reference counting rarely used today because of its one major incurable
+flaw: cycles in memory will not get collected.
+  <li>Also, its slow in practice due to the need to maintain the counts.
+  <li>RMI objects are reference counted
+</ul>
+
+
+<hr>
+<h4>Mark and sweep collection</h4>
+Mark and sweep is simplest form of "100% correct" garbage collection.<p>
+<ol>
+  <li> Use heap as above for keeping free space, allocating new
+       objects space and putting dead objects on heap.
+  <li> The <em>root set</em> are objects that are
+       directly accessible so have to be live.  Standard notion of roots:
+      <ul>
+	<li>any object on run-time stack of any thread
+	<li>static fields
+      </ul>
+  <li> Each object has a special <em>mark bit</em>; all bits initially
+       set to "U" (unmarked) by a sweep through all of memory.
+  <li> To do GC, when space tightens: stop all processing (and, expect
+       to wait awhile - <em>this is the main drawback</em>)
+  <li> Mark ("M") the root set.
+  <li> Traverse all pointers from the root set, marking ("M") all
+       objects encountered.
+  <li> Stop if an object is already marked, no need to traverse again.
+  <li> When all objects traversed, <em>sweep</em> through all of
+       memory: all objects not 
+       marked were inaccessible -- put their space on the free heap.
+</ol>
+Main problem is the big wait.  Also memory will get very fragmented
+(eventually will have many very small chunks of free space).
+
+
+<hr>
+<h4>Copying Collection</h4>
+<ul>
+  <li> Allocate memory in two-partition scheme (the two <em>semi-spaces</em>).
+  <li> Only one semi-space occupied at any time, other free (wasteful)
+  <li> New objects allocated in the occupied partition
+  <li> Collector will flip spaces when it garbage collects, making the
+       other space the active one.
+</ul>
+The garbage collection algorithm.
+<ol>
+  <li> GC is triggered when the active semi-space becomes too full.
+  <li> All processing must stop to GC (again that bad point).  In
+       particular, a <code>new</code> operation will trigger GC and that
+       <code>new</code> operation will wait until the GC is completed
+       for it to return. 
+  <li> Terminology: <em>newspace</em> is the space that was empty that
+       objects will move to; <em>oldspace</em> is the full space
+  <li> Like the mark-and-sweep collector, start at the roots in
+       oldspace and
+       recursively follow pointers
+  <li> But, when a (live) object reached, don't mark it; instead
+       <ol>
+	 <li> copy it over to newspace (putting
+	      objects in one after the other, so no fragments)
+	 <li> leave behind in its place in oldspace a <em>tombstone</em>, a
+	      forwarding pointer to the new location of the object
+       </ol>
+  <li> If during traversal, a tombstone is pointed to, correct the
+       pointer to point to the new location of the object.
+  <li><strong>invariant:</strong> there will never be any newspace
+      objects with pointers to oldspace objects (think about it).
+  <li> ... after all objects have been reached, the GC is finished,
+       and the active semi-space is switched to newspace and
+       processing resumes. 
+  <li> Fact: at the end, there will be no pointers to tombstones, and
+       so no pointers into oldspace, so its 100% junk.
+</ol><p>
+Disadvantages
+<ol>
+  <li> The big pause
+  <li> Wastes half of memory
+</ol>
+Still, its much better then mark-and-sweep: no fragmentation, no heap
+to maintain, no mark bits needed.
+
+
+<hr>
+<h4>Scavenging Collectors</h4>
+<em>Scavenging</em> is incremental collection: scavenge up a little
+free space, move around a few objects, let the program run again.
+Why? Avoid the big bad pause.<p>
+Scavenging with a copying collector:
+<ol>
+  <li> Execution doesn't stop when the collection starts
+  <li> Critical invariant to preserve: no pointers from newspace to
+       oldspace (without this invariant, at the end of GC there could be
+       pointers to oldspace)
+  <li> To preserve invariant, if a newspace object gets mutated to
+       point to an oldspace object, <em>immediately</em> pull that
+       oldspace object (and all objects it points to) over to newspace.  Requires overhead at each
+       mutation (assignment to instance variable). Also, the worst
+      case is bad (but fortunately almost never happens---memory is
+      random enough)
+</ol>
+
+
+<hr>
+<h3>Sun's HotSpot VM Collector</h3>
+Sun's hotspot collector (the JVM since Java 3) is a high-quality
+collector.
+<ul>
+  <li>It performs both mark and sweep, and copying collection.
+  <li>Collection is based on how long an object has been alive
+  <li>Young objects are in the <em>young generation space</em>
+  <li>Older objects are in the <em>old generation spaace</em>
+  <li>Why divide like this?  Most objects don't live long, so
+      frequently collect young space (<em>minor collection</em>) and
+      infrequently collect old space (<em>major collection</em>).
+</ul>
+<h4>Young space</h4>
+Young space has three subspaces:
+<ol>
+  <li>Eden
+  <li>Survivor Space One
+  <li>Survivor Space Two 
+</ol>
+The two survivor spaces are identical to the two subspaces of a
+copying collector: only one is used at any one point.  But, they are
+small so not much memory is wasted.<p>
+
+Copying collection is used on Young space
+<ul>
+  <li>Objects all are created in eden
+  <li>When Eden fills, a <em>minor colection</em> is triggered
+  <li>(Statistically, most of the objects in Eden are garbage at this point)
+  <li>A copying collection ensues which copies the live objects in
+      Eden and the active survivor space to the other survivor space.
+  <li>If an object has been copied between the survivor spaces
+      e.g. three times by three minor collections, it is older and is
+      <em>tenured</em>, copied to old space instead.
+  <li><strong>Fact:</strong> young spaces are small enough that minor
+      collections produce a pause that is not noticable.
+</ul>
+
+<h4>Old Space</h4>
+<ul>
+  <li>(There is one part of old space called Perm space which holds
+      system objects that will never be collected.)
+  <li>Old space collections are <em>major collections</em>; they
+      generate a noticable pause.
+  <li>Old space by default uses a mark and sweep collection.  
+  <li>It also periodically compacts to minimize fragmentation.
+  <li>If you run <code>java</code> with the <code>-Xincgc</code> (1.4.1 and later), you will get a
+      fancier incremental <em>train</em> collector on oldspace.
+</ul>
+The <em>train</em> garbage collection algorithm
+is used there:
+<ul>
+  <li>Its a fancy scavenging, compacting mark and sweep collector.
+  <li>Objects are clustered by the pointer structure: objects
+      are close in memory to objects they directly refer to.
+      <br>(This also helps with virtual memory: objects working with
+      each other are more likely to be in the same page)
+  <li>In particular, there are <em>trains</em> 
+      consisting of a series of <em>cars</em> of clustered objects.
+  <li>Trains are generational: they are timestamped upon
+      creation with their number.
+  <li>Scavenging: trains are collected one at a time, in particular
+      the oldest remaining train is collected; the time to
+      collect a given train should be small
+  <li>In collecting a train, that train goes away; garbage
+      objects are gone, and non-garbage objects are moved
+      to the (other) train that directly pointed to them<br>
+      --this compacts memory and clusters adjacent objects.
+  <li>There are a huge number of difficult issues to solve
+      which we are going to skip over.
+</ul>
+<hr>
+
+<h3>Efficient Implementation of OCaml</h3>
+
+(to appear)
+
+<h3>Virtual Machines</h3>
+<ul>
+  <li>Nearly all of the implicit memory model languages today compile to a stack-based <em>virtual machine</em>
+  <li>Why? One compiler compiling to the VM and you are done, only the VM interpreter needs to be ported to other platforms
+  <li>Why not?  It slows down performance greatly.
+  <li>Modern solution to performance gap: just-in-time compilation of bytecodes to machine code.
+  <li>Lecture here: some details on the Java VM (other VMs are similar).
+</ul>
+
+<h4>JVM and Java</h4>
+<ul>
+  <li>The JVM bytecode language isn't Java
+  <li>Why Bytecodes?  Portability!
+  <li>You could write bytecodes by hand and forget Java ever existed
+  <li><em>But</em>, the JVM does share a lot of structure with Java
+      since it was designed for Java
+  <li>Built-in JVM concepts include: classes, objects, message send,
+      primitive types, threads, native stacks, exceptions, etc.
+</ul>
+<hr>
+<h4>JVM Stack Frames</h4>
+<ul>
+  <li>The JVM uses a stack of frames just like C/C++.
+  <li>There is a stack for each thread
+  <li>method invocation creates a new frame for that method and pushes
+      it on the stack
+  <li>Similarly, method return pops a frame.
+</ul>
+Whats in a frame?
+<ul>
+  <li>First, its fixed-size: doesn't grow or shrink (bytecode language
+      tells how big to make the frame)
+  <li>All local method variables have locations in the frame
+  <li>There is an <em>operand stack</em> which is a mini-stack for
+      the JVM instructions which are stack based ("push 3; push 5;
+      add").  More on this below.
+</ul>
+<hr>
+<h4>JVM Bytecodes</h4>
+<ul>
+  <li>The JVM is <em>stack machine</em> -- temporaries are not put in
+      registers, they are pushed/popped from the operand stack
+  <li>The bytecodes are simple 1-byte instructions 0x00 to 0xFF.
+  <li>the instructions generally either work on the operand stack,
+      or with the temp. variables in the stack frame
+</ul>
+Most of the examples below are taken from <a
+href="http://java.sun.com/docs/books/vmspec/2nd-edition/html/Compiling.doc.html">The
+JVM Specification</a>. Note: you can view the bytecodes of any .class
+file by typing <code>javap -c MyClass</code> in a directory where MyClass.class exists.
+<h4>Simple control and variables</h4>
+<pre>
+void whileInt() {
+
+        int i = 0;
+        while (i < 100) {
+            i++;
+        }
+    }
+</pre>
+is compiled to 
+<pre>
+Method void whileInt()
+ 0   iconst_0                // push constant 0
+ 1   istore_1                // store into frame location 1 which is i
+ 2   goto 8                  // jump to 8th byte
+ 5   iinc 1 1                // increment frame location 1 by 1
+ 8   iload_1                 // push load frame location 1 
+ 9   bipush 100              // push constant 100
+ 11  if_icmplt 5             // integer less--than compare, going to 5 if true
+ 14  return
+</pre>
+<h4>Message Send</h4>
+<pre>    int add12and13() {
+
+        return addTwo(12, 13);
+    }
+</pre>
+compiles to 
+
+<pre>Method int add12and13()
+ 0  aload_0                   // Push this local 0 (this) onto stack 
+ 1  bipush 12                 // Push int constant 12 onto stack 
+ 3  bipush 13                 // Push int constant 13 onto stack 
+ 5  invokevirtual #4          // Method Example.addtwo(II)I 
+ 8  ireturn                   // Return int on top of stack; it is 
+                              // the int result of addTwo()
+</pre>
+The <code>#4</code> in the above refers to the fourth constant in the
+<em>constant pool</em>.  Each class (and thus each .class file) has
+its constant pool.  The constant pool holds
+<ul>
+  <li>String constants
+  <li>Array constants
+  <li>Int/float/long/double constants
+  <li>Class name reference
+  <li>Method of a class reference
+  <li>Field of a class reference
+</ul>
+So, all the classes/methods/fields etc get listed in the constant pool
+numbered sequentially. 
+The <code>#4</code> above is listed in the constant pool as method
+addtwo of class Example.
+<h4>Message Receipt with arguments</h4>
+<pre>    int addTwo(int i, int j) {
+
+        return i + j;
+    }
+</pre>
+compiles to 
+<pre>Method int addTwo(int,int)
+
+ 0  iload_1        // Push value of local 1 (i) 
+ 1  iload_2        // Push value of local 2 (j) 
+ 2  iadd           // Add; leave int result on val stack 
+ 3  ireturn        // Return int result
+</pre>
+
+<h4>Object Creation</h4>
+<pre>    int i;                                      // An instance variable
+
+    MyObj example() {
+        MyObj o = new MyObj();
+        return silly(o);
+    }
+    MyObj silly(MyObj o) {
+        if (o != null) {
+            return o;
+        } else {
+            return o;
+        }
+    }
+</pre>
+becomes 
+
+<pre>Method MyObj example()
+  
+0    new #2                 // Class MyObj object created; no init yet
+3    dup                    // copy top of stack
+4    invokespecial #5       // initialize via Method MyObj.&lt;init&gt;()V
+7    astore_1               // store into frame location 1, i.e. o
+8    aload_0                // load myself
+9    aload_1                // load o
+10   invokevirtual #4       // invoke Method Example.silly(LMyObj;)LMyObj;
+13   areturn
+
+
+Method MyObj silly(MyObj)
+
+0   aload_1
+1   ifnull 6
+4   aload_1
+5   areturn
+6   aload_1
+7   areturn
+</pre>
+<h4>Other Instructions</h4>
+The following things are explicitly dealt with in bytecodes:
+<ul>
+  <li>casting
+  <li>switch statements
+  <li>array creation
+  <li>typecasting
+  <li>exception throw and catch
+  <li>synchronized methods: monitor entry and exit
+  <li>interfaces: they have a run-time presence jsut like classes do.
+</ul>
+Here is a selection of the instructions:
+<pre>
+ 06 (0x06)       <i>iconst_3</i>       // the int constant 3; have 0-5 built-in
+ 12 (0x0c)       <i>fconst_1</i>       // floating point constant 1
+ 16 (0x10)       <i>bipush</i>         // push a 1-byte integer constant (two-byte instruction)
+ 17 (0x11)       <i>sipush</i>
+ 29 (0x1d)       <i>iload_3</i>        // push the 3rd local variable; have 0-3
+ 62 (0x3e)       <i>istore_3</i>       // store tos into 3rd local variable
+ 87 (0x57)       <i>pop</i>            // good old pop
+ 089 (0x59)      <i>dup</i>            // duplicate tos
+ 095 (0x5f)      <i>swap</i>           // swap top two stack elements
+ 096 (0x60)      <i>iadd</i>           // integer add; many other int, etc ops
+ 126 (0x7e)      <i>iand</i>           // integer and; and other boolean ops
+ 134 (0x86)      <i>i2f</i>            // many conversion bytecodes, int to float here
+ 159 (0x9f)      <i>if_icmpeq</i>      // comparisons
+ 167 (0xa7)      <i>goto (number)</i>  // jump to number-th byte
+ 170 (0xaa)      <i>tableswitch</i>    // for switch statements; variable length, followed by jump table
+ 172 (0xac)      <i>ireturn</i>        // return an integer value
+ 177 (0xb1)      <i>return</i>         // return an object
+ 178 (0xb2)      <i>getstatic #5</i>   // get static field thats 5th in constant pool
+ 180 (0xb4)      <i>getfield #5</i>    // get 5th field
+ 181 (0xb5)      <i>putfield #5</i>       // put 5th field
+ 182 (0xb6)      <i>invokevirtual #5</i>  // invoke a method
+ 183 (0xb7)      <i>invokespecial #5</i>  // invoke a private or constructor
+ 187 (0xbb)      <i>new #5</i>            // create an object
+ 188 (0xbc)      <i>newarray</i>       // create an array
+ 191 (0xbf)      <i>athrow</i>         // throw an exception
+ 192 (0xc0)      <i>checkcast</i>      // dynamic cast checking
+ 193 (0xc1)      <i>instanceof</i>     // instance of checking
+ 194 (0xc2)      <i>monitorenter</i>   // entering synchronized block
+ 195 (0xc3)      <i>monitorexit</i>    // exiting synchronized block
+</pre>
+The whole list is worth eyeballing: see <a
+href="http://java.sun.com/docs/books/vmspec/2nd-edition/html/Mnemonics.doc.html">The
+JVM Spec</a>.
+<h4>High-level features compiled out</h4>
+The following features of Java are not present in the bytecodes
+because they can be expressed with the bytecodes above already:
+<ul>
+  <li>Overloading - really have different method names that include
+      the types as part of the "long name"
+  <li>Constructors -- explicitly invoke them; bytecode verifier makes
+      sure it happened.
+  <li>Expression syntax -- use stack instead
+  <li>block-structured commands such as if, while, etc -- use goto and
+      conditional jump
+  <li>public-private-protected -- not in bytecodes and bytecode
+      verification makes  sure it was not introduced
+</ul>
+<hr>
+<h3>The JVM Sandbox</h3>
+The "sandbox" is a set of techniques which keep data from leaking.
+<ul>
+  <li>The goal of a sandbox is to keep foreign code away from data it
+      shouldn't be getting its hands on.
+  <li>A sandbox isn't a single thing; its a set of techniques that
+      enforce a no-leak property.
+  <li>C has no sandbox: for p a pointer to the stack, (p-2029)*
+      inspects the 2029-th previous location on the stack<br>
+ (and in general, any memory location can be read and written)
+</ul>
+Java enforces the sandbox through two mechanisms
+<ul>
+  <li>bytecode verification: a series of checks performed on
+	    <code>.class</code> files when they are loaded into the
+      JVM to make sure 
+	    they aren't going to do nasty things, e.g. integers can't
+	    be used like they were object pointers.
+  <li>run-time checks: certain operations, e.g. downcasts and array
+      reference bounds, are checked for legitimacy at run-time
+</ul>
+These mechanisms are mutually supporting: 
+<ul>
+  <li>the first one pretty much
+rules out all the "bad things", provided the program is not
+downcasting or accessing arrays out of bounds.  
+  <li>The second one makes
+sure those things are not happening by explicitly checking for them. 
+  <li>It is too hard to check downcasts at compile time (in fact, it
+      is impossible in many cases e.g. when downcasting <code>Object</code> via
+      reflection).  
+</ul>
+<h3>Bytecode Verification</h3>
+<em>Bytecode Verification</em> is a complex process
+<ul>
+  <li>Bytecode verification is performed during .class loading
+  <li>It is a check to make sure there are no "type errors" in the bytecodes
+  <li>Example error: push a primitive integer, send a message to it
+  <li>Such errors generate a runtime exception; since the
+      <code>javac</code> compiler doesn't generate bad bytecodes  you
+      probably have never seen this runtime error but its there.
+  <li>Without bytecode verification, programmers could access data
+      that isn't theirs (e.g. applet could grab something important)
+</ul>
+Here are some specific checks performed on bytecode (note, the compiler can't
+do this since .class files could be modified)
+<ul>
+  <li>variables must be initialized before they are used.
+  <li>a method name invoked should exist in the type of object thats on
+      the top of stack.
+  <li>Private/protected object data is not improperly accessed 
+  <li>Objects are not operated on with primitive operations, and
+      primitive typed entities are not sent messages.
+  <li>Parameter types are legit
+  <li>Local operand stack never underflows or overflows.
+
+</ul>
+
+<hr>
+
+
+
+</div>
+
+
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->

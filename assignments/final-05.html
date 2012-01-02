@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<HEAD>
+<title>PL Final 2005</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Programming Languages
+<br> Spring 2005
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.
+<strong>Good Luck!</strong>
+<hr>
+<ol><h4>Short Answer</h4>
+  <li>(2 points) What is a <em>side effect</em>?
+  <li>(2 points) Why are type variables such as <code>'a</code> <em>required</em> in
+      programming languages that allow programs to be coded without
+      explicit type declarations?  Even in languages without
+      polymorphism they are needed.  Caml and <strong>ED</strong> are
+      two examples that we studied.
+<li>(5 points) The operational semantics for <strong>DX</strong> included various
+    rules to "bubble" up the exception.  Briefly outline how that
+    bubbling would be implemented in a <strong>DX</strong> interpreter
+    written in Caml.  (Note you only need a brief answer here, you
+    don't need to implement it.  You could for example just illustrate the
+    method by giving one example clause in the interpreter.)
+  <li>(6 points) (a) Is record subtyping related to object polymorphism?  Either draw
+    the connection between the two or argue why they are pretty much unrelated.<br>
+(b) Does Caml support record subtyping?  Give an example program that
+      illustrates that fact that Caml (does, doesn't) support record subtyping.<br>
+(c) Is record polymorphism related to parametric polymorphism?
+<li>(6 points) For each of the following potential operational equivalences for
+    <strong>DSR</strong>, give a yes/no 
+    answer on whether it holds.  Note that <code>e0/e1</code> are
+    considered arbitrary expressions, i.e. the equivalence holds for
+    any such expression. <code>x/y/z</code> on the other hand are
+    arbitrary variables.<br>
+(a)<code> x + y + z =~ z + y + x </code>?<br>
+(b) <code>Let x = e0 in e1 =~ (Function x -> e1) e0</code> ?<br>
+(c) <code>e0 + e1 =~ e1 + e0</code> ?
+    <p>
+<h4>Longer Answer</h4>
+<li> (8 points) We coded various versions of the <code>summate n</code> function
+    in <strong>D</strong>, which summates the numbers
+    <code>1+...+n</code>.  However the versions that we wrote are not
+    very robust, they diverge when fed negative number input.  Write a
+    new <strong>D</strong> function <code>safe_summate n</code> which
+    takes a single integer argument and returns <code>1+...+n</code>,
+    but returns <code>0</code> when fed negative input.  Also, show off
+    your ability to encode recursion by not using <code>Let Rec</code>
+    in your <strong>D</strong> code. NOTE: <strong>D</strong> does not
+    have less-than, so this question is a lot harder than it may first appear.
+<li> (20 points) Consider the language <strong>D--</strong> which is
+    <strong>D</strong> with functions and application only.  This
+    language is also called the pure lambda calculus since all it has
+    is functions.<br>
+(a) Write a complete caml interpreter for <strong>D--</strong>, in the
+    form of a function <code>eval : expr -> expr</code>.  Since
+    this language is so tiny there are not many cases to consider and
+    the interpreter won't take that long to write out.
+    You can assume and use the following datatypes:
+    <pre>type ident = Ident of string
+
+type expr = 
+ Var of ident | Function of ident * expr | Appl of expr * expr 
+</pre> Make your interpreter complete, i.e. give code that should
+ (more or less) work if typed into the Caml top loop.<br>
+   (b) The <code>ocamlc</code> mode of interacting with Caml allows
+ for modular composition and hiding.  Suppose you typed the above type
+ definitions followed by auxiliary functions and your definition of
+ <code>eval</code> into a single file, <code>dinterp.ml</code>.
+ Now, you wanted to make it such that the <code>subst</code> function
+ (and/or other auxiliary functions you may have defined to define
+ <code>eval</code>) were hidden from users of
+ <code>dinterp.ml</code>, they could use the types and
+ <code>eval</code> only.  Describe how you would accomplish this
+ hiding in terms of what files you would create and what you would put in the files
+ (hint: you don't need to change the <code>dinterp.ml</code> file).<br>
+
+(c) Consider the question of developing a translational compiler for
+ <strong>D--</strong> following the methodology we used to build a
+ <strong>DSR</strong> compiler in class.  For each of the phases of
+ <em>closure conversion</em>, <em>A-translation</em>, and
+ <em>hoisting</em>, can that 
+ translation work as a <strong>D--</strong> -to- <strong>D--</strong>
+ translation?  Treat the translations independently, so for example
+ even if closure conversion were not possible, consider whether
+ A-translation can be carried out directly.  Please briefly justify
+ your answer for the three cases.
+  <li>(20 points) (a) Write the operational semantics for <strong>DMR</strong>,
+ <strong>D</strong> with Caml-style records that support the
+  mutable keyword.  Well, you can do something simpler and assume
+ <em>all</em> fields of records behave like mutable fields.  Recall
+ the biggest difference with a mutable field is
+      <pre>Let r = { x = 4; y = 2} In r.x &lt;- 7; r.x</pre> (with
+ <code>Let</code> and sequencing <code>;</code> defined as usual) will
+ return <code>7</code> because 
+ the <code>x</code> field was mutated to be <code>7</code>. Note this
+ example is implicitly assuming all fields of records are mutable, so is
+ legitimate <strong>DMR</strong> syntax.  Give all of the operational
+ semantics rules and aso define what the values are.<br>
+(b) Briefly outline the differences, if any, of compiling <strong>DMR
+</strong> to C compared to how we compiled <strong>DSR</strong> to C.<br>
+(c) How will the type rules of <strong>TDMR</strong> compare with the
+ type rules of <strong>TDR</strong>, typed <strong>D</strong> with
+ records?  Describe what rules are removed if any, and write out any
+ rules that are added.
+</ol> 
+
+
+</BODY> </html>

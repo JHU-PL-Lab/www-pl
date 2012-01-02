@@ -1,0 +1,1303 @@
+<html>
+<HEAD>
+<title>Operational Semantics</title>
+</HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+
+<h1><A NAME="xtocid1118316">Operational Semantics</A></h1>
+Goals: 
+<ul>
+  <li>Understand in precise detail the meaning of programs
+  <li>Gives a formal spec. of language for compiler writers, etc
+  <li>We can rigorously verify things are working how we expect
+</ul>
+Means: 
+<ul>
+  <li>make a <em>model</em> (mathematical representation) of
+programming language execution.
+  <li>Our two models 
+      <ul>
+	<li><em>operational
+semantics</em> ("semantics = "meaning") for the language.
+	<li>Caml interpreters for a language
+      </ul>
+  <li>Operational semantics = an interpreter defined mathematically.
+  <li>An operational semantics is more precise:it isn't based on Caml
+      program meaning;<br>
+thus, you can more reliably prove things about it.
+  <li>We will mostly write interpreters (we can then actually run
+      them to test) but will start with
+      operational semantics.
+</ul>
+<hr>
+
+Other forms of language semantics we will not cover
+<ul>
+  <li> <strong>axiomatic semantics</strong> -- a collection of axiomatic truths about
+       programs in a language.
+  <li> <strong>denotational semantics</strong> -- modelling programs as static
+       mathematical objects (programs as set-theoretic functions with
+       certain properties)
+</ul>
+These are also interesting viewpoints but we don't have the time to
+cover them.<p>
+<hr>
+
+
+<h2><A NAME="xtocid2170323">Operational Semantics</A></h2>
+Goal: define how programs compute/evaluate/execute.
+<ul>
+  <li>A particular computation is defined by constructing a <em>tree</em><br>
+      <ul>
+	<li>Parent is the computation, children are sub-computations needed to
+      compute parent.
+	<li>example: parent <code>(2+3)*(3-4)</code> has children
+	    <code>2+3</code> and <code>3-4</code> because of how
+	    <code>*</code> is computed.
+      </ul>
+  <li>Mathematical relation
+<code><u>e</u> ==> <u>v</u></code> means a program <u>e</u> computed
+to a final result <u>v</u> (a value). 
+  <li>In the initial development, we are going to ignore side effects
+      such as state and input/output, so all programs can do is return
+      a value: <em>pure functional programming</em> only.
+</ul>
+<hr>
+
+Here is an example of a computation (imagine the tree):
+<pre>
+(node A): (Function x -&gt; x + 2) (3 + 2 + 5) ==> 12  because
+(node B, child of A):   3 + 2 + 5 ==> 10, because
+(node C, child of B):      3 + 2 ==> 5, and
+(node B, again):        5 + 5 ==> 10; and then,
+(node E, child of A):   10 + 2 ==> 12.
+</pre>
+... In general, to compute a function application, 
+<ol>
+  <li> Compute the argument to a value
+  <li> Compute the body of the function with the argument textually
+       substituted, to a value.
+</ol>
+So, to compute this application there are two sub-computations performed,
+which are subtrees. <p>
+<hr>
+<strong>Definition.</strong>  An <em>operational semantics</em> for
+a programming langauge is a mathematical definition of its computation
+relation, <code><u>e</u> ==> <u>v</u></code>, where <u>e</u> is a
+program in the language.<p>
+
+<ul>
+  <li> <code><u>e</u> ==> <u>v</u></code> is mathematically a 2-place relation between expressions
+of the language, <code><u>e</u></code>, and values of the language,
+<code><u>v</u></code>.  
+  <li>Example values above are numbers such as
+      <code>5</code>, and functions <code>Function x -&gt; ....</code>
+      are also values since they don't compute to anything.
+  <li> <code><u>e</u></code> and <code><u>v</u></code> are
+<em>metavariables</em>, meaning they denote an arbitrary expression or
+value, and should not be confused with the (regular) variables that
+are part of programs.  In the beginning I will underline metavariables
+to underscore the difference, but eventually we will drop this
+convention for brevity.
+</ul>
+<hr>
+
+Behind every language you have ever programmed is an operational
+semantics, but it is usually described informally, in English.<br>
+
+Operational semantics may be given to just about any kind of language
+behavior, but the rules do get more complicated.
+<ul>
+  <li> mutable state
+  <li> input/output
+  <li> exceptions
+  <li> objects and classes
+  <li> distributed programming
+</ul>
+<hr>
+
+
+<h3><A NAME="xtocid1118317">Operational Semantics for Logic Expressions</A></h3>
+Lets warm up with something very simple: boolean logic without variables.<p>
+
+<strong>Definition.</strong>The boolean logic expressions <u>e</u>
+consist of values <code>True</code> and <code>False</code>, and
+expressions <code><u>e</u> And <u>e</u></code>, <code><u>e</u> Or <u>e</u></code>, <code>Not <u>e</u></code>, and
+<code><u>e</u> Implies <u>e</u></code>. <p>
+
+<pre>
+type boolexp = True | False | Not of boolexp | And of boolexp *
+boolexp | Or of boolexp * boolexp | Implies of boolexp * boolexp
+</pre>
+(Note: We are going to use Capitalized keywords in all
+of our little language syntax to avoid potential conflicts with
+e.g. Caml code.)<p>
+
+<hr>
+
+<strong>Definition</strong>  The operational semantics
+for boolean
+logic is defined as the least relation <code>==></code> satisfying the
+following rules. 
+<blockquote>
+<strong>True rule</strong><br>
+
+----------------------------<br>
+<code>True</code> <code>==></code> <code>True</code> <p>
+
+<strong>False rule</strong><br>
+
+----------------------------<br>
+<code>False</code> <code>==></code> <code>False</code> <p>
+
+<strong>Not rule</strong><br>
+<code><u>e</u></code> <code>==></code> <code><u>v</u></code><br>
+-----------------------------<br>
+<code>Not <u>e</u></code> <code>==></code> the negation of <code><u>v</u></code><p>
+
+<strong>And rule</strong><br>
+<code><u>e</u><sub>1</sub></code> <code>==></code> <code><u>v</u><sub>1</sub></code>, <code><u>e</u><sub>2</sub></code> <code>==></code> <code><u>v</u><sub>2</sub></code><br>
+--------------------------------------<br>
+<code><u>e</u><sub>1</sub> And <u>e</u><sub>2</sub></code> <code>==></code> the logical and of <code><u>v</u><sub>1</sub></code>
+and <code><u>v</u><sub>2</sub></code><p> 
+
+<strong>Or, Implies rules</strong>: should be clear from above.<p>
+</blockquote>
+
+<strong>Comments on the rules</strong>
+
+<ul>
+  <li>These rules form a proof system in analogy to logical rules
+  <li>If you are unfamiliar with proof systems:
+      <ul>
+	<li>The horizontal bar reads "implies"; rules represent
+	    logical truths.
+	<li>Rules with nothing above the line are
+	    <em>axioms</em>, they always hold.
+	<li>A <em>proof</em> of <code><u>e</u> ==> <u>v</u></code>
+	    amounts to constucting a sequence of rule applications for
+	    which each the final rule application logically concludes with
+	    <code><u>e</u> ==> <u>v</u></code>. 
+      </ul> 
+</ul>
+<hr>
+
+<strong>An example.</strong><p>
+<blockquote>
+<code>Not(Not(False)) And True ==> False</code>, because by the <strong>And</strong> rule,<p>
+<code>True ==> True</code>, and <code>Not(Not(False)) ==> False</code>, the latter because<p>
+<code>Not(False) ==> True</code>, because<p>
+<code>False ==> False</code>.
+</blockquote>
+This computation is a tree because there are two <em>subcomputations</em>
+necessary for each binary operator.  
+<p>
+
+<hr>
+
+<strong>Question:</strong> Why in the above definition does it state
+that <code>==></code> is the "least" relation satisfying the rules? <br>
+<strong>Answer:</strong> "least" here means fewest pairs related.  If
+we did not state this requirement, then a relation which related
+anything to anything else would also be a relation satisfying all the
+rules (think about it).<p>
+<hr>
+
+<h4>Provable Properties of Operational Semantics</h4>
+The great thing about operational semantics is we can actually
+<em>prove</em> some properties about execution.
+<p>
+
+<strong>Lemma.</strong>  The boolean language is
+<em>deterministic</em>: if <code><u>e</u> ==> <u>v</u></code> and <code><u>e</u> ==>
+<u>v</u>'</code>, then <code><u>v</u></code> = <code><u>v</u>'</code>.<p>
+
+
+<strong>Proof.</strong>  By induction on the height of the proof tree.<br>
+QED.<p>
+
+<strong>Lemma.</strong>  The boolean language is
+<em>normalizing</em>: For all boolean expressions <code><u>e</u></code>,
+there is some value <code><u>v</u></code> where <code><u>e</u> ==> <u>v</u></code>.<p>
+
+<strong>Proof.</strong>  By induction on the size of <code><u>e</u></code>.<br>
+QED.<p>
+
+<strong>Question:</strong>  Suppose we left off the
+<strong>True</strong> rule by mistake; what nice property would fail?
+<hr>
+
+<h3><A NAME="xtocid2170324">Operational Semantics and Interpreters</A></h3>
+There is a very close relationship between an operational
+semantics and an actual interpreter written in Caml.<p>
+
+Given an operational semantics defined via relation
+<code>==></code>, there is a corresponding (Caml) evaluator function
+<code>eval</code>.
+<p>
+Note, the Caml function <code>eval</code> takes the program
+<code><u>e</u></code> as argument in the form of its syntax tree, for instance
+<code>Plus(Int(1),Times(Int(2),Int(3)))</code>.<p>
+
+<strong>Definition.</strong>  A (Caml) interpreter function
+<code>eval</code> <em>faithfully implements</em> an 
+operational semantics <code><u>e</u> ==> <u>v</u></code>  if
+<blockquote><code><u>e</u> ==> <u>v</u></code> if
+and only if <code>eval(<u>e</u>)</code> returns result <code><u>v</u></code>.</blockquote>
+<hr>
+
+<h3><A NAME="xtocid1118318">Implementing an operational semantics</A></h3>
+The above rules induce
+a Caml interpreter function <code>eval</code> as follows.
+<pre>
+let rec eval exp = 
+  match exp with 
+    True -> True
+  | False -> False
+  | Not(exp0) -> (match eval exp0 with
+      True -> False
+    | False -> True)
+  | And(exp0,exp1) -> (match (eval exp0, eval exp1) with
+      (True,True) -> True
+    | (_,False) -> False
+    | (False,_) -> False)
+
+  | Or(exp0,exp1) -> (match (eval exp0, eval exp1) with
+      (False,False) -> False
+    | (_,True) -> True
+    | (True,_) -> True)
+
+  | Implies(exp0,exp1) -> (match (eval exp0, eval exp1) with
+      (False,_) -> True
+    | (True,True) -> True
+    | (True,False) -> False)
+</pre>
+
+The only difference between the operational semantics and evaluator is
+the evaluator is a function, so we start with the bottom-left
+expression in a rule, use the evaluator to recursively produce the
+value(s) above the line in the rule, and finally compute and return
+the value below the line in the rule.
+
+<hr>
+
+<strong>Fact.</strong> The boolean language interpreter above
+faithfully implements its operational semantics: <code><u>e</u> ==>
+<u>v</u></code> if and only if <code>eval(<u>e</u>)</code> returns <u>v</u>
+as result.<p>
+
+We will go back and forth between these two forms during
+the course.  The operational semantics form is used because it is
+independent of any particular programming language.  The evaluator
+form is good because you can test your evaluator on real code.
+<p>
+
+<strong>Question:</strong> Why not just use interpreters and forget
+about the operational semantics approach?<br>
+<strong>Answer:</strong> Then the whole exercise is circular, since we
+don't really know what the Caml compiler is doing.  Operational
+semantics provides a foundation free of any particular language.<p>
+
+<strong>Definition.</strong>  A <em>metacircular interpreter</em> is
+an interpreter for (possibly a subset of) language X that is written
+in language X.  Metacircular interpreters give you some idea of how a
+language works, but suffer from the above non-foundational problems.
+A metacircular interpreter for Lisp is a classic programming language
+theory exercise.
+<hr>
+
+<h2><A NAME="xtocid1118319">The D Language</A></h2>
+We now study our first programming language, <strong>D</strong>.<p>
+
+<strong>D</strong> is a "Diminutive" pure functional programming
+language.
+<ul>
+  <li>  All it has is numbers, booleans, and higher-order
+anonymous functions.
+  <li> It is untyped for now; we will type it later.
+  <li> In most ways it is much weaker than Caml: no reals/lists/types/modules/state/exceptions
+  <li> In one way it is actually more powerful than Caml: there are no types
+       so some programs that are not typable in Caml but which have no
+       run-time errors can be written.
+  <li>Recursive function definition is not built into the language but
+      it is definable.
+  <li> Run-time type errors can result in <strong>D</strong>:
+      e.g. application <code>(5 3)</code>. 
+</ul>
+<hr>
+<h4>D and the lambda calculus</h4>
+The lambda calculus is an even simpler language with only functions,
+which are written <code>lambda x.e</code> instead of <code>Function x
+-&gt; e</code>, where <code>lambda</code> is the Greek lowercase
+character.  It is the original higher-order functional language, and
+dates from the 40's (!).  More later on this.<p>
+
+<hr>
+<h4>Turing Completeness of D</h4>
+<strong>D</strong> is still <em>Turing complete</em>: every partial
+recursive function on numbers can be written in <strong>D</strong>.
+In fact, its even Turing-complete without the numbers or booleans (the
+<em>pure lambda-calculus</em>).  No (deterministic) programming
+language can compute more than the partial recursive functions.
+<hr>
+
+<p> <strong>Definition</strong> The expressions, <code>e</code>, of the
+<strong>D</strong> language are inductively defined as the least set
+including  
+<ol>
+  <li> variables <code>x</code>,
+  <li> (anonymous) functions <code>Function x -&gt; e</code> and function
+       application <code>e e</code>,  
+  <li> Recursive functions <code>Let Rec f x = e</code>
+  <li> numbers <code>0, 1, -1, 2, -2, ...</code> and numerical
+       operations <code>+ - = </code>, 
+  <li> booleans <code>True, False</code> and boolean operations
+<code>And, Or, Not</code>, 
+  <li> and conditional <code>If e Then e Else e</code>.  
+</ol>
+
+The <em>value expressions</em> of <strong>D</strong> are
+<ul>
+  <li> the numbers
+<code>0, 1, -1, ...</code>,
+  <li>booleans <code>True</code> and <code>False</code>,
+  <li>functions <code>Function x -&gt; e</code> 
+  <li>and recursive functions <code>Let Rec x f = e</code>.<p>
+</ul>
+
+Note, the metavariables we are using include <code>e</code> meaning an
+arbitrary <strong>D</strong> expression, <code>v</code> meaning an
+arbitrary expression that is a value, and <code>x</code> meaning an expression
+which is a variable.  <p> <hr>
+
+The Caml variant type for <strong>D</strong> syntax is as follows.
+
+<pre>type ident = Ident of string
+
+type expr = 
+ Var of ident | Function of ident * expr | Appl of expr * expr |
+ Letrec of ident * ident * expr |
+ Plus of expr * expr | Minus of expr * expr | Equal of expr * expr | 
+ And of expr * expr| Or of expr * expr | Not of expr |  
+ If of expr * expr * expr | Int of int | Bool of bool 
+</pre>
+<ul>
+  <li>The type <code>expr</code> is the type of <strong>D</strong>
+      expressions within Caml
+  <li>The type <code>ident</code> is needed because function parameters must
+be variables, they can't be any other expression.  This is one way to
+force this.<p>
+
+</ul>
+<strong>Abstract and concrete syntax</strong>
+<ul>
+  <li>The <em>concrete</em> syntax of a programming language is the
+      (text/string) representation of a program, usually defined via a grammar.
+  <li>The <em>abstract</em> syntax is the explicit tree representation
+      which is used internally in its implementation.
+  <li>The concrete <strong>D</strong> syntax is how we are writing it
+      on the blackboard: "<code>(Function x -&gt; x + 2) (3 + 2 + 5)</code>"
+  <li>The abstract syntax is how it is a member of the above Caml
+      <code>expr</code> type: 
+      <code>Appl(Function(Ident"x",Plus(Var(Ident"x"),2)),Plus(3,Plus(2,5)))</code> is
+      the abstract syntax corresponding to the above concrete syntax.
+</ul>
+We will glibly switch back and forth between the concrete and abstract
+syntax: if we are talking relative to Caml the abstract syntax will be
+used, and outside of Caml we will use the concrete syntax.<p>
+<hr>
+
+<strong>Higher-order functions in D</strong>
+The main feature of <strong>D</strong> is higher-order functions, which also
+introduces 
+variables.   Recall that programs are computed by rewriting them. 
+<pre>
+(Function x -&gt; x + 2) (3 + 2 + 5) ==> 12  because
+  3 + 2 + 5 ==> 10, because
+    3 + 2 ==> 5, and
+    5 + 5 ==> 10; and then,
+  10 + 2 ==> 12.
+</pre>
+Note how in this example, the argument is <em>substituted</em> for the
+variable in the body -- this gives us a rewriting interpreter.
+<hr>
+
+<h3><A NAME="xtocid1118320">Variable Substitution</A></h3>
+<ul>
+  <li>Functions compute by <em>substituting</em> the actual argument
+      for the for parameter; <br>
+for example, <code>(Function x -> x + 1) 2</code> will compute by
+      substituting <code>2</code> for <code>x</code> in the function's
+      body <code>x + 1</code>,
+      i.e. by computing <code>2 + 1</code>.
+  <li>We need to be careful on how variable substitution is
+defined, <code>(Function x -&gt; Function x -&gt; x)(3)</code> should not evaluate to
+<code>(Function x -&gt; 3)</code>  since the inner <code>x</code> is bound by
+the inner paramater.<p>
+
+</ul>
+To do this right, we need to define the concepts of an
+<em>occurrence</em> of a variable, a <em>bound occurrence</em>, a
+<em>free occurrence</em>, a <em>binding</em>, a <em>closed</em>
+expression, and <em>substitution</em>.
+
+<p>
+<strong>Definition</strong>
+<ol>
+  <li> A variable use <code>x</code>
+<em>occurs</em> in <code>e</code> if 
+<code>x</code> appears somewhere in <code>e</code>.  Note we refer to
+      variable uses only, not definitions.
+  <li> Any occurrences of variable <code>x</code> in  <code>Function 
+       x -&gt; e</code> are
+       <em>bound</em>; any free occurrences of <code>x</code> in <code>e</code>
+       here are <em>bound occurrences</em> in <code>Function 
+       x -&gt; e</code>.  Similarly, occurrences of <code>f</code> and
+      <code>x</code> are <em>bound</em> in <code>Let Rec f x = e</code>.
+  <li> A variable <code>x</code> occurs <em>free</em> in <code>e</code> if it
+       has an occurrence in <code>e</code> which is not a bound occurrence.
+  <li> An expression <code>e</code> is <em>closed</em> if it contains no free
+       variable occurrences.  All programs we execute are closed (no
+       link-time errors).
+  <li> <code>e[e'/x]</code> is notation for the expression resulting
+       from the operation of replacing all free
+       occurrences of x in <code>e</code> with <code>e'</code>.  For now,
+       we assume that <code>e'</code> is a closed expression.
+</ol>
+
+The notions of bound and free should be familiar to you from
+block-structured languages.
+<p>
+<strong>Examples.</strong>
+<ul>
+  <li> <code>x</code> occurs free in <code>3 + x</code>, and
+occurs both bound and free in expression <code>x (Function x -&gt; x)</code>.  
+  <li> Neither of
+the above expressions is closed, but <code>(Function x -&gt; x) (Function x -&gt; x)</code> is
+closed.  
+  <li> Substitution <code>x (Function x -&gt; x)[(Function x -&gt; x+1)/x]</code> is
+<code>(Function x -&gt; x+1) (Function x -&gt; x)</code>. 
+  <li><code>(y + y)[3/y]</code> is <code>3 + 3</code>
+  <li><code>(Function y -&gt; y + y)[3/y]</code>  is <code>(Function y
+      -&gt; y + y)</code> since there are no free <code>y</code> to
+      substitute for.
+</ul>
+<p>
+<hr>
+<h3><A NAME="opsem">Operational Semantics for D</A></h3>
+
+We are now ready to define the operational semantics for <strong>D</strong>.
+<p>
+
+<a name="d-eval">
+<strong>Definition</strong> the computation relation <code>==></code> for language
+<strong>D</strong> is the least relation on closed expressions in
+<strong>D</strong> satisfying the following rules. 
+<blockquote>
+<strong>Value rule</strong><br>
+--------------------------------------<br>
+ <code>v ==> v</code><p>
+
+<strong>Boolean rules: see above boolean language</strong>
+<p>
+<strong>+ rule</strong><br>
+e<sub>1</sub> <code>==></code> v<sub>1</sub>, e<sub>2</sub> <code>==></code> v<sub>2</sub><br>
+--------------------------------------<br>
+e<sub>1</sub> + e<sub>2</sub> <code>==></code> the integer sum of v<sub>1</sub>
+and v<sub>2</sub>, provided  v<sub>1</sub>
+and v<sub>2</sub> are integer constants<p>
+
+<strong>- rule</strong>
+<br>
+Similar to <code>+</code>.  <p>
+
+<strong>= rule</strong><br>
+<code>e<sub>1</sub></code> <code>==></code> <code>v<sub>1</sub></code>, <code>e<sub>2</sub></code> <code>==></code> <code>v<sub>2</sub></code><br>
+--------------------------------------<br>
+<code>e<sub>1</sub> = e<sub>2</sub></code> <code>==></code> <code>True</code> if <code>v<sub>1</sub></code>
+<code>v<sub>2</sub></code> are identical numbers,
+and <code>==></code> <code>False</code> if they are different numbers
+or not numbers.<p>
+
+<strong>If True rule</strong><br>
+<code>e<sub>1</sub></code> <code>==></code> <code>True</code>, <code>e<sub>2</sub></code> <code>==></code> <code>v<sub>2</sub></code><br>
+------------------------------------------------------<br>
+<code>If e<sub>1</sub> Then e<sub>2</sub> Else e<sub>3</sub></code><code>==></code> <code>v<sub>2</sub></code><p>
+
+<strong>If False rule</strong><br>
+<code>e<sub>1</sub></code> <code>==></code> <code>False</code>, <code>e<sub>3</sub></code> <code>==></code> <code>v<sub>3</sub></code><br>
+------------------------------------------------------<br>
+<code>If e<sub>1</sub> Then e<sub>2</sub> Else e<sub>3</sub></code><code>==></code> <code>v<sub>3</sub></code><p>
+
+<strong>(Anonymous) Function application rule</strong><br>
+<code>e<sub>1</sub></code> <code>==></code> <code>Function x -&gt; e</code>, <code>e<sub>2</sub></code> <code>==></code> <code>v<sub>2</sub></code>,  <code>e[v<sub>2</sub>/<code>x</code>]</code> <code>==></code> <code>v</code><br>
+------------------------------------------------------<br>
+<code>e<sub>1</sub> e<sub>2</sub></code> <code>==></code> <code>v</code><p>
+
+<strong>Let Rec Function application rule</strong><br>
+(exercise)
+</blockquote>
+</a>
+
+<ul>
+  <li>Function application as defined above is <em>call-by-value</em>, the
+argument is evaluated before the function is applied.
+  <li>
+Later we discuss another possibility, <em>call-by-name</em>.
+  <li>Call-by-reference or 
+value-result parameter passing styles are irrelevant
+for languages, such as <strong>D</strong>, that contain no mutable
+store operations.  
+
+</ul>
+<hr>
+<h4><A NAME="xtocid2170330">Example Executions</A></h4>
+If in doubt, draw out the derivation trees that show the execution
+precisely.
+
+<pre>If 3 = 4 Then 5 Else 4 + 2 ==> 6 <em>because</em>
+  3 = 4 ==> False <em>and</em>
+  4 + 2 ==> 6, <em>because</em>
+    4 ==> 4 <em>and</em>
+    2 ==> 2 <em>and</em> 4 plus 2 is 6.
+
+(Function x -&gt; If 3 = x Then 5 Else x + 2) 4 ==> 6, <em>because of
+above derivation</em>
+
+(Function x -&gt; x x)(Function y -&gt; y) ==> Function y -&gt; y, <em>because</em>
+  (Function y -&gt; y)(Function y -&gt; y) ==> Function y -&gt; y
+
+(Function f -&gt; Function x -&gt; f(f(x)))(Function x -&gt; x - 1)(4) ==> 2 <em>because</em>
+<em>letting</em> F <em>abbreviate</em> (Function x -&gt; x - 1),
+  (Function x -&gt; F(F(x)))))(4) ==> 2, <em>because</em>
+    F(F(4)) ==> 2, <em>because</em>
+        F(4) ==> 3, <em>because</em>
+          4 - 1 ==> 3.  <em>And then,</em>
+        F(3) ==> 2, <em>because</em>
+          3 - 1 ==> 2.
+
+(Function x -&gt; Function y -&gt; x+y)
+  ((Function x -&gt; If 3 = x Then 5 Else x + 2) 4)
+  (Function f -&gt; Function x -&gt; f(f(x)) (Function x -&gt; x - 1)(4) ==> 8 <em>by the above two executions</em>
+
+(Let Rec f x = If x = 0 then 1 else x + f (x - 1))(1) ==> 1 <em>because</em>
+  letting F abbreviate (Let Rec f x = If x = 0 then 1 else x + f (x - 1)),
+  If 1 = 0 then 1 else 1 + F (1 - 1) ==> 1, <em>because</em>
+   1 = 0 ==> False, <em>and</em>
+   1 + F (1 - 1) ==> 1, <em>because</em>
+      F (1 - 1) ==> 0, <em>because</em>
+      1 - 1 ==> 0, <em>and</em>
+      If 0 = 0 then 1 else 0 + F (0 - 1)) ==> 0, <em>because</em>
+        0 = 0 ==> True, <em>and</em>
+        0 ==> 0
+</pre>
+<hr>
+<h4>Mathematical Properties of D programs</h4>
+<strong>Lemma.</strong>  <strong>D</strong> is deterministic.<br>
+
+<strong>Proof.</strong>  By inspection of the rules, at most one rule
+can apply at any time. (Need the Let Rec rule to prove this precisely)
+<p>
+<strong>Lemma.</strong>  <strong>D</strong> is not normalizing: there
+is some <code>e</code> such that there is no <code>v</code> with
+<code>e ==> v</code>.<br>
+
+<strong>Proof.</strong>  <code>(Function x -> x x)(Function x -> x
+x)</code> is not normalizing.  Neither is <code>4 3</code>.
+
+<hr>
+<h3><A NAME="xtocid1118322">A D Interpreter</A></h3>
+As part of <a href="../assignments/d-interpreter.html">homework
+3</a>, you are to write a Caml <code>eval</code> function 
+which takes <strong>D</strong> programs and produces <strong>D</strong> values as result, following the
+above operational semantics.  File <a
+href="../caml/code/D-examples.ml">D-examples.ml</a> contains the Caml type
+for <strong>D</strong> syntax as well as some sample executions.  That file
+will be reviewed 
+in class, and contains concrete <strong>D</strong> code for most of
+the examples in the remainder of these notes.  <p>
+
+<hr>
+<h2><A NAME="xtocid1118323">Pure functional programming in D</A></h2>
+<strong>D</strong> doesn't have many features, but it is possible to
+do much more than you may at first think.<p>
+
+<ul>
+  <li>First, there are the classic logical <em>combinators</em>, simple functions
+for recombining data. 
+  <li>To get a feel for the abstract syntax of <strong>D</strong> that
+      you will use in your evaluators, we will use it here, and
+      program within Caml.
+  <li>We will informally define entities as macros by <code>let</code>
+      with Caml.
+</ul>
+Here are the combinators as given in the <code>D-examples.ml</code> file.
+
+<pre>(* First some abbreviations to save finger wear *)
+
+let i s = Ident s            (* abbreviation for identifiers *)
+let v s = Var(Ident s)       (* abbreviation for variables *)
+
+(* super shorthand for common identnt/var names *)
+
+let ix = i"x" (* ident x *)
+let vx = v"x" (* variable x *)
+let iy = i"y" (* ident y *)
+let vy = v"y" (* variable y *)
+let iz = i"z" (* ident z *)
+let vz = v"z" (* variable z *)
+let il = i"l" (* ident l *)
+let vl = v"l" (* variable l *)
+let ir = i"r" (* ident r *)
+let vr = v"r" (* variable r *)
+
+(* The classic pure functional combinators *)
+
+let id = Function(ix,vx)                        (* I x = x *)
+let k = Function(ix,Function(iy,vx))            (* K x y = x *)
+let s = Function(ix,Function(iy,Function(iz,    (* S x y z = (x z) (y z) *)
+           Appl(Appl(vx,vz),(Appl(vy,vz))))))
+let d = Function(ix, Appl(vx,vx))               (* D x = x x *)
+</pre>
+<strong>Macros:</strong> 
+<ul>
+  <li>Everything let-defined in the above Caml code is a
+<em>macro</em>, an abbreviation for some D expr. 
+  <li> We will also use informal
+<strong>D</strong> macro abbreviations on the blackboard: "let F be
+      <code>Function x -> ...</code> " 
+kind of thing.  
+  <li>Just make sure not to confuse macro names (such as
+<code>id</code> 
+above) with D variables: <code>id</code> above is a macro name, not a D variable.<p>
+
+</ul>
+It turns out that <strong>D</strong> can express a great deal more
+than it first appears.  In particular, the expressive power of Caml's
+<code>let</code>, recursive definitions via <code>let rec</code>, and
+stuctures such as lists or other datatypes are all encodable in
+<strong>D</strong>, by applying a trick or two.<p>
+
+<hr>
+<h3><A NAME="xtocid1118326">Encoding n-tuples and lists</A></h3>
+<ul>
+  <li>Tuples and lists are <em>encodable</em> from just functions, and so are not
+needed as primitives.  
+  <li>Of course for an efficient implementation you
+would want them as primitives; 
+  <li>This encoding is thus an exercise to
+better understand the nature of functions and tuples. <p>
+
+</ul>
+We will define a 2-tuple (pairing) constructor;  <br>
+From a pair you
+can get a 3-tuple by building it from pairs as <code>(1,
+(2,3))</code>, ...  etc for n-tuples.  <p>
+
+<pre>(* Pairs may be encoded as functions (not entirely adequate however) *)
+
+let pr (l,r) =  (* make a pair with left element l and right element r *)
+  Appl(Appl(Function(il,Function(ir,Function(ix,Appl(Appl(vx,vl),vr)))),l),r)
+
+let prexample = pr(Int 4,pr(Int 5,Bool true))
+
+(* projections left and right *)
+
+let left e =  Appl(e,Function(ix,Function(iy,vx)))
+let right e = Appl(e,Function(ix,Function(iy,vy)))
+</pre>
+
+Test: try <code>pr(4,5)</code>. That is
+<pre>(Function l -&gt; Function r -&gt; Function x -&gt; x l r) 4 5</pre>
+which computes by computing
+<pre>
+(Function x -&gt; d 4 5)</pre>
+which is a value and we are done.
+Now lets try <code>left(pr(4,5))</code>.  We have <code>pr(4,5)</code>'s
+value from above; continuing, 
+<pre>
+(Function p -&gt; p (Function x -&gt; Function y -&gt; y))(Function d -&gt; d 4 5)</pre>
+computes by computing
+<pre>
+(Function d -&gt; d 4 5) (Function x -&gt; Function y -&gt; y)</pre>
+which computes by computing
+<pre>
+(Function x -&gt; Function y -&gt; y) 4 5 </pre>
+which computes by computing
+<pre>
+5 </pre>
+Voila!<p>
+<hr>
+
+<strong>Problems</strong> with this encoding of pairs:
+<ul>
+  <li>
+<pre>left (Function x -> 0) ==> 0</pre>
+but a function shouldn't be a pair!  There should have been a run-time
+      error here.
+  <li>Suppose we
+wrote the program <code>right(pr(3,pr(4,5)))</code>; it will evaluate to the
+value <code>pr(4,5)</code> one 
+might at first think, but it will really return <code>(Function x -&gt; x 4
+5)</code>.  We can 
+only guess that this is intended to be a pair.
+  <li>This encoding is thus flawed, and we will in the future want
+to introduce "real" n-tuples into an extension of <strong>D</strong>.<p>
+</ul>
+<hr>
+<strong>Lists</strong> can also be implemented
+via pairs 
+<ul>
+  <li> list <code>[1;2;3]</code> is represented by <code>pr(1, pr(2,
+pr(3, emptylist)))</code>
+  <li><code>emptylist</code> is some agreed-on empty list, <code>0</code> for us. 
+  <li>(This encoding of lists in terms of pairs won't work for Caml because it won't typecheck)
+</ul>
+Here are the implementations.<pre>
+(* Pairs may be encoded as functions (not entirely adequate however) *)
+
+let pr (l,r) =  (* make a pair with left element l and right element r *)
+  Appl(Appl(Function(il,Function(ir,Function(ix,Appl(Appl(vx,vl),vr)))),l),r)
+
+let prexample = pr(Int 4,pr(Int 5,Bool true))
+
+(* projections left and right *)
+
+let left e =  Appl(e,Function(ix,Function(iy,vx)))
+let right e = Appl(e,Function(ix,Function(iy,vy)))
+
+(* Lists may be encoded as a pair consisting of the head and tail *)
+
+let head = left
+let tail = right
+let emptylist = (Int 0)  (* something for empty list *)
+let cons = pr
+let length = Letrec(i"Length",ix,
+    If(Equal(vx,emptylist),(Int 0),Plus(Appl(v"Length",tl(vx)),
+        (Int 1))))));
+
+
+let aList = cons(Plus(Int 1,Int 1),cons(Plus(Int 1,Int 1),cons(Int 3,emptylist)))
+</pre>
+
+<p>
+
+<ul>
+  <li>This encoding approach is very powerful, and also
+gives us a way to understand complex languages from more simple ones.
+  <li>Even numbers, booleans, and if-then-else are encodable, it turns out
+(we will skip this topic).  
+  <li>Thus, all that is needed is <code>Function</code> and
+application to make a Turing-complete programming language.  This
+language is known as the pure lambda calculus, and functions are
+usually written as <code>lambda x.e</code> intead of <code>Function x -&gt;
+e</code>. 
+
+</ul>
+<hr>
+
+<h4>Other Examples of Expressiveness Within D</h4>
+<strong>Functions of multiple arguments:</strong> use currying, just
+as is common in Caml.<p>
+
+
+<strong><code>Let</code> is definable</strong>:
+<pre>Let x = e in e' <em>is defined as</em> (Function x -&gt; e') e </pre>
+
+An example: <code>Let x = 3 + 2 in x + x End</code> is
+<code>(Function x -&gt; x + x)(3 + 2)</code>, which evaluates to 10.<p>
+
+<strong>Sequencing.</strong>
+Notice there is no sequencing (;) operation.  Why not?  Answer: if
+<code>e;e'</code> is what you want to sequence, you might as well just
+write e', as 
+e will never get used.  This changes if <code>Print</code> or mutable state is added
+(operators with <em>side effects</em>).
+Sequencing is definable, nonetheless:
+<pre>
+e ; e' <em>is defined as</em> (Function newvar -&gt; e') e, <em>where</em> newvar <em>is chosen so as not to be
+free in</em>  e' 
+</pre>
+This will first execute <code>e</code>, throw away the value, and then
+execute <code>e'</code>, returning its result as the final result of <code>e;e'</code>.<p>
+
+<strong>Freezing and thawing</strong>  We can stop and re-start
+computation at will by freezing and thawing.
+
+<ul>
+  <li>
+      <pre>
+Freeze e <em>is defined as</em> Function newvar -&gt; e
+Thaw e <em>is defined as</em> e(0)</pre>
+(<code>newvar</code> should be a fresh variable, so its not free in
+      <code>e</code>; the <code>0</code> above could be any value)
+  <li><code>Freeze(e)</code> freezes <code>e</code>, keeping it from being
+computed.  <code>Thaw(e)</code> starts up a frozen computation.
+  <li>Example.
+<pre>Let x = Freeze(2+3) in Thaw(x) + Thaw(x)</pre>
+--this has same value as without <code>Freeze/Thaw</code>, but
+<code>2+3</code> evaluated twice.
+<p>
+
+</ul>
+<hr>
+<h3><A NAME="xtocid2170334">Encoding Recursion in D</A></h3>
+
+<strong>D</strong> has a built-in Letrec to write recursive
+functions, but its actually not needed to write recursive functions!
+Some special trickery is needed.  Wax those surfboards, a 
+wave is coming.<p>
+
+
+
+<strong>Q:</strong> How can programs compute forever in
+<strong>D</strong> without Let Rec?<p>
+<strong>A:</strong> Easy: <code>(Function x -&gt; x x)(Function x -&gt; x x)</code>.
+<strong>Corollary:</strong> <strong>D</strong> is not normalizing.<p>
+
+<ul>
+  <li>This computation is in some sense odd: <code>x x</code> is a function being
+      applied to itself!
+  <li>There is a logical paradox at the heart of this non-normalizing
+      computation, Russell's paradox.
+  <li> <a
+href="http://plato.stanford.edu/entries/russell-paradox/">Read more about Russell's paradox here.</a>
+
+</ul>
+<hr>
+<h4><A NAME="xtocid2170335">Russell's paradox</A></h4>
+In <a
+href="http://plato.stanford.edu/entries/frege/frege.html">Frege's</a>
+set theory (circa 1900), sets were written as predicates
+<em>P(x)</em>, which we can view as functions.
+
+<ul>
+  <li><code>Function x -&gt; x < 2</code> is the set of all numbers less than 2.
+  <li>Set membership is
+via application: <code>e</code> member-of <code>S</code> iff
+<code>S(e)</code> is true. <br>
+  <li>Since <code>(Function x -&gt; x < 2)(1)</code> is true, <code>1</code> is
+in this "set". 
+
+</ul><p>
+Now consider <code>P</code> = "the set of all sets that do not contain
+themselves as members"!:<p>
+<pre>
+P = Function x -&gt; Not(x x)
+</pre>
+
+(Note, it may make sense to have a set with itself as member: the set
+{{{{...}}}}, infinitely receding, has itself as a member; this only
+happens in so-called non-well-founded set theory).<p>
+
+Now, is <code>P P</code>? Namely is <code>P</code> a
+member of itself?  This is written:
+<pre>
+(Function x -&gt; Not(x x)) (Function x -&gt; Not(x x))
+</pre>
+--if this
+were viewed as a <strong>D</strong> program, it would <em>loop
+forever</em>: it suffices to compute
+<pre>
+Not((Function x -&gt; Not(x x))(Function x -&gt; Not(x x)))) 
+</pre>
+Now, notice we have <code>P</code> is a member of itself if and only
+if it isn't, a contradiction!<p>
+
+<ul>
+  <li>This is Russell's Paradox in computational form (this isn't how
+      Russell viewed it, but it has the same structure at the core).
+  <li>The computational realization of the paradox is that the
+      predicate doesn't compute to true or false, so its not a
+      sensible logical statement.
+<li>Russell's discovery of this paradox in Frege's set theory shook the foundations of
+mathematics.
+<li>To solve this problem, Russell developed his ramified theory of
+    types, which is the ancestor of types in programming languages.  
+<li>The program <code>(function x -&gt; not(x x)) (function x -&gt;
+    not(x x))</code> is not typeable in Caml for the same reason the
+    predicate is 
+    not typeable in Russell's ramified theory of types.
+<pre>
+# function x -> not (x x);;
+                       ^
+This expression has type 'a -> 'b but is here used with type 'a
+</pre>
+</ul>    
+<hr>
+<h4>Encoding recursion by passing self</h4>
+<ul>
+  <li>In the logical view, passing a function to itself as argument is
+      a bad thing;
+  <li>From a programming view, it can be a good, powerful thing: it
+      allows recursive functions to be defined, without <code>Let Rec</code>.
+  <li>--<strong>Surf the paradoxical wave</strong>, but be careful, its
+      easy to get crunched!
+</ul>
+Here is the idea:
+<ul>
+  <li>Invariant: for every recursive function, always keep around two
+      identical copies of the function: one to use, and one to copy again.
+  <li>When you do a recursive call, pass along a copy of the function
+  <li>In the recursive call, make two more copies.  Use one of the copies
+      to compute with,  and save the other to pass on for a future
+      recursive call.
+  <li>etc: each recursive call uses one copy but duplicates another so
+      there is always a spare.
+</ul>
+<hr>
+Here is how a summation function can be defined around these ideas
+which summates the numbers 0..n for agrument n.
+First define
+<pre>
+summate0 = Function this -&gt; Function arg -&gt;
+  If arg = 0 Then 0 Else arg + this(this)(arg-1) + 1
+</pre>
+Then we can write a function call as
+<pre>  summate0(summate0)(7) (* summates numbers 0 .. 7 *)
+</pre>
+<ul>
+  <li><code>summate0</code> always expects its first argument
+<code>this</code> to be itself
+  <li> it can then use one copy fir the
+recursive call (the first <code>this</code>) and pass another copy for
+future duplication.  
+  <li><code>summate0(summate0)</code> primes the pump
+by giving it an initial extra copy of itself.
+<p>
+
+</ul>In general, we can write the whole thing in <strong>D</strong> as
+<pre>
+let summate =
+  Let summ = (Function this -&gt; Function arg -&gt;
+    If arg = 0 Then 0 Else arg + this(this)(arg-1) + 1)
+  In
+    Function arg -&gt; summ(summ)(arg)</pre>
+and invoke as
+<pre>summate 7 (* summates numbers 0..7 *)</pre>
+so we don't have to let the world see the self-passing business.
+<p>
+<hr>
+<strong>The Y-Combinator.</strong> The Y-combinator is a further abstraction on this: <code>summ</code>
+can be abstracted to be some abstract <code>body</code> passed in
+itself as a higher-order function. 
+<pre>
+almosty = Function body -&gt; 
+      Let fun = (Function this -&gt; Function arg -&gt;
+        body(this)(arg))
+      In
+        Function arg -&gt; (fun fun)(arg)</pre>
+-- the body of <code>summ</code> above contains <code>arg</code> and
+<code>this</code>, so the abstract body <code>body</code> gets those
+things passed to it.
+<code>almosty</code> can be used by defining <code>summate</code> as
+<pre>
+summate = almosty (Function thisthis -&gt; Function arg -&gt;
+    If arg = 0 Then 0 Else arg + this(this)(arg-1) + 1)</pre>
+The Y-combinator actually goes one more step and passes
+<code>this(this)</code> as argument, not just <code>this</code>,
+simplifying what we pass to Y:
+<pre>
+y = Function body -&gt; 
+      Let fun = (Function this -&gt; Function arg -&gt;
+        body(this this)(arg))
+      In
+        Function arg -&gt; (fun fun)(arg)</pre>
+This combinator can then be used to define <code>summate</code> as
+<pre>
+summate = y (Function thisthis -&gt; Function arg -&gt;
+    If arg = 0 Then 0 Else arg + thisthis(arg-1) + 1)</pre>
+-- the parameter thisthis is exactly used for a recursive call.<p>
+
+The above is almost the Y combinator given in the  <a
+href="../caml/code/D-examples.ml">D-examples.ml</a> file; the major difference is
+that version has fun inlined (repeated twice) instead of being defined
+via <code>Let</code>.
+<hr>
+
+
+<h3><A NAME="xtocid1118327">Call-by-name Parameter Passing</A></h3>
+<ul>
+  <li>In call by name parameter passing, the argument to the function is not
+evaluated at function call time; it is only evaluated if it is used.
+  <li>This style of parameter passing is largely of historical interest now,
+Algol uses it but no modern languages do.  
+  <li>It is much harder to write
+efficient compilers if call-by-name parameter passing is used.
+</ul>
+<strong>Definition</strong> Define a call-by-name evaluation relation
+<code>==></code> for D by replacing the Function application rule with the following rule.
+<blockquote>
+<strong>call-by-name Function application rule</strong><br>
+<code>e<sub>1</sub></code> <code>==></code> <code>Function x -&gt; e</code>,  <code>e[e<sub>2</sub>/x]</code> <code>==></code> <code>v</code><br>
+------------------------------------------------------<br>
+<code>e<sub>1</sub> e<sub>2</sub></code> <code>==></code> <code>v</code><p>
+
+And, similarly a new rule for <code>Let Rec</code> is needed.
+</blockquote>
+
+Freezing and Thawing, defined above, is a way to get
+call-by-name behavior in a call-by-value language.
+<br>
+Consider then the computation of  
+<pre>(Function x -&gt; Thaw(x) + Thaw(x))Freeze(3-2)
+</pre>
+-- <code>3-2</code> is not evaluated until we are inside the body of the function
+where it is thawed, and it is then evaluated two separate times.  This
+is precisely the behavior of call-by-name parameter passing, so Freeze
+and Thaw can encode it by this means.  The
+fact that <code>3-2</code> is executed twice shows the main weakness of call by
+name: repeated evaluation of the function argument.  <p>
+<hr>
+
+<em>Lazy</em> or <em>call-by-need</em> evaluation is a version of
+call-by-name that caches evaluated function arguments the first time
+they are evaluated so it doesn't have to re-evaluate them in
+subsequent uses.  Haskell is a pure functional language with lazy evaluation.
+<hr>
+
+<h3><A NAME="xtocid2170339">The (pure) lambda-calculus</A></h3>
+A classic simple language with only functions: take <strong>D</strong>
+and remove the numbers, booleans, and conditional.  <p>
+
+It is called the <em>lambda-calculus</em> because functions are written
+<code>lambda x.e</code> (using the Greek lambda character) instead of
+<code>Function x -&gt; e</code>. <p>
+
+<strong>Fact:</strong> Numbers, booleans, and conditional can be
+encoded in the pure lambda-calculus.
+<p>
+Execution in the pure lambda calculus
+<ul>
+  <li>Even programs with free variables can execute (<em>reduce</em>
+      in lambda-calculus terminology)
+  <li>Execution can happen anywhere, e.g. inside a function body that
+      hasn't been called yet
+  <li><code>(Function x -&gt; e) e'</code> ==>
+      <code>e[e'/<code>x</code>]</code> is the (only) execution rule,
+      called <em>beta</em> reduction
+</ul>
+This form of computation is interesting conceptually but is more
+distant from how actual computer languages execute.
+<hr>
+<a name="opeq"><h2><A NAME="xtocid1118329">Operational Equivalence</A></h2>
+In this course we are taking a mathematical view of programs.  What is
+a primary relation defined over a space of mathematical objects?
+<strong>Equivalence!</strong><p>
+
+<ul>
+  <li>We can imagine an equivalence <code>=~</code> (written on the board as
+<code>=</code> with a <code>~</code> above it) defined for all
+<strong>D</strong> programs. 
+  <li> The initial idea is that two programs
+are equivalent if they always lead to the same results when used.  
+</ul>
+<strong>Examples.</strong>
+<ul>
+  <li>Eta
+conversion is one example of an interesting equivalence:
+<pre>
+<em>(eta-conversion)</em> (Function x -&gt; e)  =~  (Function z -&gt; (Function x -&gt; e) z) for z not free in e.
+</pre>
+This equivalence is similar to the proxy pattern in object-oriented
+programming.
+  <li>
+A closely related law for our <code>Freeze/Thaw</code> syntax is
+<pre>
+Thaw(Freeze(e)) =~ e
+</pre>
+One of these programs may be replaced by the other without ill
+effects (besides perhaps changing execution time),  so they are equivalent.
+<p>
+
+</ul>
+<strong>Equivalence is important!</strong>
+<ul>
+  <li>Equivalence is an important concept because it allows programs to be
+transformed by replacing bits with equal bits and the programmer need
+not even be told since the observed behavior will be the
+same. 
+  <li>Thus, they are transformations that can be performed 
+by a compiler.  
+  <li>Operational equivalence provides a rigorous foundation for
+compiler optimization.
+
+</ul><p>
+<hr>
+<h3><A NAME="xtocid1118330">Defining Operational Equivalence</A></h3>
+We define equivalence in a manner dating all the way back to <a href="http://www-groups.dcs.st-andrews.ac.uk/~history/Mathematicians/Leibniz.html">Leibniz</a>:
+<blockquote>Two programs are <em>equivalent</em> if and only if one
+can be replaced with the other at any place, and no external change in
+behavior will be noticed.</blockquote>
+
+<ul>
+  <li>We wish to study equivalence for
+possibly open programs, because there are good equivalences such as <code>x
+      + 1 - 1 =~ x</code>.
+  <li>We define "at any place" by the notion of a <em>program
+      context</em>, a <strong>D</strong> program with some "holes" *
+punched in it.
+  <li>Then, to test if <code>e1 =~ e2</code>,
+      <ol>
+	<li>First place <code>e1</code> in the <code>*</code> position
+	    and run the program;
+	<li>Then do the same thing for <code>e2</code>.
+	<li>If any observable result is the same, they are equal,
+	    otherwise not.
+      </ol>
+</ul>  <p>
+
+<h4>A more precise definition of equivalence</h4>
+We define the notion of contexts <code>C</code> as follows.
+<ul>
+  <li>Take a <strong>D</strong> program with some "holes" <code>*</code>
+punched in it: replace some subterm(s) of any expression with
+      <code>*</code>.
+  <li>Then, <em>hole filling</em>, <code>C[e]</code>, means
+mean place <code>e</code> in the holes <code>*</code> in <code>C</code>
+  <li>Hole filling is like substitution, <em>BUT</em> there is no
+      bound/free variable issue: direct replacement, no conditions
+</ul>
+
+<strong>Examples of contexts and hole filling</strong>
+<p>
+Contexts:
+<pre>
+  (Function z -&gt; (Function x -&gt; *) z)
+  (Function q -&gt; e)(*)
+</pre>
+Hole filling:
+<pre>
+(Function z -&gt; (Function x -&gt; *) z)[x+2]</pre>
+Means "put <code>x+2</code> in the hole(s) in the <code>(Function z
+.. )</code>term"; the result is
+<pre>(Function z -&gt; (Function x -&gt; x+2) z)</pre>
+<ul>
+  <li>Note <code>e</code> may have free variables in it
+which become bound under substitution ; this is known as
+<em>capture</em>. 
+  <li>Variable <code>x</code> in <code>x+2</code> is <em>captured</em> in the above
+      example.  
+</ul>
+<hr>
+Operational equivalence is defined simply as follows: <p>
+<strong>Definition</strong> <code>e =~ e'</code> if and only if for
+all contexts <code>C</code>, <code>C[e]</code> <code>==></code>
+<code>v</code> for some <code>v</code> if and only if
+<code>C[e']</code> <code>==></code> <code>v'</code> for some
+<code>v'</code>.<p>
+
+<ul>
+  <li>So, two expressions are equivalent if in <em>any</em> possible context C, the
+one terminates if the other does.
+  <li> This equivalence is known
+as <em>operational equivalence</em> because its definition is based on
+the interpreter for the language.
+  <li>
+Note that nothing is said about the values <code>v</code> and <code>v'</code>, they could in
+theory be different. 
+</ul>
+v and v' can be anything because a bigger context could always
+test them some more: the context
+<pre>Function x -&gt;C'[x](C[e])</pre>
+
+would first compute to <code>C'[v]</code>, and then <code>v</code> is
+tested by context <code>C'</code>.  So, <code>v</code> and
+<code>v'</code> above are going to have to be quite similar, and in
+fact it is easy to show that they must be identical if they are not
+functions.  <p>
+
+<ul>
+  <li>The only problem with this definition of equivalence is its
+"incestuous" nature--there is no absolute standard of equivalence
+removed from the language.  
+  <li><em>Domain Theory</em> is a mathematical
+discipline which defines an algebra of programs in terms of existing
+mathematical objects (complete and continuous partial orders).
+  <li>We are not going to
+study domain theory here: it doesn't generalize well to proramming languages with
+side effects (exceptions, state, input/output), and we don't have the
+      time to cover it. 
+</ul><hr>
+
+<h3><A NAME="xtocid1118331">Example Equivalences</A></h3>
+Some general equivalence principles for <strong>D</strong> programs are defined.<p>
+
+Here are some laws.
+<ul>
+  <li> reflexivity <code>e =~ e</code>, symmetry <code>e =~ e'</code>
+       if <code>e' =~ e</code>, transitivity <code>e =~ e''</code> if
+       if <code>e =~ e'</code> and <code>e' =~ e''</code>
+  <li> <code>C[e] =~ C[e']</code> if <code>e =~ e'</code> (congruence)
+  <li> <code>(Function x -&gt; e)(v) =~ e{v/x}</code> (this is
+      <em>beta</em>-equivalence; <code>e{v/x}</code> is capture-avoiding
+      substitution, defined below)
+  <li> <code>(Function x -&gt; e) =~ (Function z -&gt; (Function x -&gt; e) z)</code> (eta)
+  <li> <code>(Function x -&gt; e) =~ (Function y -&gt; e{y/x})</code> (alpha)
+  <li> <code>n + n' =~</code> the sum of numbers <code>n</code> and
+       <code>n'</code>, and similar laws for <code>-, And, Or, 
+       Not, =</code>;
+  <li> <code>If True Then e else e' =~ e</code>, and similar for <code>If False</code>...
+  <li> If <code>e</code> <code>==></code> <code>v</code> then <code>e
+       =~ v</code> (evaluation)
+</ul>
+
+Equivalence transformations on programs can be used to justify results
+of computations instead of directly computing with the evaluator; it
+is often easier.<p>
+
+An important equation relating <code>Y</code>:
+<pre>Y f x =~ f (Freeze(Y f)) x</pre> 
+
+An important component of compiler optimization is applying
+transformations such as the above that preserve equivalence.<p>
+<hr>
+
+<strong>Technical Issue: capture-avoiding substitution </strong>
+<ul>
+  <li> The annoying <em>variable
+capture</em> problem has raised its ugly head in the beta rule above.  
+  <li>We use <em>renaming substitution</em> <code>e{e'/x}</code> to
+      deal with capture.  
+  <li>Renaming
+substitution <code>e{e'/x}</code> is a generalized form of
+substitution that differs from our previously defined substitution
+operation <code>e[e'/x]</code> in that <code>e'</code> does not have
+to be closed.  
+  <li>In such a case, we want to replace <code>x</code> with
+<code>e'</code>, but <strong>avoid</strong> capture from occurring.
+This is implemented by renaming any capturing variable bindings in
+<code>e</code>.  
+</ul>For example,
+
+<pre> (Function z -&gt; (Function x -&gt; y + x) z){x + 2/y} = (Function z -&gt; (Function x1 -&gt; x + 2 + x1) z)
+</pre>
+Observe about this example
+<ul>
+  <li><code>x + 2</code> would be captured if we just stuffed
+      <code>x + 2</code> in for <code>y</code>, a bad thing.
+  <li>Its bad because be congruence we should be able to replace one
+      =~ thing with the other anywhere; but in
+      <pre> Function x -&gt;(Function z -&gt; (Function x -&gt; y + x) z)(x + 2)</pre>
+      if we ignored capture the beta rule would give us 
+ <pre> Function x -&gt;(Function z -&gt; (Function x -&gt; (x + 2) + x) z)</pre> which is clearly <em>not</em> equivalent to the above program.
+  <li>To avoid this problem,
+the capture-avoiding substitution operation renames
+<code>x</code> to a fresh 
+variable not occurring in <code>e</code> or <code>e', x1</code> in
+      this case.
+
+</ul><hr>
+
+<h4>Proving Equivalences Hold</h4>
+<ul>
+  <li>It is surprisingly difficult to actually prove any of these
+equivalences hold!  
+  <li>Even <code>1 + 1 =~ 2</code> is hard to prove.
+  <li>If we had more time we would take a closer look at this topic.
+</ul>
+<p>
+<!-- hhmts start -->
+Last modified: Tue Apr  2 17:41:29 EST 2002
+<!-- hhmts end -->
+</body></html>

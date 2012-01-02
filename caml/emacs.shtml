@@ -1,0 +1,108 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+<h2>Emacs</h2>
+The <a href="http://www.gnu.org/software/emacs/">Emacs homepage</a>
+has all the information on emacs.
+<h3>Getting emacs</h3>
+<dl>
+  <dt><strong>Windows</strong>
+  <dd>Precompiled binaries are found <a
+      href="http://ftp.gnu.org/gnu/windows/emacs/">here</a>. <a href="http://www.gnu.org/software/emacs/windows/ntemacs.html">Here is a
+      FAQ on Windows and emacs.</a>
+  <dt><strong>Macintosh OS X</strong>
+  <dd>OS X
+      comes with emacs, but that version supports terminal use only
+      and so you want a better version.  A prebuilt binary of full
+      emacs is found <a
+      href="http://www.apple.com/downloads/macosx/unix_open_source/carbonemacspackage.html">here</a>. 
+  <dt><strong>Linux</strong>
+  <dd>Linux comes with emacs installed already.
+</dl>
+
+<h3>Learning Emacs</h3>
+If you are not familiar with emacs, <kbd>control-H t</kbd> is an
+interactive tutorial to get you going.  <kbd>control-H i</kbd> gets
+you into the emacs info system; middle-click on <kbd>Emacs</kbd> to
+read the documentation about the editor. <a href="http://www.gnu.org/software/emacs/manual/">This
+documentation is also available on a webpage</a>.  A good <a
+href="http://jeremy.zawodny.com/emacs/">emacs tutorial
+webpage</a> here.
+<p>
+
+<h3>Using emacs with OCaml</h3>
+You will need the caml-mode addition to emacs to effectively edit ML
+programs.  <p>
+There are two things you need to set up in order to get caml mode
+working
+<ol>
+  <li>You need to install the emacs caml mode files in a place where
+      your version of emacs can find them;
+  <li>You need to add a few lines to your .emacs preferences file to
+      tell emacs to start up caml mode on ml files.
+</ol>
+
+<h3>Installing Emacs caml mode</h3>
+There are several ways you can get this mode installed.
+<ol>
+  <li>If you are using any CS department UNIX machine, it should already
+      be installed.
+  <li>Many installs of ocaml on *NIX machines will ask you if you
+      want to install the emacs mode somewhere during the ocaml
+      install -- just say yes and you are all set.
+  <li>If you downloaded the ocaml source distribution, cd to subdirectory <code>emacs</code> and <code>make install</code>.
+  <li>If the three options above are not working, then we suggest you
+      manually install your own copy of the caml mode.  You may also
+      want to install your own copy becuase then you can use the
+      <strong>Tuareg</strong> version which is slightly better.
+      <ol>
+	<li>Download the files from <a href="http://www-rocq.inria.fr/~acohen/tuareg/">here</a> 
+	<li>Follow the install instructions in the README file. 
+	<li>Note for Windows users: Emacs is often not aware of your
+	    "home" directory for looking for the files you just
+	    installed above; if it is not finding the mode just use the
+	    complete path where you put the files,
+	    e.g."C:Meoohmy/Camlstuff/foo" instead of just "foo".  Also
+	    some Windows emacs installs may use a file named <code>_emacs</code>
+	    instead of the <code>.emacs</code> referred to in the README.  Lastly
+	    Windows may have trouble finding the <code>_emacs</code> file since
+	    it is looking in the wrong place (it is supposed to be in
+	    your home directory). If it is not finding your .emacs
+	    file, start up emacs and type ESC x eval RETURN (getenv
+	    "HOME") RETURN (use the ESC 
+      and RETURN keys) - this will show the value of HOME at the
+      bottom.  Put the required configuration lines in a file in that
+	    folder, and name it <code>_emacs</code>.
+      </ol>
+</ol>
+
+<h3>Using Caml Mode</h3>
+In emacs, every file that ends in <kbd>.ml</kbd> will automatically
+load caml-mode; there will be a <code>(caml)</code> in the status line
+at the bottom indicating you are in caml mode. Also, you can execute the extended command
+<KBD>caml-mode</KBD> (type meta-x <code>caml-mode</code>; meta-x is either holding
+down the meta-key and pressing x, or ESC followed by x)) to start caml-mode in a
+buffer.  To start a shell window running ocaml, use the extended
+command <KBD>run-caml</KBD> (or do C-c C-s which will start a caml
+shell if it is not already running). <p>
+
+
+The caml-mode distribution includes no documentation but is easy to
+use;  <kbd>control-h m</kbd> from within emacs gets you the caml mode
+command list.  The main useful commands (C-c means control-C, etc) are
+<pre>
+C-c C-e		evaluate the phrase the cursor is sitting in the middle of
+C-c C-r		evaluate the whole selected region
+C-c C-s		show the shell window; will automatically run-caml if not running
+C-c `		go to exact error location in the source</pre>
+
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->
+
+
+

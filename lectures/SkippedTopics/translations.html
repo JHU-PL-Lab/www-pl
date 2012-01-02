@@ -1,0 +1,1007 @@
+<html>
+<HEAD>
+<title>Programming Languages: Compilation by Translation</title>
+</HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h1><A NAME="xtocid1441469">Compilation by Program Transformation</A></h1>
+<ul>
+  <li>Compilers are faster than interpreters by several orders of magnitude.
+  <li>Probably about 90% of the prodution software running is compiled
+  <li>Its important to understand how compilers work so you can
+      understand how your code runs
+  <li>Compilation is a very complex process
+  <li>Compilers these days all perform multiple passes on a program
+      to get source code to target code.
+  <li>Our goal: understand the concepts behind compilation without
+      covering the topics needed to write a fast, efficient compiler.
+</ul>
+We study how programs in the untyped <strong>DSR</strong> language
+can be compiled, via a series of <em>program transformations</em>.<br>
+
+Transformations map programs to programs in the same language.  <p>
+
+Our pedagogical framework for compilation
+<ul>
+  <li> Front-end: scan, parse, typecheck if
+      language has types; the 
+       result of these phases is an element of our Caml
+       <code>term</code> datatype.
+  <li> Simplify programs by a series of <em>program
+       transformations</em> which remove 
+       high-level features one at a time; 
+      <ul>
+	<li>Closure conversion
+	<li>A-Translation
+	<li>function hoisting
+      </ul>
+  <li> Arrive at something very close to assembly language, but still
+       in the form of a <strong>DSR</strong> program;
+  <li> Lastly, perform a series of steps to translate to assembly
+       language. 
+</ul>
+Real compilers:
+<ul>
+  <li>Lots of technology for producing efficient code: optimization
+  <li>Not so many passes on the program: not as efficient (but, extra
+      passes for optimization)
+  <li>real compilers stop at some third language in the middle:
+      three-address code.
+  <li>Language itself is huge so the engineering effort is very significant.
+</ul>
+
+Points about our framework.
+
+<ul>
+  <li> Our main goal here is pedagogy: understand the gaps seperating
+high- and low-level languages by bridging them one by one.  Each
+transformation bridges one gap.
+  <li> Program transformations are interesting in their own
+right, as they give insights into the <strong>DSR</strong> language.
+  <li>Due to lack of time we will give short shrift to optimization,
+even though much compiler code is for this purpose.
+  <li> 
+The SML/NJ ML compiler is in fact implemented as a transformational compiler, so the
+methodology here is not purely pedagogical.  
+  <li> Our focus is more on higher-order languages, not C/C++; issues
+there are somewhat different.
+</ul>
+Note we are using the following terminology
+<ul>
+  <li> intra-language transformations (the early phases of the
+       compiler, all in <strong>DSR</strong>)
+  <li> inter-language translations (the final phases which produces
+       code in a different language)
+</ul>
+All but the last steps of compilation are DSR-to-DSR program
+transformation steps. 
+<p>
+
+Desired <strong>Soundness Property</strong> for program translations:
+programs before and after translation have the same execution
+behavior (in our case, termination and same numerical output, but in
+general the same i/o behavior).<p> 
+
+<strong>Our compiler project:</strong>
+<ul>
+  <li> The <strong>DSR</strong> language will be compiled to a
+       primitive form of C program.
+  <li> The compiler will first perform three inter-language
+       transformations 
+       mapping <strong>DSR</strong> terms to a restricted subset of
+       the <strong>DSR</strong>
+       terms.  Finally, the result of these three passes will be
+       translated to primitive C code.
+  <li> We translate an untyped language.
+Typed translations (start with typed programs and translate them to
+other typed programs) are superior since types tell us more about
+program behavior.  But, we only have so much time.
+  <li> We are also not going
+to worry about catching run-time errors, so they could cause core
+dumps. 
+</ul>
+<br>
+
+<h2><A NAME="xtocid1022878">The Individual Transformations</A></h2>
+The <strong>DSR</strong> transformations are now covered in the order
+they are applied to the source program.
+
+<h2><A NAME="xtocid37370">Closure Conversion</A></h2>
+Closure conversion is a transformation which gets rid of nonlocal
+variables in functions (<code>x</code> in <code>Function y -> x * y</code>
+is nonlocal: it is not the parameter and is used in the body) .<br>
+After closure conversion all functions might as well have been defined
+at the "top level", as in C or C++.<p>
+
+<ul>
+  <li> There is a major issue in getting the correct values of nonlocal
+variables at run-time in compiled code.
+  <li> 
+This whole issue was swept
+under the rug in our interpreters since they textually substutituted
+the argument upon function call
+  <li> Compilers can't textually substitute to perform application:
+       that imposes <em>way</em> too much overhead, plus it would mean
+       mutating the 
+       code, something most operating systems disallow.
+</ul>
+Consider this example.
+<pre>
+F = Function x -> if x = 0 then Function y -> y else Function y -> x * y
+</pre>
+What should <code>F 3</code> return?
+<ul>
+  <li> <code>
+Function y -> x * y
+</code> would be stupid because the variable <code>x</code> would not
+       have a value.
+  <li> <code>
+Function y -> 3 * y
+</code> amounts to a substitution, something a compiler can't do since
+compiled code should be fixed.
+</ul><p>
+
+Answer: return a <em>closure</em>, consisting of the function and an
+<em>environment</em> which maps nonlocal variables to their current
+values, something like:
+<pre>
+(Function y -> x * y, { x |-> 3 })
+</pre>
+Some more structure than this is needed in order for the function to
+get its <code>x</code> value when invoked; we cover that next.<p>
+
+Functions with nonlocal variables are a critical feature of functional
+programming languages.  Every curried function that you want to only
+supply with some of the arguments needs a closure to "remember" the
+arguments already applied:
+<pre>
+add = Function x -> Function y -> x + y
+</pre>
+In <code>add 4</code>, the result is the closure
+<pre>
+(Function y -> x + y, { x |-> 4 })
+</pre>
+which is an add-4 function. The closure remembers the value to add.<br>
+There are many other examples of the critical importance of closures.<p>
+
+<em>Closure conversion</em> is a global program transformation that
+explicitly performs this 
+operation in the language itself. Core ideas
+<ul>
+  <li>function values are now not just <code>Function .. </code>, they
+      include an environment defining the values of nonlocal variables
+  <li>When calling one of these new-style function values,
+      <em>explicitly pass it the nonlocals environment</em> so it can
+      use it to access the nonlocals!
+</ul>
+Implementation: Closure conversion produces a
+program where 
+<ul>
+  <li> Functions will have no nonlocal variables after this process
+  <li> Function values are replaced by closure <em>records</em>
+      <code>{ fn = Function ...; envt = {x = 4; ...}}</code>,
+       consisting of the 
+       original function (<code>fn</code>) and the nonlocals
+      environment (<code>envt</code>); 
+  <li> At function call time, the remembered environment is passed to the
+       function.  Thus, for the <code>add 4</code> closure above, when
+       it is applied later to e.g. <code>7</code>, the
+       <code>envt</code> will know it is <code>4</code> that is to be
+       added to <code>7</code>.
+</ul>
+
+The translation is introduced by way of example, using the function <code>F</code>
+above.  <p>
+
+<code>F</code> translates to 
+<pre>
+F' = { fn = Function xx -> if xx.arg = 0
+    then
+        { fn = Function yy -> yy.arg; envt = {} }
+    else
+        { fn = Function yy -> (yy.envt.x) * (y.arg); envt = { x = xx.arg } },
+      envt = {} }
+</pre>
+Whew!  This is a pretty complicated operation.
+(Note, in <code>{ x = xx.arg }</code>, the left <code>x</code> is a label
+and the right <code>xx</code> a variable). 
+Function call <code>F 3</code> is now written as
+<pre>
+(F.fn)({ envt = F.envt; arg = 3})
+</pre>
+Observations
+<ul>
+  <li> Function results are <em>closures</em>, records of the
+       form <code>{ fn = Function ...; envt = { x1 =.. ; ... xn = ...}
+       }</code>.  This captures the above idea of tupling the function
+       code with its environment.
+  <li> Functions that used to take an argument <code>y</code> are
+       modified to take an argument named 
+       <code>yy</code> (double up the original
+       variable name).  Note we don't really have to change the name
+      but it can help save confus+ion.
+  <li> These new arguments <code>yy</code> etc are always expected to
+       be records of the form
+       <code>{ envt = ..; arg = ..}</code>, passing both the
+      environment and argument to 
+       the function.
+  <li> Within the body of the revised function, 
+       <ul>
+	 <li> <code>yy.envt.x</code> is the new way to access what
+	      was a nonlocal variable <code>x</code> in the function
+	      body (where the function had parameter previously named
+	      <code>y</code>); 
+	 <li> <code>yy.arg</code> is the new way to access what was
+	      the (single) argument to the function <code>y</code>.
+       </ul>
+</ul>
+
+Translation of Call <code>F 3 4</code> takes the result of <code>F
+3</code>, which is 
+a function closure <code>{ fn = ...; envt = ... }</code>, and does the
+same trick to apply 4 to it:
+<pre>
+Let f = (F'.fn)({ envt = F'.envt; arg = 3}) In
+  (f.fn)({ envt =  f.envt; arg = 4})
+</pre>
+and the result would be 12, the same as the original result,
+confirming the soundness of the translation in this case. 
+<p>
+
+<h3><A NAME="xtocid37371">The official translation</A></h3>
+With that example in mind, we can write out the official closure
+conversion translation.  We will use the notation <code>clconv(e)</code>
+to express the closure conversion function, defined inductively as 
+follows (this code is a bit sloppy, it uses the blackboard notation for DSR 
+and its hard to tell that from ML for the operators that don't have 
+words in them.  <code>Function</code> is obviously a DSR function, but 
+records and application are hard to tell apart.).<p>
+
+<ol>
+  <li> <code>clconv(x) = x</code> (* variables *)
+  <li> <code>clconv(n) = n</code> (* numbers *)
+  <li> <code>clconv(b) = b</code> (* booleans *)
+  <li> <code>clconv(Function x -> e) = { fn = Function xx -> <br>clconv(e[(xx.envt.x1)/x1,...,(xx.envt.xn)/xn])[(xx.arg)/x], 
+       <br>
+       envt = { x1 = x1; ...; xn = xn } }</code>
+       <br>
+       where <code>x, x1, ..., xn</code> are precisely the free variables
+       occurring in e.
+  <li> <code>clconv(e e') = Let f = clconv(e) In (f.fn){ envt = f.envt;
+       arg = clconv(e')}</code> 
+  <li> <code>clconv(e op e') = clconv(e) op clconv(e')</code> for all other
+       operators in the language (the translation is <em>homormorphic</em> in
+       all of the other operators).  This is pretty clear in every
+       case except maybe records which we will give just to be sure...
+  <li> <code>clconv( { l1 = e1; ...; ln = en } ) = { l1 = clconv(e1);...; ln = clconv(en) }</code>
+</ol>
+This function case gets a bit ugly with the substitutions: the <code>xx.envt.xi</code> renamings are best done <em>before</em> closure
+conversion of the body, and the <code>xx.arg</code> renamings best
+done <em>after</em> closure conversion.<p>
+
+From the above example, <code>clconv(F) = F'</code>.<p>
+
+The desired soundness result is<br>
+
+<strong>Theorem:</strong> <code>e</code> computes to a value if and only if <code>clconv(e)</code>
+computes to a value.  Additionally, if one returns numerical value n,
+the other returns the same numerical value n.
+<p>
+
+This operation results in a language that has no nonlocal variables in
+functions, more like the C/C++ languages.  We are getting closer to
+machine code.
+
+<h2><A NAME="xtocid37372">The A-translation</A></h2>
+This translation makes the evaluation order explicit via
+inserting <code>Let</code> statements to evaluate expressions in the
+order indicated by the operational semantics.  <br>
+The idea should be self-evident from the case of
+arithmetic expressions.  <br>
+Consider for instance
+<pre>
+4 + (2 * (3 + 2))
+</pre>
+Our interpreter defined a tree-notion of evaluation order on such
+expressions. The order in which evaluation happens on this program can be made
+explicitly linear by using <code>Let</code> to factor out the parts that are
+evaluated first:
+
+<pre>
+Let v1 = 3 + 2 In
+Let v2 = 2 * v1 In
+Let v3 = 4 + v2 In
+ v3
+
+</pre>
+Notice how similar this is to 3-address machine code.  This translation did not
+change the meaning of the program, it only made some of the execution
+information more explicit.
+<p>
+We are in fact going to define a more stupid translation, that also
+first assigns constants and variables to other variables:
+<pre>
+Let v1 = 4 In
+Let v2 = 2 In
+Let v3 = 3 In
+Let v4 = 2 In
+Let v5 = v3 + v4 In
+Let v6 = v2 * v5 In
+Let v7 = v1 + v6 In
+ v7
+
+</pre>
+Some points
+<ul>
+  <li>This stupid translation even more closely corresponds to the
+operational semantics--every node in a derivation of <code>e |-->
+v</code> is a <code>Let Val</code> in the above (Exercise: write out the
+operational semantics derivation and compare).
+  <li>
+This translation has the advantage that every operation will be
+between variables.  In the previous example above, <code>4+v2</code> may not be
+low-level enough for some machine languages since there may be no add
+immediate instruction.
+  <li>
+<code>Let</code> is a primitive in <code>DSR</code> -- this is not
+strictly necessary, but if <code>Let</code> were defined in terms of
+application, the A-translation results would be harder to manipulate.
+  <li>
+One easy optimization would avoid making fresh variables for constants.
+</ul>
+
+Next consider some code with higher-order functions.
+<pre>
+((Function x -> Function y -> y)(4))(2)
+</pre>
+the function that <code>2</code> is being applied to first needs to be
+computed.  We can make this explicit as well:
+<pre>
+Let v1 = (Function x -> Function y -> y)(4) In
+Let v2 = v1(2) In
+ x
+
+</pre>
+The A-translation given below does even more linearization on
+this example: 
+<pre>
+Let v1 =
+  (Function x ->
+     Let v1' = (Function y -> Let v1'' = y in v1'') In v1') In
+Let v2 = 4 In
+Let v3 = v1 v2 In
+Let v4 = 2 In
+Let v5 = v3 v4 In
+ v5
+
+</pre>
+
+<!-- deal with problem of what to do about variables  -->
+
+Every other evaluation construct can be linearized in this fashion.
+Except <code>If</code>:
+<pre>
+If (3 = x + 2) Then 3 Else 2 * x
+</pre>
+can be turned into (approximately)
+<pre>
+Let v1 = x + 2 In
+Let v2 = (3 = v1) In
+If v2 Then 3 Else Let v1 = 2 * x In v1 
+</pre>
+but the <code>If</code> still has a branch in it.  <br>
+However we 
+can implement this simple form of <code>If</code> in machine code as
+<pre>
+v1 := x + 2
+v2 := 3 = v1
+BRANCH v2, L2
+L1: v3 := 3
+GOTO L3
+L2: v4 := 4
+L3:
+</pre>
+So, this form is quite close to machine code.<p>
+
+We will  give the A-translation the core <strong>DSR</strong> syntax.<br>
+
+The intermediate result of the translation is a list of tuples
+<pre>
+[(v1,e1); ...; (vn,en)] : (ide * term) list
+</pre>
+which is intended to represent
+<pre>
+Let v1 = e1 In .. In Let vn = en In vn ...
+</pre>
+but is a form easier to manipulate in Caml since lists of declarations will be
+appended together at translation time. In your compilers, you may or
+may not want to use this intermediate form, it is not much harder to
+write the functions to work directly on the <code>Let</code>
+representation. 
+<p>
+
+<h3><A NAME="xtocid1022882">The Official A-translation</A></h3>
+We define the A-translation as a Caml function,
+<code>atrans(e) : term -> term</code>.  We will always apply A-translation to the
+result of closure conversion, but we really don't need to be aware of
+that now.  We now sketch the translation for the core
+primitives.<p>
+
+We assume auxiliary functions:
+<ul>
+  <li>  <code>newid()</code> which returns a
+fresh <strong>DSR</strong> variable every time called, 
+  <li> the function <code>letize</code> 
+which converts from the list-of-tuples form to the actual <code>Let</code> form,
+and 
+  <li> <code>resultId</code> which for list
+<code>[(v1,e1); ...; (vn,en)]</code> returns result identifier <code>vn</code>.
+</ul>
+<pre>
+let atrans e = letize (atrans0 e)
+
+and atrans0(e) = match e with
+    (Var x)  -> [(newid(),Var x)] |
+    (Int n)  -> [(newid(),Int n)] |
+    (Bool b) -> [(newid(),Bool b)] |
+    Function(x,e) -> [(newid(),Function(x,atrans e)] |
+    Appl(e,e') -> let a = atrans0 e in let a' = atrans0 e' in
+                           a @ a' @ [(newid(),Appl(resultId a,resultId a')] |
+    ...
+   (* all other D binary operators + - = AND etc of form identical to Appl *)
+    ...
+    If(e1,e2,e3) -> let a1 = atrans0 e1 in
+               a1 @ [(newid();If(resultId a1,atrans e2,atrans e3)] |
+    ...
+</pre>
+
+
+At the end of the A-translation, the code is all "linear" in the way
+it runs in the interpreter, not as a tree.  <br>
+Machine code is also linearly ordered; we are getting much closer to
+machine code.
+<p>
+
+<strong>Theorem:</strong> The A translation is sound, i.e. <code>e</code>
+and  <code>atrans(e)</code> both either compute to values or both diverge.
+
+<h3><A NAME="xtocid37373">The A-Translation for the full DSR language</A></h3>
+
+The extra syntax of <strong>DSR</strong> (records, reference cells) does not
+provide any major complication for the A-translation. 
+<p>
+
+<!--
+<pre&&&
+let atrans0(Var x) = [(newid(),Var x)] |
+    ...
+    atrans0(Raise(xn,e)) = let a = atrans0 e in a @ [(newid(),Raise(xn,resultId a)] |
+    atrans0(Handle(e,xn,ide,e')) =
+          let a0 = atrans0 e in val e0' = atrans e' in val x = newid() in
+            a0 @ [(newid(),Handle(resultId a0,xn,ide,e0')]
+</pre&&&                          
+-->
+
+<h2><A NAME="xtocid388281">Function hoisting</A></h2>
+
+So far, the compiler has performed closure
+conversion and A-translation in turn: <pre>let intermedresult e =
+atrans(clconv(e))</pre>  <p> 
+
+Since functions now have no nonlocal variables, we can now <em>hoist</em> all
+functions in the program body to the start of the program, making a
+C-esque program structure. The leftover code is "main".<p>
+
+Informally, the operation is quite simple: take e.g. 
+
+<pre>
+4 + (Function x -> x + 1)(4)
+</pre>
+and replace it by
+<pre>
+Let f1 = Function x -> x + 1 In 4 + f1(4)
+</pre>
+--in general, hoist all functions to the front of the code and give
+them a name via <code>Let</code>.<br>
+The transformation is always sound if there are no free variables in
+the function body, a property guaranteed by closure conversion.
+
+<p>
+We will define this process in a simple iterative (but inefficient)
+manner:<p>
+
+<blockquote><code>let hoist e =</code>
+<br>
+<code>if</code> <code>e = e1[(Function ea -> e')/f]</code> for some
+<code>e1</code> with  
+<code>f</code> free in it, and <code>e'</code> contains no functions
+(i.e. <code>Function ea -> e'</code> is an innermost
+function)<br>
+<code>then</code>
+<code>Let f = (Function ea -> e') In hoist(e1)</code><br>
+<code>else</code> <code>e</code>.
+</blockquote>
+<ul>
+  <li>If functions are not hoisted out innermost-first, then there will
+still be some nested functions in the hoisted definitions.  So, the
+order of hoisting is important.
+  <li>You don't want to implement hoisting as sketched above -- its
+      too inefficient.  Instead, do it all in one pass through the
+      program, accumulating a list of the functions and replacing them
+      by variables as you go.
+
+</ul>
+Resulting programs will be of the form
+<pre>
+Let f1 = Function ea -> e1 In
+       ...
+    fn = Function ea -> en In
+  e
+
+</pre>
+Where each <code>e1,...,en,e</code> contain no function constants.
+<p>
+
+<strong>Theorem:</strong> <code>e</code> computes to a value if and
+only if <code>hoist(e)</code> computes to a value.  <p>
+This Theorem is easily proved from iterative application of the following Lemma
+<strong>Lemma:</strong>
+<code> (e1[(Function ea -> e')/f])  ~= (Let f = (Function ea -> e') In e1)</code>
+<p>
+
+We lastly transform the program to 
+<pre>
+Let f1 = Function x1ea -> e1 In
+       ...
+    fn = Function -> Function xnea -> en In
+    main = Function dummy -> e In
+    main(anything)
+
+</pre>
+So, the program is officially nothing but a collection of functions.
+This brings the program closer to the form of a C program.
+
+<h2><A NAME="xtocid388282">Final C translation</A></h2>
+To summarize up to now, we have
+<pre>let frontend e =  hoist(atrans(clconv(e)))</pre> 
+<ul>
+  <li>We have done about all the translation that is possible within the
+language.  
+  <li>Programs at this point have functions all hoisted to the
+top.  
+  <li>Each function consists of a series of atomic operations.  
+  <li>Pretty
+much all that is left is to map each atomic operation to primitive C
+code.
+</ul>
+<h4>The atomic tuples we have now</h4>
+Before giving the translation, we enumerate all possible right-hand
+sides of <code>Let</code> variable assignments that come out of the
+A-translation (in the following vi,vj,vk,f are variables):
+<ol>
+  <li> <code>x</code> for variable <code>x</code>
+  <li> <code>n</code> for number <code>n</code>
+  <li> <code>b</code> for boolean <code>b</code>
+  <li> <code>vi vj</code> (application)
+  <li> <code>vj + vk</code>
+  <li> <code>vj - vk</code>
+  <li> <code>vj * vk</code>
+  <li> <code>Not vj</code>
+  <li> <code>vj = vk</code>
+  <li> <code>Ref vj</code>
+  <li> <code>vj := vk</code>
+  <li> <code>!vj</code>
+  <li> <code>{ l1 = v1; ... ; ln = vn }</code>
+  <li> <code>vi.l</code>
+  <li> <code>If vi Then tuples1 Else tuples2</code>
+</ol>
+where <code>tuples1</code> and <code>tuples2</code> are the lists of
+variable assigments for the <code>Then</code> and <code>Else</code>
+bodies.<p>
+
+<ul>
+  <li>All we need to do now is generate code for each of the above
+tuples.
+  <li>Observe a closure after
+       A-translation and hoisting the <code>Function</code> is just a
+record: <code>{ fn = f; envt = y}</code> where <code>y</code> was
+defined as <code>{q = x1; w = x2 }</code> assuming <code>q, w</code>
+were the nonlocal variables used in this function. 
+ So, closures are just records and need no special treatment.
+  <li>Similarly, closure
+invocation <code>(f.fn){ envt = f.envt; arg = vk}</code> was
+A-translated into <code>Let v1 = f.fn In Let v2 = f.envt In
+Let v3 = { envt = v2; arg = vk} In v1 v3...</code>.
+
+</ul>
+<h3><A NAME="xtocid388283">Memory Management</A></h3>
+Before writing any compiler, you should always design the memory layout
+scheme for objects at run-time.
+<ul>
+  <li>Every compiler has to have a firm convention for memory layout.
+  <li> It is extremely important to
+carefully design the strategy beforehand.
+  <li>Simple compilers use simple schemes, but for efficiency it is better
+to use a more complex scheme.
+<p>
+</ul>
+Values are stored by several different methods at run-time:
+<ul>
+  <li>In registers.  These must be temporary, as registers are generally local
+      to each function/method.
+  <li>On the stack.  The value is then referenced as the memory
+      location at some fixed offset from the stack pointer (which is
+      in a register): here is some C-ish code to give you the idea
+      <pre>
+      { register int sp; /* compiler will assign sp to a register */
+        *(sp - 5) = 33;
+        printf(*(sp - 5));
+      }<br>
+      Stack-stored entities are also temporary in that they will be
+      junk when the function/method returns.
+  <li>In fixed memory locations (globals).  
+  <li>In dynamically allocated (malloc'ed) memory locations (on the heap).
+      </pre>
+</ul>
+
+An important issue is whether to box or unbox various values.<br>
+
+<strong>Definition. </strong>A variable <code>vi</code>'s value is stored
+<em>boxed</em> if <code>vi</code> in fact holds a pointer
+to a block of memory containing the actual value.<br>
+A variable's value is <em>unboxed</em> if it is directly in the memory
+location.
+<p>
+For multi-word entities, storing them unboxed means variables directly
+hold a pointer to the first word of the sequence of space.<p>
+
+Here is what C does:
+<ul>
+  <li>Variables that are declared are either globals, register, or on
+      the stack (local).
+  <li>Variables holding ints, floats, ... are unboxed.
+  <li>All malloc'ed structures are imnplicitly boxed, because
+      variables can't 
+      directly be heap entities.  Variables are static and the heap is dynamic.
+  <li>Variables holding arrays are unboxed: if an array is declared as
+      global or local, 
+      there is no explicit one-word pointer to this block of storage kept. 
+  <li>Variables holding functions are boxed: the variable holds a
+      pointer to the start of the code.
+</ul>
+Here is an example of a stupid C program and the SPARC assembly output
+which gives some impressionistic idea of these concepts:
+<pre>int glob;
+main()
+{
+	int x;
+        register int reg;
+	int* mall;
+	int arr[10];
+
+	x = glob + 1;
+	reg = x;
+	mall = (int *) malloc(1);
+	x = *mall;
+	arr[2] = 4;
+/*	arr = arr2; -- illegal in C -- arrays not boxed so can't do this */
+}
+</pre>
+Assembly (<code>%o1</code> is a register, <code>[%o0]</code> means
+dereference, <code>[%fp-24]</code> means subtract 24 from frame
+pointer register <code>%fp</code>and dereference)
+<pre>main:
+	sethi	%hi(glob), %o1
+	or	%o1, %lo(glob), %o0 /* load global address glob into %o0 */
+	ld	[%o0], %o1  /* dereference */
+	add	%o1, 1, %o0 /* increment */
+	st	%o0, [%fp-20] /* store in [%fp-20], the memory 20 back from fp -- this is x */
+                              /* note x directly contains a number, not a ptr */
+	ld	[%fp-20], %l0 /* %l0 IS reg (its in a register directly) */
+	mov	1, %o0
+	call	malloc, 0 /* call malloc.  resulting address to %o0 */
+	 nop
+	st	%o0, [%fp-24] /* put newspace location in mall ([%fp-24]) */
+	ld	[%fp-24], %o0 /* load mall into %o0 */
+	ld	[%o0], %o1 /* this is a malloced structure -- UNBOX! */
+	st	%o1, [%fp-20] /* store into x */
+	mov	4, %o0
+	st	%o0, [%fp-56] /* array is directly a sequence of memory on stack - no indirection needed */
+.LL2:
+	ret
+	restore
+</pre>
+We will use a very simple scheme in our compilers: 
+<ul>
+  <li> Box refs and records and function values
+  <li> Keep bools and ints unboxed
+</ul>
+<p>
+Observations:
+<ul>
+  <li>It seems sort of stupid to box references at first; all the
+      "ref" means is a tag that the entity is mutable.  <em>But</em>,
+      refs must be heap-allocated since they can be refered to after a
+      function returns:
+      <pre>Let f = (Function x -> Ref 5) In !f(_) + 1</pre>
+      --if 5 were stored on the stack, after the return it could be
+      wiped out.
+  <li>All of the <code>Let</code>-defined entities in our tuples (the
+      <code>vi</code>) can
+      be either in registers or on the stack:
+      <ul>
+	<li>none of those variables are directly used outside the function due
+	    to lexical scoping;
+	<li>They don't directly contain values that should stay alive
+	    after the fucntion returns
+	<li>For efficiency, declare all of them as <code>register
+	    Word</code> variables:
+	    <pre>register Word v1, v2, v3, v4, ... ;</pre>
+      </ul>
+  <li>Boxed values will almost always be larger than one word (our one
+exception is we box references and they, as pointers, are only one
+word).  
+  <li>But, under this simple scheme means every variable is a 1-word
+      assignment.  
+  <li> This scheme is not very efficient, and real compilers optimize greatly.
+</ul>
+All that remains is to come up with a scheme to compile each
+of the above <em>atomic tuples</em> and we are done.  Records are the
+most difficult so we will consider them before writing out the full
+translation.  
+
+<h4><A NAME="xtocid388284">Compiling untyped records</A></h4>
+
+<strong>Here is an incorrect solution.</strong><br>
+Keep a record stored as pointer to an
+array with length the 
+number of fields in the record, and have the i-th array element be the
+i-th lexicographically ordered label name in the record.  <p>
+
+For instance, the record <code>{ google = ..; snork = ..; bipp =
+.. }</code> stored in variable x will be as a pointer to an array of
+three elements, and <code>*x[0]</code> will be <code>bipp</code>'s
+value, <code>*x[1]</code> will be <code>google</code>'s, and
+<code>*x[2]</code> will be <code>snork</code>'s value. <p>
+
+Now the difficulty: consider
+<pre>
+(Function x -> x.l)(If y = 0 Then {l = 3} Else {a = 4; l = 3})
+</pre>
+--field <code>l</code> will be in two different positions in these
+records so the selection will not know where to look.
+
+In a typed language this problem can be avoided: the above function is
+not well-typed in ML because it cannot be given a return type.<p>
+
+In a typed language, the simple scheme will in fact work.  Every
+projection <code>e.lab</code> can have 
+code generated for it based on the type of <code>e</code>: if
+<code>e</code> has type <code>{ google :..; snork: ..; bipp:
+.. }</code>,  the above accessing code will work.<p>
+
+<strong>Moral:</strong> types are important for compilers as well as
+programmers!<br>
+Related issue: if we wanted to catch all the dynamic errors such as
+<code>NOT 5</code> and <code>4 (5)</code>, the compiled code would be
+larger and slower.  Scheme and Lisp compilers catch such errors.
+<p>
+<strong>Records and Objects</strong>
+<ul>
+  <li>Note that the problems with records are closely related to problems
+with objects: <strong>Objects = records + refs</strong>.
+  <li> The message dispatch mechanism of the object-oriented
+language is the same as the record lookup mechanism here. Smalltalk
+      must dynamically search for the correct method at run-time.
+  <li> C++
+and Java are not as bad---all the
+overlap in C++/Java occurs between a subclass and a superclass, and 
+the locations in fact <em>can</em> be fixed: put superclass
+      methods/instances  before subclass ones. 
+  <li>C++ multiple
+      inheritance adds some extra complexity to the above.
+  <li>Note an indirection is still required in C++/Java: the
+      particular method/instance must be looked up by following a
+      pointer.  non-<code>virtual</code> methods in C++ are hard-wired
+      to have no such indirection.
+</ul> 
+
+<strong>Our Solution</strong><p>
+
+<ul>
+  <li>In an untyped language, the solution we take is to give records
+a heavy implementation, as <em>dictionaries</em> (key-value pairs,
+where the keys are label names). 
+  <li> These data structures are called
+<em>hashtables</em> in Perl.  
+  <li>Values for keys are found by hashing
+the key (i.e., label) at <em>run-time</em>.
+</ul>
+But, dictionaries are disadvantageous because:
+<ul>
+  <li> Space will be needed for the hashtable;
+  <li> Record field accessing will be <em>much</em> slower
+</ul>
+Note that since closures are records, this will also
+significantly slow down function call.  A simple optimization is to
+treat closure records specially since the field positions will always
+be fixed, and use the previous "incorrect" algorithm on those special cases.
+<p>
+Records will be implemented as a <code>struct recordImpl</code>
+consisting of a 
+<code>hashTable</code> and a <code>valueArray</code>, the hash table
+hashing label strings to positions in the <code>valueArray</code>.
+<p>
+The C function <code>hash(recordImpl,labelString)</code> then looks up
+the value of string <code>labelString</code> in the hash table.<br>
+
+For instance,
+<pre>
+(Function x -> x.l)(If y = 0 Then {l = 3} Else {a = 4; l = 3})
+</pre>
+the code <code>x.l</code> will invoke a call of approximate form
+<code>hash(x,"l")</code>.  <code>{a = 4; l = 3}</code> will generate C
+code which builds a <code>recordImpl</code> struct which hashes
+<code>"a"</code> to position 1 in <code>valueArray</code>, and
+<code>"l"</code> to position 2 (or vice-versa).
+
+<h3><A NAME="xtocid388285">The translation</A></h3>
+We are now ready to write the final translation to C.  <p>
+The translation takes a few liberties for simplicity.
+<ul>
+  <li> Quotes <code>"..."</code> below are imprecise, some of the values in the
+strings are computed and some are constants.
+  <li> The tuples <code>Let x1 = e1 In Let ... In Let xn = en In xn
+      </code> of function and then/else bodies are assumed to have
+       been converted to lists of tuples
+       <code>[(x1,e1),...,(xn,en)]</code>, and 
+       similarly for the list of top-level function definitions. In
+       your compilers, it probably will be easier just to keep them in
+       <code>Let</code> form, but the choice is yours.
+</ul>
+<pre>
+let toCTuple(vi = vj) = "vi = vj;"
+    toCTuple(vi = f) = "vi = f;" (* f is one of the function variables obtained by hoisting *)
+    toCTuple(vi = n) = "vi = n;"
+    toCTuple(vi = b) = "vi = b;"
+    toCTuple(vi = vj + vk) = "vi = vj + vk;"
+    toCTuple(vi = vj - vk) = "vi = vj - vk;"
+    toCTuple(vi = Not vj ) = "vi = !vj;"
+    toCTuple(vi = vj = vk) = "vi = (vj == vk);"
+    toCTuple(vi = (vj vk) = "vi = *vj(vk);"
+    toCTuple(vi = Ref vj) = "vi = malloc(WORDSIZE); *vi = vj;"
+    toCTuple(vi = vj := vk) = "vi = *vj = vk;"
+    toCTuple(vi = !vj) = "vi = *vj;"
+    toCTuple({ l1 = v1; ... ; ln = vn }) = /* exercise; allocate
+       hashTable and valueArray via malloc, set up hash table and set
+       valueArray to contain v1 ... vn */
+    toCTuple(vi = vj.l) = "vi = hash(vj,"l");"
+    toCTuple(vi = If vj Then tuples1 Else tuples2) =
+            "if (vj) then { toCTuples(tuples1) } else { toCTuples(tuples2) };"
+
+let toCtuples(nil) = ""
+    toCtuples(tuple::tuples) = toCtuple(tuple) ^ toCtuples(tuples)
+
+let toCFunction(f = Function xx -> tuples) =
+                  "Word f(Word envt,Word x) {" ^ ... declare temporaries ...
+                     toCtuples(tuples) ^
+                     "return(resultId tuples); };"
+
+let toC(nil) = ""
+    toC(Functiontuple::Functiontuples) = toCFunction(Functiontuple) ^ toC(Functiontuples)
+</pre>
+<strong>Question:</strong> why is a fresh memory location malloc'ed
+for a <code>Ref</code>??  This is a subtle issue, but the code
+<code>vi = &vj</code> would definately not work for the
+<code>Ref</code> case.<p>
+
+This translation sketch leaves out many details:
+<ul>
+  <li>  The <code>main</code> C function should in fact have no
+      arguments for gcc to accept the program;
+  <li>  Record creation is only sketched, and functions such as
+       <code>hash</code> and various C type declarations need to be
+       included in the C header;
+  <li>  The final result (<code>resultId</code>) of the
+       <code>Then</code> and <code>Else</code> 
+        tuples needs to be in the variable <code>x</code> for the
+       <code>If</code> code to be correct; the A-translation should
+       put <code>If</code> tuples in this form to make this phase correct.
+  <li> The application form indicates an appropriate output of the
+       A-translation.  
+  <li> Type casts need to be inserted; we are basically turning off
+       the type-checking of C, but there is no "switch" that can be
+       flicked.  Type all variables as 
+       <code>Word</code>'s, where <code>Word</code> is a 1-word type
+       (defined as e.g. <code>char 
+       *</code>).  To cast to a function pointer is a tongue-twister: in C you
+       can use <code>(*((Word (*)()) f))(arg1,arg2)</code>.  <code>x + y</code>
+       gets cast as <code>(Word (int x) + (int y))</code> -- cast the
+       words to ints, do the addition, and cast back to a word.
+  <li> The C functions need to declare all the temporary variables
+       they use.  One solution is to declare in the function header a
+       C array 
+       <pre>Word v[22]</pre>  where 22 is the number of temporaries
+       needed in 
+       this 
+       particular function.  The temporaries must have  been given
+       names <code>v[0], v[1],</code> etc.  Note, this works well if
+       the <code>newid()</code> function is instructed to start
+       numbering temporaries at zero again upon compiling each new
+       function. 
+</ul>
+
+<h3><A NAME="xtocid652586">Compilation to Assembly code</A></h3> This
+C code is very close to assembly code.  It would be conceptually easy
+to translate into assembly, but we skip the topic due to the large
+number of cases that arise in the process (saving registers,
+allocating space on the stack for temporaries.
+
+<h2><A NAME="xtocid652587">Summary</A></h2>
+
+<pre>
+let frontend e =  hoist(atrans(clconv(e)));;
+let translator e = toC(frontend(e));;
+</pre>
+
+We can assert the correctness of our translator.
+<strong>Assert:</strong> <code>DSR</code> program <code>e</code>
+terminates in the <strong>DSR</strong> operational semantics (or
+evaluator) just when the C program <code>translator(e)</code>
+terminates, provided the C program does not run out of memory. Core
+dump or other run-time errors are equated with nontermination.
+Furthermore, if DSR's <code>eval(e)</code> returns a number
+<code>n</code>, the compiled <code>translator(e)</code> will also
+produce numerical output <code>n</code>. <p>
+
+<h2><A NAME="xtocid388286">Optimization</A></h2>
+
+Optimization can be done at all phases of the translation process.
+The above translation is embarrasingly inefficient.
+In the phases before C code is produced, optimizations consist of
+replacing chunks of the program with operationally equivalent chunks.
+<p>
+
+Some simple optimizations include
+<ul>
+  <li> Implement the special closure records <code>{fn = .., envt = .. }</code>
+       as a pointer to a C <code>struct</code> with <code>fn</code>
+       and <code>envt</code> fields, instead of using the very slow
+       hash method.   Records which do not not have field names
+       overlapping with other records can also be implemented in this
+       manner (there can be two different records with the same
+       fields, but not two different records with some fields the same
+       and some different).
+  <li> Modify the A-translation to avoid making tuples for variables
+       and constants.
+  <li> Fold together constant expressions such as <code>3 + 4</code>.
+</ul>
+
+More fancy optimizations require a global <em>flow analysis</em> be
+performed.  Simply put, a flow analysis finds all possible
+<em>uses</em> of a particular definition, and all possible
+<em>definitions</em> corresponding to a particular use.  <br>
+A definition
+is a record, a <code>Function</code>, or a number or boolean, and a use is a
+record field selection, function application, or numerical or boolean
+operator.<p>
+
+<!-- give example of use of flow information here -->
+
+<h2><A NAME="xtocid652589">Garbage Collection</A></h2>
+Our compiled code malloc's but never frees.  We will eventually run
+out of memory.  A garbage collector is needed.<p>
+
+<strong>Definition:</strong> In a run-time image, memory location n is
+<em>garbage</em> if it never will be read or written to again.<p>
+
+There are many notions of garbage detection.  The most common is to
+be somewhat more conservative and take garbage to be memory locations
+which are not pointed to by any known ("root") object.
+
+<p>
+<!-- hhmts start -->
+Last modified: Thu Jan  3 13:57:50 EST 2002
+<!-- hhmts end -->
+</body></html>
+
+

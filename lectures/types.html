@@ -1,0 +1,1470 @@
+<html>
+<HEAD>
+<title> Programming Languages: Types
+and Modules</title>
+</HEAD>
+<body LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h1><A NAME="xtocid225356">Types</A></h1>
+We now study types.
+
+<ul>
+  <li>A <em>type</em> is a property a program is decorated with (implicitly
+or explicitly) before run-time.
+  <li>Type declarations give <em>invariants</em> that hold for
+      <em>all</em> executions 
+      of a program:
+      <ul>
+	<li> a variable always holds a <code>String</code>
+      object, 
+	<li>a function always returns a <code>tree</code> type, etc.
+      </ul>
+</ul>
+<hr>
+Advantages of typed languages:
+<ul>
+  <li> Many uncaught programming errors arise without types.  In
+       particular, few run-time type errors arise in ML but many
+       could arise in untyped languages.  So, types aid in debugging.
+  <li> Types (and Module signatures) specify invariant properties of
+      the program, and this serve as precise
+       and descriptive comments on the functionality of the code.  So,
+       types are a huge aid in large software development.
+  <li> Types help a compiler produce much faster code:
+       more information is known at compile-time.  For example,
+       The records implementation we were
+       forced to use in our compilers (via hashing) is not needed in
+      C++ due to its static type system.<br>
+
+       Smalltalk is very slow, and the lack of a type system counts
+       for much of the slowness.  
+  <li> In an untyped language its easier to do very ugly hacking.  For
+       instance, a list <code>[1,true,2,false,3,true]</code> can be
+       programmed in 
+       an untyped language, but this is dangerous and it would be much
+       preferred to represent this as <code>[(1,true),(2,false),(3,true)] :
+       (int * bool) list</code>
+</ul>
+The main advantage of an untyped language is greater
+<em>expressiveness</em>:
+<ul>
+  <li> Our DOB encoding in DSR would only partly work in Caml since Caml
+doesn't have record polymorphism.
+  <li>A simply typed version of <strong>D</strong> is in fact a
+very weak language because recursion cannot be defined: the
+<code>Y</code>-combinator cannot be typed!
+</ul>
+<hr>
+Different dimensions of types you know:
+<ul>
+  <li>Atomic types: <code>int</code>, <code>float</code>, ..
+  <li>Type constructors, which produce types from types: <code>'a -> 'b</code>, <code>'a * 'b</code>
+  <li>Caml-style type constructor definitions via <code>type</code>
+  <li>C-style type definitions via <code>struct</code> and <code>typedef</code>
+  <li>Object-oriented types: <code>Class ...</code>, <code>Object ...</code>
+  <li>Module types (signatures)
+  <li>Java-style interfaces
+  <li>Exception types (the <code>raises SnorkFail</code> on Java methods)
+  <li>Parametric polymorphism: <code>'a -> 'a</code>
+  <li>Record/Object polymorphism: pass a <code>ColorPoint</code> to a
+      function which expects a <code>Point</code>.
+</ul>
+<hr>
+New dimensions of program invariants (types) that are currently active
+research topics: 
+<ul>
+  <li>Effect types: <code>int -x,y-> int</code> indicating variables x
+      and y assigned to in this function (the <code>raises
+      SnorkFail</code> is a form of effect type)
+  <li>Concrete class analysis: for variable <code>x:Point</code>, a
+      concrete class analysis produces a set such as
+      <pre>{Point, ColorPoint, SnorkPoint}</pre>
+This means at
+      run-time <code>x</code> could 
+      either be a <code>Point</code>, a <code>ColorPoint</code>, or a
+      <code>SnorkPoint</code> (<em>and</em>, no other).  Useful in optimization.
+  <li>Typed Assembly Language: put types on assembly-level code and
+      have a type system that guarantees no unsafe pointer operations.
+  <li>Logical assertions in types: <code>int -> { x:int | odd(x)
+      }</code> for a function returning odd numbers.  
+</ul>
+<hr>
+<strong>Statically typed vs Dynamically typed vs untyped</strong> 
+<ul>
+  <li>The standard notion of
+type found in Caml/Java/C/ is a <em>static</em> type system: types are
+      checked by the compiler and type-unsafe programs fail compilation.
+  <li> <em>Dynamic</em> type systems refer to checking type
+information at run-time; 
+      <ul>
+	<li>Lisp, Scheme, and Smalltalk are
+in fact dynamically typed.
+	<li>Any time you use a function it makes sure its a function
+	    first; an integer, makes sure its an integer first, etc.
+	<li>These languages run slowly due to the overhead of the checks
+      </ul> 
+  <li>Our DSR compiler-produced C programs are de facto
+      <em>untyped</em>: the C typechecker has been turned off via
+      casts and there are no run-time checks for type mismatches.
+      Machine language is also untyped.
+  <li> There are also some dynamic typings hiding in
+statically typed languages. 
+      <ul>
+	<li>Java downcasts are verified at run-time and can raise exceptions
+	<li>Array accesses out-of-bounds are also checked at run-time
+	    in Java/Caml (so, they are dynamically typed in Java/Caml, but
+	    <em>untyped</em> in C since no check is performed at
+	    all).  So, the type of an array is statically checked, but
+	    the <em>size</em> is dynamically checked.
+      </ul><p>
+</ul>
+
+<hr>
+<p>
+We will
+use the "<strong>T</strong>" prefix to indicate a typed version of an
+untyped language 
+previously studied.  Thus, we have <strong>TD</strong>,
+<strong>TDS</strong>, <strong>TDR</strong>,
+<strong>TDSR</strong>, <strong>TDOB</strong>, <strong>TDX</strong>,
+<strong>TDSRX</strong>, ... <br>
+There are too many languages to look at,
+so we consider only <strong>TD</strong> for a warm-up, and then do
+full-blown <strong>TDSRX</strong>.
+<p>
+<hr>
+
+<h2>Design Issues</h2>
+
+Before we begin the investigation of typing issues for particular
+languages, there are some general design issues to address.<p>
+
+<strong>How much explicit type information?</strong>  How much type
+information is the program text to be decorated 
+with, and how much is inferred by the compiler?  A spectrum of
+possibilities exists. 
+<ul>
+  <li> No decoration, stick with our untyped language syntax.  Then,
+       the types must be <em>inferred</em>.
+  <li> Limited decoration, partial inference.  There is a wide range
+       of possibilities.  Pascal and C for instance require function
+       argument and return types to be specified, and declared
+       variables to be given types.  However, within the body of a
+       function, individual expressions do not need to be typed as
+       those types may be inferred.  Some languages only require
+       function <em>argument</em> types be declared, and the return
+       values of functions is then inferred. 
+  <li> ...
+  <li> Every subexpression and identifier is decorated with its type.
+      <br> --Too much!
+</ul>
+The Caml type system is quite flexible in that the whole spectrum is
+possible:
+<pre>
+# function x -> x;;
+<em>- : 'a -> 'a = &lt;fun>
+</em>
+# ((function (x : int) -> (x : int)) : int -> int);;
+<em>- : int -> int = &lt;fun>
+</em></pre>
+We will concentrate on the C/Pascal view.<p>
+
+<hr>
+<strong>Type checking and Type inference algorithms</strong><p>
+
+For a typed language, the compiler should typecheck the program before
+generating code.
+<ul>
+  <li>A <em>type inference algorithm</em> both infers types and
+checks the program body has no type errors (Caml).
+  <li>A <em>type checker</em>
+generally just checks the body is
+well-typed given the types listed on declarations (C/Java).<br>
+(technically C and Java are also inferring some types, such as the
+      type of <code>3+4</code>)
+  <li>In any case it must be possible to
+run the inference/checking algorithm quickly.  Caml in theory can take
+      exponential time to infer types.  But, in practice it is linear.
+</ul> 
+
+<p>
+<hr>
+
+
+<h2><A NAME="xtocid225357">A Typed D Language: TD</A></h2>
+
+In analogue with our development of operational
+semantics/interpreters, we will define
+<ul>
+  <li><em>type systems</em> a 
+language-independent notation for assigning types to programs, which
+      is analogous to operational semantics;
+  <li><em>type-checkers</em>, Caml implementations of the type systems
+      analogous to interpreters
+</ul>
+<h3><A NAME="xtocid246258">Type Systems</A></h3>
+
+<ul>
+  <li>Type systems are a rule-based formal system very similar to an
+      operational semantics.  
+  <li>Type systems rigorously and
+formally specify what programs have what types. 
+  <li>Type checkers are <em>implementations</em> of type system
+      <em>specifications</em>. 
+  <li> Type systems have a
+strong (and deep) parallel with formal logic.
+
+</ul><p>
+<h4>Type Assertions</h4>
+The type assertion
+<pre>Gamma |- e : tau
+</pre>
+reads "in type environment <code>Gamma</code>, <code>e</code> is of
+type <code>tau</code>". A type environment gives the types of free
+variables in <code>e</code>, and is a list 
+<pre>Gamma = x_1 : tau_1, ..., x_n : tau_n
+</pre>
+if <code>x</code> is listed twice in <code>Gamma</code>, the rightmost
+(innermost) binding is the 
+proper type.   We write <code>Gamma(x) = tau</code> to indicate that
+<code>tau</code> is the innermost type for <code>x</code> in Gamma.  
+
+<p>
+<h4>The TD Types</h4>
+The <strong>TD</strong> types <code>tau</code> in concrete syntax are
+<pre>tau ::= Int | Bool | tau -> tau</pre>
+In abstract syntax within Caml, they are
+<pre>
+type dtype = Int | Bool | Arrow of dtype * dtype
+</pre>
+The expressions of <strong>TD</strong> are almost identical
+<strong>D</strong>, but functions differ slightly in that they come
+with type decoration:
+<pre>
+Function x : tau -> e : tau'
+</pre>
+which in the abstract syntax is
+<pre>Function of ide * dtype * expr * dtype</pre>
+
+<h4>The TD Type Rules</h4>
+Here are the rules for generating valid typing assertions.
+<pre>
+
+------------------------ (Hyp)
+Gamma  |- x : tau                 for Gamma(x) = tau 
+
+
+----------------------------- (Int)
+Gamma  |- n : Int                 for n an integer
+
+
+----------------------------- (Bool)
+Gamma  |- b : Bool                for b either True or False
+
+
+Gamma  |- e : Int , Gamma  |- e' : Int                 
+---------------------------------------- (+)
+Gamma  |- e + e' : Int                
+
+
+Gamma  |- e : Int , Gamma  |- e' : Int                 
+---------------------------------------- (-)
+Gamma  |- e - e' : Int                
+
+
+Gamma  |- e : Int,     Gamma  |- e' : Int            
+-------------------------------------------- (=)
+Gamma  |- e = e' : Bool                
+
+(note, equality only typechecks for integers, not booleans.)
+
+(And, Or, NOT rules should be obvious)
+
+Gamma  |- e : Bool,  Gamma  |- e' : tau,  Gamma  |- e'' : tau
+------------------------------------------------------------------ (If)
+Gamma  |- If e Then e' Else e'' : tau
+
+
+Gamma, x : tau |- e : tau'
+------------------------------------------------    (Function)
+Gamma  |- (Function x : tau  -> e : tau') : tau -> tau'
+
+
+Gamma  |- e : tau -> tau', Gamma  |- e' : tau 
+-------------------------------------------------- (Appl)
+Gamma  |- e e' : tau'
+
+<!--
+Gamma |- e : tau,  Gamma |- e' : tau'
+-----------------------------------------          (Pair)
+Gamma  |- &lt e,e' &gt : tau * tau'
+
+
+Gamma  |- e : tau * tau'
+--------------------------------------------------  (Fst, Snd)
+Gamma |- fst(e) : tau, Gamma |- snd(e') : tau'
+-->
+</pre>
+Just as in operational semantics, a <em>derivation</em> of
+<code>Gamma  |- e : tau</code> is a tree of rule applications where the leaves are
+axioms (<code>Hyp, Int or Bool</code> rules) and the root is <code>Gamma  |- e : tau</code>.<p>
+<hr>
+<h4>Example Derivations</h4>
+
+<pre>
+|- (Function x : Int -> (Function y : Bool -> (If y Then x Else x+1) :
+Int) : Bool -> Int) : Int -> Bool -> Int
+  Because by the function rule, it suffices to prove
+  x:Int |- Function y: Bool -> (If y Then x Else x+1): Int) : Bool->Int
+    Because by the function rule again, it suffices to prove
+    x:Int, y: Bool |- If y Then x Else x+1 : Int  
+      Because by the If rule, it suffices to prove
+      x:Int, y: Bool |- y : Bool
+      x:Int, y: Bool |- x : Int
+      x:Int, y: Bool |- x+1 : Int
+      all of which either follow by the hypothesis rule or + and hypothesis.
+</pre>
+Given the above and letting
+<pre>
+f = (Function x : Int -> (Function y: Bool -> (If y Then x Else x+1): Int) : Bool->Int)</pre>
+we then have
+<pre>
+|- f 5 True : Int
+  Because by the application rule,
+  |- f : Int -> Bool -> Int
+    (which we derived above)
+  |- 5 : Int by the Int rule
+  And thus
+  |- f 5 :  Bool -> Int by the application rule.
+  Given this and
+  |- True : Bool by the Bool rule
+  we can get
+  |- f 5 True :  Int by the application rule.
+ </pre>
+<hr>
+<strong>Recursion and TD</strong>
+<ul>
+  <li>As mentioned above, this language is very weak: no recursive
+functions can be defined. 
+  <li> In fact, all programs are guaranteed to
+halt, a <em>normalization</em> property. 
+  <li>As an exercise try to type the <code>Y</code> combinator.
+  <li>If we really wanted to use this language we would add
+      recursion.  We do add recursion to <strong>TDSRX</strong> below
+      to show how to type it.
+</ul>
+
+<h4>An interpreter for TD</h4> 
+Its easy to write an interpreter for
+<strong>TD</strong>: it is nearly a <strong>D</strong> interpreter,
+the type information is ignored at run-time.  
+
+<hr>
+<h4>Type Soundness</h4>
+The following theorem asserts that our type system indeed prevents
+run-time errors from occurring.<p>
+
+
+<strong>Theorem (Type Soundness)</strong> If <code>|- e : tau</code> then
+in the process of evaluating <code>e</code>, a stuck state is never reached.
+<p>
+<ul>
+  <li>A stuck state is e.g. <code>0 (Function x -> x)</code> or <code>(Function x -> x)
++ 4</code> 
+  <li>we won't define this concept precisely.  
+  <li>In terms of your <strong>D</strong> interpreter, its the cases
+      that would throw an exception.
+</ul>
+<hr>
+
+<h3><A NAME="xtocid656159">From Type Systems to Type Checkers</A></h3>
+We can now play a similar game that we did when defining interpreters:
+given the language-independent type rules, define a type checking
+algorithm in a particular language, namely Caml.  <br>
+<ul>
+  <li>The type checker
+program, <code>typeCheck</code>, should take a type environment <code>Gamma</code>
+and expression <code>e</code> as input and either return its type or raise
+an exception 
+indicating <code>e</code> is not well-typed in environment Gamma.
+  <li>
+Note that some type systems  do <em>not</em> have an easy
+corresponding type-checking algorithm.
+  <li>
+In <strong>TD</strong>, we are fortunate that the type checker mirrors
+the rules in an almost direct fashion: notice 
+that, like was the case for the interpreter, the rule that applies is
+dictated by the outermost structure of the expression.  
+  <li>
+The flow of the
+recursion is that we pass the environment <code>Gamma</code> and expression <code>e</code> <em>down</em>, and
+expect the result type <code>tau</code> back <em>up</em>.   
+</ul>
+<hr>
+<a name="td"><h4>Sketch of a TD Typechecker</h4></a>
+Here is a
+first 
+pass at a <strong>TD</strong> type checker, <code>typecheck : envt *
+expr -> dtype</code>. <p>
+<code>gamma : envt</code> can be implemented as a
+<code>(ide * dtype) list</code>, with the most recent item at the
+front of the list. 
+<pre>
+let typecheck gamma e = match e with
+   Var x => lookup gamma x (* look up first mapping of x in list gamma *)
+ | Function(Ide x,t,e,t') =>
+                  if typecheck ((Ide x),t):: gamma) e  = t'
+                  then Arrow(t,t') else raise TypeError |
+ | Appl(e1,e2) => let  Arrow(t1,t2) = typecheck gamma e1 in
+                                         if typecheck gamma e2  = t1
+                                         then t2 else raise TypeError 
+ | Plus(e1,e2) => if typecheck gamma e1 = Int
+                                     and typecheck gamma e2  = Int
+                                     then Int else raise TypeError 
+    ...
+</pre>
+
+The typechecker should faithfully implement the <strong>TD</strong>
+type system:
+<p>
+
+<strong>Lemma (faithfulness of typechecker):</strong> 
+<ul>
+  <li><code>|- e : tau</code> if and only if
+<code>typecheck [] e</code> returns <code>tau</code>, and 
+  <li>if <code>typecheck [] e</code>
+raises a <code>typeError</code> exception, <code>|- e : tau</code> is
+not provable for any <code>tau</code>. 
+</ul>
+This Lemma implies the <code>typecheck</code> function is a sound
+implementation of the type system for <strong>TD</strong>.
+<hr>
+
+<h2><A NAME="xtocid656160">A Type System for <strong>TDSRX</strong></A></h2>
+There is not all that much deep going on with these type systems.  So,
+let us consider next the <strong>TDSRX</strong> language.
+<p>
+We include just about every piece of syntax we have used up to now,
+except the <strong>DOB</strong> classes and objects.  Here is the
+abstract syntax defined in terms of a Caml type.
+<pre>
+type expr = 
+ Var of ident | Function of ident * dtype * expr * dtype | Appl of expr * expr |
+ Letrec of ident * ident * dtype * expr * dtype |
+ Plus of expr * expr | Minus of expr * expr | Equal of expr * expr | 
+ And of expr * expr| Or of expr * expr | Not of expr |  
+ If of expr * expr * expr | Int of int | Bool of bool 
+ Ref of expr | Set of expr * expr | Get of expr | Cell of int |
+ Record of (label * expr) list | Select of  label * expr |
+ LetExn of ident * dtype * expr |
+ Raise of expr * expr | TryWith of expr * expr * ident * dtype * expr | Exn of int
+
+and
+
+dtype = Int | Bool | Arrow of dtype * dtype |
+           Rec of label * dtype list | Rf of dtype | Ex of dtype
+</pre>
+
+Now we will proceed to define the rules (whew!) for <strong>TDSRX</strong>.
+
+<h4>The Type Rules for TDSRX</h4>
+<pre>
+(( insert all of the TD rules here ))
+
+Gamma, f : tau -> tau', x : tau |- e : tau' 
+---------------------------------------------------------- (LetRec)
+Gamma  |- (Let Rec f x : tau  = e : tau')  : tau -> tau'
+
+
+
+Gamma  |- e1 : tau1, ..., Gamma  |- en : taun
+--------------------------------------------------------------------- (Record)
+Gamma  |- { l1 = e1, ..., ln = en  } : { l1 : tau1, ..., ln : taun}
+
+
+Gamma  |- e : { l1 : tau1, ..., ln : taun}
+-------------------------------------------------------- (Projection)
+Gamma  |- e.li : taui,  for i a number between 1 and n
+
+
+Gamma  |- e : tau
+-------------------------------------------- (Ref)
+Gamma  |- Ref e : tau Ref
+
+
+Gamma  |- e : tau Ref,   Gamma  |- e' : tau
+-------------------------------------------- (Set)
+Gamma  |- e := e' : tau 
+
+
+Gamma  |- e : tau Ref
+-------------------------------------------- (Get)
+Gamma  |- !e : tau
+
+
+Gamma, xn : tau Exn |- e : tau'
+-----------------------------------------------    (LetExn)
+Gamma  |- (LetExn xn : tau Exn  In e )  : tau'
+
+
+Gamma  |- xn : tau exn  Gamma  |- e' : tau
+-------------------------------------------- (Raise)
+Gamma  |- Raise (xn(e')) : tau' (any type OK)
+
+
+Gamma  |- xn : tau' Exn,  Gamma  |- e : tau,    Gamma, x : tau' |- e' : tau
+--------------------------------------------------------------------------  (Try)
+Gamma  |- Try e with xn(x : tau') -> e' :  tau
+</pre>
+
+<!-- DO THE EXCEPTION RULES: they are sort of complicated.  -->
+
+(Question: why is there no typechecking rule for <code>Cell</code>'s?
+Another question: why is there actually no need for <code>Let Rec f
+x</code> syntax in <strong>TDSRX</strong> to write recursive
+functions?)<p>
+
+
+Exercise: attempt to type some of the untyped programs we have studied
+up to now, e.g. the <code>Y</code> combinator, <code>Let</code> and
+sequencing abbreviations, the factorial example, and the encoding of
+lists. 
+<hr>
+
+<h2><A NAME="xtocid1137661">Advanced Type Systems: Subtyping</A></h2>
+
+<ul>
+  <li>The above system is reasonably adequate, but there are still lots of
+programs that have no run-time errors that will nonetheless not be
+type-checkable.  
+  <li>The first extension we would like to consider is what
+is known as <em>subtyping</em>.
+  <li>Main important appplication: it allows object/record
+      polymorphism to typecheck. 
+  <li>Example:
+      <pre>{ m : Int; n : Int } <:  { m : Int }</pre> where
+      <code>&lt;:</code> means "subtype of".
+  <li>So, you have already seen subtyping in Java and C++ (subclasses
+      are subtypes, and extending or implementing an interface gives a subtype)
+<p>
+
+</ul>
+Consider the function for example
+<pre>
+Function x -> x.l + 1
+</pre>
+This function takes as argument a record with field <code>l</code> of
+type <code>Int</code>.  So, we could write it in a typed form as
+
+<pre>
+Function x : {l : Int} -> (x.l + 1) : Int
+</pre>
+In the untyped <strong>DR</strong> language the record passed into the
+function could also include other fields besides <code>l</code>, and
+the call
+<pre>
+(Function x -> x.l + 1) {l = 4; l' = 6}
+</pre>
+would generate no run-time errors.  However, this would not type-check
+by our <strong>TDSRX</strong> rules: the function argument type is different from the
+type of the values passed.<p>
+
+<strong>Solution:</strong>  Let us re-consider record types such as
+<code>{ m : Int; n : Int }</code> to mean a record with <em>at least</em> m and
+n fields of type <code>Int</code>, but possibly other fields as well,
+of unknown type.  Think about the previous record operations and their
+types: under this interpretation of record typing, the (Record) and
+(Projection) rules both still make sense.<p>
+<hr>
+
+Now, the old rules are sound but we need a new rule to reflect this
+new understanding:
+<pre>
+Gamma  |- e : { l1 : tau1; ...; ln : taun}
+-------------------------------------------------------- (Sub-Rec)
+Gamma  |- e : { l1 : tau1; ...; ln : taum} for m less than n
+</pre>
+This rule not as good as we could do.  Consider the following example.
+
+<pre>F = Function f -> f ({ x = 5; y = 6; z = 3}) +  f({x = 6; y = 4})</pre>
+
+Here the function <code>f</code> informally should take a record with at
+least <code>x</code> and <code>y</code> fields, but also other fields
+could be present. 
+Let us try to type the function <code>F</code>.
+
+<pre>F : ({x : Int; y : Int} -> Int) -> Int</pre>
+Consider the application <code>F G</code> for
+<pre>G = Function r -> r.x + r.x</pre>
+Now, however, consider the type-checking of this function G at
+<pre>G : {x : Int} -> Int</pre>
+
+This does not exactly match the type of <code>F</code>'s argument,
+<code>{x : Int; y : Int} -> Int</code>, and so the type-check fails.
+<p>
+In fact we <em>could</em> have typed <code>G</code> a type <code>{x : Int; y
+: Int} -> Int</code>  by the DSRX rules, but its too late to know that
+was the type we should have used.
+<p>
+The (Sub-Rec) rule is of no help here.  What we need is a rule
+that says a function of record type argument may have fields
+<em>added</em> to its record argument type, as those fields will be
+ignored:
+
+<pre>
+Gamma  |- e : { l1 : tau1; ...; ln : taun} -> tau
+------------------------------------------------------------------ (Sub-Function)
+Gamma  |- e : { l1 : tau1; ...; ln : taun; ...; lm : taum} -> tau 
+</pre>
+Using this rule, <code>F G</code> will indeed type-check. <p>
+
+We need still other rules, though.  Consider records inside of
+records: 
+
+<pre>{pt = {x = 4; y = 5}; clr = 0} : { pt : {x : Int}; clr : Int }</pre>
+should be a valid typing since the <code>y</code> field will be
+ignored.  However, there is no rule to allow this typing, either!<p>
+<hr>
+
+<h3>The STD type system: TD with Subtyping</h3>
+<!-- These notes are really weak, did MUCH more in lecture in 02. -->
+
+The solution is to have a seperate set of <em>subtyping</em> rules
+just to determine 
+when one type can be used in the place of another.  
+<code>tau &lt;: tau'</code> is read "<code>tau</code> is a subtype of
+<code>tau'</code>", and means that an object of type <code>tau</code>
+may also be considered an object of type <code>tau'</code>.  The rule
+added to the TD type system is
+<pre>
+Gamma  |- e : tau, |- tau <: tau'
+------------------------------------------------------------------ (Sub)
+Gamma  |- e : tau'
+</pre>
+(in place of the above subsumption rules)
+The STD subtyping rules used to determine if <code>tau <: tau'</code> are
+
+<pre>
+----------------------------------------(Sub Refl)
+|- tau <: tau
+
+
+|- tau <: tau',     |- tau' <: tau''
+----------------------------------------(Sub Trans)
+|- tau <: tau''
+
+
+|- tau0' <: tau0,     |- tau1 <: tau1'
+----------------------------------------(Sub Function)
+|- tau0 -> tau1 <: tau0' -> tau1'
+
+|- tau1 <: tau1'   ...  |- taun <: taun'
+-------------------------------------------------------------------(Sub Record)
+|- { l1 : tau1; ...; ln : taun; ... ; lm : taum} <: { l1 : tau1'; ...; ln : taun'}
+</pre>
+
+For all of the examples discussed up to now, it should be clear that
+this set of more general rules will work. 
+<hr>
+<h3><A NAME="xtocid1137662">Implementing an STD type-checker</A></h3>
+<ul>
+  <li>Automated type checking for STD is difficult.
+  <li>Solution 1: add extra type declarations to help out the typechecker
+  <li>Solution 2: completely infer the types in a <em>constraint</em>
+      form (a topic covered below).
+</ul>
+(rest of this topic skipped in lecture)
+<p>
+
+We briefly sketch how the <code>typecheck</code> function for STD may
+be written.
+The TD type-checker requires certain types to be identical, e.g. the
+function domain type must be identical to the type of the function
+argument in an application <code>e e'</code>.
+
+<pre>Gamma  |- e : tau -> tau', Gamma  |- e' : tau 
+-------------------------------------------------- (Appl)
+Gamma  |- e e' : tau'
+</pre>
+In STD, at this point
+we will instead see if subtyping is possible:
+<code>typecheck(e')</code> returns 
+<code>tau''</code> for some type <code>tau''</code>, and then
+<code>tau'' <: tau</code> is 
+checked via a function <code>areSubtypes(tau'',tau)</code>.  This produces a
+valid proof because
+<pre>
+                           Gamma  |- e' : tau''
+                           --------------------- (Sub)
+Gamma  |- e : tau -> tau', Gamma  |- e' : tau 
+-------------------------------------------------- (Appl)
+Gamma  |- e e' : tau'
+</pre>
+is a valid typing derivation.  Other rules where the TD rules require
+a type match similarly are 
+generalized to allow the (Sub) rule to be used.  <p>
+
+Writing the <code>areSubtypes</code> function: exercise.  
+<p>
+There may be a question as to whether <code>typecheck(e)</code> does
+not sometimes raise a <code>typeError</code> exception when the
+program is in fact typable.  it is only using the subsumption rule in
+certain spots.  However, this is not the case, it suffices to use the
+subsumption rule in these spots only.
+
+<hr>
+<p>
+<strong>Subtyping and Java/C++ types</strong><p>
+<ul>
+  <li>The subclassing of Java/C++ is a form of subtyping (objects are
+      records; recall our encoding of DOB)
+  <li>All subtyping is <em>declared</em> there, via two means:
+      <ol>
+	<li>Subclasses are subtypes
+	<li>(Java only) A class is a subtype of an interface it implements
+      </ol>
+  <li>Java/C++ are thus more restrictive: Suppose there were classes
+      with structure <code>{x: Int; y: Int; color:Int}</code> and
+      <code>{x: Int; y: Int}</code> that weren't one of the two cases
+      above; then, they aren't subtypes but they are in STD.
+  <li>Declared subtyping is good however: subtyping either needs to be
+      explicitly declared or inferred.
+</ul>
+<strong>Subtyping in other languages</strong>
+<ul>
+  <li>OCaml is more flexible in that there is no restriction to a
+      hierarchy, but its also less flexible in that there is really no
+      polymorphism -- an explicit coercion of a ColorPoint to a Point
+      is required.
+  <li>There are several research languages with type inference and
+      subtyping, but the types are often hard to read.
+</ul>
+<hr>
+<h2><A NAME="xtocid1137663">Hindley-Milner Type Inference and Polymorphism</A></h2>
+Lets look
+under the hood and see what Caml is doing to infer types.  
+<ul>
+  <li>Type inference was originally discovered by Robin Milner (and
+      independently by logician Hindley), the original creator of ML.  
+  <li>The key idea of Milner's "Algorithm W" is to 
+      <ul>
+	<li>initially give all
+      variables arbitrary types <code>'a</code> and then
+	<li>
+      <em>unify</em> (equate) types if indicated by the program.
+	<li>Example: application <code>f arg</code> -- if
+	    <code>f</code> has type <code>'a -> 'b</code> and <code>arg</code> has
+	    type <code>'c</code>, unify (equate) <code>'a</code> and <code>'c</code>.
+      </ul>
+  <li>We study full type inference: programs will come with no declared 
+type information.  
+</ul>
+<hr>
+
+<h4>Type inference and polymorphism</h4>
+Type inference goes hand-in-hand with parametric polymorphism. Consider
+<code>
+Function x -> x
+</code>
+<ul>
+  <li>Without polymorphism, what type could be inferred for this function?
+  <li>Int -> Int is a flawed answer because it could very well be incorrect.
+  <li>With type inference we can achieve something called a <em>principal
+type</em>.
+</ul>
+<h4>Principal Types</h4>
+<strong>Definition:</strong> A <em>principal type</em> <code>tau</code> for expression <code>e</code>
+(where <code>|- e : tau</code>) has the following property:
+
+<br> for any other type <code>tau'</code> such that <code>|-
+e : tau'</code>, for any context <code>C</code> for which
+
+<pre> |- C[e : tau'] : tau''</pre> (for any <code>tau''</code>), then
+
+
+<pre>|- C[e : tau] : tau'''</pre> as well, for some
+<code>tau'''</code>.<p>
+
+<ul>
+  <li>What principality means is no other typing will let more uses of the
+      program typecheck, so the principal typing will always be best. 
+  <li>
+The desired property of our type inference algorithm is that it will
+always infer principal types.  
+  <li><strong>Key Corollary:</strong> With a principal-type algorithm,
+      we know inference will never "get in the 
+way" of the programmer by e.g. inferring Bool -> Bool for the identity
+function when the programmer wants to use it on Int -> Int.  
+  <li>Caml
+infers the type <code>'a -> 'a</code> for the identity function, which
+can be shown to be a principal
+type for it.
+  <li>In fact, Caml type inference always infers principal types.
+</ul>
+
+<hr>
+<h3>An Equational Type System: ED</h3>
+We are going to present type inference in a nonstandard way.
+<ul>
+  <li>Milner's Algorithm W: <em>eagerly</em> unify <code>'a</code> and
+      <code>'c</code>: replace one with the other everywhere.
+  <li>Equational inference: <em>lazily</em> accumulate equations such
+      as <code>'a = 'c</code> and then solve them at the end.
+</ul>
+
+We will now define <strong>ED</strong>, a simple equationally typed
+version of the <strong>D</strong> language.  <br>
+
+<ul>
+  <li><strong>ED</strong> uses the <strong>D</strong> grammar for
+expressions since expressions will not be decorated with any types.
+  <li>
+<strong>ED</strong> Types: 
+<pre>tau ::= Int | Bool | tau -> tau | 'a | 'b | ...</pre>
+  <li>
+<strong>ED</strong> types during inference are going to include an
+extra set of <em>constraining equations</em>, <code>E</code>,
+which constrain the behavior of the type variables. 
+  <li>Type judgements for <strong>ED</strong> are thus of the form <code>Gamma |- e : tau \
+      E</code>, the same as before but tacking a set of equations on
+      the side.
+  <li>Each member of
+<code>E</code> is an equation like <code>'a = 'c</code>.<p>
+
+</ul>
+Equational types will be used to aid inference: the overall approach is to
+<ol>
+  <li> Infer equational types for the whole programs;
+  <li> If the equations are inconsistent, pronounce that there is a
+       type error;
+  <li> If the equations are not inconsistent, simplify them to
+       give an inferred type as given by Caml.
+  <li>(Implicit fact: if there are no inconsistencies in the
+      equations, they can always be simplified to give an
+      equation-free type)
+</ol>
+ <hr>
+
+<strong>Definition:</strong> An <em>equational type</em> is a type of the
+form
+
+<pre>tau \ { tau1 = tau1' , ..., taun = taun' }</pre>
+
+Each <code>tau = tau'</code> is an equation on types, meaning
+<code>tau</code> and <code>tau'</code> have the 
+same meaning as types.  We will let <code>E</code> mean some arbitrary set of type
+equations.  For instance,
+
+<pre>
+Int -> 'a \ { 'a = Int -> 'a1, 'a1 = Bool }
+</pre>
+
+is an equational type.  If you think about it, this is really the same
+as the type
+
+<pre>
+Int -> Int -> Bool</pre>
+when = is substituted for =.  This is a step we are going to want to
+perform, so-called <em>equational simplification</em>.  It is also
+possible to write "senseless" types like
+
+<pre>
+Int -> 'a \ { 'a = Int -> 'a1, 'a = Bool }
+</pre>
+which cannot be types since they imply functions and booleans are the
+same type!  Such equation sets are deemed <em>inconsistent</em>, and
+will be equated with failure of type inference.
+
+There are also possibilities for circular (self-referential) types
+that don't quite look inconsistent:
+
+<pre>
+Int -> 'a \ { 'a = Int -> 'a }
+</pre>
+
+<ul>
+  <li>Caml doesn't allow for such types.  
+  <li>To follow Caml we will also
+disallow them initially.  
+  <li>These types can't be simplified away, thats the main reason why
+      Caml disallows them (users of the language would have to see
+      some type equations).
+</ul>
+
+<hr>
+<h4>The ED Type System</h4>
+The <strong>ED</strong> system is the following set of rules.  <br>
+(Note that
+<code>Gamma</code>  is as in the <code>TD</code> rules, asserting
+e.g. <code>x : tau</code> for variable <code>x</code>; the type
+<code>tau</code> is a simple (non-equational) type.)
+
+
+<pre>
+Gamma(x) = tau 
+------------------------------- (Hyp)
+Gamma  |- x : tau \ E
+
+
+----------------------------- (Int)
+Gamma  |- n : Int \ emptyset            for n an integer
+
+
+----------------------------- (Bool)
+Gamma  |- b : Bool \ emptyset           for b either True or False
+
+
+Gamma  |- e : tau \ E , Gamma  |- e' : tau' \ E'                
+---------------------------------------------------------------------- (+)
+Gamma  |- e + e' : Int \ E union E' union {tau = Int, tau' = Int }
+
+
+Gamma  |- e : tau \ E  , Gamma  |- e' : tau'  \ E'                 
+-------------------------------------------------------------------- (-)
+Gamma  |- e - e' : Int  \ E union E' union {tau = Int, tau' = Int }               
+
+
+Gamma  |- e : tau \ E ,     Gamma  |- e' : tau'  \ E'           
+-------------------------------------------- (=)
+Gamma  |- e = e' : Bool   \ E  union E' union {tau = Int, tau' = Int }             
+
+(And, Or, NOT rules should be obvious)
+
+Gamma  |- e : tau \ E ,  Gamma  |- e' : tau' \ E' ,  Gamma  |- e'' : tau'' \ E'' 
+------------------------------------------------------------------------------------------------- (If)
+Gamma  |- If e Then e' Else e'' : 'd \ E union E' union E'' union {tau = Bool, tau' = tau'' = 'd}
+
+
+Gamma, x : 'a |- e : tau \ E 
+---------------------------------------------------------    (Function)
+Gamma  |- Function x  -> e : 'a -> tau \ E 
+
+
+Gamma  |- e : tau \ E , Gamma  |- e' : tau'  \ E'
+--------------------------------------------------------------- (Appl)
+Gamma  |- e e' : 'a \ E union E' union { tau = tau' -> 'a }
+
+</pre>
+<ul>
+  <li>These rules almost directly define the equational type inference procedure: the
+proof can pretty much be built from the bottom (leaves) on up.
+  <li>
+So, <em>every</em> program may be inferred an equational type. 
+  <li>Each equation added denotes two types that should be equal.
+</ul>
+<hr>
+
+<h3><A NAME="xtocid1137664">Solving the equations</A></h3>
+
+<ul>
+  <li>Note that <em>any</em> program may be typed by these rules! 
+  <li>No matching/correspondence of types is forced like in the
+      <strong>TD</strong> rules, all that happens is more constraints
+are accumulated.
+  <li>We must in addition solve the resulting equations to produce a valid
+Caml-style type.  
+  <li>So, type inference for <strong>ED</strong> consists of 
+      <ol>
+	<li>Running the rules to infer equations
+	<li>Checking the equations for inconsistency
+	<li>Simplifying them to an equation-free type
+      </ol>
+</ul>
+To solve the equations, we
+<ol>
+  <li> Compute the <em>closure</em> of the equations, producing new equations
+       that hold by transitivity, etc;
+  <li> Check for any inconsistent equations like <code>Int =
+       Bool</code> which denote type errors;
+</ol>
+
+<!-- Insert some example here to show the algorithm idea before presenting it. -->
+
+<strong>Computing <code>Closure(E)</code>, the Equational closure of set E</strong>
+<br>
+Repeat the following:
+<ul>
+  <li> For each equation <code>tau0 -> tau0' = tau1 -> tau1'</code> in <code>E</code>, add
+       <code>tau0 = tau1</code> and <code>tau0' = tau1'</code> to <code>E</code>
+  <li> For equations <code>tau0 = tau1</code> and <code>tau1 =
+       tau2</code>, add <code>tau0 = tau2</code> to <code>E</code> (transitivity) 
+</ul>
+<br>
+Until no more equations can be added to <code>E</code> (note, we
+implicitly will use the symmetry property on these equations).<p>
+
+The closure serves to uncover inconsistencies.  For instance
+<pre>
+Closure({ 'a = Int -> 'b , 'a = Int -> Bool, 'b = Int}) =
+        { 'a = Int -> 'b , 'a = Int -> Bool, 'b = Int,
+          Int -> 'b = Int -> Bool, Int = Int, 'b = Bool, Int = Bool }
+</pre>
+directly uncovering the inconsistency <code>Int = Bool</code>.
+<p>
+<strong>Fact:</strong> the closure of <code>E</code> can always be
+quickly computed.<p>
+
+After computing the closure, the constraints are <em>consistent</em>
+if 
+<ol>
+  <li>No immediate inconsistency was
+uncovered (such as <code>Int = Bool</code>, <code>Bool = tau -> tau'</code>,
+or <code>Int = tau -> tau'</code>), 
+  <li>No self-referential equations exist.  (We will deal with this
+      issue below, ignore for now).
+</ol>
+<hr>
+
+<h4>Solving the Equations</h4>
+If inference produces consistent equations, we then solve the
+equational constraints by substituting type 
+variables with types as follows.
+<p>
+
+<strong>Definition:</strong> Equation solution algorithm
+<br>
+Given <code>tau \ E</code>,
+<br>
+<blockquote><strong>Repeat</strong>
+<br>
+replace some type variable <code>'a</code> in <code>tau</code> with <code>tau'</code>,
+provided  <code>'a = tau'</code> or <code>tau' = 'a</code> occurs in E
+and either 
+<ol>
+  <li>  <code>tau'</code> is not a type 
+variable, or 
+  <li> <code>tau'</code> is a type variable <code>'b</code>
+which is lexicographically 
+after <code>'a</code>.
+</ol>
+<strong>Until</strong> no more such replacements are possible.
+</blockquote>
+
+This resulting type is the type inferred by Caml.<p>
+
+This algorithm is flawed, however:  it may be that these replacements
+may continue forever.  This is the case when there is a circular type
+in E.  Recall the above example
+<pre>
+Int -> 'a \ { 'a = Int -> 'a }
+</pre>
+--this produces the nonterminating chain
+<pre>
+Int -> Int -> 'a  \ { 'a = Int -> 'a }
+Int -> Int -> Int -> 'a  \ { 'a = Int -> 'a }
+Int -> Int -> Int -> Int -> 'a  \ { 'a = Int -> 'a }
+...
+</pre>
+<strong>Solution: </strong> Check for cycles in the equations before
+solving them as above.
+<br>
+<strong>Cycle Detection Algorithm:</strong>
+      <ol>
+	<li>Define a directed graph <code>G </code>based on <code>E</code>.
+	<li>Nodes  in G are type 
+       variables in <code>E</code> 
+	<li>There is a edge from the <code>'a</code> node to the <code>'b</code>
+       node if there is an equation <code>'a = tau'</code> in
+       <code>E</code>, and  <code>'b</code> occurs in 
+       <code>tau'</code>.  
+	<li>Raise <code>typeError</code> if there is a
+      cycle in G for which there is at least one edge representing a
+      constraint that isn't just between type variables (<code>'a = 'b</code>).
+      </ol>
+
+<strong>The complete ED type inference algorithm</strong>
+<br>
+Given e,
+<ol>
+  <li> Produce a proof <code>|- e : tau \ E</code> (such a proof always exists)
+  <li> Extend E by closing:  <code>E := Closure(E)</code>.
+  <li> Check if <code>E</code> is immediately inconsistent; if so, raise typeError 
+  <li> Check for cycles in <code>E</code> using the above algorithm; raise typeError if there
+      is a cycle.
+  <li> Solve <code>E</code> by the above equation solution algorithm.  This
+       algorithm will always terminate if there are no cycles in <code>E</code>.
+  <li> Output: the solution type <code>tau'</code> for <code>e</code> produced by
+       the solution algorithm.
+</ol>
+
+<strong>Fact:</strong> The typings produced by the above algorithm are
+<em>principal</em>.
+<p>
+<hr>
+
+<h3><A NAME="xtocid1441465">PED: ED with Let-polymorphism</A></h3>
+We still don't have polymorphism, all we have is type
+variables.  Consider
+<pre>
+Let x = Function y -> y In x True; x 0
+</pre>
+in Caml, this program would type-check: different uses of <code>Function y ->
+y</code> can have different types.  However, consider <strong>ED</strong>'s behavior:
+expanding the definition of Let, we get
+<pre>
+(Function x -> x True; x 0) (Function y -> y)  
+</pre>
+<pre>
+|- (Function x -> x True; x 0) : 'a -> 'c \ {'a = Bool -> 'b, 'a = Int -> 'c }
+</pre>
+But by the closure we get <code>Int = Bool</code>: BAD!!<p>
+The problem in this case:
+<ul>
+  <li>Each use of x in the <code>Let</code> body
+used the same type variable <code>'a</code>
+  <li>In fact when we type
+<code>Function y -> y</code> we know that <code>'a</code> can be anything.
+  <li>So, for different uses <code>'a</code> can be different things.
+  <li>All we have to do is put this intuition into our type system.
+</ul>
+So we define <strong>PED</strong>, which is <strong>ED</strong> with
+<code>Let</code> and let-polymorphism
+<hr>
+<h4>The PED Let Typing Rule</h4>
+We will add <code>Let</code> syntax to <strong>PED</strong>, and
+include a special typing rule for <code>Let</code>.
+
+<pre>
+Gamma  |- e : tau  \ E,    Gamma, x : forall 'a1...'an. tau' |- e' : tau'' \ E' , 
+----------------------------------------------------------------------------------- (Let)
+Gamma  |- Let x = e in e' : tau'' \ E' 
+   Where tau' is a solution of |- e : tau \ E using the above algorithm,
+   and tau' has free type variables 'a1, .. 'an that do not occur in Gamma.
+</pre>
+<ul>
+  <li>Note: the <em>only</em> place to get polymorphism in Caml is at Let.
+  <li>Technical point: since we are invoking the above simplification
+      algorithm in this rule, it means the full algorithm is not the
+      clean 3-pass infer-closure-simplify form give above: the rules
+      need to call close-simplify on some sub-derivations.
+</ul><p>
+
+<strong>Type Schema</strong>
+<ul>
+  <li>Gamma here has been extended to have types
+<pre>forall 'a1..'an. tau
+</pre>
+  <li>
+These are called <em>type schemas</em> and are not types tau but are a
+special variety of type which may appear in Gamma only
+  <li>  An example type schema is
+<code>forall 'a. 'a -> 'a</code>.  
+  <li>Note that the type variables <code>'a1,..., 'an</code> are considered
+      <em>bound</em>by this type expression. 
+</ul>
+We also need to add the rule
+<pre>
+------------------------------------------------------------ (Let-Inst)
+Gamma, x : forall 'a1...'an. tau' |- x : R(tau') \ emptyset
+
+where <code>R(tau')</code> is a renaming of the variables <code>'a1..'an</code> to fresh names.
+</pre>
+Since these names are fresh each time x is used, the different uses
+won't conflict like above.
+<p>
+
+<strong>Example:</strong> lets type the <code>Let</code> version of
+the program
+<pre>
+Let x = Function y -> y In (Function x -> x True; x 0) 
+</pre>
+from above.
+<pre> |- Function y -> y : 'a -> 'a \ emptyset</pre>
+This constraint set trivially has the solution type <code>'a -> 'a.</code>
+Thus, we then typecheck the <code>Let</code> body under the assumption
+that <code>x</code> has type <code>forall 'a. 'a -> 'a</code>.
+<pre>
+x : forall 'a. 'a -> 'a |- x : 'b -> 'b \ emptyset
+</pre>
+by <code>(Let-Inst)</code> and then
+<pre>
+x : forall 'a. 'a -> 'a |- x True : 'c \ { 'b -> 'b = Bool -> 'c }
+</pre>
+Similarly,
+<pre>
+x : forall 'a. 'a -> 'a |- x 0 : 'e \ { 'd -> 'd = Int -> 'e }
+</pre>
+The key in the above is <em>this</em> use of <code>x</code> gets a
+different type variable, <code>'d</code>, by the
+<code>(Let-Inst)</code> rule.  Putting the two together, the type is
+something like 
+<pre>
+x : forall 'a. 'a -> 'a |- x True; x 0 : 'e \ { 'b -> 'b = Bool -> 'c, 'd -> 'd = Int -> 'e }
+</pre>
+which by the <code>(Let)</code> rule then produces
+<pre>
+|- Let x = Function y -> y In (Function x -> x True; x 0) 
+    : 'e \ { 'b -> 'b = Bool -> 'c, 'd -> 'd = Int -> 'e }
+</pre>
+Since <code>'b</code> and <code>'d</code> are different variables, we
+don't get the conflict we got previously.
+<p>
+<hr>
+
+<h3><A NAME="xtocid1441466">Constrained Type Inference</A></h3>
+There was a reason why we presented Hindley-Milner type inference in
+the form above: if we replace equality constraints by subtyping
+constraints <:, we can perform <em>constrained type inference</em>.
+To understand why it is useful to perform this generalization, it is
+easiest to just look at the rules.  <p>
+
+D is not the best system to show off the power of replacing equality
+with subtyping: since the language does not have records, there is not
+any interesting subtyping that could happen!  To show the usefulness
+of subtyping, we thus define the constraints in an environment where
+we have records, DRec.  DRec pluc constraints is CDRec.  We can
+contrast CDRec with the EDRec language which we did not study but you
+could imagine.
+
+Instead of types tau \ E for a set of equations E, CDRec has types
+<pre>tau \ { tau1 <: tau1', .., taun <: taun' }</pre>
+We will use the letter C to refer to a set of subtyping constraints.<p>
+
+CDRec has the following set of type rules.   These are direct
+generalizations of the ED rules, replacing = by <:.  the <: is always
+in the direction of information flow.
+<pre>
+Gamma(x) = tau 
+------------------------------- (HYP)
+Gamma  |- x : tau \ C
+
+
+----------------------------- (Int)
+Gamma  |- n : Int \ emptyset            for n an integer
+
+
+----------------------------- (Bool)
+Gamma  |- b : Bool \ emptyset           for b either True or False
+
+
+Gamma  |- e : tau \ C , Gamma  |- e' : tau' \ C'                
+------------------------------------------------------- (+)
+Gamma  |- e + e' : Int \ C union union C' {tau <: Int, tau' <: Int }
+
+
+Gamma  |- e : tau \ C  , Gamma  |- e' : tau'  \ C'                 
+--------------------------------------- (-)
+Gamma  |- e - e' : Int  \ C union union C' {tau <: Int, tau' <: Int }               
+
+
+Gamma  |- e : tau \ C ,     Gamma  |- e' : tau'  \ C'           
+-------------------------------------------- (=)
+Gamma  |- e = e' : Bool   \ C  union C' union {tau <: Int, tau' <: Int }             
+
+(And, Or, Not rules should be obvious)
+
+Gamma  |- e : tau \ C ,  Gamma  |- e' : tau' \ C' ,  Gamma  |- e'' : tau'' \ C'' 
+------------------------------------------------------------------------ (If)
+Gamma  |- If e Then e' Else e'' : 'd \ C union C' union C'' union {tau <: Bool, tau' <: 'd,  tau'' <: 'd}
+
+
+Gamma  |- e1 : tau1 \ C1, ..., Gamma  |- en : taun \ C2
+--------------------------------------------------------------------- (Record)
+Gamma  |- { l1 = e1, ..., ln = en  } : { l1 : tau1, ..., ln : taun} \ C1 union C2
+
+
+Gamma  |- e : tau \ C
+-------------------------------------------------------- (Projection)
+Gamma  |- l.e : 'a \ C union { tau <: { l : 'a } }
+
+
+Gamma, x : 'a |- e : tau \ C 
+---------------------------------------------------------    (Function)
+Gamma  |- Function x  -> e : 'a -> tau \ C 
+
+
+Gamma, f : 'a -> 'b ,  x : 'a |- e : tau \ C
+------------------------------------------------------------    (Rec)
+Gamma  |- Rec f = Function x  -> e : 'a -> tau \ C union { tau <: 'b }
+
+
+Gamma  |- e : tau \ C , Gamma  |- e' : tau'  \ C'
+---------------------------------------------------------- (Appl)
+Gamma  |- e e' : 'a \ C union C' union { tau <: tau' -> 'a }
+
+</pre>
+These rules almost directly define the type inference procedure: the
+proof can pretty much be built from the bottom (leaves) on up.
+<p>
+<hr>
+
+Consider the simple example program
+<pre>
+(Function r -> r.l + 1) {l = 5, m = True}
+</pre>
+This program will need subtyping because intuitively the function will
+only need a record with <code>l</code> field, but a record with
+<code>l,m</code> fields is supplied.
+
+The function types as
+<pre>
+|- Function r -> r.l + 1 :  'a -> Int \ {'a <: {l: 'b}, 'b <: Int}
+</pre>
+and the application then has type
+<pre>
+|- (Function r -> r.l + 1) {l = 5, m = True} : 'c \
+  {'a <: {l: 'b}, 'b <: Int, 'a -> Int <: {l : Int, m : Bool} -> 'c, Int <: 'c}
+</pre>
+From the closure of this constraint set we get the constraints
+<pre>
+{l : Int, m : Bool} <: 'a <: {l: 'b}
+</pre>
+and so we get
+<pre>
+{l : Int, m : Bool} <: {l: 'b}
+</pre>
+which is fine since we can always ignore record fields.<p>
+
+
+The type inference algorithm for constraints is similar to the
+equational algorithm, but no solution is found for the constraints,
+for reasons we will see below.
+<p>
+<hr>
+<strong>Complete type inference algorithm</strong>
+<br>
+Given e,
+<ol>
+  <li> Produce a proof |- e : tau \ C (recall, such a proof always
+       exists for any e)
+  <li> Extend C by closing:  C := Closure(C).
+  <li> Check if C is immediately inconsistent; if so, raise typeError 
+  <li> Check for cycles in C as defined below; if cycles found, raise typeError
+  <li> The inferred type is e : tau \ C
+</ol>
+
+Here are the closure and cycle detection algorithms, the obvious
+generalizations. 
+<strong>Computing Closure(C), the closure of constraint set C</strong>
+<br>
+Repeat
+<ul>
+  <li> For each constraint {l1 : tau1, ..., ln : taun, ...,lm : taum } <: {l1 : tau'1,
+       ..., ln : tau'n } in C, add tau1 <: tau'1, ..., taun <: tau'n
+       tau1 <: tau0 and tau0' <: tau1' to C
+  <li> For each constraint tau0 -> tau0' <: tau1 -> tau1' in C, add
+       tau1 <: tau0 and tau0' <: tau1' to C
+  <li> For constraints tau0 <: tau1 and tau1 <: tau2, add tau0 <: tau2 to C (transitivity)
+</ul>
+<br>
+Until no more equations can be added to C.
+A constraint set is <em>immediately inconsistent</em> if 
+tau <: tau' and tau and tau' are different kinds of type (function and
+record, Int and function, etc), or two records are ordered by <: and
+the right record has a field the left record does not.
+
+<p> <hr>
+<strong>Cycle detection in C</strong>
+Define a directed graph G where nodes are type variables in C.  Run an
+edge from the 'a node to the 'b node if there is an equation 'a <:
+tau' in C, and 'b occurs in tau'.  Run an edge from 'b to 'a if tau'
+<: 'a occurs in C and 'b occurs in tau'.  C has a cycle just when G has
+a cycle.
+<p>
+
+
+<strong>Q:</strong> Why didn't we solve the constraints??
+<br>
+<strong>A:</strong> Any substitution proceeds with possible loss of
+generality.  Consider e.g. constraint <code>'a <: tau</code>, and the
+possibility of substituting <code>'a</code> with <code>tau</code>.
+Well, this precludes the possiblity that the <code>'a</code> position
+be a subtype of <code>tau</code>, as the substitution in effect
+asserted the equality of <code>'a</code> and <code>tau</code>.
+<p>
+Weakness of constrained types: need to keep constraints around so types
+are hard to read.
+<hr>
+
+<h3><A NAME="xtocid37367">Constrained Polymorphic Types</A></h3>
+We have the same shortcomings as in the equational case at this point:
+there is as of yet no polymorphism.  The solution used in the
+equational case won't work here, as it required the constraints to be
+solved.<p>
+
+Solution:  <em>constrained polymorphic types</em>
+<code>forall 'a1,...,'an.tau \ C</code> in the assumptions Gamma, in
+place of the polymorphic types (type schemes) we had in the equational
+version. Skip the details, they are involved.<p>
+
+Constrained polymorphic types are "very good" object types.
+Polymorphism needed to type inheritance.
+<hr>
+
+<h2>Modules</h2>
+ (goal of covering this topic in the future)
+
+<hr>
+<h2><A NAME="xtocid1441468">Skipped Topics</A></h2>
+<ul>
+  <li> Imperative features and type inference.  Having
+       <code>Ref</code> cells and polymorphism leads to some
+       conflicts; Caml has the let-value restriction to get around this problem.
+  <li> Object types.  This is a very difficult problem in general.
+       Constrained type inference is one good object typing scheme.
+  <li> Module types.  Caml union types.
+</ul>
+
+We will very briefly cover the polymorphic references issue.  In
+short, it is not possible to have a polymorphic value inside a
+reference cell.
+Why not?  Consider the program
+<pre>
+let val x = ref (Function x -> x) in (x := (Function x: int -> x + 1)); !x true end
+</pre>
+
+Recall the way polymorphic functions were typechecked in ED: x will
+have the polymorphic type <pre>forall 'a. 'a -> 'a ref</pre>, which
+means each use of x can pick a different type for 'a.  In the above
+example, the first use of x can pick int for <code>'a</code>, and the
+second can pick bool for <code>'a</code>, and the program will
+typecheck.  OOPS!  the program will produce a run-time error!!  What
+Caml does in this case is it does not let the type of x be polymorphic:
+it is type <code>'a -> 'a</code> for some PARTICULAR, FIXED
+<code>'a</code>, and the program thus does not typecheck.
+<p>
+
+SML has a special kind of type variable, the <em>imperative type
+variables</em> of the form <code>'1a</code>.  These type variables
+indicate their values will be placed in cells, so they may only be
+instantited with monotypes (type variable-free types).  For example,
+
+<pre>- Function x -> ref x;
+<em>val it = Function : '1a -> '1a ref
+</em></pre>
+--since x is placed in a cell, it gets a type '1a.  It is polymorphic
+but in a restricted sense.
+Now lets try 
+<pre>- it (Function x -> x);
+<em>std_in:17.1-17.14 Error: nongeneric weak type variable
+  it : ('0Z -> '0Z) ref
+</em>
+</pre>
+
+-- this attempted to instantiate <code>'1a</code> to be <code>'a ->
+'a</code>, an illegal move since <code>'a -> 'a</code> contains the
+type variable <code>'a</code>.  However,
+
+<pre>- it 4;
+<em>val it = ref 4 : int ref
+</em></pre>
+is perfectly legal since <code>4</code> is of type <code>int</code>
+which contains no type variables.
+
+
+<p>
+
+This issue shows how polymorphism would be very difficult in the C/Scheme
+language framework, as there all variables may behave as cells.  This
+is perhaps the major reason why polymorphism is a relatively recent
+phenomenon in programming language design.
+<p>
+
+<center>
+<script language=javascript>
+document.write("<i>PL Lecture Notes / ");
+document.write("notes last modified " + document.lastModified + " by <A HREF=\"mailto:scott@cs.jhu.edu\">Scott Smith</A><br>");
+</script>
+</center>
+
+</body></html>
+

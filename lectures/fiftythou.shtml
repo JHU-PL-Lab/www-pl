@@ -1,0 +1,51 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content"> <h2>The 50,000 foot view of PLs: history and features</h2>
+
+At this point in the course we have covered some of the most key features of modern languages. In this lecture we step back a bit to look at the historical evolution of features, and include some more features we did not get a chance to cover earlier.
+
+<h3>The Influential PLs list</h3>
+There are many important PLs, but a few are arguably more important than others.  Here is the main list we will focus on.
+<ul>
+  <li>Machine / Assembly language
+  <li>FORTRAN
+  <li>Lisp (and its successor, Scheme)
+  <li>Algol
+  <li>Simula and Smalltalk
+  <li>Modula
+  <li>C
+  <li>C++
+  <li>ML (and the related Haskell)
+  <li>Java
+  <li>Modern scripting languages (Python, Javascript, and Ruby)
+</ul>
+
+<h3>The Main Features list</h3>
+Here is an historical list of key features that we will discuss.  The key language(s) introducing it are in parens after.
+<ul>
+  <li>Sequences of statements (Machine)
+  <li>Memory read and write, including indirect read/write (primitive pointers) (Machine)
+  <li>Basic arithmetical operations (not expressions, just direct on two locations) (Machine)
+  <li>(un)Conditional branching (Machine)
+  <li>Basic data types of ints, floats and arrays and typechecking them (FORTRAN)
+  <li>For loops and (non-reentrant or non-recursive) subroutines (FORTRAN)
+  <li>Structured data a la C structs and dynamic allocation thereof (Algol)
+  <li>Structured control a la C while and if (Algol)
+  <li>Objects, classes, messages, and inheritance (Simula/Smalltalk)
+  <li>Recursive and nested function defns (Pascal)
+  <li>Modules that are not just files (Modula)
+  <li>Higher-order functions (Lisp)
+  <li>Dynamic typing (Lisp)
+  <li>Implicit dynamic memory allocation and de-allocation (Lisp)
+  <li>Type generics (parametric polymorphism) (ML)
+  <li>Type inference (ML)
+  <li>Nonlocal exception handling (ML perhaps)
+</ul>
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->
+
+

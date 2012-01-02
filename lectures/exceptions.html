@@ -1,0 +1,401 @@
+<html>
+<HEAD>
+<title>Exceptions and other Control Operators</title>
+</HEAD>
+<body LInK="#0000FF" VLInK="#800080" bgcolor="#F0FFF0">
+
+<h2><A NAME="xtocid1118349">Exceptions and other Control Operators</A></h2> Up to now there has been an
+inexorable march through the evaluation process.  To evaluate this,
+that had to be done, and in turn that etc etc, which returns a value
+which in turn gets analyzed....  Its time to break the chains of
+tyrranical evaluation and <strong>free computation to do as it
+chooses!!!</strong><p>
+
+Well maybe I got a little carried away there...<p>
+
+Explicit control operations are operations that explicitly alter the
+control of the evaluation process.
+
+Even in the most simple of languages, there are control
+operators:
+<pre>return e</pre>
+In D, the value of the function is whatever its whole body evaluates
+to.  If in the middle of some complex conditional loop expression we
+have the final result of the computation, it is still necessary to
+complete the execution of the function.  A <code>return</code> statement
+gets around this problem by immediately returning from the function
+and <em>aborting</em> the rest of the function computation.
+<p>
+
+Another common class of control operator is the loop exit,
+a.k.a. <code>break</code>.  <code>break</code> is very similar to
+<code>return</code>. <p>
+
+We are interested in studying this type of control operator, but are
+really more interested in more powerful control operators, the
+principal of which is <em>exceptions</em> and exception handlers.
+You are familiar with exceptions from the Caml exception mechanism.
+<p>
+Then there are the truly bizarre control operators: call/cc,
+shift/reset, control/prompt, ...
+<p>
+Then there is the nonsensical: <code>goto</code>.  This operator is
+just too raw.  What does it mean to <code>goto</code> a label in a
+function?  Maybe that function isn't even executing.  You can skip
+past variable initializations.  Java has no <code>goto</code>
+(although it is a reserved word).  Thesis: if you have enough other good
+control operators, <code>goto</code> is not needed.
+
+Conclusion: although control operators are not required, they sure
+make programming more convenient.  They can be considered a
+"meta-operator", something that is "acting on" the evaluation process.
+
+<h3><A NAME="xtocid201452">Interpreting Control Operators: Return</A></h3>
+How would you imagine
+exceptions are executed?  <br>
+Lets us consider adding <code>Return e</code>
+to <strong>D</strong> first since it is the simplest control operator.
+
+It doesn't fit into the normal evaluation scheme.  An example is
+<pre>
+(Function x -> (If x = 0 Then 5 Else Return (4 + x)) - 8) 4
+</pre>
+since <code>x</code> will not be zero, we have to avoid executing the code
+"<code>- 8</code>".  
+But, evaluating the above means evaluating
+<pre>
+(If 4 = 0 Then 5 Else Return (4 + 4)) - 8
+</pre>
+which means evaluating
+<pre>
+(Return (4 + 4)) - 8
+</pre>
+And, the value of this should be the value of the LHS expression minus
+8, according to the evaluation rule for minus.  That won't work!<br>
+
+Instead, we need to allow an exception at this point in the execution
+of minus.<p>
+
+Add to the space of <strong>D</strong> language values, values of the
+form <code>Return v</code>. 
+<br>
+
+To evaluate <code>Return</code>, use the rule
+<blockquote>
+<strong>Return rule</strong><br>
+<code>e --> v</code><br>
+-----------------------------<br>
+<code>Return e --> Return v</code><p>
+</blockquote>
+
+Then, add new rules for subtraction on top of the current rule,
+
+<blockquote>
+<strong>- Return left rule</strong><br>
+<code>e --> Return v</code><br>
+-----------------------------<br>
+<code>e - e' --> Return v</code><p>
+</blockquote>
+<blockquote>
+<strong>- Return right rule</strong><br>
+<code>e --> v, e --> Return v'</code><br>
+-----------------------------<br>
+<code>e - e' --> Return v'</code><p>
+</blockquote>
+This "bubbles up" the <code>Return</code> through the subtraction
+operator.  Similar rules need to be given for every evaluation
+position of <em>every</em> D operator. <p>
+
+So, using these new rules, the value of 
+<pre>
+(Return (4 + 4)) - 8
+</pre>
+is
+<pre>
+Return 8
+</pre>
+So, the function should then return 8.  We need a new function
+application rule which stops bubbling up function application results
+of the form 
+<code>Return v</code>, and just returns <code>v</code>.
+<p>
+
+<blockquote>
+<strong>Appl Return rule</strong><br>
+<code>e<sub>1</sub> --> Function x -> e, e<sub>2</sub> --> v<sub>2</sub>,  e
+[v<sub>2</sub>/ x ] --> Return v</code><br>
+------------------------------------------------------<br>
+<code>e<sub>1</sub> e<sub>2</sub> --> v</code><p>
+</blockquote>
+
+A few other rules are needed for <code>APPL</code>, for the cases that
+the function or argument itself returns.
+<blockquote>
+<strong>Appl Return Function</strong><br>
+<code>e<sub>1</sub> --> Return v</code> <br>
+------------------------------------------------------<br>
+<code>e<sub>1</sub> e<sub>2</sub> --> Return v</code><p>
+</blockquote>
+<blockquote>
+<strong>Appl Return Arg</strong><br>
+<code>e<sub>1</sub> --> v<sub>1</sub>, e<sub>2</sub> --> Return v</code><br>
+------------------------------------------------------<br>
+<code>e<sub>1</sub> e<sub>2</sub> --> Return v</code><p>
+</blockquote>
+Note we still keep around the old function evaluation rule for the
+case that the function returned implicitly by dropping off the end of
+its execution, returning a value <code>v</code> which is not
+<code>Return v'</code>.
+<a name="retret"></a>
+There are two possible interpretations of <code>Return Return v</code>
+-- one is to return from two levels of function call (the
+interpretation the above rules give), or we can add the rule
+<blockquote>
+<strong>Return Return rule</strong><br>
+<code>e --> Return v</code><br>
+-----------------------------<br>
+<code>Return e</code>  --> <code>Return v</code><p>
+</blockquote>
+and restrict the previous <code>Return</code> rule the the case that
+<code>v</code> is not of the form <code>Return v'</code>.
+
+<h3><A NAME="xtocid201453">Interpreting Exceptions</A></h3>
+<!-- next year, should use SML's format for exceptions as functions from
+some type to exn.  Makes the syntax more uniform -->
+The translation of <code>Return</code> above can be extended to deal
+with general exceptions.  We define a language <strong>DX</strong> which is
+<strong>D</strong> extended with a Caml-style exception mechanism.
+
+Caml doesn't even have <code>return</code>; however, its effect is
+easily simulated using exceptions. 
+<pre>
+(Function x -> (if x = 0 then 5 else return (4 + x)) - 8) 4
+</pre>
+is encoded as
+<pre>
+Exception Return;;
+
+(function x ->
+  try
+    (if x = 0 then 5 else raise return (4 + x)) - 8
+  with
+    return(n) -> n)
+  4;;
+</pre>
+From this example you can get the idea of how any function can have
+return encoded.  <p>
+
+Now: an interpreter for Caml exceptions. <br>
+The basic idea is
+not very different from <code>Return</code> above: make a new kind of value
+<code>Raise xn(v)</code>  to bubble up exception named xn with value v.
+This is the generalization of values <code>Return v</code> above.
+<code>e Try xn(x) -> e'</code> then handles exception named xn if it
+arises in e.  Note that <code>Try</code>
+binds free x's in e'.<p>
+
+<pre>
+(Function x ->
+  Let Exception return In
+    (If x = 0 Then 5 Else Raise return (4 + x)) - 8
+    Try return(n) -> n
+ ) 4
+</pre>
+
+Exceptions are <em>side effects</em> like references: they can cause
+action at a distance.  Like all side effects, they should be used
+sparingly in programs.<p>
+
+<h4>Implementing the DX Interpreter</h4>
+The <strong>DX</strong> term datatype is
+<pre>
+datatype term = ... (* D stuff *) ...
+| Raise of term * term | Try of term * term * ide * term 
+| LetExn of ide * term | Exn of string
+</pre>
+<code>Exn("Return")</code> names
+a particular exception.  Since <strong>DX</strong> is untyped, there
+is no need to declare exceptions.
+
+<strong>DX</strong> values now also include values of the form
+<code>Raise xn(v)</code>. We will use metavariable <code>xn</code> to 
+refer abstractly to an exception name <code>Exn(s)</code>.  <p>
+
+The rules for <code>Raise</code> and
+<code>Try</code> are derived from the <code>Return</code> rules: 
+<ul>
+  <li> Add new values of the form <code>Raise xn(v)</code> to the
+       space of <strong>D</strong> language values, in analogy to
+       <code>Return v</code> values.
+  <li> <code>Raise xn(v)</code> are "bubbled up" to escape their
+       context, as were <code>Return v</code> values.
+  <li> <code>Try</code> points are where the bubbling-up stops;
+       <code>Return</code> stopped bubbling up at function application
+       points. 
+</ul>
+Here are the rules.
+<blockquote>
+
+<code>e --> Exn xn,  e' --> v, for v not of the form "Raise ..."<br></code>
+-----------------------------<br>
+<code>Raise e(e') --> Raise xn(v)</code><p>
+<p>
+
+<code>e --> v for v <em>not</em> of the form Raise xn(v)</code> <br>
+-----------------------------<br>
+<code>Try e With xn(x) -> e' --> v</code>
+<p>
+
+<code>e --> Raise xn(v),  e'[v/x] --> v'</code><br>
+-----------------------------<br>
+<code>Try e With xn(x) -> e' --> v'</code><p>
+<p>
+</blockquote>... plus rules to bubble <code>Raise xn(v)</code> values up as
+<code>Return v</code> were bubbled up, including <br>
+<blockquote>
+<code>e --> Raise xn(v)</code><br>
+-----------------------------<br>
+<code>e - e' --> Raise xn(v)</code><p>
+</blockquote>
+Bubbling a <code>Raise</code> through a <code>Raise</code> also
+requires rules (this case will hardly ever arise in practice): 
+<blockquote>
+<code>e --> Raise xn(v)</code><br>
+-----------------------------<br>
+<code>Raise e(e') --> Raise xn(v)</code><p>
+
+<code>e --> v, e' --> Raise xn(v)</code><br>
+-----------------------------<br>
+<code>Raise e(e') --> Raise xn(v)</code><p>
+
+</blockquote>
+
+Reconsider the above example.  
+<pre>
+(Function x ->
+  Try (If x = 0 Then 5 Else Raise return(4 + x)) - 8
+  With return(n) -> n) 4
+</pre>
+<pre>
+Try (Raise return(4 + 4)) - 8
+    With return(n) -> n 
+</pre>
+is
+<pre>
+Try (Raise return(8)) - 8
+    With return(n) -> n 
+</pre>
+And by bubbling, it suffices to compute
+<pre>
+Try Raise return(8)
+    With return(n) -> n 
+</pre>
+which by <code>Raise</code>, returns value
+<pre>
+8
+</pre>
+
+<p>
+Exceptions as presented above are almost identical to the Caml form.
+
+<h3><A NAME="xtocid10228114">Efficiently Implementing Exceptions</A></h3>
+(we didn't cover this topic in lecture)
+<p>
+
+The "bubbling up" method of interpretation is correct, but in practice
+it is very inefficient.  For instance, the <code>-</code>, etc operations
+will always have to check if either argument is of the form
+<code>Return ...</code> and act appropriately, greatly slowing down
+code.<p> 
+
+Better interpreters can be written that get around this problem, but
+for lack of time we address the problem in the context of compilers only.<p>
+
+We sketch how the <strong>DSR</strong> compiler could be extended to a
+<strong>DSRX</strong> compiler.  Exceptions are still "bubbled up",
+but we can take much bigger steps, immediately popping back to the
+nearest enclosing <code>Try</code>.<br>
+The closure conversion, A-translation, and function hoisting
+algorithms can be extended to exception constructs, with new tuple forms
+<pre>
+x = [ let tuples ] Try xn (y) -> [let tuples ]
+x = Raise y (* y a variable since body of Raise was A-translated *)
+x = Exception
+</pre>
+resulting.
+<p>
+The <code>toC</code> function can then be extended as follows.<br>
+Note, <code>int exception_count</code> and <code>jmp_buf
+nearest_Try</code> are global C variables.<br>
+
+<code>&lt setjmp.h&gt</code> C library is used to return from a deeply
+nested function call via <code>setjmp/longjmp</code>.<br>
+This library is a primitive nonlocal control operation.  <p>
+
+
+
+<strong>Semantics of <code>setjmp/longjmp</code></strong>: executing
+<code>setjmp(aTry)</code> is something like the
+<strong>fork</strong> library function in C:
+<ul>
+  <li> <code>setjmp(aTry)</code> sets the current statement as a
+       return point to pop the stack to later
+  <li> <code>setjmp(aTry)</code> returns 0 at this
+       initial execution, when the return point is set
+  <li> a later execution of <code>longjmp(aTry,arg)</code> pops
+       activation records 
+       (function calls) off the stack and returns to the point
+       <code>setjmp(aTry)</code> was executed.
+  <li> Execution resumes at the point of the <code>setjmp</code>
+       instruction, 
+       returning <code>arg</code> (hopefully non-0) as the result of
+       the <code>setjmp</code> this time.  The code 
+       should always branch on the result of
+       <code>setjmp(aTry)</code> to determine if the break point is
+       being set or returned to.
+  <li> <code>aTry</code> is a struct containing data relevant to
+       the <code>setjmp/longjmp</code>; both of these calls will
+       mutate the Try (storing the return point, etc).
+</ul>
+The code uses a global variable <code>nearest_Try</code> which at
+the current point of execution contains the nearest enclosing Try
+statement. 
+<pre>
+toCTuple(x = Let Exception xn In e) = xn = global_exception_count++;
+  toCtuples(e)
+
+toCTuple(Raise xn(y)) = longjmp(nearest_Try,"[xn,y]") /* immediately pop off function activations,
+       returning to nearest enclosing setjmp, i.e. Try */
+
+toCTuple(x = [ let tuples 1 ] Try xn (y) -> [ let tuples 2 ]) =
+  { jmp_buf next_nearest_Try;
+    Word val;
+    next_nearest_Try = nearest_Try;
+    /* setjmp call below marks this point in code as a future possible return point */
+    /* nearest_Try is set to be this location in the code by the setjmp call */
+    /*val is 0 when the code is normally executed, but if it is returned to, it is an argument */
+    if ((val = setjmp(nearest_Try)) == 0) 
+       { /* 0 return indicates jump point was just set */
+        toCTuples([let tuples 1]);
+        nearest_Try = next_nearest_Try; /* pop the stack of Trys */}
+    else 
+       { /* non-0 indicates a longjmp brought us back to this set point */
+        nearest_Try = next_nearest_Try; /* pop the Try stack */
+        "[xn_raised,y]" = val; /* the setjmp value above, if not zero, is the value passed to longjmp */
+        if  (xn == xn_raised) /* exception raised matches this Try */
+         { toCTuples([let tuples 2]) }
+        else /* exception is not handled here; try next handle further up the stack */
+           longjmp(nearest_Try,val);
+      }
+</pre>
+The <code>setjmp/longjmp</code> code is unnatural syntax, but
+it gives enough of a primitive nonlocal control effect to allow
+ML-style exceptions to be implemented.  <p>
+
+This implementation only requires "bubbling" through all enclosing
+<code>Try</code> statemements that do not match; other bubbling
+steps are skipped.<p>
+
+<strong>Question:</strong> What will the above compiler do if an
+uncaught exception is raised??  How could a better solution to this be
+devised?

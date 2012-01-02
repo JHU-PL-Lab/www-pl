@@ -1,0 +1,199 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content"> <h2>Study of Dynamically Typed Languages</h2>
+
+<!-- Need to redo these notes to focus less on obscure features not used and more on actual used features.  Also lambda in Pyton is not allowed to work on non-expressions -->
+<h3>Dynamic Typing</h3>
+A pure dynamically typed language
+<ul>
+  <li> Has no typechecker as part of the compiler which rejects
+      programs based on their types
+  <li> Detects type faults at runtime, e.g. adding a number and
+      a function, etc, raising an exception.
+  <li>Tends to run slower  due to the need for run-time overhead; with
+      major compiler development can be made to run somewhat fast.
+  <li>These  languages tend to be better for small- and perhaps
+      medium-scale applications, and tend to be worse for large-scale
+      applications.
+      <ul>
+	<li>Can be more freewheeling: incrementally add code, no need
+	    to mess with types, etc.
+	<li>Freewheeling style bites you for larger apps which don't
+	    fit in your mental cache anymore
+	<li>Speed penalty limits applicability
+      </ul>
+  <li>They sometimes run in an environment where the codebase is
+      itself a mutable data structure
+</ul>
+
+The non-OO school
+<ul>
+  <li>Lisp - the original dynamically-typed language
+  <li>Scheme - (add1 Lisp)
+  <li><a
+      href="http://en.wikipedia.org/wiki/Scripting_programming_language">Scripting
+      languages</a>, e.g. the  UNIX shells (sh, csh), awk, tcl, etc. 
+  <li>early Perl (pre-5)
+</ul>
+
+The "classic" dynamic OO languages
+<ul>
+  <li>Smalltalk
+      aka squeak
+  <li>CLOS, the Common Lisp Object System
+  <li>Dylan - based on CLOS
+</ul>
+
+
+The "modern" school
+<ul>
+  <li>Perl 5+
+  <li><a href="http://docs.python.org/tut/">Python</a>
+  <li><a
+      href="http://www.ruby-doc.org/docs/ProgrammingRuby/">Ruby</a>
+</ul>
+<h3>Dynamically typed languages and our <strong>Fb</strong>
+series</h3>
+<ul>
+  <li>Our <strong>FbSRXVOB</strong> mash contains the core features of
+      a dynamically typed language.
+  <li>We did not cover how run-time type errors lead to exceptions but
+      its simple: add a bunch of runtime type error handling rules including
+       <table border='0' cellpadding='0' cellspacing='15'>   <tr> <td><strong>(<span 
+class="cmtt-10">- </span>Mismatch Bool Left)</strong></td> <td> <table border='0' cellpadding='0' cellspacing='0'> <tr><td align='center'>&nbsp;<span 
+class="cmmi-10">e</span>&nbsp;==&gt;&nbsp;<span 
+class="cmtt-10">True</span></td></tr> <tr><td><hr noshade size='1'></td></tr> <tr><td align='center'><span 
+class="cmmi-10">e</span> <span 
+class="cmtt-10">-</span> <span 
+class="cmmi-10">e</span><span 
+class="cmsy-10">'</span>&nbsp;==&gt;&nbsp;<span 
+class="cmtt-10">Raise (#</span><span 
+class="cmti-10">TypeMismatch</span> <span 
+class="cmmi-10">True</span><span 
+class="cmtt-10">)</span></td></tr> </table> </td> </tr>  </table>
+etc -- many such rules are needed.  But, thats about all there is to it.
+<li>As with Java there are also some dimensions of these languages we
+    missed, in particular all the reflection-type stuff and dynamic
+    code loading.
+</ul>
+We will now look at some crosscutting aspects of these languages.
+<h3>Blocks of code aka higher order functions</h3>
+<ul>
+
+ <li>Lisp/Scheme: <code>(lambda (x) ... )</code> - Lisp was the first
+  language with implemented  higher-order functions
+  <li>Smalltalk: <a
+      href="http://en.wikipedia.org/wiki/Smalltalk#Code_blocks">code
+      blocks</a>
+  <li>Ruby: blocks which are similar to Smalltalk's.
+  <li>Python: <a href="http://docs.python.org/tutorial/controlflow.html#lambda-forms">lambda-forms</a>
+</ul>
+
+<h3>"Everything is an object"</h3>
+There are various degrees to what this means.  
+<ul>
+  <li>Smalltalk is pretty extreme.  
+      <ul>
+	<li>Even <a href="http://en.wikipedia.org/wiki/Smalltalk#Control_structures">if-then-else</a> and <code>+</code> are expressed via messaging syntax (but, actual implementations are more efficient)
+	<li>Global variables is nothing but a systemwide dictionary
+	    (hashset).
+	    <pre>     Smalltalk at: #f put: (Foo new) </pre>
+	    adds a new Foo named <code>#f</code> to the globals which
+	    is a dictionary affiliated  with object <code>Smalltalk</code>.
+	<li>Classes themselves are nothing but atoms in this
+	    dictionary -- <code>#Foo</code> in the above case is in
+	    the global dictionary, <code>Smalltalk</code>.
+	<li>Classes are fully objects - they can be passed around as data
+      </ul>  
+  <li>Ruby has most of this:
+      <ul>
+	<li>Classes are objects in Ruby. For example the
+	    <code>inherited</code> method 
+	    of the class is run when a new subclass is <em>defined</em>.
+	<li><code>NilClass</code> is also a class, as in Smalltalk (where it is <code>Nil</code>) 
+	<li>There is also a global dictionary in Ruby that contains the defined classes, <code>Objects.constants</code>
+      </ul>
+  <li>Python: classes are also objects.
+</ul>
+
+<h3>Public/private/protected</h3>
+<ul>
+  <li>Smalltalk: fields private, methods  public.  Put things in a
+      "private" protocol (category) if they are local
+  <li>Python: everything public (but use the C convention of starting private things with a "_")
+  <li>Ruby: public/private/protected
+</ul>
+<h3>First-class methods</h3>
+This means methods are objects so can pull out a method and stash
+      it in a variable, then call it later.  Our encoding of objects
+in <strong>FbOB</strong> allows something like
+this in how methods are functions so you can extract the method and
+then stash it somewhere.
+<ul>
+  <li>Smalltalk: not directly.
+  <li>Python: yes. <a
+      href="http://docs.python.org/tutorial/classes.html#method-objects">Example</a>.
+      Notice how they are treating objects very similarly to how our
+      <strong>FbOB</strong> enoding works.
+  <li>Ruby: yes. <a href="http://ruby-doc.org/docs/ProgrammingRuby/html/ref_c_method.html">Example</a>.
+</ul>
+
+
+<h3>Reflection</h3>
+Given some object at runtime, can you poke around to find its class, methods,
+etc? (another term for this is it has a <em>MOP</em> - a Meta-Object Protocol)  This stuff is  very easy to
+do in a dynamically-typed language because the program data structure
+is  around explicitly at runtime.
+<ul>
+  <li>Smalltalk - yes.  
+      <ul>
+	<li>Can easily turn a string into a method name to
+      invoke.  
+	<li>Objects can also <code>become</code> a completely new behavior.
+      </ul>
+  <li>Ruby - yes.
+      <ul>
+	<li> Can turn string into method  to invoke -  <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ospace.html#S3">documentation</a>
+	<li>Can add methods to existing objects - <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ref_c_object.html#Object.extend">documentation</a>
+	<li>Can take  an object an specialize  it with its  own
+	    singleton class, adding new  methods; the objects old
+	    class becomes the superclass of this new class.  <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ospace.html#UB">example</a>
+      </ul>
+  <li>Python - yes.
+      <ul>
+	<li>Can change the class of an object at runtime.
+	    Related to <code>become</code> of Smalltalk
+      </ul>
+</ul>
+Ruby is much cleaner here,  it has clean notions of adding methods and
+Smalltalk and Python can blow up because methods will disappear, and
+field references are wacky.
+<h3>Inheritance</h3>
+<ul>
+  <li>Smalltalk: regular single inheritance
+  <li>Python: multiple inheritance (and the associated <a
+      href="http://en.wikipedia.org/wiki/Diamond_problem">Diamond
+      Problem</a> of course)
+  <li>Ruby: single inheritance plus arbitrary <a
+      href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/classes.html#UC">mixin
+      modules</a>.  Modules are like classes but since these modules are themselves at the top of
+      the hierarchy (modules cannot have supermodules) there is no
+      dreaded diamond property -- you can only build three of the four
+      edges of the diamond.
+</ul>
+
+
+<h3>Overloading and shortcut syntax</h3>
+<ul>
+  <li>Smalltalk - can do it yourself manually since operators  are all only
+      messages (but ugly); no regular expressions
+  <li>Python: built in
+  <li>Ruby: built  in
+</ul>
+
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->

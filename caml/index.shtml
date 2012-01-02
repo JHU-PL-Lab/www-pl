@@ -1,0 +1,107 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+
+<h2>Caml Information</h2>
+
+<h3>Caml Lecture Information</h3>
+<ul>
+  <li>The <a href="../caml/code/">Examples of Caml that were run in
+class</a>. We pretty much just run through these as the lecture
+  <li>The <a href="../lectures/caml-intro.html">PL Caml Lecture
+      Notes</a> - these are some older notes of mine with more
+      explanations.
+
+</ul>
+
+<h3>Our ML Dialect</h3> There are more ML dialects out
+there than you would believe.  We are going to use <a
+href="http://caml.inria.fr/">OCaml</a>, version 3.12 (any version from
+3.06 on should be good enough for our purposes).  OCaml is not
+completely compatible with the most standard dialect of ML, SML, but
+is nonetheless similar.  It includes classes and objects, something
+not found in SML.  I will often call OCaml just "Caml", you can view
+the two as synonyms.<p>
+
+<h3>Installing Caml on Your Machine</h3>
+<p>
+Caml is <em>free</em> and you should install it on your computer.
+Sources and binaries for
+Caml for Windows,  MacOS, Linux, etc are found <a 
+href="http://caml.inria.fr/download.en.html">on the
+Caml downloads page</a>.
+<h3>Running Caml locally</h3>
+<p>
+Caml is available  on all department UNIX machines via the shell
+command  <kbd>ocaml</kbd>. <p>
+
+We <em>strongly</em> recommend you run Caml from something besides the
+shell directly. 
+<dl>
+  <dt><strong>Emacs</strong>
+  <dd>See <a href =
+emacs.shtml>information on running Caml 
+inside Emacs</a> to get going.  
+  <dt><a href="http://www.eclipse.org">Eclipse</a> <a href="http://www.algo-prog.info/ocaide/"><strong>OCaIDE</strong></a>
+  <dd>
+This is an Eclipse plugin for Caml which works very well. See <a href =
+ocaide.shtml>information on using OCaIDE</a> for more information.
+  <dt><strong>vim <a
+    href="http://www.lix.polytechnique.fr/~dbaelde/productions/omlet.html">OMLet</a></strong>
+  <dd>If you like vim, it now has a caml
+    mode, OMLet.  The
+    above two modes are significantly better, all this mode offers is
+      automatic indentation and keyword highlighting. 
+</dl>
+<h3>Caml Information on the Web</h3>
+Here is the key information
+<dl>
+  <dt><a href="http://caml.inria.fr/">The Caml Homepage</a>
+  <dd>The ultimate source for everything.  The stuff below is all
+      found off the homepage.
+  <dt><a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
+      manual</a> (download your local copy from the links at the top).
+  <dd><a
+      href="http://caml.inria.fr/pub/docs/manual-ocaml/manual003.html">Part
+      I Chapter 1</a> is a brief but readable introduction to the core
+      language.  This
+      will be our main reference.  You may occasionally need to look at
+      Part II, the reference manual, Part III for some commands, and
+      Part IV for libraries (the <a
+      href="http://caml.inria.fr/pub/docs/manual-ocaml/manual033.html">core
+      library</a> docs are particularly useful for standard string,
+      etc functions built into ocaml).
+</dl>
+Here is additional supplementary information
+<dl>
+  <dt><a href="http://caml.inria.fr/oreilly-book/">Developing
+      Applications with Objective Caml</a>, by Emmanuel Chailloux, Pascal Manoury and Bruno Pagano.
+  <dd>This is a complete on-line book covering OCaml.  It was
+      translated from the French by an ad-hoc group of people and so
+      is less than perfect writing.
+    <dt><a
+    href="http://caml.inria.fr/pub/docs/u3-ocaml/index.html">Using,
+    Understanding, and Unraveling The OCaml Language</a>
+  <dd> A foundational look at OCaml -- if you want to really
+  understand the deep internal concepts of OCaml, this is the source.
+  <dt><a
+      href="http://www.cs.caltech.edu/courses/cs134/cs134b/book.pdf">Introduction to Objective Caml</a> by Jason Hickey
+  <dd>A more tutorial introduction to Caml than the previous. 
+  <dt><a href="http://caml.inria.fr/resources/doc/faq/index.en.html">FAQ</a>
+  <dd>for basic questions you may have.  It  is not very complete at
+      this point so you may not find your  answer here.
+  <dt><a
+      href="http://caml.inria.fr/resources/doc/guides/guidelines.en.html">Programming
+      Guidelines</a>
+  <dd>Some standard coding conventions that are good to follow.
+</dl>
+
+
+
+</div>
+
+
+<!--#include virtual="/~scott/pl/footer.html" -->

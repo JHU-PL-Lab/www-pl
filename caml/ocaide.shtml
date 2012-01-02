@@ -1,0 +1,156 @@
+<!--#include virtual="/~scott/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+<h2>OCaIDE</h2> This eclipse plugin is getting better all the time.
+It has the
+additional advantage over Emacs of having built-in support for the
+batch compilation system, ocamlc, and when using the batch compiler there is
+even a debugger available.  <em>(note, I could not get the debugger to
+work; please let me know if the debugger works for you)</em>.  The <a
+href="http://www.algo-prog.info/ocaide/">OCaIDE homepage</a>
+contains all the information to install it; help is available
+within Eclipse on how to use it. <p>
+
+<h3>Tips</h3>
+Generally in the course materials we are assuming you are using emacs;
+here are a few tips and tricks for usig OCaIDE instead.  These assume
+you have already installed OCaIDE.
+
+<ul>
+    <li>
+        For the first couple homeworks, you'll want to use the "Ocaml Project
+        (ocamlbuild)" variety of project.  This spares you the details of
+        compilation and allows you to focus on learning the language.  It also
+        allows you to view the types of various expressions in the editor.
+        Windows users may instead wish to use the "OCaml Managed Project", since
+        ocamlbuild under Windows requires a Cygwin installation.
+    </li>
+    <li>
+        Use Window -&gt; show View -&gt; OCaml Toplevel to start a new top-loop,
+        which appears below.  Type your input in the small lower window.
+    </li>
+    <li>
+        For small fiddling in the top loop, make a new "module" (i.e., a .ml
+        file), edit, select the code in the file with the mouse, and use the
+        menu option Ocaml -&gt; Eval in Toplevel to submit it to the top loop in
+        the window below.
+    </li>
+    <li>
+        To submit the whole file to the toploop as if you typed  it there,
+        select everything and "Eval in Toplevel" as above.  There is a menu
+        option "Load in Toplevel" which loads a whole file, but this option
+        loads the bytecode and it loads it as a module (i.e., it
+        <code>#use</code>s it).  Another way is to use the "load in toplevel"
+        and then type #open Myfilename to the toplevel to make your functions
+        directly available in the toplevel (where myfilename.ml is the file you
+        were editing).
+    </li>
+    <li>
+        For the homeworks which use the F&#x266d;DK (F&#x266d; development kit),
+        you should set up your project differently.  For Linux or Mac users,
+        the following instructions apply:
+        <ol>
+            <li>Create an "OCaml Empty Makefile" project.</li>
+            <li>
+                Extract the contents of the FbDK archive into the project
+                directory.  Note that files such as "configure" should be in
+                your project's root directory, not in a subfolder.
+            </li>
+            <li>
+                From the console, run <code>./configure</code> from within the
+                Eclipse project directory to create the makefile.
+            </li>
+            <li>Refresh the project from within Eclipse.</li>
+            <li>
+                In the project properties dialog, select the Makefile panel.
+                In the "additional make options" field, add
+                "<code>-f Makefile OCAMLBEST=byte</code>".
+            </li>
+            <li>Select "Clean" from the Project menu to build your project.</li>
+            <li>
+                In the Run Configurations dialog, create a new OCaml Executable
+                configuration.  Type the project name here exactly as you typed
+                it before and browse for the "Fb" executable in the project
+                directory.  You may now use the run configuration to run your
+                interpreter.
+            </li>
+        </ol>
+        For Windows users, the following set of alternate instructions may be
+        helpful:
+        <ol>
+            <li>Create a new OCaml Managed Project.</li>
+            <li>
+                Extract the contents of the FbDK archive into the project
+                directory.  The project's directory should immediately contain
+                the file "configure".
+            </li>
+            <li>Refresh the project from within Eclipse.</li>
+            <li>
+                In the project's Properties dialog, choose the Builder panel.
+            </li>
+            <li>
+                Uncheck "Ocaml Builder".  You will get a warning message; press
+                OK.
+            </li>
+            <li>
+                Press the New button to create a new builder.  Choose "Program"
+                and name this builder "FbDK batch builder".
+            </li>
+            <li>
+                Under Location, browse the workspace and select
+                "win32Build.bat".  (If it does not appear in the dialog, try
+                refreshing your project again, confirm that the file is in the
+                project from within Eclipse, and then resume from step 3 above.) 
+            </li>
+            <li>
+                Under Working Directory, browse the workspace and select the
+                project directory.
+            </li>
+            <li>
+                Under the Refresh tab, check the box named "Refresh resources
+                upon completion."
+            </li>
+            <li>
+                Under the Build Options tab, check the box named "During auto
+                builds."
+            </li>
+            <li>
+                Press OK to apply the new builder and leave the properties
+                dialog.
+            </li>
+            <li>
+                Select "Build All" from the Project menu to build the project.
+            </li>
+            <li>
+                In the Run Configurations dialog, create a new OCaml Executable
+                configuration.  Type the project name here exactly as you typed
+                it before and browse for the "Fb" executable in the project
+                directory.  You may now use the run configuration to run your
+                interpreter.
+            </li>
+            <li>
+                When you make changes to <code>fbinterp.ml</code>, you will need
+                to view the Console for errors.  Because the OcaIDE builder has
+                been disabled, the errors reported by Eclipse are meaningless.
+            </li>
+        </ol>
+    <li>
+        You may want to use the top loop to interact with
+        <strong>F&#x266d;</strong> rather than the executable; for that, edit
+        the fbdktoploop.ml file, select all, and  Eval in Toplevel.  Now you
+        have all the functions in that file available in the top loop
+        below.  Note that this step will not automatically rebuild - you
+        must perform it manually each time you save changes.  You will need
+        to uncomment the "#cd" command to point the toploop to the right
+        location to load the files.
+    </li>
+</ul>
+</div>
+
+<!--#include virtual="/~scott/pl/footer.html" -->
+
+
+

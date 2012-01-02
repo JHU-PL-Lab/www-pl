@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<HEAD>
+<title>PL Final</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Programming Languages
+<br> Spring 2003
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 cheat sheet.
+<strong>Good Luck!</strong>
+<hr>
+<ol><h3>Short Answer</h3>
+<p><li>(3 points)
+What values are <code>a</code>, <code>b</code>, and <code>c</code>
+    taking on in the following?
+
+<pre>let f x y = 
+
+  match x with
+      1 -> 1
+    | 2 -> match y with 3 -> -3
+                      | 4 -> -4
+                      | _ -> -100;;
+
+let a = f 2 4;;
+
+let b = f 2 5;;
+
+let c = f 3 100;;
+</pre>
+
+<p><li> (3 points)
+There is no sequencing (";") in the official <strong>DSR</strong> syntax; write out how the sequencing of
+    the following example can be encoded in <strong>DSR</strong>:
+
+<pre>Let x = Ref 5 In x := !x + 1; (!x + 2) 			
+</pre>
+
+<p><li> (3 points) In <strong>DS</strong> we defined <em>cells</em> c in the
+    expression syntax.  Why is there no cell in OCaml's syntax for
+    mutable state? Otherwise, OCaml has the same state operations as does <strong>DS</strong>.
+
+
+ <p><li>(4 points) A Caml stucture definition <code>Twiddle</code> was typed in and
+     the following was printed by the Caml top loop:
+    <pre>module Twiddle :
+  sig
+    exception NotFound
+    val newTwids : 'a list
+    val superUserTwid : 'a * 'b * ('a * 'b) list -> ('a * 'b) list
+    val normalTwid : 'a * 'b * ('a * 'b) list -> ('a * 'b) list
+  end
+</pre>
+   (a) Define a signature NormalTwiddleSig which hides just the
+     superUserTwid function;
+    and (b) give the syntax for making a NormalTwiddle structure having
+    signature NormalTwiddleSig and thus lacking
+    <code>superUserTwid</code>.
+
+<p><li> (4 points) Define and give an example illustrating (a) record polymorphism; (b)
+      object polymorphism.  You can format your example however you
+      like, as long as it illustrates the concept clearly.
+
+
+    <p><li> (5 points)
+Suppose the closure conversion definition was slightly different, for
+    example clconv of
+<pre>Function x -> Function y -> x + y</pre>
+    was
+<pre>{ code = Function t -> 
+   { code = Function t -> (t.getcontext.x) + (t.getarg); context = { x = t.getarg } }; 
+     context = {} 
+}
+</pre>
+    Suppose later we were applying this function to curried values
+    <code>4</code> and <code>5</code>.  Write out the appropriate
+    encoding for this application, assuming the converted function above was in a
+    variable <code>f</code>.  Your code should evaluate to <code>9</code>.
+
+
+  <p><li> (5 points) Suppose Joe was a little sleep-deprived when writing his
+      <strong>DSR</strong> translator function hoisting algorithm, and
+      he didn't always hoist out innermost functions first: he just did a
+      recursive traversal through the syntax tree and hoisted out each
+      <code>Function</code> to the top as he hit it, thats all he did.  Please help the TA's by
+      describing a test to catch the Sleepy Joe hoist error.
+<p><li> (6 points)
+The BOOL language is deterministic and normalizing. That means 
+
+<blockquote>For any boolean expression e, if e --> v and e --> v' then
+    v = v'
+</blockquote>
+<blockquote>For any boolean expression e, e --> v (recall v is either
+    T or F in BOOL)
+</blockquote>
+
+
+Now we define another simple language FLIP, with the syntax and 
+operational rules given below:
+
+<blockquote>
+  <code>  e ::= T | F | Flip e</code>
+</blockquote>
+
+
+Operational semantics rules for FLIP:
+
+<pre>
+-------------      ----------------
+T => T               F => F
+
+    
+ e => F                           e => F
+-------------                     -------------
+ Flip e => T                      Flip e => F 
+</pre>
+
+
+(a) Is FLIP deterministic?  (b) Is FLIP normalizing?
+ In each case, half of the credit will be given for the justification
+ of your answer.   
+
+<p><li> (6 points) In <strong>D</strong>'s operational semantics and interpreter, we
+    performed substitution to give meaning to function call.
+    Consider the following expression:
+    <pre>(Function x -> Function y -> x 2 + y) (Function z -> y) 3</pre>
+    If we just did substitution here for the outermost application,
+    we would get <pre>(Function y -> (Function z -> y) 2 + y) 3</pre> but it
+    seems like something bad happened here:  the free variable
+    <code>y</code> in <code>Function z -> y</code> got bound by the
+    <code>Function y</code>, and the final result will be 6, not
+    <code>y + 3</code>.  This is in fact <em>not</em> an issue that we have to
+    worry about in our <strong>D</strong> interpreters; explain why not.
+<p><li>(6 points)  In <strong>STD</strong>, for each of the following
+    pairs answer whether the first is a subtype of the second,
+    vice-versa, or neither is a subtype of the other:
+    <dl><dd> (a) <code>{ x : Int; y : { z : Bool } }</code>  and  <code>{ x : Int; y : {}; w : Int }</code>,
+   <dd>(b) <code>{ x : Int } -> {&nbsp;}</code> and <code>{&nbsp;} -> { x : Int }</code>
+   <dd>(c) <code>({ x : Int } -> {&nbsp;}) -> {&nbsp;}</code> and <code>({&nbsp;} -> { x : Int }) -> {&nbsp;}</code>
+ </dl>
+
+    <p><li>(10 points)
+Which of these potential <strong>DSRX</strong> operational equivalences in fact hold?  <em>Give
+    a counterexample context for the ones that are false</em>.
+    <dl>
+      <dd>(a) <code>Function x -> x - 1 + 1  =~  Function x -> x</code>
+      <dd>(b) <code>(Raise #wipeout(4)) + 4 =~ 7 - (Raise #wipeout(5))</code>
+      <dd>(c) <code>Ref Ref 5 =~ Ref 5</code>
+      <dd>(d) <code>Let c = Ref 0 In c := c; !c =~ Let c = Ref 0 In c
+	  := c; c</code>
+      <dd>(e) <code>3 4 =~ 3 4 5</code>  (to clarify, the spaces here are function applications)
+    </dl>
+
+  
+
+<br>
+<h3>Longer Answer</h3>
+<p><li>(12 points) Write out the operational semantics rules for <strong>DSet</strong>, <strong>D</strong>
+    extended with sets.  Sets are like records, but they are
+    atomic.  So, for example a set of a dog, cat, and
+    bird is defined as <code>{ dog, cat, bird }</code>.  Syntax <code>dog in s</code>
+    checks if <code>dog</code> is in the set expression <code>s</code>.  Set
+    membership is pretty weak in this language: if <code>dog</code> is
+    in the set <code>s</code>, the result of <code>dog in s</code> is
+    the empty set <code>{}</code>, and if <code>dog</code> 
+    is not in the set, the program simply gets stuck.  The new
+    syntax you need to support is:
+    <ul>
+      <li><code>{ l1, ... , ln }</code>, a set, where
+	  <code>l</code> is a label (like a record label)
+      <li><code>l in e</code>, set membership as described above.
+    </ul>
+    You only need to give the relevant (new) cases in the operational
+    semantics.  Define what the values for <strong>DSet</strong> are
+    as well.
+<p><li>(6 points) These sets are in fact not much different than
+    records: write a translation function
+    <strong>DSet_to_DSR</strong>(e) which takes any
+    <strong>DSet</strong> program e and returns a <strong>DSR</strong>
+    program with the same behavior.
+<p><li>(6 points) Write the new type rules for <strong>TDSet</strong>, <strong>TD</strong> with the above enumeration
+    syntax (note there is no need for any additional type declaration
+    so the expression syntax for <strong>TDSet</strong> is the same as for <strong>DSet</strong>). <strong>TDSet</strong> in addition
+    to the types of <strong>TD</strong> has types <code>{lab1, ... , labn}</code>.
+
+<p><li>(6 points) Propose a reasonable set subtyping rule (or rules if
+    you feel more than one rule would be needed) that
+    would be used in a hypothetical language <strong>STDSet</strong>,
+    subtyped <strong>D</strong> with sets.
+</ol> 
+</BODY> </html>
+
+
+<hr>
+<address></address>
+<!-- hhmts start -->
+Last modified: Thu May  8 13:50:50 EDT 2003
+<!-- hhmts end -->
+</body> </html>
+
+
+
+
+    
