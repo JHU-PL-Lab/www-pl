@@ -1,0 +1,53 @@
+src/application.cmo: src/version.cmo src/fbdk.cmo 
+src/application.cmx: src/version.cmx src/fbdk.cmx 
+src/Fb/fb.cmo: src/Fb/fbpp.cmo src/Fb/fbparser.cmi src/Fb/fblexer.cmo \
+    src/Fb/fbinterp.cmo src/Fb/fbast.cmo src/application.cmo 
+src/Fb/fb.cmx: src/Fb/fbpp.cmx src/Fb/fbparser.cmx src/Fb/fblexer.cmx \
+    src/Fb/fbinterp.cmx src/Fb/fbast.cmx src/application.cmx 
+src/Fb/fbdktoploop.cmo: src/Fb/fbpp.cmo src/Fb/fbparser.cmi \
+    src/Fb/fblexer.cmo src/Fb/fbinterp.cmo src/Fb/fbast.cmo 
+src/Fb/fbdktoploop.cmx: src/Fb/fbpp.cmx src/Fb/fbparser.cmx \
+    src/Fb/fblexer.cmx src/Fb/fbinterp.cmx src/Fb/fbast.cmx 
+src/Fb/fbinterp.cmo: src/Fb/fbast.cmo 
+src/Fb/fbinterp.cmx: src/Fb/fbast.cmx 
+src/Fb/fblexer.cmo: src/Fb/fbparser.cmi 
+src/Fb/fblexer.cmx: src/Fb/fbparser.cmx 
+src/Fb/fbparser.cmo: src/Fb/fbast.cmo src/Fb/fbparser.cmi 
+src/Fb/fbparser.cmx: src/Fb/fbast.cmx src/Fb/fbparser.cmi 
+src/Fb/fbpp.cmo: src/Fb/fbast.cmo 
+src/Fb/fbpp.cmx: src/Fb/fbast.cmx 
+src/Fb/fbparser.cmi: src/Fb/fbast.cmo 
+src/FbSR/fbdktoploop.cmo: src/FbSR/fbsrpp.cmo src/FbSR/fbsrparser.cmi \
+    src/FbSR/fbsrlexer.cmo src/FbSR/fbsrinterp.cmo src/FbSR/fbsrast.cmo 
+src/FbSR/fbdktoploop.cmx: src/FbSR/fbsrpp.cmx src/FbSR/fbsrparser.cmx \
+    src/FbSR/fbsrlexer.cmx src/FbSR/fbsrinterp.cmx src/FbSR/fbsrast.cmx 
+src/FbSR/fbsr.cmo: src/FbSR/fbsrpp.cmo src/FbSR/fbsrparser.cmi \
+    src/FbSR/fbsrlexer.cmo src/FbSR/fbsrinterp.cmo src/FbSR/fbsrast.cmo \
+    src/application.cmo 
+src/FbSR/fbsr.cmx: src/FbSR/fbsrpp.cmx src/FbSR/fbsrparser.cmx \
+    src/FbSR/fbsrlexer.cmx src/FbSR/fbsrinterp.cmx src/FbSR/fbsrast.cmx \
+    src/application.cmx 
+src/FbSR/fbsrinterp.cmo: src/FbSR/fbsrast.cmo 
+src/FbSR/fbsrinterp.cmx: src/FbSR/fbsrast.cmx 
+src/FbSR/fbsrlexer.cmo: src/FbSR/fbsrparser.cmi 
+src/FbSR/fbsrlexer.cmx: src/FbSR/fbsrparser.cmx 
+src/FbSR/fbsrparser.cmo: src/FbSR/fbsrast.cmo src/FbSR/fbsrparser.cmi 
+src/FbSR/fbsrparser.cmx: src/FbSR/fbsrast.cmx src/FbSR/fbsrparser.cmi 
+src/FbSR/fbsrpp.cmo: src/FbSR/fbsrast.cmo 
+src/FbSR/fbsrpp.cmx: src/FbSR/fbsrast.cmx 
+src/FbSR/fbsrparser.cmi: src/FbSR/fbsrast.cmo 
+src/BOOL/bool.cmo: src/BOOL/boolpp.cmo src/BOOL/boolparser.cmi \
+    src/BOOL/boollexer.cmo src/BOOL/boolinterp.cmo src/BOOL/boolast.cmo \
+    src/application.cmo 
+src/BOOL/bool.cmx: src/BOOL/boolpp.cmx src/BOOL/boolparser.cmx \
+    src/BOOL/boollexer.cmx src/BOOL/boolinterp.cmx src/BOOL/boolast.cmx \
+    src/application.cmx 
+src/BOOL/boolinterp.cmo: src/BOOL/boolast.cmo 
+src/BOOL/boolinterp.cmx: src/BOOL/boolast.cmx 
+src/BOOL/boollexer.cmo: src/BOOL/boolparser.cmi 
+src/BOOL/boollexer.cmx: src/BOOL/boolparser.cmx 
+src/BOOL/boolparser.cmo: src/BOOL/boolast.cmo src/BOOL/boolparser.cmi 
+src/BOOL/boolparser.cmx: src/BOOL/boolast.cmx src/BOOL/boolparser.cmi 
+src/BOOL/boolpp.cmo: src/BOOL/boolast.cmo 
+src/BOOL/boolpp.cmx: src/BOOL/boolast.cmx 
+src/BOOL/boolparser.cmi: src/BOOL/boolast.cmo 

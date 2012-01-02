@@ -1,0 +1,262 @@
+#
+# Adapted from sample Makefile for Objective Caml
+# Copyright (C) 2001 Jean-Christophe FILLIATRE
+# 
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Library General Public
+# License version 2, as published by the Free Software Foundation.
+# 
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+# 
+# See the GNU Library General Public License version 2 for more details
+# (enclosed in the file LGPL).
+
+MYDIR := $(shell pwd)
+VERSION =`cat $(MYDIR)/version.txt`
+PROJECT = fbdk
+
+# where to install the binaries
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+BINDIR=@bindir@
+
+# where to install the man page
+MANDIR=@mandir@
+
+# other variables set by ./configure
+OCAMLC   = @OCAMLC@
+OCAMLOPT = @OCAMLOPT@
+OCAMLDEP = @OCAMLDEP@
+OCAMLLEX = @OCAMLLEX@
+OCAMLYACC= @OCAMLYACC@
+OCAMLLIB = @OCAMLLIB@
+OCAMLBEST= @OCAMLBEST@
+OCAMLVERSION = @OCAMLVERSION@
+OCAMLWEB = @OCAMLWEB@
+
+EXPORT = export
+TEMPLATES = templates
+SRCDIR = src
+FbDIR = $(SRCDIR)/Fb
+FbSRDIR = $(SRCDIR)/FbSR
+BOOLDIR = $(SRCDIR)/BOOL
+
+DIRS = $(SRCDIR) $(FbDIR) $(FbSRDIR) $(BOOLDIR)
+
+INCLUDES = -I $(SRCDIR) -I $(FbDIR) -I $(FbSRDIR) -I $(BOOLDIR)
+BFLAGS = -g $(INCLUDES)
+OFLAGS = $(INCLUDES)
+
+CMO =	$(SRCDIR)/version.cmo \
+	$(SRCDIR)/application.cmo \
+	$(SRCDIR)/fbdk.cmo
+
+
+FbCMO =	$(CMO) \
+	$(FbDIR)/fbast.cmo \
+	$(FbDIR)/fbparser.cmo \
+	$(FbDIR)/fbpp.cmo \
+	$(FbDIR)/fblexer.cmo \
+	$(FbDIR)/fbinterp.cmo \
+	$(FbDIR)/fb.cmo
+
+FbSRCMO =$(CMO) \
+	$(FbSRDIR)/fbsrast.cmo \
+	$(FbSRDIR)/fbsrparser.cmo \
+	$(FbSRDIR)/fbsrpp.cmo \
+	$(FbSRDIR)/fbsrlexer.cmo \
+	$(FbSRDIR)/fbsrinterp.cmo \
+	$(FbSRDIR)/fbsr.cmo
+
+BOOLCMO =$(CMO) \
+	$(BOOLDIR)/boolast.cmo \
+	$(BOOLDIR)/boolparser.cmo \
+	$(BOOLDIR)/boolpp.cmo \
+	$(BOOLDIR)/boollexer.cmo \
+	$(BOOLDIR)/boolinterp.cmo \
+	$(BOOLDIR)/bool.cmo
+
+FbCMX   =$(FbCMO:.cmo=.cmx)
+FbSRCMX =$(FbSRCMO:.cmo=.cmx)
+BOOLCMX=$(BOOLCMO:.cmo=.cmx)
+
+all: $(OCAMLBEST)
+	cp -f $(FbDIR)/fb.$(OCAMLBEST) ./Fb
+	cp -f $(FbSRDIR)/fbsr.$(OCAMLBEST) ./FbSR
+	cp -f $(BOOLDIR)/bool.$(OCAMLBEST) ./BOOL
+
+GENERATED = $(SRCDIR)/version.ml \
+	$(FbDIR)/fbparser.ml \
+	$(FbDIR)/fbparser.mli \
+	$(FbDIR)/fblexer.ml \
+	$(FbSRDIR)/fbsrparser.ml \
+	$(FbSRDIR)/fbsrparser.mli \
+	$(FbSRDIR)/fbsrlexer.ml \
+	$(BOOLDIR)/boolparser.ml \
+	$(BOOLDIR)/boolparser.mli \
+	$(BOOLDIR)/boollexer.ml 
+
+
+byte: $(FbDIR)/fb.byte $(FbSRDIR)/fbsr.byte $(BOOLDIR)/bool.byte
+opt: $(FbDIR)/fb.opt $(FbSRDIR)/fbsr.opt $(BOOLDIR)/bool.opt
+
+$(FbDIR)/fb.byte: $(FbCMO)
+	$(OCAMLC) $(BFLAGS) -o $@ $^
+
+$(FbDIR)/fb.opt: $(FbCMX) 
+	$(OCAMLOPT) $(OFLAGS) -o $@ $^
+
+$(FbSRDIR)/fbsr.byte: $(FbSRCMO)
+	$(OCAMLC) $(BFLAGS) -o $@ $^
+
+$(FbSRDIR)/fbsr.opt: $(FbSRCMX)
+	$(OCAMLOPT) $(OFLAGS) -o $@ $^
+
+$(BOOLDIR)/bool.byte: $(BOOLCMO)
+	$(OCAMLC) $(BFLAGS) -o $@ $^
+
+$(BOOLDIR)/bool.opt: $(BOOLCMX)
+	$(OCAMLOPT) $(OFLAGS) -o $@ $^
+
+$(SRCDIR)/version.ml: Makefile
+	echo "let version = \""$(VERSION)"\"" > $(SRCDIR)/version.ml
+	echo "let date = \""`date`"\"" >> $(SRCDIR)/version.ml
+
+# installation
+##############
+
+install:
+	mkdir -p $(BINDIR)
+	cp -f $(FbDIR)/fb.$(OCAMLBEST) $(BINDIR)/Fb
+	cp -f $(FbSRDIR)/fbsr.$(OCAMLBEST) $(BINDIR)/FbSR
+
+# export
+########
+
+EXPORTDIR=$(PROJECT)-$(VERSION)
+TAR=$(EXPORTDIR).tar
+
+FILES = $(TEMPLATES)/*.ml version.txt \
+	$(SRCDIR)/*.ml* $(FbDIR)/*.ml* $(FbSRDIR)/*.ml* $(BOOLDIR)/*.ml* \
+	Makefile.in configure configure.in win32Build.bat        \
+	.depend README INSTALL COPYING CHANGES
+
+#export: source binary - modified 3/05 to distribute bytecode, not binary
+BINARY = $(EXPORTDIR)-byte# -$(OSTYPE)
+export: source byte 
+	mkdir -p $(EXPORT)/$(BINARY)
+#	cp $(BINARYFILES) $(EXPORT)/$(BINARY)
+	cp $(FbDIR)/fb.byte $(EXPORT)/$(BINARY)/fb.byte
+	cp $(FbSRDIR)/fbsr.byte $(EXPORT)/$(BINARY)/fbsr.byte
+	(cd $(EXPORT); tar czf $(BINARY).tar.gz $(BINARY))
+
+source:
+	mkdir -p $(EXPORT)/$(EXPORTDIR)
+	tar c $(FILES) | tar x -C $(EXPORT)/$(EXPORTDIR)
+	(cd $(EXPORT)/$(EXPORTDIR); rm -f $(GENERATED))
+	(cd $(EXPORT) ; tar cf $(TAR) $(EXPORTDIR) ; gzip -f --best $(TAR))
+
+student-source: source
+	cp -f $(TEMPLATES)/fbinterp.ml $(EXPORT)/$(EXPORTDIR)/$(FbDIR)
+	cp -f $(TEMPLATES)/fbsrinterp.ml $(EXPORT)/$(EXPORTDIR)/$(FbSRDIR)
+	(cd $(EXPORT) ; tar cf $(TAR) $(EXPORTDIR) ; gzip -f --best $(TAR))
+
+# BINARYTAR=$(BINARY).tar
+# 
+# BINARYFILES = 
+# 
+binary: $(FbDIR)/fb.$(OCAMLBEST) $(FbSRDIR)/fbsr.$(OCAMLBEST)
+	mkdir -p $(EXPORT)/$(BINARY)
+ #	cp $(BINARYFILES) $(EXPORT)/$(BINARY)
+	cp $(FbDIR)/fb.$(OCAMLBEST) $(EXPORT)/$(BINARY)/Fb
+	cp $(FbSRDIR)/fbsr.$(OCAMLBEST) $(EXPORT)/$(BINARY)/FbSR
+	(cd $(EXPORT); tar czf $(BINARY).tar.gz $(BINARY))
+
+# generic rules
+###############
+
+.SUFFIXES: .mli .ml .cmi .cmo .cmx .mll .mly .tex .dvi .ps .html
+
+.mli.cmi:
+	$(OCAMLC) -c $(BFLAGS) $<
+
+.ml.cmo:
+	$(OCAMLC) -c $(BFLAGS) $<
+
+.ml.o:
+	$(OCAMLOPT) -c $(OFLAGS) $<
+
+.ml.cmx:
+	$(OCAMLOPT) -c $(OFLAGS) $<
+
+.mll.ml:
+	$(OCAMLLEX) $<
+
+.mly.ml:
+	$(OCAMLYACC) -v $<
+
+.mly.mli:
+	$(OCAMLYACC) -v $<
+
+# Emacs tags
+############
+
+tags:
+	find . -name "*.ml*" | sort -r | xargs \
+	etags "--regex=/let[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/let[ \t]+rec[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/and[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/type[ \t]+\([^ \t]+\)/\1/" \
+              "--regex=/exception[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/val[ \t]+\([^ \t]+\)/\1/" \
+	      "--regex=/module[ \t]+\([^ \t]+\)/\1/"
+
+# Makefile is rebuilt whenever Makefile.in or configure.in is modified
+######################################################################
+
+Makefile: Makefile.in config.status
+	./config.status
+
+config.status: configure
+	./config.status --recheck
+
+#configure: configure.in
+#	autoconf 
+
+# clean
+#######
+
+clean::
+	for i in $(DIRS); do \
+		rm -f $$i/*.cm[iox] $$i/*.o $$i/*~ $$i/*.output; \
+	done
+	rm -f $(GENERATED) 
+	rm -f $(FbDIR)/fb.byte $(FbDIR)/fb.opt
+	rm -f $(FbSRDIR)/fbsr.byte $(FbSRDIR)/fbsr.opt
+	rm -f $(BOOLDIR)/bool.byte $(BOOLDIR)/bool.opt
+	rm -rf $(EXPORT)
+	rm -f BOOL Fb FbSR
+
+dist-clean distclean:: clean
+	rm -f Makefile config.cache config.log config.status
+
+# depend
+########
+
+.depend depend:: $(GENERATED) 
+	rm -f .depend
+	(for i in $(DIRS); do \
+		$(OCAMLDEP) $(INCLUDES) $$i/*.ml $$i/*.mli; \
+	 done) > .depend
+
+include .depend
+
+
+
+
+
+
+
+
