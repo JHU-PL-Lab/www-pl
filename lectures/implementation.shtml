@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="/pl/header.html" -->
 
 </div>
 
@@ -565,4 +565,4 @@ do this since .class files could be modified)
 
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->
