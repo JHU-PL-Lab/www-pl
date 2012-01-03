@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<HEAD>
+<title>PL Final 2011</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Programming Languages
+<br> Spring 2011
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.  You can write on both
+sides.  No printer output is allowed, it must all  be hand-written.<p>
+
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+  <li>(3 points) The philosophy of actor programming is different due to the asynchronous nature of actor messaging.
+Suppose a mutable data structure such as a set was to be encoded as an actor, with <code>`add</code>, <code>`find</code>, etc methods.  What form would those methods have to take in light of how actor messaging is asynchronous?  You don't have to actually give an implementation, only describe it at a high level in terms of the messaging protocol.  Also you can assume that the n-tuples of Caml (and in question 8. below) are available for passing multiple arguments.
+<p>
+  <li>(3 points) The definition of operational equivalence makes it easy to prove things that are not equivalent to indeed be not equivalent, but is hard to prove things equivalent.<br>
+a) First, recall the definition of operational equivalence between  <strong>Fb</strong> programs: write it down.<br>
+b) Now, give the concrete reason why proving equivalence is harder than proving non-equivalence.
+
+<p>
+
+  <li>(4 points) We did not consider <strong>STFbSR</strong>, namely how subtyping can be defined for a <em>stateful</em> records language, but it is not as simple as it might first appear.  One seemingly natural subtyping rule to add would be
+      <pre>
+     tau &lt;: tau'
+  ----------------------
+     tau Ref &lt;: tau' Ref           
+</pre>
+but this rule is not correct.  The intuitive problem is that memory cells are both places where data can be fed in (when assigning data there) and data can come out of (when reading from), meaning the types behave <em>both</em> like function inputs and like function outputs as far as subtyping is concerned.<br>
+Write an <strong>STFbSR</strong> program which would improperly typecheck with the above rule: it typechecks but gives a run-time error, showing the above subtyping rule is unsound.  Note that we also did not give the typing rules for assignment, ref, and deref, but those rules follow the usual pattern.<br>
+
+<p>
+
+  <li>(6 points) This question concerns how objects could be encoded in <strong>FbSV</strong> - in other words, use variants and not records to encode objects.  You got some experience with how variants can encode object-like behavior in actors, this question is how variants can be used to encode objects in a non-actor language.  Consider the following very simple Java class:
+      <pre>
+   public class Foo {
+       private int x = 0;
+       public int add(int i) {
+           x = x + i;
+           return x;
+       }
+       public int inc() {
+           return add(1);
+       }
+   }
+</pre>
+Define an <strong>FbSV</strong> expression which fathfully encodes an object of this class; include code which makes the object and sends it a single message to both show how creation and messaging work.  (Note that the field is private and the method is public; this is roughly how the actor-objects were defined; use a similar convention in your code.)
+<p>
+
+
+
+<li>(6 points) Let us consider the language <b>FbSE</b>: <b>Fb</b> with state and a new feature we will call "state erasure".  This language has all of the syntax and semantics of <b>FbS</b> as well as a new expression form: <code>Erase</code>. <code>Erase</code> always evaluates to <code>0</code>, but it has a side effect of throwing away all existing state information.  As a result, any dereference (such as <code>!x</code>) immediately after an <code>Erase</code> will get stuck (not evaluate to any value) since the state lookup will not succeed; only cells allocated after an <code>Erase</code> will be able to be dereferenced.<br/>
+   a) Write an operational semantics rule for <code>Erase</code>.<br/>
+   b) Why would it be difficult to create a type system for <b>FbSE</b> in which all typeable expressions don't get stuck?  You are not required to write any rules; just briefly describe what would make typechecking this language difficult.
+<p>
+
+  <li>(8 points) For each of the following equivalences, state whether they hold in <strong>Fb</strong> and <strong>FbX</strong>, respectively (so, for each equivalence you need to answer once for <strong>Fb</strong> and once for <strong>FbX</strong>).  If the answer is no, give a context C showing that fact.  Note that we did not give an official definition of operational equivalence for <strong>FbX</strong> but it is the exact same form as the <strong>Fb</strong> definition, only for the <strong>FbX</strong> syntax and operational semantics (meaning the contexts <em>C</em> can be any <strong>FbX</strong> expression with a hole punched in it).<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a)  <code>Function f -> f 0   ~= Function f
+      -> Let dummy = f 1 In f 0</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;b)  <code>Function f -> f 0  ~= Function f
+      -> Let dummy = f 0 In f 0</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;c)  <code>Function f -> f 0  + f 1  ~= Function f
+      -> f 1 + f 0</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;d)  <code>Function f -> f 0  + 0 1  ~= Function f
+      -> f 1 + 0 0</code><br><p>
+
+
+<p>
+
+<li>(6 points) Recall the following rule for application in <b>EFb</b>:
+<pre>
+   Gamma |- e : tau \ E         Gamma |- e' : tau' \ E'
+   ----------------------------------------------------
+   Gamma |- e e' : 'a \ E U E' U {tau = tau' -> 'a}
+</pre>
+   The Let Rec rule for <b>EFb</b> was not given in the book, but it follows like principles.  Write a suitable rule for Let Rec here.
+</li>
+<p>
+
+
+  <li>(18 points) Tuples were briefly discussed in class and in the book but we did not do much with them.  Consider the <strong>Fb</strong> extension <strong>FbT</strong>, <strong>Fb</strong> with n-tuples.  These are basically the same as the Caml tuples, for example the Caml <code>(2,4,true) : int * int * bool</code>, <code>() : unit</code> (the 0-tuple), etc.  <br>
+a) Define a grammar of <strong>FbT</strong> by showing how the <strong>Fb</strong> grammar can be extended to include tuples (no need to write out the existing grammar, only the additions).  We suggest that rather than using pattern matching to take tuples apart as in Caml, instead define a simple operator <code>e.n</code> which for example takes <code>(4,true).2 ==> true</code>, i.e. returns the <code>n</code>-th component of the tuple where <code>n</code> is a fixed positive integer.<br>
+b) Write operational semantics rules giving the complete meaning for executing your new constructs.<br>
+c) Give an extension to the <strong>TFb</strong> type system showing how your new tuple syntax can also be typechecked.<br>
+d) If the tuple projection syntax was instead <code>e.e</code>, meaning at runtime the tuple element position number <code>n</code> projected out could be <em>computed</em> (the idea is the second <code>e</code> would compute to a number <code>n</code>), it would make typechecking tuples impossible.  Briefly explain why.<br>
+
+e) Now that we have <strong>FbT</strong> (the untyped version) lets use it to write some code.  We want to simultaneously define two mutually recursive functions, upone and downtwo, which call each other.  In Caml the code would be
+<pre>
+let rec upone x = if x &lt;= 0 then 0 else downtwo (x+1)
+    and downtwo y = if y &lt;= 0 then 0 else upone (y-2)
+</pre>
+Define these in <strong>FbT</strong> as a pair of functions and use some Y combinator or other trick in your bag to make them mutually recursive.  Hint: <code>this</code> should be a <code>thispair</code> which is both functions - then either can call the other.  Don't just inline the code to solve it, your answer should work for any mutually recursive function definition without code duplication.
+
+<p>
+
+    
+</ol> 
+
+
+<p>&nbsp;<p>
+
+
+</BODY> </html>
