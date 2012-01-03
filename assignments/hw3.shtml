@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="/pl/header.html" -->
 
 </div>
 
@@ -87,4 +87,4 @@ For this part of the assignment, submit only the <code>fbinterp.ml</code> file t
 </div>
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->

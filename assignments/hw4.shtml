@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="/pl/header.html" -->
 
 </div>
 <div id="content">
@@ -212,4 +212,4 @@ other users may need to download the .sty file and use it directly.)
 </div>
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->

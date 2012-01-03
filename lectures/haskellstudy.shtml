@@ -1,0 +1,141 @@
+<!--#include virtual="/pl/header.html" -->
+
+</div>
+
+<div id="content"> <h2>Study of Haskell</h2>
+We will be including pointers to the <a href="http://learnyouahaskell.com/">Learn you a Haskell</a> tutorial in these notes.
+<ul>
+  <li>Haskell is what is called <em>pure</em> functional programing: all behaviors in the language are based on an underlying meaning of a mathematical function.
+  <li>As we have pointed out many times before, the key advantage of this approach is its strongly declarative nature: nothing changes out from under you.
+  <li>And, similarly for the nth time the disadvantage is things that are fundamentally stateful are hard to model.
+  <li>We are studying Haskell because it has many interesting and unique features not found in ML - its not just the pure functional subset of ML.
+</ul>
+
+<h3>Lazy evaluation</h3>
+<ul>
+  <li>The most fundamental difference with ML (and <strong>Fb</strong>) is that Haskell uses <em>lazy evaluation</em> for function calls. 
+  <li>Lazy evaluation in a nutshell will not evaluate a function argument unless it is used, but at that point will cache the value so it need not be evaluated more than once.
+  <li> We will take a brief detour into the PL book Section 2.3.6 where the closely related <em>call-by-name</em> evaluation is formalized.
+  <li>In lazy evaluation lists can be infinitely long: unless you ask for an element you won't see it.  <code>[1,..]</code>
+</ul>
+
+<h3>Basic Haskell Data Operations and types</h3>
+<ul>
+  <li>Haskell is similar to ML (being one of its descendants) in terms of basic numerical, list, and tuple data.  
+  <li>Very cool features of Haskell lists not found in ML include <a href="http://learnyouahaskell.com/starting-out#texas-ranges">Texas Ranges</a> and <a href="http://learnyouahaskell.com/starting-out#im-a-list-comprehension">list comprehensions</a>.
+  <li>The <a href="http://learnyouahaskell.com/types-and-typeclasses">basic types, type variables, and type inference</a> are similar to MLs although the notation is slightly different.  The main difference is the type classes, discussed below.
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions">Pattern matching</a>,  <a href="http://learnyouahaskell.com/recursion">recursive functions</a> and <a href="http://learnyouahaskell.com/higher-order-functions">higher-order functions</a> are also similar to the corresponding ML concepts.
+  <li>Variant types are called <em>data types</em> in Haskell and are declared with the <code>data</code> keyword; they are similar to the ML <code>type</code> declaration but constructors are real curried functions in Haskell, a cleaner more uniform approach.  <a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses">Some examples.</a>
+</ul>
+
+<h3><a href="http://en.wikibooks.org/wiki/Haskell/Class_declarations">Type Classes</a></h3>
+One of the most original and important contributions of Haskell is the concept of <em>type classes</em>: operator overloading done better.
+
+<ul>
+  <li>The type of the (infix) equality operator, <code>==</code>, in Haskell is <code>(==) :: (Eq a) => a -> a -> Bool</code>
+  <li>Here the "<code>(Eq a) =></code>" is a <em>class constraint</em> which simply means this function only works on the "<code>Eq</code>" class of types (think of these classes as predicates on types).
+  <li>Caml is sloppy here: it lets equal be defined on all types but then throws a runtime exception when its used incorrectly, yuck!
+      <pre># let f x y = x = y;;
+val f : 'a -> 'a -> bool = &lt;fun&gt;
+# f f f;;
+Exception: Invalid_argument "equal: functional value".
+</pre>
+      In Haskell, function types are not members of the <code>Eq</code> class so they cannot be compared -- the compiler will error for a similar example in Haskell.
+  <li>Another example is <code>&lt;</code> which has type <code>(>) :: (Ord a) => a -> a -> Bool</code> -- this operation only works on "ordinal" (ordered) types, e.g. numbers, strings.
+  <li>The simple interpretation of type classes is each built-in or defined type may be in one or more of these type classes
+  <li>Beyond <code>Eq/Ord</code> there are also built-in classes for <code>Show</code> (convertible to string), <code>Read</code> (convertible from string), <code>Enum</code> (sequentially ordered), <code>Num</code> any number (Int/Float/etc).
+  <li>It is worth looking through some <a href="http://learnyouahaskell.com/types-and-typeclasses#typeclasses-101">examples of type class usage in the tutorial</a>
+</ul>
+
+Beyond usage of type classes on existing types, it is possible to
+<ul>
+  <li>put types you create yourself into type classes (e.g. add them to <code>Eq</code> so you can compare them), and
+  <li>even make your own type classes for your own classifications.
+</ul>
+We now cover these two features in turn.
+<h4>Putting your types into the existing classes</h4>
+<ul>
+  <li>By default your own defined type cannot be compared with <code>==</code>, <code>&lt;</code>, cannot be <code>+</code>'d, etc. Sigh!
+  <li><em>But</em>, you can declare how these operators can be extended to deal with your new type via type classes -- YAY!
+  <li>Simple example from the tutorial:<pre>data Person = Person { firstName :: String  
+                     , lastName :: String  
+                     , age :: Int  
+                     } deriving (Eq)  </pre>
+      -- this record type declaration (pretty much like MLs but different syntax) has <code>deriving (Eq)</code> which means that all the components must have types in the <code>Eq</code> typeclass and then members of this type can also be compared.
+  <li>The <a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses#derived-instances">tutorial has more examples</a> of <code>deriving</code>.
+
+</ul>
+<h4>Making your own type classes</h4>
+<ul>
+  <li><code>Eq</code> was in fact defined, as<pre>class Eq a where  
+    (==) :: a -> a -> Bool  
+    (/=) :: a -> a -> Bool  
+    x == y = not (x /= y)  
+    x /= y = not (x == y)</pre>
+      -- <code>class</code> here means typeclass, not OO class.
+  <li>The built-in definitions are circular so it looks useless, but the point is you need to override one of them when you want to have a type working over <code>Eq</code>.
+  <li>Example: <pre>data TrafficLight = Red | Yellow | Green  
+
+instance Eq TrafficLight where  
+    Red == Red = True  
+    Green == Green = True  
+    Yellow == Yellow = True  
+    _ == _ = False  
+</pre>
+      -- rather than <code>deriving</code>, we can manually define how <code>Eq</code> works over our new type via <code>instance</code>.
+  <li>The tutorial has more examples of this.
+  <li>It is possible to group a collection of classes under a single name and this is done by an analog of inheritance when a new class is defined.  <a href="http://en.wikibooks.org/wiki/Haskell/Class_declarations#Class_Inheritance">Here is an example and discussion</a>.
+  <li>This picture also shows some of the downside -- it gets complex very quickly and there is a maze to navigate.
+</ul>
+
+
+<h3>Monads</h3>
+<ul>
+  <li>Monads allow computations to be "wrapped"
+  <li>Particular useful "wrappers" include 
+      <ul>
+	<li>maybe there is no value at all (<code>Maybe</code>)
+	<li>maybe there is more than one value
+	<li>Along with computing there can be input/output on the side (the I/O monad)
+	<li>Along with computing there can be stateful operations on the side (the state monad)
+      </ul>
+  <li>So, Monads are critical to advanced Haskell programming
+</ul>
+It would take about a week of lecture to cover monads properly so we are giving a 50,000-foot view here.
+<h4>The I/O Monad</h4>
+<ul>
+  <li>No, we are not going to add <code>print</code> as a regular Haskell statement -- print is a side effect (think of read/print, it can be used like get/set on a memory cell)
+  <li>So, Haskell stays Haskell; I/O is put on <em>top</em> of Haskell by <em>wrapping</em> computations in the I/O monad.
+  <li>Elements of the I/O monad are sequences of commands (<code>do</code> blocks)
+  <li><code>do</code> blocks can invoke pure Haskell functions <em>but not vice-versa</em> -- a Haskell function will never have a side effect.
+  <li>In the internal monadic view of a <code>do</code> block, each line is a function getting the past I/O operations as an argument and returning a value which may include new I/O operations.
+  <li>This firewalling off of the functional core is the key difference between effects in ML and effects in Haskell.
+  <li>We will whiz through <a href="http://learnyouahaskell.com/input-and-output">a few tutorial examples</a>.
+</ul>
+
+<h3>Monads in General</h3>
+<ul>
+  <li>In the I/O monad the wrapper could do I/O; in general the wrapper can be defined to do anything.
+  <li><code>Monad</code> is in fact a type class in Haskell, lets peek at its definition:
+      <pre>class Monad m where  
+    return :: a -> m a  
+  
+    (>>=) :: m a -> (a -> m b) -> m b  
+  
+   ... (details elided)</pre>
+      -- the type <code>m</code> is the wrapper
+  <li><code>return</code> takes a pure <code>a</code> and wraps it
+  <li><code>>>=</code> sequences together two wrapped computations; the functional result of the previous computation (<code>a</code>) can be fed into the next wrapper operation.
+  <li>The <code>do</code> sequencing of the I/O monad is just sugar for <code>>>=</code>.
+  <li>The state monad is a wrapper which is a state; the monad then threads the state from one element in the sequence to the next.  See <a href="http://learnyouahaskell.com/for-a-few-monads-more#state">the tutorial</a>.
+</ul>
+<p>
+
+
+
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
+
+

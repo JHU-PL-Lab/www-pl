@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="/pl/header.html" -->
 
 </div>
 
@@ -196,4 +196,4 @@ field references are wacky.
 </div>
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->
