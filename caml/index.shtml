@@ -41,14 +41,14 @@ command  <kbd>ocaml</kbd>. <p>
 We <em>strongly</em> recommend you run Caml from something besides the
 shell directly. 
 <dl>
+  <dt><a href="http://www.eclipse.org">Eclipse</a> <a href="http://www.algo-prog.info/ocaide/"><strong>OCaIDE</strong></a>
+  <dd>
+This is an Eclipse plugin for Caml which works very well; it is the "official recommended method" and is what will be used in lecture. See <a href =
+ocaide.shtml>information on using OCaIDE</a> for more information.
   <dt><strong>Emacs</strong>
   <dd>See <a href =
 emacs.shtml>information on running Caml 
 inside Emacs</a> to get going.  
-  <dt><a href="http://www.eclipse.org">Eclipse</a> <a href="http://www.algo-prog.info/ocaide/"><strong>OCaIDE</strong></a>
-  <dd>
-This is an Eclipse plugin for Caml which works very well. See <a href =
-ocaide.shtml>information on using OCaIDE</a> for more information.
   <dt><strong>vim <a
     href="http://www.lix.polytechnique.fr/~dbaelde/productions/omlet.html">OMLet</a></strong>
   <dd>If you like vim, it now has a caml
