@@ -50,7 +50,10 @@ you have already installed OCaIDE.
         you should set up your project differently.  For Linux or Mac users,
         the following instructions apply:
         <ol>
-            <li>Create an "OCaml Empty Makefile" project.</li>
+            <li>
+                Create an "OCaml Makefile" project (<i>not</i> an empty Makefile
+                project).
+            </li>
             <li>
                 Extract the contents of the FbDK archive into the project
                 directory (not from within eclipse, use your shell or file browser outside of Eclipse).  Note that files such as "configure" should be in
@@ -61,11 +64,6 @@ you have already installed OCaIDE.
                 Eclipse project directory to create the makefile.
             </li>
             <li>Refresh the project from within Eclipse.</li>
-            <li>
-                In the project properties dialog, select the Makefile panel.
-                In the "additional make options" field, add
-                "<code>-f Makefile OCAMLBEST=byte</code>".
-            </li>
             <li>Select "Clean Project" from the Project menu to build your project.</li>
             <li>
                 In the Run Configurations dialog, create a new OCaml Executable
