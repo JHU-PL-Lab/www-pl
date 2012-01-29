@@ -23,12 +23,9 @@ you have already installed OCaIDE.
 
 <ul>
     <li>
-        For the first couple homeworks, you'll want to use the "Ocaml Project
-        (ocamlbuild)" variety of project.  This spares you the details of
+        For the first couple homeworks, you'll want to use the "Ocaml Managed Project" variety of project.  This spares you the details of
         compilation and allows you to focus on learning the language.  It also
         allows you to view the types of various expressions in the editor.
-        Windows users may instead wish to use the "OCaml Managed Project", since
-        ocamlbuild under Windows requires a Cygwin installation.
     </li>
     <li>
         Use Window -&gt; show View -&gt; OCaml Toplevel to start a new top-loop,
