@@ -36,7 +36,7 @@ you have already installed OCaIDE.
         For small fiddling in the top loop, make a new "module" (i.e., a .ml
         file), edit, select the code in the file with the mouse, and use the
         menu option Ocaml -&gt; Eval in Toplevel to submit it to the top loop in
-        the window below.
+        the window below.  F6 is usually a key shortcut for this commmand.
     </li>
     <li>
         To submit the whole file to the toploop as if you typed  it there,
@@ -56,7 +56,7 @@ you have already installed OCaIDE.
             <li>Create an "OCaml Empty Makefile" project.</li>
             <li>
                 Extract the contents of the FbDK archive into the project
-                directory.  Note that files such as "configure" should be in
+                directory (not from within eclipse, use your shell or file browser outside of Eclipse).  Note that files such as "configure" should be in
                 your project's root directory, not in a subfolder.
             </li>
             <li>
@@ -69,7 +69,7 @@ you have already installed OCaIDE.
                 In the "additional make options" field, add
                 "<code>-f Makefile OCAMLBEST=byte</code>".
             </li>
-            <li>Select "Clean" from the Project menu to build your project.</li>
+            <li>Select "Clean Project" from the Project menu to build your project.</li>
             <li>
                 In the Run Configurations dialog, create a new OCaml Executable
                 configuration.  Type the project name here exactly as you typed
