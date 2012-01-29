@@ -6,11 +6,10 @@ end
 module Make(Lang: Fbdk.LANGUAGE) =
 struct
 	
-	let toplevel_loop typechecking_enabled =
+	let toplevel_loop typechecking_enabled show_types =
 		Printf.printf "\t%s version %s\n\n"
 			Lang.name Version.version;
 		flush stdout;
-		let typecheck_warning_printed = ref false in
 		while true do
 			Printf.printf "# ";
 			flush stdout;
@@ -18,32 +17,14 @@ struct
 			let ast = Lang.Parser.main Lang.Lexer.token lexbuf in
 			(
 				try
-					(
-						match typechecking_enabled with
-						| Some(true) ->
-								let exprtype = Lang.Typechecker.typecheck ast in
-								Printf.printf " :  %s\n" (Lang.Pp.pp_type exprtype "    ")
-						| Some(false) -> ()
-						| None ->
-								let is_typechecking =
-									(
-										try
-											ignore (Lang.Typechecker.typecheck ast); true
-										with
-										| Fbdk.TypecheckerNotImplementedException -> false
-										| _ -> true
-									)
-								in
-								if is_typechecking then
-									if not !typecheck_warning_printed then
-										(
-											typecheck_warning_printed := true;
-											print_string "Warning: typechecking disabled on command line.  See usage for more information.\n"
-										)
-									else
-										()
-								else ()
-					)
+					if typechecking_enabled then
+						let exprtype = Lang.Typechecker.typecheck ast in
+						if show_types then
+							Printf.printf " : %s\n" (Lang.Pp.pp_type exprtype "    ")
+						else
+							()
+					else
+						()
 				with Fbdk.TypecheckerNotImplementedException -> ()
 			)
 			;
@@ -68,17 +49,18 @@ struct
 		let filename = ref "" in
 		let toplevel = ref true in
 		let version = ref false in
-		let typechecker = ref None in
+		let no_typechecking = ref false in
+		let no_type_display = ref false in
 		Arg.parse
 			[("--version",
 				Arg.Set(version),
 				"show version information");
-			("-t",
-				Arg.Unit(fun () -> typechecker := Some(true)),
-				"enables typechecking");
-			("-T",
-				Arg.Unit(fun () -> typechecker := Some(false)),
-				"disables typechecking")]
+			("--no-typecheck",
+				Arg.Set(no_typechecking),
+				"disable typechecking");
+			("--hide-types",
+			  Arg.Set(no_type_display),
+				"disable displaying of types")]
 			(function fname ->
 						filename := fname;
 						version := false;
@@ -90,7 +72,7 @@ struct
 		if !version then
 			print_version ()
 		else if !toplevel then
-			toplevel_loop (!typechecker)
+			toplevel_loop (not (!no_typechecking)) (not (!no_type_display))
 		else
 			run_file !filename
 	
