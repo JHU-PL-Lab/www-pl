@@ -872,6 +872,37 @@ fi
 
 # substitutions to perform
 
+# ZEP - hacky workaround for MacOS X 10.7:
+#       force all reported paths to be absolute
+RESULT="`which "$OCAMLC"`"
+if test -n "$RESULT"; then
+  OCAMLC="$RESULT"
+fi
+RESULT="`which "$OCAMLOPT"`"
+if test -n "$RESULT"; then
+  OCAMLOPT="$RESULT"
+fi
+RESULT="`which "$OCAMLDEP"`"
+if test -n "$RESULT"; then
+  OCAMLDEP="$RESULT"
+fi
+RESULT="`which "$OCAMLLEX"`"
+if test -n "$RESULT"; then
+  OCAMLLEX="$RESULT"
+fi
+RESULT="`which "$OCAMLYACC"`"
+if test -n "$RESULT"; then
+  OCAMLYACC="$RESULT"
+fi
+RESULT="`which "$OCAMLLIB"`"
+if test -n "$RESULT"; then
+  OCAMLLIB="$RESULT"
+fi
+RESULT="`which "$OCAMLWEB"`"
+if test -n "$RESULT"; then
+  OCAMLWEB="$RESULT"
+fi
+
 
 
 
