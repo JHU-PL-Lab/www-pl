@@ -63,7 +63,7 @@ f 4;; (* call a function -- separate arguments with S P A C E S *)
 *)
 
 (* fibonacci series - 1 1 2 3 5 8 13 ... *)
-let rec fib n =     (* the "rec" keyword needs to be added to allow recursion *)
+let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (ugh) *)
   if n <= 2 then
     1 
   else
@@ -78,10 +78,8 @@ fib 10;;
 *)
 
 (* anonymous functions: define a function as an expression *)
-function x -> x + 1;; (* "x" is argument here -- can do one-argument functions only *)
-((function x -> x + 1) 4) + 7;; (* such a function can be used anywhere *)
-
-let f = (function x -> x + 1);; (* identical to typing 'let f x = x + 1;;' *)
+let funny = function x -> x + 1;; (* "x" is argument here -- can do one-argument functions only *)
+((function x -> x + 1) 4) + 7;; (* such a function is an expression and can be used anywhere *)
 
 (* 
  * functions can be passed to and returned from functions --> HIGHER-ORDER
@@ -91,7 +89,7 @@ let f = (function x -> x + 1);; (* identical to typing 'let f x = x + 1;;' *)
 let add x y = x + y;;
 add 3 4;;
 (add 3) 4;; (* same meaning as previous *)
-let add3 = add 3;; (* don't need to give all arguments -- 'add3' is now a function like 'function y -> 3 + y' *)
+let add3 = add 3;; (* don't need to give all arguments at once -- 'add3' is now a function like 'function y -> 3 + y' *)
 add3 4;;
 add3 20;;
 
@@ -109,19 +107,20 @@ add3 20;;
 	| 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
 	| _ -> "Nothing")^"-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
 
-
-match 3 with
-	0 -> 4
+let mixemup n =
+	match n with
+		0 -> 4
 	| 5 -> 0
 	| x -> x + 1;; (* default case giving a name to the matched number, x *)
 
+mixemup 3;; (* matches last case and x becomes 3 *)
 
 (* List matching -- can use [] for empty list and foo :: bar for head/tail pattern match *)
 let dum = [1;2;3];;
 
-  match dum with
-    [] -> []
-  | head :: tail -> tail 
+match dum with
+	[] -> []
+| head :: tail -> tail
 ;;
 
 let getTail l = 
@@ -133,14 +132,14 @@ getTail [1;2;3] ;;
 
 (* first successful match is taken *)
 match ['h';'o'] with
-  x :: (y :: z) -> "first"
-| x :: y      -> "second"
-| []          -> "third";;
+	x :: (y :: z) -> "first"
+| x :: y -> "second"
+| [] -> "third";;
 
 match ["hi"] with
-  x :: y :: z -> "first"
-| x :: y      -> "second"
-| []          -> "third";;
+	x :: y :: z -> "first"
+| x :: y -> "second"
+| [] -> "third";;
 
 (* tuple - pattern matching *)
 let tuple = (2, "hi", 1.2);;
