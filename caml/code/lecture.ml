@@ -50,8 +50,8 @@ let tuple = (2, "hi");;
 
 (* Functions *)
 
-let f x = x * x;; (* declare a function: "f" is its name, "x" is its one parameter.  return implicit.  *)
-f 4;; (* call a function -- separate arguments with S P A C E S *)
+let squared x = x * x;; (* declare a function: "f" is its name, "x" is its one parameter.  return implicit.  *)
+squared 4;; (* call a function -- separate arguments with S P A C E S *)
 
 (*
  * - no return statement; value of the whole body-expression is what gets 
@@ -135,7 +135,7 @@ match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
 | x :: y -> "second"
 | [] -> "third";;
 
-match ["hi"] with
+match ["hi"] with (* ["hi"] is "hi" :: [] *)
 	x :: y :: z -> "first"
 | x :: y -> "second"
 | [] -> "third";;
@@ -148,7 +148,8 @@ match tuple with
 ;;
 
 (* let can be combined with a single pattern match to assign multiple values *)
-let (f, s) = (2.2, 'Z');;
+let mypair = (2.2, 'Z');;
+let (f, s) = mypair;;
 
 let getSecond t = 
   match t with
