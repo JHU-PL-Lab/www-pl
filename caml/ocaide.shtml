@@ -4,15 +4,17 @@
 
 <div id="content">
 
-<h2>OCaIDE</h2> This eclipse plugin is getting better all the time.
-It has the
-additional advantage over Emacs of having built-in support for the
-batch compilation system, ocamlc, and when using the batch compiler there is
-even a debugger available.  <em>(note, I could not get the debugger to
+<h2>OCaIDE</h2>
+
+OcaIDE is an Eclipse plugin for OCaml development.  It provides batch
+compilation support, assistance with type information, an integrated OCaml
+toploop, and even a debugger.  <em>(note, I could not get the debugger to
 work; please let me know if the debugger works for you)</em>.  The <a
 href="http://www.algo-prog.info/ocaide/">OCaIDE homepage</a>
 contains all the information to install it; help is available
-within Eclipse on how to use it. <p>
+within Eclipse on how to use it.  <b>Warning:</b> Be sure that you have
+installed OCaml <i>before</i> you install OcaIDE to make sure things go
+smoothly.
 
 <h3>Tips</h3>
 Generally in the course materials we are assuming you are using emacs;
