@@ -47,7 +47,6 @@ x;; (* NOTICE: did not mutate list x by putting 0 on front, its still [2; 4; 6] 
 
 (2, "hi");;
 let tuple = (2, "hi");;
-let (l,r) = tuple;;
 
 (* Functions *)
 
@@ -116,7 +115,7 @@ let mixemup n =
 mixemup 3;; (* matches last case and x becomes 3 *)
 
 (* List matching -- can use [] for empty list and foo :: bar for head/tail pattern match *)
-let dum = [1;2;3];;
+let dum = [3;5;9];;  (* Note this list notation is shorthand for 3 :: ( 5 :: (9 :: [])) *)
 
 match dum with
 	[] -> []
@@ -128,10 +127,10 @@ let getTail l =
     [] -> []
   | head :: tail -> tail 
 ;;
-getTail [1;2;3] ;;
+getTail [3;5;9] ;;
 
 (* first successful match is taken *)
-match ['h';'o'] with
+match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
 	x :: (y :: z) -> "first"
 | x :: y -> "second"
 | [] -> "third";;
@@ -172,7 +171,7 @@ let getHead l =
 (* patterns in function definitions *)
 let cadd p = match p with (x, y) -> x + y;;
 
-let cadd (x, y) = x + y;; (* same result as the above - match on the argument directly *)
+let cadd (x, y) = x + y;; (* same result as the above - match on the argument directly (only works for 1-case matches) *)
 
 (* This 'cadd' takes only a SINGLE argument - a tuple - like how C etc functions are called *)
 cadd (1, 2);;
@@ -193,7 +192,7 @@ let rec rev l =
     [] -> []
   | x :: xs -> rev xs @ [x]
 ;;
-rev [1;2;3];;
+rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
 (* Unwind this: the recursive calls to compute the above are: *)
 
@@ -201,11 +200,12 @@ rev [1;2;3];;
 (rev[3] @ [2]) @ [1];;
 (([]@[3]) @ [2]) @ [1];;
 
-(* Theorem: rev reverses any list.*)
-(* Proof: by induction on the length of the list, say l.*)
-(* Case  l = []: obviously [] is correct *)
-(* Case l is x :: xs for some x and xs:  we assume by induction that "rev xs" reverses the tail;*)
-(* then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED. *)
+(* Theorem: rev reverses any list.
+ * Proof: by induction on the length of the list, say l.
+ * Case  l = []: obviously [] is correct
+ * Case l is x :: xs for some x and xs:  we assume by induction that "rev xs" reverses the tail;
+ * then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED. 
+ *)
 
 
 (* ====================================================================== *)
