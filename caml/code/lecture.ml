@@ -181,6 +181,8 @@ cadd (1, 2);;
 let add x y = x + y;;
 add 1 2;; (* notice different calling convention -- two ways to write the same function in Caml *)
 
+let add = (+);; (* aside: this is how you can give any built-in infix operator a name as a function *)
+
 (* using patterns in recursive functions: a function to reverse a list 
    
    We also want to study this function to show how its correctness is
