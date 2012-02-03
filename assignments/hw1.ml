@@ -281,7 +281,7 @@ let rec multiply_polynomials poly_1 poly_2 = () ;; (* ANSWER *)
 (*
 # multiply_polynomials [(3, 4) ; (-2, 2) ; (3, 0)] [(2, 3) ; (1, 2) ; (-2, 0)] ;;
 - : (int * int) list = [(6, 7); (-4, 5); (6, 3); (-6, 0); (3, 6); (-8, 4); (7, 2)]
-# multiply_polynomials [(1, 2) ; (-2, 1) ; (1, 0)] [(1, 0); (-1, 0)] ;;
+# multiply_polynomials [(1, 2) ; (-2, 1) ; (1, 0)] [(1, 1); (-1, 0)] ;;
 - : (int * int) list = [(1, 3); (-3, 2); (3, 1); (-1, 0)]
 *)        
 
