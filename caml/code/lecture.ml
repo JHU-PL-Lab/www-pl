@@ -226,7 +226,7 @@ let x = 5 in
       (f 1) + x (* x is 5 in the function (!), it was the value of x when f was defined *)
 ;;
 
-(* top loop is conceptually an open-ended series of lets which never close *)
+(* top loop is conceptually an open-ended series of lets which never close: compare following with previous *)
 let x = 5;;
 let f y = x + y;;
 let x = 7;; (* as in previous example, this is a nested definition, not assignment! *)
@@ -234,6 +234,7 @@ f 1 + x;;
 
 
 (*
+ * Function definitions are similar, you can't mutate an existing definition.
  * HINT: When interactively editing a group of functions that call each other, 
  *       re-submit ALL the functions to the top loop when you change any ONE 
  *       of them.  Otherwise you can have some functions using the old version.
@@ -264,7 +265,9 @@ and
 
 take [1;2;3;4;5;6;7;8;9;10];;
 skip [1;2;3;4;5;6;7;8;9;10];;
-			
+
+(* here is a version that hides the skip function -- make both internal and export one *)
+						
 let realtake ll =
 	let rec 
      ltake l = match l with 
@@ -312,7 +315,7 @@ let rec appendgobblelist l =
 appendgobblelist ["have";"a";"good";"day"];;
 
 (* Notice there is a *pattern* here of "do an operation on each list element"
- * So lets pull out the "times ten" / "add gobble" as a parameter!
+ * So lets pull out the "times ten" / "add gobble" as a function parameter!
  * this is in fact a classic example, the map function *)
 
 let rec map f l =
@@ -325,7 +328,7 @@ map (function s -> s^"gobble") ["have";"a";"good";"day"];;
 
 (* above also shows why these "anonymous" functions are useful. *)
 
-(* another way to do the same thing - give function a name first: *)
+(* an equivalent way to do the same thing - give function a name first: *)
 let f x = x * 10;;
 map f [1;2;3;34;56;90];;
 
@@ -342,6 +345,9 @@ let times2 x = x*2;;
 let times2plus3 = compose (plus3) (times2);;
 times2plus3 10;;
 (compose (function x -> x+3) (function x -> x*2)) 10;; (* equivalent way *)
+let composerest = compose (function x -> x+3);;
+composerest (function x -> x*2) 10;;
+
 
 (*
   Parametric and object polymorphism
@@ -353,11 +359,11 @@ id 3;;
 (* SAME id applied to bool returns a bool *)
 id true;;
 (* conclusion: the type of id is PARAMETRIC, i.e. the return type is 
-   parameterized by the type of the argument. 
+   parameterized by the type of the argument.  These are called Generic in Java.
 	
 	 We already saw many parametric functions, e.g. map above: *)
 
-map (function x -> x *. 10.0) [1.0;2.2;2.3;32.223];;
+map (function x -> (float x) *. 10.0) [1;2;2;32];;
 
 (*
      ML has parametric polymorphism -- the 'a -> 'a type of id is parametric:
@@ -376,8 +382,8 @@ map (function x -> x *. 10.0) [1.0;2.2;2.3;32.223];;
  *)
 let id = function x -> x;;
 
-match id(true) with 
-    true -> id(3) 
+match id (true) with 
+    true -> id (3) 
   | false -> id(4);;
 
 (* The below will error - mono_id is not defined by let so it can't be polymorphic *)
@@ -472,7 +478,7 @@ let rec toUpperCase l =
 toUpperCase ['a'; 'q'; 'B'; 'Z'; ';'; '!'];;
                              (* should return ['A'; 'Q'; 'B'; 'Z'; ';'; '!'] *)
 
-(* could have used map instead: *)
+(* could have used map instead (note map is built in as List.map): *)
 
 let toUpperCase l = List.map toUpperChar l ;;
 
@@ -585,11 +591,11 @@ let addC = function x -> (function y -> x + y);;
 let addC x = function y -> x + y;;
 addC 1 2;; (* same result as above *)
 
-(* Related  non-curry'ing version: use a pair of arguments instead *)
+(* Also recall the related  non-curry'ing version: use a pair of arguments instead *)
 let addNC p =
 	match p with (x,y) -> x+y;;
 
-(* abbreviation *)
+(* recall this equivalent abbreviation *)
 let addNC (x, y) = x + y;;
 
 
@@ -620,6 +626,8 @@ let noop1 = curry (uncurry addC);; (* a no-op *)
 let noop2 = uncurry (curry addNC);; (* another no-op - no-ops together show isomorphism *)
 
 (* End Currying topic *)
+
+(* Misc minor stuff *)
 
 (* print_x for atomic types 'x', again no overloading in meaning here *)
 print_string ("hi\n");;
