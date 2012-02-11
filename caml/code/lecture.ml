@@ -707,17 +707,23 @@ type complex = Zero | Nonzero of float * float;;
  * 
  * e.g. binary trees:
 *)
-type inttree = Nothing | ANode of int * inttree * inttree;; 
+type itree = Nothing | ANode of int * itree * itree;; 
 
-(*        Polymorphic version of above which allows integers at leaves only: *)
+(* Polymorphic version of above which allows any type at leaves: *)
 
 type 'a btree = Empty | Node of 'a * 'a btree * 'a btree;;
 
-(* - Definition above reads as follows: a binary tree containing
- *          values of type 'a (an arbitrary type) is either empty, or is a node
- *          containing one value of type 'a and two subtrees containing also
- *          values of type 'a, that is, two 'a btree's.
- *)
+(* example trees *)
+
+let whack = Node("whack!",Empty, Empty);;
+let bt = Node("fiddly ",
+	        Node("backer ",
+		       Empty,
+		       Node("crack ",
+			      Empty,
+			      Empty)),
+	        whack);;
+
 
 (*
  * Operations on binary trees are naturally expressed as recursive
@@ -731,14 +737,6 @@ let rec walk_inorder bintree =
    | Node(y, left, right) ->
        walk_inorder left; print_string y; walk_inorder right
 ;;
-
-let bt = Node("fiddly ",
-	        Node("backer ",
-		       Empty,
-		       Node("crack ",
-			      Empty,
-			      Empty)),
-	        Node("whack!",Empty, Empty));;
 
 walk_inorder bt;;
 
@@ -768,7 +766,7 @@ let rec insert x bintree =
 
 let goobt = insert "goober " bt;;
 bt;; (* remember that OCaml data structures are generally immutable! *)
-let goobt = insert "slaksd " goobt;;
+let goobt = insert "slacker " goobt;;
 
 
 (* END variants *)
@@ -794,6 +792,12 @@ q.denom;;
 let rattoint r =
 	match r with 
    {num = n; denom = d} -> n / d;;
+
+let rattoint {num = n; denom = d}  =
+	 n / d;;
+
+let rattoint r  =
+	 r.num / r.denom;;
 
 rattoint q;;
 
@@ -846,6 +850,10 @@ x.contents <- 6;;  (* same effect as previous line: update contents field *)
 !x + 1;;
 x.contents + 1;; (* same effect as previous line *)
 
+(* mutable tree *)
+
+type mitree = Nothing | ANode of int * mitree ref * mitree ref
+;;
 
 (*
  * - Only ref typed variables or mutable records may be assigned to
@@ -896,7 +904,7 @@ done;;
  *   - in general there is no such thing as "uninitialized" in Caml.
  *)
 
-let arrhi = Array.make 10 "hi";; (* size and initial value are the params here *)
+let arrhi = Array.make 100 "";; (* size and initial value are the params here *)
 let arr = [| 4; 3; 2 |];; (* another way to make an array *)
 arr.(0);; (* access (oddly enough) *)
 arr.(0) <- 55;; (* update *)
@@ -905,7 +913,7 @@ arr;;
 
 (* Exceptions *)
 
-exception Foo;;
+exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
 
 let f _ = raise Foo;; (* note no need to declare "raises Foo" here as in Java; no inference of it either *)
 f ();;
@@ -962,6 +970,7 @@ Some principles of modules:
        Java: mostly but not completely supported (need all .class files on CLASSPATH)
        C/C++: yes (.h file is all that is needed for imports)
        Caml: yes in ocamlc mode (.mli interface file of modules used is all that is needed)
+
 
  The C/C++ module system
    - Informal use of files and filesystem directories as modules 
