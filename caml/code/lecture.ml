@@ -953,9 +953,6 @@ g ();;
    - a module is a larger level of program abstraction: functional units or library. 
    - e.g. Java package, C/C++ directory w/ header files
   
-Why?  Its like why you need a bookshelf if you have 50 books: 
-   if you  have too much stuff, you have to organize it for easier use.
-
 Some principles of modules:
 
   -  Modules have names they can be referred to by.
@@ -963,7 +960,7 @@ Some principles of modules:
   -  The module has an interface in which it 
       * imports some things (e.g. other modules) from the outside and  
       * exports some things it has declared for outsiders to use; hides other things
-  -  Module names may also be around at run-time (depends on the language)
+  -  Module names may also be around at run-time (or not; depends on the language)
       this helps minimize name clashes across modules: com.bozo.Wank is different from com.fred.Wank
 
   -  Modules may support separate compilation: not all code is needed to compile
@@ -995,14 +992,13 @@ Some principles of modules:
 *)
 
 (* 
-   Caml Structures 
+   Caml module definitions are called "structures" (struct keyword) 
     - collections of related definitions (functions, types, otheer structures, 
                                           exceptions, values, ...) given a name
-    - types of structures are called signatures
-          - interfaces for structures
-          - lists names and types of structure components
-                - what outsiders can see (also, can hide things)
-	  - structures are more than records because types and exceptions can also be in them
+    - The types of structs are called signatures (the sig keyword)
+          - they are the interfaces for structures, and are something like Java interfaces
+          - not all the items in the structure need to be in the signature: implicitly hides the missing things
+					- structure contents can be regular values, functions, **types**, exceptions
  *)
 
 module FSet = 
@@ -1036,10 +1032,12 @@ module FSet =
   end
 ;;
 
+(* observe the type printed in the top loop when the above is entered: a module *signature* is inferred *)
 
 let mySet = FSet.add 5 [];;
+let myNextSet = FSet.add 22 mySet;;
 FSet.contains 5 mySet;;
-FSet.remove 5 [4; 5];;
+FSet.remove 5 myNextSet;;
 
 open FSet;; (* puts an implicit "FSet." in front of all things in FSet *)
 
@@ -1047,7 +1045,7 @@ add "a" ["b"];;
 contains "a" ["a"; "b"];;
 
 
-module type STUPIDSET = (* define a module type (signature) with no remove *)
+module type STUPIDSET = (* define a module type (signature) with no remove, probably a stupid idea *)
   sig
     exception NotFound
     type 'a set = 'a list
@@ -1058,52 +1056,12 @@ module type STUPIDSET = (* define a module type (signature) with no remove *)
 ;;
 
 
-module StupidSet = (FSet: STUPIDSET);;
+module StupidSet = (FSet: STUPIDSET);; (* put a signature on a structure -- force it to have that sig *)
 
 (* StupidSet.remove;; *) (* Error: remove not in signature! *)
 
-(* Hiding types is also possible and allows "black box" data structures 
+(* Now lets do some non-stupid hiding.  Hiding types is possible and allows "black box" data structures 
    - good software engineering practice to enforce hiding of internals *)
-
-module FSet2 : ( sig
-    exception NotFound
-    type 'a set = 'a list
-    val emptyset : 'a set
-    val add : 'a -> 'a set -> 'a set
-    val remove : 'a -> 'a set -> 'a set
-    val contains : 'a -> 'a set -> bool
-  end)  = 
-  struct
-    
-    exception NotFound
-
-    type 'a set = 'a list
-
-    let emptyset : 'a set = []
-
-    let rec add x (s: 'a set) = ((x :: s) : ('a set))
-			    
-    let rec remove x (s: 'a set) = 
-      match s with
-	[] -> raise NotFound
-      | hd :: tl -> 
-	  if hd = x then
-	    tl
-	  else
-	    hd :: remove x tl
-			    
-    let rec contains x (s: 'a set) = 
-      match s with
-	[] -> false
-      | hd :: tl -> 
-	  if x = hd then
-	    true
-	  else
-	    contains x tl
-  end
-;;
-
-
 
 module type  HIDDENSET= 
   sig
@@ -1115,7 +1073,7 @@ module type  HIDDENSET=
   end
 ;;
 
-module HiddenSet = (FSet2: HIDDENSET);;
+module HiddenSet = (FSet: HIDDENSET);;
 
 (* HiddenSet.add 3 [];; *) (* Error: [] not a set since we HID the fact that sets are really lists *)
 
@@ -1124,13 +1082,13 @@ HiddenSet.contains 3 hs;;
 
 
 (* Separate Compilation with Caml
- 
-    Program Caml in a cc / javac like way - no top-loop
+
+    We can program Caml in a cc / javac like way - no top-loop
     Each module is in a separate file
     Syntax of module **body** is identical
     No header "module XX = struct .. end" 
-    Name of module is capped name of file: set.ml defines module FSet 
-    File set.mli holds the signature of module FSet
+    Name of module is capped name of file: fSet.ml defines module FSet 
+    File fSet.mli holds the signature of module FSet
        if there is no file set.mli thats OK; you have nothing hidden
     main program that starts running is body of main.ml structure
     Use ocamlc to compile to an executable (or ocamlopt for native code)
