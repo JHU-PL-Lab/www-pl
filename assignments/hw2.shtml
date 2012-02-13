@@ -1,4 +1,4 @@
-<!--#include virtual="/~scott/pl/header.html" -->
+<!--#include virtual="/pl/header.html" -->
 
 </div>
 
@@ -20,4 +20,4 @@ Same as HW1.
 </div>
 
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->
