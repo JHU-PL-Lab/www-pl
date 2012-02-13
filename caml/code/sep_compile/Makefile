@@ -7,7 +7,7 @@ OPT= no
 #Generate type information?
 ANNOT= yes
 #Paths to include with each command: 
-INCLUDEDPATHS= -I /Users/scott/Documents/eclipse-caml/sep_compile/. -I /usr/local/lib/ocaml 
+INCLUDEDPATHS=
 #Flags for the project: 
 PROJECTFLAGS= -g 
 

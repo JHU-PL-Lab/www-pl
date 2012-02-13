@@ -1006,7 +1006,7 @@ module FSet =
     
     exception NotFound
 
-    type 'a set = 'a list
+    type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
 
     let emptyset : 'a set = []
 
@@ -1032,7 +1032,7 @@ module FSet =
   end
 ;;
 
-(* observe the type printed in the top loop when the above is entered: a module *signature* is inferred *)
+(* observe what is printed in the top loop when the above is entered: a module *signature* is inferred *)
 
 let mySet = FSet.add 5 [];;
 let myNextSet = FSet.add 22 mySet;;
