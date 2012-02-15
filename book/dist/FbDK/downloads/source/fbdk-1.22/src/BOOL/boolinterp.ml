@@ -2,30 +2,41 @@ open Boolast;;
 
 exception Bug;;
 
-let rec eval exp = 
-  match exp with 
+let rec eval ex = 
+  match ex with 
     True -> True
   | False -> False
 
-  | Not(exp0) -> (match eval exp0 with
+  | Not(e) -> 
+		(let v = eval e in 
+	  match v with
       True -> False
     | False -> True
     | _ -> raise Bug)
 
-  | And(exp0,exp1) -> (match (eval exp0, eval exp1) with
+  | And(e1,e2) -> 
+		(let (v1,v2) = (eval e1, eval e2) in 
+			match (v1,v2) with
       (True,True) -> True
-    | (_,False) -> False
-    | (False,_) -> False
+    | (True,False) -> False
+    | (False,True) -> False
+    | (False,False) -> False
     | _ -> raise Bug)
  
-  | Or(exp0,exp1) -> (match (eval exp0, eval exp1) with
-      (False,False) -> False
-    | (_,True) -> True
-    | (True,_) -> True
+  | Or(e1,e2) -> 
+		(let (v1,v2) = (eval e1, eval e2) in 
+			match (v1,v2) with
+      (True,True) -> True
+    | (True,False) -> True
+    | (False,True) -> True
+    | (False,False) -> False
     | _ -> raise Bug)
-
-  | Implies(exp0,exp1) -> (match (eval exp0, eval exp1) with
-      (False,_) -> True
-    | (True,True) -> True
+		
+  | Implies(e1,e2) -> 
+		(let (v1,v2) = (eval e1, eval e2) in 
+			match (v1,v2) with
+      (True,True) -> True
     | (True,False) -> False
+    | (False,True) -> True
+    | (False,False) -> True
     | _ -> raise Bug)
