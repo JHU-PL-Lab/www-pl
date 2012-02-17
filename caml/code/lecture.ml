@@ -1100,8 +1100,8 @@ Here is how the ocamlc compiler makes object files
       .mli --ocamlc--> .cmi
 *)
 
-module FSet3: sig (* contents of file set.mli *) end
-          = struct (* contents of file set.ml *) end;;
+module FSet3: sig (* contents of file fSet3.mli *) end
+          = struct (* contents of file fSet3.ml *) end;;
 
 module Main: sig (* contents of main.mli *) end
            = struct (* contents of main.ml *) end;;
@@ -1117,18 +1117,22 @@ module Main: sig (* contents of main.mli *) end
 			   - think of it as the ability to "plug in" a code module
 			 In object-oriented languages, object polymorphism gives you much of this ability
 			   - the "Animal" variable can have a Dog, Cat, Fish, etc plugged in to it
+		   But, Caml has no object polymorphism and something is needed to support this
        General functors are found only in a few languages
 *)
 
 
 type comparison = Less | Equal | Greater
   
+	(* here is a kind of struct that we can take as a parameter; in Java we would just use an interface Comparable *)
+	
 module type ORDERED_TYPE =
   sig
     type t
     val compare: t -> t -> comparison
   end;;
 
+(* Here is a functor version of a set, you feed in a struct with the set element ordering defined on it *)
 
 module FSetFunctor =
   functor (Elt: ORDERED_TYPE) ->
@@ -1157,6 +1161,7 @@ module FSetFunctor =
           | Greater -> contains x tl
   end;;
 
+(* Here is a concrete ordering we can feed in, one over ints *)
 
 module OrderedInt = 
   struct
@@ -1171,11 +1176,14 @@ module OrderedInt =
 	  Greater
   end;;
 
-module OrderedIntSet = FSetFunctor(OrderedInt);; (* instantiates functor to give a structure *)
+(* Here is how we feed it in, instantiating the functor to give a structure *)
+
+module OrderedIntSet = FSetFunctor(OrderedInt);; (* note how this looks like a function application *)
 
 let myOrderedIntSet = OrderedIntSet.add 5 OrderedIntSet.empty;;
 OrderedIntSet.contains 3 myOrderedIntSet;;
 
+(* We can do the same thing for a string comparison *)
 
 module OrderedString =
   struct
@@ -1196,9 +1204,9 @@ module OrderedStringSet = FSetFunctor(OrderedString);; (* a DIFFERENT instantiat
 let myOrderedStringSet = OrderedStringSet.add "abc" OrderedStringSet.empty;;
 
 
-(* type abstraction in functors via the functor signature *)
+(* Functors also have signatures; there can also be type abstraction in a functor signature *)
 
-module type SETFUNCTOR = (* below is a "type" of a functor, a SIGNATURE just like structures have *)
+module type SETFUNCTOR = (* below is the syntax for a signature of a functor *)
     functor (Elt: ORDERED_TYPE) ->
   sig
     type element = Elt.t      (* concrete *)
