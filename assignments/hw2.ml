@@ -17,6 +17,19 @@
 *)
 
 (* -------------------------------------------------------------------------------------------------- *)
+(* HEADER: PLEASE FILL THIS IN                                                                        *)
+(* -------------------------------------------------------------------------------------------------- *)
+
+(*
+
+Name                  :
+List of Collaborators :
+
+Please make a good faith effort at listing people you discussed any problems with here, as per the
+course academic integrity policy.  TA/CA/Prof need not be listed.
+*)
+
+(* -------------------------------------------------------------------------------------------------- *)
 (* Section 1 : A Game of Types                                                                        *)
 (* -------------------------------------------------------------------------------------------------- *)
 
@@ -227,7 +240,10 @@ let get_filesystemobject root path = () ;; (* ANSWER *)
 # get_filesystemobject filesystem "Apps/Ode/Ode.exe" ;;
 - : filesystemobject = File ("Ode.exe", 1200)
 # get_filesystemobject filesystem "Apps/Notes" ;;
-- : filesystemobject = Directory ("Notes", [File ("Note.txt", 550)])
+- : filesystemobject =
+Directory ("Notes",
+ [File ("Note.txt", 550);
+  Directory ("600.446", [File ("Assignment-2.txt", 150)])])
 # get_filesystemobject filesystem "Apps/Notes/600.446/Assignment-2.txt" ;;
 - : filesystemobject = File ("Assignment-2.txt", 150)
 # get_filesystemobject filesystem "Config/Apache" ;;
