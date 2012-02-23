@@ -10,7 +10,20 @@
 *)
 
 (* -------------------------------------------------------------------------------------------------- *)
-(* Section 2 : Operational Semantics and Proofs                                                       *)
+(* HEADER: PLEASE FILL THIS IN                                                                        *)
+(* -------------------------------------------------------------------------------------------------- *)
+
+(*
+
+Name                  :
+List of Collaborators :
+
+Please make a good faith effort at listing people you discussed any problems with here, as per the
+course academic integrity policy. TA/CA/Prof need not be listed.
+*)
+
+(* -------------------------------------------------------------------------------------------------- *)
+(* Section 1 : Operational Semantics and Proofs                                                       *)
 (* -------------------------------------------------------------------------------------------------- *)
 
 (*
