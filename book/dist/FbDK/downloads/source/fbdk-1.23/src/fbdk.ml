@@ -23,6 +23,7 @@ module type LANGUAGE = sig
 
 	module Typechecker: sig
 		val typecheck: Ast.expr -> Ast.fbtype
+		val typecheck_default_enabled: bool
 	end
 
   module Pp: sig
