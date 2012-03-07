@@ -1,0 +1,128 @@
+600.426 - Programming Languages
+JHU Spring 2012
+Take Home Quiz - 1 (50 points)
+
+----------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------INSTRUCTIONS---------------------------------------------------
+
+This is a Take Home Quiz and as such operates on different rules from your regular assignments. These are
+assignments you are to work on yourself. You are encouraged to seek TA/Prof help in office hours if you
+are stuck. You are NOT allowed to get help from, discuss or collaborate with anyone on this assignment other
+than the Prof/TAs/CA.
+
+----------------------------------------------------------------------------------------------------------------
+
+1. Write the Fb functions to encode a Set of integers. You must provide the following
+   functions:
+
+   a. empty_set x        : Function that takes a (dummy) argument and returns an empty set. The argument x is ignored
+   b. contains_set set v : Function that takes a set and value as arguments and returns True if the set contains the
+                           value else returns False
+   c. add_set set v      : Function that takes a set and value and adds it to the set (returning the new set). i.e. After
+                           this, calling (contains_set set v) should return True.
+   d. remove_set set v   : Function that takes a set and value and removes it from the set (returning the new set). i.e. After
+                           this calling (contains_set set v) should return False. If the element is not in the set, the values
+                           in the set remain unchanged.
+
+   [Hint: There are (at least) two ways to solve this problem. One of them can be gleaned from staring at the encoding for
+    lists in the book; the other requires a more fundamentally functional approach. Either one is fine; the prior is simpler but
+    the latter is easier]
+
+   [Hint: Be sure to handle duplicates. It is possible that add_set is called for the same value multiple times]
+
+   [20 Points]
+
+let empty_set    = parse "<YOUR ANSWER>" ;;
+
+let contains_set = parse "<YOUR ANSWER>" ;;
+
+let add_set      = parse "<YOUR ANSWER>";;
+
+let remove_set   = parse "<YOUR ANSWER>";;
+
+
+
+(*
+
+Some sample test cases: Note that for these tests we are using
+OCaml to construct Fb asts and evaluate them. (After all Fb asts
+are just data and eval is a function in OCaml). Don't get confused.
+
+To execute this part you need to paste the contents of
+fbdktoploop.ml in to the ocaml top loop first.
+
+(* Helper function to add integers to a set *)
+let make_fb_set lst = List.fold_left (
+  fun set -> fun v -> eval (Appl(Appl(add_set, set), Int v))
+) (Appl(empty_set, Int 0)) lst
+;;
+
+(* Helper function to check inclusion in a set *)
+let check_fb_set_inclusion set lst = List.map (
+  fun v -> eval (Appl(Appl(contains_set, set), Int v)) = Bool(true)
+) lst
+;;
+
+(* Add all the numbers to the Fb set above. Attempts to add duplicates *)
+# let fb_set_1 = make_fb_set [3;1;4;3] ;;
+- : Fbast.expr = ...
+(* Check for inclusion. Add some elements not in the set to check *)
+# let check_list_1 = check_fb_set_inclusion fb_set_1 [3;1;4;8;5] ;;
+val check_list_1 : bool list = [true; true; true; false; false]
+(* Remove 3. Recheck inclusion *)
+# let fb_set_2 = eval (Appl(Appl(remove_set, fb_set_1), Int 3)) ;;
+# let check_list_2 = check_fb_set_inclusion fb_set_2 [3;1;4;8;5] ;;
+val check_list_2 : bool list = [false; true; true; false; false]
+
+*)
+
+
+2.Write the additional operational semantics rules for FbTree; i.e. Fb augmented
+  with binary trees. The additions to the concrete syntax of Fb are shown below
+  where v' and e' represent the value and expression non-terminals from Fb.
+
+  t = (::) | (: v,t,t :)
+  v = v' | t
+  e = e' | Node(e, e, e) | (TreeMatch e With (::) -> e | (: vl, l, r :) -> e)
+
+  In the above :
+   a. (::) represents an empty tree
+   b. (: v, l, r :) represents a tree that stores a value 'v' and has
+      'l' and 'r' as the left and right subtrees respectively
+   c. TreeMatch is a special match operation for trees. It will evaluate
+      one of two expressions based on tree pattern that matched.
+    
+
+
+  The following examples should help you understand the behavior of these syntactic constructs:
+
+  (: 4, (: 2,(::),(::) :), (: 5,(::),(::) :) :) represents the tree:
+    4
+  2   5
+
+  TreeMatch (: 4, (: 2, (::), (::) :), (::) :) With (::) -> 0 | (: vl1, l1, r1 :) -> (
+    TreeMatch l1 with (::) -> 0 | (: vl2, l2, r2 :) -> vl1 + vl2
+  )
+  returns 6
+
+  [20 Points]
+
+
+(* ANSWER *)
+
+3. For each of the following pairs of F♭ expressions, indicate whether or not the stated operational
+   equivalence holds. If it does not, show some context that evaluates differently dependent upon
+   which of the two expressions you use. (Remember: it only takes one of the infinitely many contexts
+   to make the two expressions operationally inequivalent)
+
+   [10 Points]
+
+a. (Function x -> x + 1) 2  =~ 4
+
+b. Function x -> y + 1  =~ Function y -> x + 1
+
+c. Function x -> x + 1 =~ Function y -> y + 1
+
+
+(* ANSWER *)
