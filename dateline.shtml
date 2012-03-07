@@ -196,7 +196,7 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Records</div>
+            <div align="left" class="body">&nbsp;Operational Equivalence</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -213,13 +213,13 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Operational Equivalence</div>
+            <div align="left" class="body">&nbsp;Records</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/thq1.shtml">Take-Home Quiz 1</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 3</div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
         </tr>
         <tr> 
@@ -233,10 +233,10 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="left" class="body">&nbsp;State; Exceptions</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="assignments/thq1./shtml">Take-Home Quiz 1</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body">Homework 3</div>
           </td>
         </tr>
 	

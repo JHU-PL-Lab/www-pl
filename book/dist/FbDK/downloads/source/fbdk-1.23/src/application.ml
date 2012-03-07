@@ -7,8 +7,10 @@ module Make(Lang: Fbdk.LANGUAGE) =
 struct
 	
 	let toplevel_loop typechecking_enabled show_types =
-		Printf.printf "\t%s version %s\n\n"
+		Printf.printf "\t%s version %s\t"
 			Lang.name Version.version;
+		Printf.printf "\t(typechecker %s)\n\n"
+			(if typechecking_enabled then "enabled" else "disabled");
 		flush stdout;
 		while true do
 			Printf.printf "# ";
@@ -49,12 +51,16 @@ struct
 		let filename = ref "" in
 		let toplevel = ref true in
 		let version = ref false in
-		let no_typechecking = ref false in
+		let no_typechecking =
+			ref (not Lang.Typechecker.typecheck_default_enabled) in
 		let no_type_display = ref false in
 		Arg.parse
 			[("--version",
 				Arg.Set(version),
 				"show version information");
+		  ("--typecheck",
+			  Arg.Clear(no_typechecking),
+				"enable typechecking");
 			("--no-typecheck",
 				Arg.Set(no_typechecking),
 				"disable typechecking");
