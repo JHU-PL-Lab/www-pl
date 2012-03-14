@@ -1,1 +1,0 @@
-let typecheck e = raise Fbdk.TypecheckerNotImplementedException;;
