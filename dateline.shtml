@@ -271,7 +271,7 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Take-Home Quiz 1</div>
+            <div align="center" class="body">Take-Home Quiz 1 (Fri 16th)</div>
           </td>
 
 		  <tr> 
@@ -331,11 +331,10 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="left" class="body">&nbsp;Types III: Subtyping</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a
-          href="assignments/hw5.shtml">Homework 5</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 4</div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
         </tr>
         <tr> 
@@ -350,10 +349,11 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
           </td>  
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a
+          href="assignments/hw5.shtml">Homework 5</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body">Homework 4</div>
           </td>
         </tr>
         <tr> 
@@ -384,10 +384,10 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="left" class="body">Concurrency II</div>
           </td>	<!-- added this to get weeks back in synch. -->
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/thq2.shtml">Take-Home Quiz 2</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 5</div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
         </tr>
         <tr> 
@@ -401,10 +401,10 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="left" class="body"><a href="lectures/fiftythou.shtml">The 50,000 foot view of PLs</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="assignments/thq2.shtml">Take-Home Quiz 2</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body">Homework 5</div>
           </td>
         </tr>
         <tr> 
