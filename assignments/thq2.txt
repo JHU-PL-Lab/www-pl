@@ -15,9 +15,9 @@ than the Prof/TAs/CA.
 
 1. Consider the following function subtyping rule:
 
-    τ1 <: τ3      τ2 <: τ4
+    t1 <: t3      t2 <: τ4
    ------------------------
-      τ1 -> τ2 <: τ3 -> τ4
+      t1 -> t2 <: t3 -> t4
 
    This rule is flawed.  Show some TFb expression and its type derivation such that the expression will
    typecheck but will get stuck when evaluated.
