@@ -19,15 +19,16 @@ than the Prof/TAs/CA.
    ------------------------
       t1 -> t2 <: t3 -> t4
 
-   This rule is flawed.  Show some TFb expression and its type derivation such that the expression will
-   typecheck but will get stuck when evaluated.
+   This rule is flawed. But suppose we used this rule in place of the current subtyping rule in the book.
+   Show some STFb expression and its type derivation such that the expression will typecheck but will get
+   stuck when evaluated.
 
    [5 Points]
 
 
 2. Write three different subtypes of the type {x:Int} -> {y:{x:Int}->Bool}.
 
-   [5 Points] 
+   [5 Points]
 
 
 3. Consider the following EFb code:
