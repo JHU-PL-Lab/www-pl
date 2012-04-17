@@ -15,7 +15,7 @@ than the Prof/TAs/CA.
 
 1. Consider the following function subtyping rule:
 
-    t1 <: t3      t2 <: τ4
+    t1 <: t3      t2 <: t4
    ------------------------
       t1 -> t2 <: t3 -> t4
 
