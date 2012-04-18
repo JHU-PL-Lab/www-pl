@@ -1,0 +1,54 @@
+600.426 - Programming Languages
+JHU Spring 2012
+Take Home Quiz - 2 (50 points)
+
+----------------------------------------------------------------------------------------------------------------
+
+-------------------------------------------------INSTRUCTIONS---------------------------------------------------
+
+This is a Take Home Quiz and as such operates on different rules from your regular assignments. These are
+assignments you are to work on yourself. You are encouraged to seek TA/Prof help in office hours if you
+are stuck. You are NOT allowed to get help from, discuss or collaborate with anyone on this assignment other
+than the Prof/TAs/CA.
+
+----------------------------------------------------------------------------------------------------------------
+
+1. Consider the following function subtyping rule:
+
+    t1 <: t3      t2 <: t4
+   ------------------------
+      t1 -> t2 <: t3 -> t4
+
+   This rule is flawed. But suppose we used this rule in place of the current subtyping rule in the book.
+   Show some STFb expression and its type derivation such that the expression will typecheck but will get
+   stuck when evaluated.
+
+   [5 Points]
+
+
+2. Write three different subtypes of the type {x:Int} -> {y:{x:Int}->Bool}.
+
+   [5 Points]
+
+
+3. Consider the following EFb code:
+   (Function f -> Function v -> f (f v)) (Function x -> If x = 0 Then 1 Else 0)
+
+   Write down the EFb type derivation for it. Then compute the closure of the constraint set like we did in
+   the class/book to show that it has type int -> int
+
+   [15 Points]
+
+
+4. We developed an equational type inference system for Fb (EFb) in class. For this exercise we will
+   extend this and create the following new languages:
+
+   a. EFbS - Syntax same as FbS.
+   b. EFbR - Syntax same as FbR
+
+   For a and b, write down the new type inference rules (beyond those of EFb) that are needed.
+
+   [25 Points]
+
+
+   
