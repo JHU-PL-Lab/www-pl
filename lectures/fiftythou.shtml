@@ -17,7 +17,7 @@ There are many important PLs, but a few are arguably more important than others.
   <li>Modula
   <li>C
   <li>C++
-  <li>ML (and the related Haskell)
+  <li>ML / Haskell
   <li>Java
   <li>Modern scripting languages (Python, Javascript, and Ruby)
 </ul>
@@ -33,12 +33,14 @@ Here is an historical list of key features that we will discuss.  The key langua
   <li>For loops and (non-reentrant or non-recursive) subroutines (FORTRAN)
   <li>Structured data a la C structs and dynamic allocation thereof (Algol)
   <li>Structured control a la C while and if (Algol)
+  <li>Recursive functions (Algol)
   <li>Objects, classes, messages, and inheritance (Simula/Smalltalk)
-  <li>Recursive and nested function defns (Pascal)
+  <li>Nested function defns (Pascal)
   <li>Modules that are not just files (Modula)
   <li>Higher-order functions (Lisp)
   <li>Dynamic typing (Lisp)
   <li>Implicit dynamic memory allocation and de-allocation (Lisp)
+  <li>Algebraic data types (variants 
   <li>Type generics (parametric polymorphism) (ML)
   <li>Type inference (ML)
   <li>Nonlocal exception handling (ML perhaps)
