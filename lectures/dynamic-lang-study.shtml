@@ -6,32 +6,49 @@
 
 <!-- Need to redo these notes to focus less on obscure features not used and more on actual used features.  Also lambda in Pyton is not allowed to work on non-expressions -->
 <h3>Dynamic Typing</h3>
-A pure dynamically typed language
+A <em>dynamically typed language</em> is a language which 
 <ul>
   <li> Has no typechecker as part of the compiler which rejects
       programs based on their types
   <li> Detects type faults at runtime, e.g. adding a number and
-      a function, etc, raising an exception.
-  <li>Tends to run slower  due to the need for run-time overhead; with
-      major compiler development can be made to run somewhat fast.
-  <li>These  languages tend to be better for small- and perhaps
-      medium-scale applications, and tend to be worse for large-scale
-      applications.
-      <ul>
-	<li>Can be more freewheeling: incrementally add code, no need
-	    to mess with types, etc.
-	<li>Freewheeling style bites you for larger apps which don't
-	    fit in your mental cache anymore
-	<li>Speed penalty limits applicability
-      </ul>
-  <li>They sometimes run in an environment where the codebase is
-      itself a mutable data structure
+      a function, etc, raising an exception in such cases.
 </ul>
 
+Upsides
+      <ul>
+	<li>Can be more freewheeling: incrementally add code to current runtime, extend objects, etc.
+	<li>Even better than type inference in terms of overhead of dealing with writing out type information.
+      </ul>
+
+
+
+Downsides
+  <ul>
+  <li>Programs run slower due to the run-time overhead of dynamic checks and uncertain layouts.
+  <li>Type errors are caught much later, making debugging much more challenging in some cases.
+  <li>Freewheeling style bites you for larger apps which don't
+	    fit in your mental cache anymore
+</ul>
+
+Overall verdict
+      <ul>
+	  <li>Dynamically-typed languages tend to be better for small- and perhaps
+      medium-scale applications where speed is not critical, and tend to be worse for large-scale
+      applications and speed-critical applications.
+      </ul>
+      
+Common properties
+<ul>
+  <li>They often run in an environment with a top-loop and where the codebase is
+      itself a mutable data structure -- can turn a string into new code and run it.
+  <li>Dynamically typed languages are often at the forefront of language features: its easy to add new features to them so they have led much of the evolution of PLs (historical examples: Lisp, Smalltalk).
+  <li>The modern ones have good foreign function interfaces to C(++) and use C libraries when speed is needed.
+</ul>
+
+<h3>The Different Schools of Dynamically-typed Languages</h3>
 The non-OO school
 <ul>
-  <li>Lisp - the original dynamically-typed language
-  <li>Scheme - (add1 Lisp)
+  <li>Lisp, the original dynamically-typed language, and the related Scheme which is "<code>(add1 Lisp)</code>"
   <li><a
       href="http://en.wikipedia.org/wiki/Scripting_programming_language">Scripting
       languages</a>, e.g. the  UNIX shells (sh, csh), awk, tcl, etc. 
@@ -43,7 +60,7 @@ The "classic" dynamic OO languages
   <li>Smalltalk
       aka squeak
   <li>CLOS, the Common Lisp Object System
-  <li>Dylan - based on CLOS
+  <li>Dylan - based on CLOS, now in the dustbin of history
 </ul>
 
 
@@ -53,6 +70,7 @@ The "modern" school
   <li><a href="http://docs.python.org/tut/">Python</a>
   <li><a
       href="http://www.ruby-doc.org/docs/ProgrammingRuby/">Ruby</a>
+  <li>Javascript
 </ul>
 <h3>Dynamically typed languages and our <strong>Fb</strong>
 series</h3>
@@ -88,15 +106,13 @@ We will now look at some crosscutting aspects of these languages.
       href="http://en.wikipedia.org/wiki/Smalltalk#Code_blocks">code
       blocks</a>
   <li>Ruby: blocks which are similar to Smalltalk's.
-  <li>Python: <a href="http://docs.python.org/tutorial/controlflow.html#lambda-forms">lambda-forms</a>
+  <li>Python: <a href="http://docs.python.org/tutorial/controlflow.html#lambda-forms">lambda-forms</a> (but`, Python's lambdas don't deal with nonlocal variables well)
 </ul>
 
-<h3>"Everything is an object"</h3>
-There are various degrees to what this means.  
-<ul>
-  <li>Smalltalk is pretty extreme.  
+<h3>Flexibility of the notion of object</h3>
+<h4>Smalltalk</h4>
       <ul>
-	<li>Even <a href="http://en.wikipedia.org/wiki/Smalltalk#Control_structures">if-then-else</a> and <code>+</code> are expressed via messaging syntax (but, actual implementations are more efficient)
+	<li>Everything is an object in Smalltalk: Even <a href="http://en.wikipedia.org/wiki/Smalltalk#Control_structures">if-then-else</a> and <code>+</code> are expressed via messaging syntax (but, actual implementations are more efficient)
 	<li>Global variables is nothing but a systemwide dictionary
 	    (hashset).
 	    <pre>     Smalltalk at: #f put: (Foo new) </pre>
@@ -106,67 +122,57 @@ There are various degrees to what this means.
 	    dictionary -- <code>#Foo</code> in the above case is in
 	    the global dictionary, <code>Smalltalk</code>.
 	<li>Classes are fully objects - they can be passed around as data
+	<li>Methods are not first-class in Smalltalk however, they cannot be pulled out of their object.
       </ul>  
-  <li>Ruby has most of this:
+
+<h4>Ruby</h4>
       <ul>
 	<li>Classes are objects in Ruby. For example the
 	    <code>inherited</code> method 
 	    of the class is run when a new subclass is <em>defined</em>.
 	<li><code>NilClass</code> is also a class, as in Smalltalk (where it is <code>Nil</code>) 
 	<li>There is also a global dictionary in Ruby that contains the defined classes, <code>Objects.constants</code>
+	<li>Methods are first-class in Ruby: <a href="http://ruby-doc.org/docs/ProgrammingRuby/html/ref_c_method.html">Example</a>.
+	<li>Can add methods to existing objects - <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ref_c_object.html#Object.extend">documentation</a>
       </ul>
-  <li>Python: classes are also objects.
-</ul>
-
-<h3>Public/private/protected</h3>
-<ul>
-  <li>Smalltalk: fields private, methods  public.  Put things in a
-      "private" protocol (category) if they are local
-  <li>Python: everything public (but use the C convention of starting private things with a "_")
-  <li>Ruby: public/private/protected
-</ul>
-<h3>First-class methods</h3>
-This means methods are objects so can pull out a method and stash
-      it in a variable, then call it later.  Our encoding of objects
-in <strong>FbOB</strong> allows something like
-this in how methods are functions so you can extract the method and
-then stash it somewhere.
-<ul>
-  <li>Smalltalk: not directly.
-  <li>Python: yes. <a
+<h4>Python</h4>
+      <ul>
+	<li>Python classes are also objects.
+	<li>Methods are first-class:  <a
       href="http://docs.python.org/tutorial/classes.html#method-objects">Example</a>.
-      Notice how they are treating objects very similarly to how our
-      <strong>FbOB</strong> enoding works.
-  <li>Ruby: yes. <a href="http://ruby-doc.org/docs/ProgrammingRuby/html/ref_c_method.html">Example</a>.
-</ul>
-
+	<li>Python objects are similar to our <strong>FbSR</strong> objects: <code>self</code> is an explicit parameter, classes are themselves just records, methods are just self-taking funtions in these records, etc.
+	<li>In some ways they are even more flexible: their "records" are completely dynamic even for extending -- <a href="http://docs.python.org/tutorial/classes.html#instance-objects">example</a>.  <strong>FbSR</strong> records cannot be extended (we did it that way so we could type them easily).
+      </ul>
 
 <h3>Reflection</h3>
-Given some object at runtime, can you poke around to find its class, methods,
-etc? (another term for this is it has a <em>MOP</em> - a Meta-Object Protocol)  This stuff is  very easy to
-do in a dynamically-typed language because the program data structure
+      <ul>
+	<li>Given some object at runtime, can you poke around to find its class, methods,
+etc? 
+	<li>another term for this is it has a <em>MOP</em> - a Meta-Object Protocol
+	<li>  This stuff is  very easy to do in a dynamically-typed language because the program data structure
 is  around explicitly at runtime.
-<ul>
-  <li>Smalltalk - yes.  
+	<li>Another common feature is the ability to <code>eval</code> -- to invoke the compiler/interpreter directly so you can turn a string of Smallktalk/Python/Ruby source into a running program.
+      </ul>
+
+Smalltalk
       <ul>
 	<li>Can easily turn a string into a method name to
       invoke.  
 	<li>Objects can also <code>become</code> a completely new behavior.
       </ul>
-  <li>Ruby - yes.
+Ruby
       <ul>
 	<li> Can turn string into method  to invoke -  <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ospace.html#S3">documentation</a>
-	<li>Can add methods to existing objects - <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ref_c_object.html#Object.extend">documentation</a>
 	<li>Can take  an object an specialize  it with its  own
 	    singleton class, adding new  methods; the objects old
 	    class becomes the superclass of this new class.  <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ospace.html#UB">example</a>
       </ul>
-  <li>Python - yes.
+Python
       <ul>
 	<li>Can change the class of an object at runtime.
 	    Related to <code>become</code> of Smalltalk
       </ul>
-</ul>
+
 Ruby is much cleaner here,  it has clean notions of adding methods and
 Smalltalk and Python can blow up because methods will disappear, and
 field references are wacky.
@@ -189,8 +195,8 @@ field references are wacky.
 <ul>
   <li>Smalltalk - can do it yourself manually since operators  are all only
       messages (but ugly); no regular expressions
-  <li>Python: built in
-  <li>Ruby: built  in
+  <li>Python: yes
+  <li>Ruby: yes
 </ul>
 
 </div>

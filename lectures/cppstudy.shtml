@@ -12,10 +12,10 @@ structure to the programmer:
   <li>can take the addess-of (&amp;) one of these variables to conjure a pointer
       to it;
   <li>arrays can access data out of their bounds;
-  <li>dynamic allocation via <code>malloc</code> allocates space on a heap and returns a pointer to it; it must be manually <code>free</code>'d.
+  <li>dynamic allocation via <code>new</code> allocates space on a heap and returns a pointer to it; it must be manually <code>delete</code>'d.
   <li>pointers that have what they point to may have been deallocated
       and reused by someone else by mistake
-  <li>deallocation can occur both by explicit <code>free</code> of heap data and by implicit deallocation of stack data upon return from a function call (even though there still may be a pointer to the datum)
+  <li>deallocation can occur both by explicit <code>delete</code> of heap data and by implicit deallocation of stack data upon return from a function call (even though there still may be a pointer to the datum)
 </ul>
 Pluses and minuses of explicit memory
 <ul>
@@ -23,7 +23,7 @@ Pluses and minuses of explicit memory
   <li>Most more recent languages (Java, Ruby, Python, OCaml, etc) use an
   <em>implicit</em> memory model to avoid these bugs<br>
  -- Implicit memory has no ability to take address-of, memory
-  allocation is implicit, and memory is implicitly freed by a garbage collector
+  allocation is implicit, and memory is implicitly deleted by a garbage collector
   <li>But code can be less efficient with an implicit memory since one more memory access is often needed when accessing the contents
   <li>But but compilers keep getting better and are slowly closing the gap
   <li>But but but low-level systems programs such as operating systems
@@ -124,9 +124,6 @@ Specialization</a></h3>
 	<li>Another handy feature of templates, it allows implementations to be
 specialized at instantiation time.
 	<li>Template specialization is somewhat similar to Java overloading - different versions for different types
-	<li><a
-href="http://www.codersource.net/cpp_class_templates_specialization.html">an
-example</a>.
       </ul>
 <h3><a href="http://en.wikipedia.org/wiki/Operator_overloading">C++ Overloading</a></h3>
 The overloading debate is longstanding.
@@ -146,7 +143,11 @@ feature sets for languages.
       patterns, over and over and over...
 </ul>
 
+
+<h3>Lambdas</h3>
+C++ now has anonymous functions: <a href="http://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B">see here</a>.
 </div>
+
 
 
 <!--#include virtual="/pl/footer.html" -->
