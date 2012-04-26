@@ -99,4 +99,6 @@
   For the typechecker/interpreter part of the assignment, submit only the <code>fbexttype.ml</code> and <code>fbextinterp.ml</code> files that will "plug in" to the FbDK and build the interpreter. Use Blackboard for submission as usual. Do not forget to submit the written part of the homework.
 </p>
 
+</div>
+
 <!--#include virtual="/pl/footer.html" -->
