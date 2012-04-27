@@ -24,8 +24,9 @@
   <p>
 	<strong>Actor System Evolution (10 Points)</strong>: 
 	<p>
-	Suppose there is an actor system global state: 
-     <code> G1 = { &lt; Function dum_msg -> Let x = create(CountTenBeh2, 2) In x <- `count(_), 0 &gt; } </code>.</p>
+	Suppose there is an actor system global state:
+	   <code> G1 = { &lt; a0, Function dum_msg -> Let x = create(CountTenBeh2, 2) In x <- `count(_) &gt; ,
+            [ a0 &lt;- 5 ] } </code>.</p>
 	<p>
     Show all of the possible transition sequences <code>G1 --> G2 --> ... </code> that the system starting in this configuration could evolve to.  Note the definition of CountTenBeh2 is given in the book, it is the second count down example.  We are only counting down starting from 2 to save wear and tear on your fingers.  Note that for each step <code>Gi --> G(i+1)</code> give the <code>v v' ==S==> v'</code> that leads to that step as per the Global Rule in section 7.2.5 of the book.  You don't need to show how this <code>v v'</code> computation computes, just give each one of them, i.e. be clear what <code>v/v'/v''</code> are for each global transition.
 	</p>
