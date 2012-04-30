@@ -87,7 +87,7 @@ Disadvantages:
       real-time systems programming, and a potentially big issue for
       any interactive app.
 </ul>
-<hr>
+
 
 <h4>Reference Counting Collection</h4>
 <ul>
@@ -109,7 +109,7 @@ flaw: cycles in memory will not get collected.
 </ul>
 
 
-<hr>
+
 <h4>Mark and sweep collection</h4>
 Mark and sweep is simplest form of "100% correct" garbage collection.<p>
 <ol>
@@ -137,7 +137,7 @@ Main problem is the big wait.  Also memory will get very fragmented
 (eventually will have many very small chunks of free space).
 
 
-<hr>
+
 <h4>Copying Collection</h4>
 <ul>
   <li> Allocate memory in two-partition scheme (the two <em>semi-spaces</em>).
@@ -184,7 +184,7 @@ Still, its much better then mark-and-sweep: no fragmentation, no heap
 to maintain, no mark bits needed.
 
 
-<hr>
+
 <h4>Scavenging Collectors</h4>
 <em>Scavenging</em> is incremental collection: scavenge up a little
 free space, move around a few objects, let the program run again.
@@ -204,18 +204,19 @@ Scavenging with a copying collector:
 </ol>
 
 
-<hr>
+
 <h3>Sun's HotSpot VM Collector</h3>
 Sun's hotspot collector (the JVM since Java 3) is a high-quality
 collector.
 <ul>
   <li>It performs both mark and sweep, and copying collection.
-  <li>Collection is based on how long an object has been alive
+  <li>Collection is based on how long an object has been alive: called <em>generational collection</em>
   <li>Young objects are in the <em>young generation space</em>
   <li>Older objects are in the <em>old generation spaace</em>
   <li>Why divide like this?  Most objects don't live long, so
       frequently collect young space (<em>minor collection</em>) and
       infrequently collect old space (<em>major collection</em>).
+  <li>By default it is not doing scavenging but scavenging can be turned on.
 </ul>
 <h4>Young space</h4>
 Young space has three subspaces:
@@ -250,36 +251,14 @@ Copying collection is used on Young space
       generate a noticable pause.
   <li>Old space by default uses a mark and sweep collection.  
   <li>It also periodically compacts to minimize fragmentation.
-  <li>If you run <code>java</code> with the <code>-Xincgc</code> (1.4.1 and later), you will get a
-      fancier incremental <em>train</em> collector on oldspace.
 </ul>
-The <em>train</em> garbage collection algorithm
-is used there:
+<h4>GC in practice</h4>
 <ul>
-  <li>Its a fancy scavenging, compacting mark and sweep collector.
-  <li>Objects are clustered by the pointer structure: objects
-      are close in memory to objects they directly refer to.
-      <br>(This also helps with virtual memory: objects working with
-      each other are more likely to be in the same page)
-  <li>In particular, there are <em>trains</em> 
-      consisting of a series of <em>cars</em> of clustered objects.
-  <li>Trains are generational: they are timestamped upon
-      creation with their number.
-  <li>Scavenging: trains are collected one at a time, in particular
-      the oldest remaining train is collected; the time to
-      collect a given train should be small
-  <li>In collecting a train, that train goes away; garbage
-      objects are gone, and non-garbage objects are moved
-      to the (other) train that directly pointed to them<br>
-      --this compacts memory and clusters adjacent objects.
-  <li>There are a huge number of difficult issues to solve
-      which we are going to skip over.
+  <li>The reason why its important to have a basic understanding of how Java etc collectors work in practice is you may need to <em>tune</em> them to perform better on your particular application.
+  <li>See e.g. <a href="http://javarevisited.blogspot.com/2011/04/garbage-collection-in-java.html">this blog post</a> or <a href="http://www.ibm.com/developerworks/java/library/j-jtp11253/">This IBM Tech Note</a> for tips on how you can change various parameters on Java's collectors such as the sizes of the various eden etc spaces for better performance.
 </ul>
-<hr>
 
-<h3>Efficient Implementation of OCaml</h3>
 
-(to appear)
 
 <h3>Virtual Machines</h3>
 <ul>
@@ -300,7 +279,7 @@ is used there:
   <li>Built-in JVM concepts include: classes, objects, message send,
       primitive types, threads, native stacks, exceptions, etc.
 </ul>
-<hr>
+
 <h4>JVM Stack Frames</h4>
 <ul>
   <li>The JVM uses a stack of frames just like C/C++.
@@ -318,7 +297,7 @@ Whats in a frame?
       the JVM instructions which are stack based ("push 3; push 5;
       add").  More on this below.
 </ul>
-<hr>
+
 <h4>JVM Bytecodes</h4>
 <ul>
   <li>The JVM is <em>stack machine</em> -- temporaries are not put in
@@ -497,7 +476,7 @@ because they can be expressed with the bytecodes above already:
   <li>public-private-protected -- not in bytecodes and bytecode
       verification makes  sure it was not introduced
 </ul>
-<hr>
+
 <h3>The JVM Sandbox</h3>
 The "sandbox" is a set of techniques which keep data from leaking.
 <ul>
@@ -556,7 +535,7 @@ do this since .class files could be modified)
 
 </ul>
 
-<hr>
+
 
 
 

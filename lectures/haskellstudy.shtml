@@ -22,9 +22,9 @@ We will be including pointers to the <a href="http://learnyouahaskell.com/">Lear
 <h3>Basic Haskell Data Operations and types</h3>
 <ul>
   <li>Haskell is similar to ML (being one of its descendants) in terms of basic numerical, list, and tuple data.  
-  <li>Very cool features of Haskell lists not found in ML include <a href="http://learnyouahaskell.com/starting-out#texas-ranges">Texas Ranges</a> and <a href="http://learnyouahaskell.com/starting-out#im-a-list-comprehension">list comprehensions</a>.
+  <li>Very cool features of Haskell lists not found in ML include <a href="http://learnyouahaskell.com/starting-out#texas-ranges">Ranges</a> and <a href="http://learnyouahaskell.com/starting-out#im-a-list-comprehension">list comprehensions</a>.
   <li>The <a href="http://learnyouahaskell.com/types-and-typeclasses">basic types, type variables, and type inference</a> are similar to MLs although the notation is slightly different.  The main difference is the type classes, discussed below.
-  <li><a href="http://learnyouahaskell.com/syntax-in-functions">Pattern matching</a>,  <a href="http://learnyouahaskell.com/recursion">recursive functions</a> and <a href="http://learnyouahaskell.com/higher-order-functions">higher-order functions</a> are also similar to the corresponding ML concepts.
+  <li><a href="http://learnyouahaskell.com/syntax-in-functions">Pattern matching</a>,  <a href="http://learnyouahaskell.com/recursion">recursive functions</a> and <a href="http://learnyouahaskell.com/higher-order-functions">higher-order functions</a> are also similar to the corresponding ML concepts.   At the top level a function can be a pattern match implicitly, and recursion is also implicit, making for somewhat more clean syntax than ML.
   <li>Variant types are called <em>data types</em> in Haskell and are declared with the <code>data</code> keyword; they are similar to the ML <code>type</code> declaration but constructors are real curried functions in Haskell, a cleaner more uniform approach.  <a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses">Some examples.</a>
 </ul>
 
@@ -61,7 +61,12 @@ We now cover these two features in turn.
                      , lastName :: String  
                      , age :: Int  
                      } deriving (Eq)  </pre>
-      -- this record type declaration (pretty much like MLs but different syntax) has <code>deriving (Eq)</code> which means that all the components must have types in the <code>Eq</code> typeclass and then members of this type can also be compared.
+      <ul>
+	<li> this record type declaration (pretty much like MLs but different syntax) has <code>deriving (Eq)</code> which means that all the components must have types in the <code>Eq</code> typeclass and then members of this type can also be compared.  
+	<li>
+The == on these records is the obvious componentwise one when <code>deriving</code> is used; you can also overrride to whatever notion you want, e.g. equality on persons can be on first/last name only, ignoring age.
+	<li><code>deriving</code> only works on a few built-in type classes with "obvious and unique" ways to extend them to a new type.
+      </ul>
   <li>The <a href="http://learnyouahaskell.com/making-our-own-types-and-typeclasses#derived-instances">tutorial has more examples</a> of <code>deriving</code>.
 
 </ul>
@@ -91,7 +96,7 @@ instance Eq TrafficLight where
 
 <h3>Monads</h3>
 <ul>
-  <li>Monads allow computations to be "wrapped"
+  <li>Monads allow pure functional computations to be "wrapped" in a fundamental way
   <li>Particular useful "wrappers" include 
       <ul>
 	<li>maybe there is no value at all (<code>Maybe</code>)
@@ -99,13 +104,14 @@ instance Eq TrafficLight where
 	<li>Along with computing there can be input/output on the side (the I/O monad)
 	<li>Along with computing there can be stateful operations on the side (the state monad)
       </ul>
-  <li>So, Monads are critical to advanced Haskell programming
+  <li>Monads are critical to advanced Haskell programming since you probably will need some state and I/O
 </ul>
 It would take about a week of lecture to cover monads properly so we are giving a 50,000-foot view here.
-<h4>The I/O Monad</h4>
+<h4>Monads by example: the I/O monad</h4>
 <ul>
-  <li>No, we are not going to add <code>print</code> as a regular Haskell statement -- print is a side effect (think of read/print, it can be used like get/set on a memory cell)
-  <li>So, Haskell stays Haskell; I/O is put on <em>top</em> of Haskell by <em>wrapping</em> computations in the I/O monad.
+  <li>No, we are not going to add <code>print</code> as a regular Haskell statement <br>
+-- print is a side effect (think of read/print, it can be used like get/set on a memory cell) and that would violate the pure functional nature of the Haskell core
+  <li>Instead, I/O (or any other monad) is put on <em>top</em> of core Haskell by <em>wrapping</em> computations in the I/O monad.
   <li>Elements of the I/O monad are sequences of commands (<code>do</code> blocks)
   <li><code>do</code> blocks can invoke pure Haskell functions <em>but not vice-versa</em> -- a Haskell function will never have a side effect.
   <li>In the internal monadic view of a <code>do</code> block, each line is a function getting the past I/O operations as an argument and returning a value which may include new I/O operations.
