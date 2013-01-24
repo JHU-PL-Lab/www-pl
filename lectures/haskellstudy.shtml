@@ -7,7 +7,7 @@ We will be including pointers to the <a href="http://learnyouahaskell.com/">Lear
 <ul>
   <li>Haskell is what is called <em>pure</em> functional programing: all behaviors in the language are based on an underlying meaning of a mathematical function.
   <li>As we have pointed out many times before, the key advantage of this approach is its strongly declarative nature: nothing changes out from under you.
-  <li>And, similarly for the nth time the disadvantage is things that are fundamentally stateful are hard to model.
+  <li>And, similarly for the nth time the disadvantage is things that are fundamentally side effecting (state, exceptions, I/O) are hard to model.
   <li>We are studying Haskell because it has many interesting and unique features not found in ML - its not just the pure functional subset of ML.
 </ul>
 
