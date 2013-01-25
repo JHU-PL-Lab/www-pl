@@ -9,7 +9,7 @@
 
 <h3>Caml Lecture Information</h3>
 <ul>
-  <li>The <a href="../caml/code/">Examples of Caml that were run in
+  <li>The <a href="../caml/code/lecture.ml">Examples of Caml that were run in
 class</a>. We pretty much just run through these as the lecture
   <li>The <a href="../lectures/caml-intro.html">PL Caml Lecture
       Notes</a> - these are some older notes of mine with more
