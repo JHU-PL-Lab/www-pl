@@ -9,8 +9,8 @@
 
 <h3>Caml Lecture Information</h3>
 <ul>
-  <li>The <a href="../caml/code/lecture.ml">Examples of Caml that were run in
-class</a>. We pretty much just run through these as the lecture
+  <li>The <a href="code/lecture.ml">examples of Caml that were run in
+class</a>. We pretty much just run through these as the lecture.  For the separate compilation topic we cover <a href="code/sep.zip">this example (zipped)</a>
   <li>The <a href="../lectures/caml-intro.html">PL Caml Lecture
       Notes</a> - these are some older notes of mine with more
       explanations.
