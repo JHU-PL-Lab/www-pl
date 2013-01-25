@@ -233,7 +233,7 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="left" class="body">&nbsp;State; Exceptions</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/thq1.shtml">Take-Home Quiz 1</a></div>
+            <div align="center" class="body"><a href="assignments/midterm.shtml">Take-Home Midterm</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">Homework 3</div>
@@ -271,7 +271,7 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Take-Home Quiz 1 (Fri 16th)</div>
+            <div align="center" class="body">Take-Home Midterm (Fri 16th)</div>
           </td>
 
 		  <tr> 
@@ -349,11 +349,10 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
           </td>  
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a
-          href="assignments/hw5.shtml">Homework 5</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 4</div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
         </tr>
         <tr> 
@@ -367,10 +366,11 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="left" class="body">&nbsp;Concurrency I</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a
+          href="assignments/hw5.shtml">Homework 5</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body">Homework 4</div>
           </td>
         </tr>
         <tr> 
@@ -401,10 +401,10 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="left" class="body">&nbsp;<a href="lectures/fiftythou.shtml">The 50,000 foot view of PLs</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/thq2.shtml">Take-Home Quiz 2</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 5</div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
         </tr>
         <tr> 
@@ -435,10 +435,10 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="left" class="body">&nbsp;<a href="lectures/cppstudy.shtml">Study of C++</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="assignments/hw6.shtml">Homework 6</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body">Homework 5</div>
           </td>
         </tr>
         <tr> 
@@ -450,13 +450,13 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
           </td>
           <td width="30%"> 
             <div align="left" class="body">&nbsp;<a
-          href="lectures/dynamic-lang-study.shtml">Study of dynamic languages</a>; <a href="lectures/implementation.shtml">Implementation Issues</a></div>
+          href="lectures/dynamic-lang-study.shtml">Study of dynamic languages</a>;<br>&nbsp; <a href="lectures/implementation.shtml">Implementation Issues</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/hw6.shtml">Homework 6</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Take-Home Quiz 2</div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
         </tr>
         <tr> 
@@ -467,7 +467,7 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Implementation continued; <a href="lectures/haskellstudy.shtml">Study of Haskell</a></div>
+            <div align="left" class="body">&nbsp;Implementation continued; <br>&nbsp;<a href="lectures/haskellstudy.shtml">Study of Haskell</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -534,7 +534,7 @@ Shaffer 202<br>(need to confirm)</strong></div>
         </tr>
   </table>
 
-
+<p>
 </div>
 
 
