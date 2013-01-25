@@ -7,9 +7,9 @@
 href="book/dist">Book</a>, which is an extended version of the lecture
 notes.  The course will cover almost the whole book from beginning to
 end, but leaving out Chapter 8.  The book doesn't contain an
-introduction to Caml; we will be doing running examples in class as
-the lecture.  See the <a href="caml">Caml page</a> for material on
-leaning Caml.
+introduction to OCaml; we will be doing running examples in class as
+the lecture.  See the <a href="ocaml">OCaml page</a> for material on
+leaning OCaml.
 Some of the later lecture topics are also not in the book, but the lecture
 notes are found on the <a href="dateline.shtml">dateline</a>.<p>
 
@@ -29,10 +29,10 @@ href="dateline.shtml">dateline</a>.<p>
 
 There will be three kinds of assignments
 <ol>
-  <li> Small programming assignments in Caml so you can learn
+  <li> Small programming assignments in OCaml so you can learn
        the language, at the start of the course.
   <li> The implementation of a series of simple interpreters and
-       translators in Caml. 
+       translators in OCaml. 
   <li> Written assignments covering topics in the mathematical theory of
        programming languages.
 </ol>

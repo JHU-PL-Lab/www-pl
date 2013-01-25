@@ -23,7 +23,7 @@ href="http://caml.inria.fr/">OCaml</a>, version 4.00.1 (any version from
 3.06 on should be good enough for our purposes).  OCaml is not
 completely compatible with the most standard dialect of ML, SML, but
 is nonetheless similar.  It includes classes and objects, something
-not found in SML.  I will often call OCaml just "Caml", you can view
+not found in SML.  We will often call OCaml just "Caml", you can view
 the two as synonyms.<p>
 
 <h3>Installing OCaml on Your Machine</h3>
