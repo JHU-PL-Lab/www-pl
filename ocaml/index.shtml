@@ -5,13 +5,13 @@
 <div id="content">
 
 
-<h2>Caml Information</h2>
+<h2>OCaml Information</h2>
 
-<h3>Caml Lecture Information</h3>
+<h3>OCaml Lecture Information</h3>
 <ul>
-  <li>The <a href="code/lecture.ml">examples of Caml that were run in
+  <li>The <a href="code/lecture.ml">examples of OCaml that were run in
 class</a>. We pretty much just run through these as the lecture.  For the separate compilation topic we cover <a href="code/sep.zip">this example (zipped)</a>
-  <li>The <a href="../lectures/caml-intro.html">PL Caml Lecture
+  <li>The <a href="../lectures/caml-intro.html">PL OCaml Lecture
       Notes</a> - these are some older notes of mine with more
       explanations.
 
@@ -19,35 +19,36 @@ class</a>. We pretty much just run through these as the lecture.  For the separa
 
 <h3>Our ML Dialect</h3> There are more ML dialects out
 there than you would believe.  We are going to use <a
-href="http://caml.inria.fr/">OCaml</a>, version 3.12 (any version from
+href="http://caml.inria.fr/">OCaml</a>, version 4.00.1 (any version from
 3.06 on should be good enough for our purposes).  OCaml is not
 completely compatible with the most standard dialect of ML, SML, but
 is nonetheless similar.  It includes classes and objects, something
 not found in SML.  I will often call OCaml just "Caml", you can view
 the two as synonyms.<p>
 
-<h3>Installing Caml on Your Machine</h3>
+<h3>Installing OCaml on Your Machine</h3>
 <p>
-Caml is <em>free</em> and you should install it on your computer.
+OCaml is <em>free</em> and you should install it on your computer.
 Sources and binaries for
-Caml for Windows,  MacOS, Linux, etc are found <a 
+OCaml for Windows,  MacOS, Linux, etc are found <a 
 href="http://caml.inria.fr/download.en.html">on the
-Caml downloads page</a>.
-<h3>Running Caml locally</h3>
+OCaml downloads page</a>.
 <p>
-Caml is available  on all department UNIX machines via the shell
+OCaml is available  on all department Linux machines via the shell
 command  <kbd>ocaml</kbd>. <p>
 
-We <em>strongly</em> recommend you run Caml from something besides the
+<h3>OCaml development environments</h3>
+
+We <em>strongly</em> recommend you run OCaml from something besides the
 shell directly. 
 <dl>
   <dt><a href="http://www.eclipse.org">Eclipse</a> <a href="http://www.algo-prog.info/ocaide/"><strong>OCaIDE</strong></a>
   <dd>
-This is an Eclipse plugin for Caml which works very well; it is the "official recommended method" and is what will be used in lecture. See <a href =
+This is an Eclipse plugin for OCaml which works very well; it is the "official recommended method" and is what will be used in lecture. See <a href =
 ocaide.shtml>information on using OCaIDE</a> for more information.
   <dt><strong>Emacs</strong>
   <dd>See <a href =
-emacs.shtml>information on running Caml 
+emacs.shtml>information on running OCaml 
 inside Emacs</a> to get going.  
   <dt><strong>vim <a
     href="http://www.lix.polytechnique.fr/~dbaelde/productions/omlet.html">OMLet</a></strong>
@@ -56,10 +57,10 @@ inside Emacs</a> to get going.
     above two modes are significantly better, all this mode offers is
       automatic indentation and keyword highlighting. 
 </dl>
-<h3>Caml Information on the Web</h3>
+<h3>OCaml Information on the Web</h3>
 Here is the key information
 <dl>
-  <dt><a href="http://caml.inria.fr/">The Caml Homepage</a>
+  <dt><a href="http://caml.inria.fr/">The OCaml Homepage</a>
   <dd>The ultimate source for everything.  The stuff below is all
       found off the homepage.
   <dt><a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
@@ -89,7 +90,7 @@ Here is additional supplementary information
   understand the deep internal concepts of OCaml, this is the source.
   <dt><a
       href="http://www.cs.caltech.edu/courses/cs134/cs134b/book.pdf">Introduction to Objective Caml</a> by Jason Hickey
-  <dd>A more tutorial introduction to Caml than the previous. 
+  <dd>A more tutorial introduction to OCaml than the previous. 
   <dt><a href="http://caml.inria.fr/resources/doc/faq/index.en.html">FAQ</a>
   <dd>for basic questions you may have.  It  is not very complete at
       this point so you may not find your  answer here.
