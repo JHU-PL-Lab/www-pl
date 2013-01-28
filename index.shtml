@@ -9,27 +9,22 @@ Monday/Wednesday 1:30-2:45, Shaffer 202<br><br>
 <div id="content">
 
 
-<h2>Course Summary</h2> This course is a careful study of programming
-language <em>features</em>: basic data, data structures, functions,
-objects, types, concurrency, etc.  Each feature is studied in intimate terms,
-through the implementation of interpreters and then through
-operational semantics, a mathematical approach to program meaning.
-The OCaml dialect of the ML programming language will be used.  OCaml
-has features such as type inference, a higher-order functional basis,
-and an elegant module system, that make it worthy of study in its own
-right.</p> <p>
-<h2>What you will gain from this course</h2>
+<h2>Course Summary</h2>
+
 <ul>
-  <li>You will attain a deep understanding of how programming languages are
-      structured and why they work well (or not so well).
-  <li>You will understand and appreciate the functional,
-      object-oriented, stateful, and concurrent 
-       programming paradagims, and the meaning and importance of
-      features such as modules, statefulness, and type systems. 
-  <li>You will learn some of the mathematical principles behind
-      programming languages. 
-  <li>You will become a good OCaml programmer.
-</ul>  <p>
+  <li>This course is a study of the deeper <em>principles</em> behind programming
+language designs, and not of particular programming languages.
+
+  <li> We focus on fundamental language <em>features</em> such as data structures, functions, objects, types and concurrency, and how they interact with each other to achieve the desired expressiveness.
+
+  <li>We study features through the implementation of interpreters and through
+<em>operational semantics</em> and <em>type systems</em>, mathematical approaches to program meaning.
+
+  <li>The OCaml dialect of the ML programming language will be used.  OCaml
+has features including type inference, and higher-order functions that make it worthy of study in its own right.
+
+</ul>
+</p>   <p>
 
 
 <img src="images/water.jpg"  alt=" image"  />

@@ -36,8 +36,8 @@ updated as we go in the event we deviate.<p>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Introduction;<br>&nbsp; Caml I:
-        basic data, lists, let</div>
+            <div align="left" class="body">&nbsp;Introduction; <br> &nbsp;<a href="ocaml/code/lecture.ml">OCaml I:
+        basic data, lists, let</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -54,8 +54,8 @@ updated as we go in the event we deviate.<p>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Caml II: tuples,
-        patterns, functions </div> 
+            <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.ml">OCaml II: tuples,
+        patterns, functions</a> </div> 
           </td>
           </td>
           <td width="22%"> 
@@ -73,12 +73,12 @@ updated as we go in the event we deviate.<p>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Caml III: more functions,
-        types, records, refs, arrays</div>
+            <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.ml">OCaml III: more functions,
+        types, records, refs, arrays</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
-href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
+href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -92,7 +92,7 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Caml IV: exceptions, Modules</div>
+            <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.ml">OCaml IV: exceptions, Modules</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -109,11 +109,11 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Caml V: Modules, ocamlc</div>
+            <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.ml">OCaml V: Modules</a>, ocamlc <a href="ocaml/code/sep_compile.zip">(zipfile)</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
-	  href="assignments/hw2.shtml">Homework 2 (Caml)</a></div>
+	  href="assignments/hw2.shtml">Homework 2 (OCaml)</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">Homework 1</div>
@@ -271,7 +271,7 @@ href="assignments/hw1.shtml">Homework 1 (Caml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Take-Home Midterm (Fri 16th)</div>
+            <div align="center" class="body">Midterm (Fri 16th)</div>
           </td>
 
 		  <tr> 
