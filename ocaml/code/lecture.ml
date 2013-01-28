@@ -31,7 +31,7 @@ if (x=3) then (5+35) else 6;;
 (* [1; "a"];; *) (* error - all elements must have same type - HOMOGENEOUS *)
 [];; (* empty list *)
 
-(* Operations on lists.  Lists are BINARY TREES with left child a leaf. *)
+(* Operations on lists.  Lists are represented as BINARY TREES with left child a leaf. *)
 0 :: [1; 2; 3];; (* 'consing' an element to the front of a list - fast *)
 [1; 2; 3] @ [4; 5];; (* appending lists - slower *)
 let x = [2; 4; 6];;
