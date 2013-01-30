@@ -20,9 +20,9 @@ true || false;;
 4.0 *. 1.5;; (* this works -- '*.' is for floats *)
 
 (* everything in caml returns values (i.e. is an 'expression') - no commands *)
-if (x=3) then (5+35) else 6;;
-(if (x=3) then 5 else 6) * 2;; (* two branches of 'if' must have SAME type *)
-(* (if (x=3) then 5.4 else 6) * 2;; *) (* type error *)
+if (x = 3) then (5 + 35) else 6;;
+(if (x = 3) then 5 else 6) * 2;; (* two branches of 'if' must have SAME type *)
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error *)
 
 (* Lists are easy to create and manipulate *)
 [1; 2; 3];;
@@ -101,10 +101,10 @@ add3 20;;
 
 (* Basic pattern match with numbers *)
 
-"Hawaii "^(match 5 with
+"Hawaii " ^ (match 5 with
 	0 -> "Zero"
 	| 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
-	| _ -> "Nothing")^"-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
+	| _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
 
 let mixemup n =
 	match n with
@@ -114,7 +114,8 @@ let mixemup n =
 
 mixemup 3;; (* matches last case and x becomes 3 *)
 
-(* List matching -- can use [] for empty list and foo :: bar for head/tail pattern match *)
+(* List matching *)
+
 let dum = [3;5;9];;  (* Note this list notation is shorthand for 3 :: ( 5 :: (9 :: [])) *)
 
 match dum with
@@ -133,12 +134,12 @@ getTail [3;5;9] ;;
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
 	x :: (y :: z) -> "first"
 | x :: y -> "second"
-| [] -> "third";;
+| _ -> "third";;
 
 match ["hi"] with (* ["hi"] is "hi" :: [] *)
 	x :: y :: z -> "first"
 | x :: y -> "second"
-| [] -> "third";;
+| _ -> "third";;
 
 (* tuple - pattern matching *)
 let tuple = (2, "hi", 1.2);;
