@@ -225,17 +225,18 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
  * All variable declarations in Caml are IMMUTABLE -- value will never change
  * helps in reasoning about programs, we know the variable's value is fixed
  *)
-let x = 5 in
+let y = 55 in let x = 5 in
   let f y = x + y in
     let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
-      (f 1) + x (* x is 5 in the function (!), it was the value of x when f was defined *)
+      (f y) + x (* x is 5 in the function (!), it was the value of x when f was defined *)
 ;;
 
 (* top loop is conceptually an open-ended series of lets which never close: compare following with previous *)
+let y = 55;;
 let x = 5;;
 let f y = x + y;;
 let x = 7;; (* as in previous example, this is a nested definition, not assignment! *)
-f 1 + x;;
+f y + x;;
 
 
 (*
@@ -258,7 +259,11 @@ g (-5);; (* we didn't recompile g and the version above still refers to now-shad
 let g x = f (f x);; (* need to resubmit (identical) g code since it depends on f *)
 g (-6);; (* now it works as expected *)
 
-(* mutually recursive functions must be defined together via the "and" keywd (yuck) *)
+let rec ident l = match l with 
+              [] -> []
+            | hd :: tl ->  hd::(ident tl)
+						
+						(* mutually recursive functions must be defined together via the "and" keywd (yuck) *)
 let rec 
      take l = match l with 
               [] -> []
@@ -282,6 +287,7 @@ and
      lskip l = match l with 
               [] -> []
             | x :: xs -> ltake xs
+		
 in 
  ltake ll;;
 			
@@ -320,6 +326,7 @@ let rec appendgobblelist l =
   | hd::tl -> (hd ^"gobble") :: appendgobblelist tl;;
 
 appendgobblelist ["have";"a";"good";"day"];;
+("have" ^"gobble") :: ("a"^"gobble") :: appendgobblelist ["good";"day"];;
 
 (* Notice there is a *pattern* here of "do an operation on each list element"
  * So lets pull out the "times ten" / "add gobble" as a function parameter!
@@ -331,7 +338,8 @@ let rec map f l =
   | hd::tl -> (f hd) :: map f tl;;
 
 map (function x -> x * 10) [3;2;50];;
-map (function s -> s^"gobble") ["have";"a";"good";"day"];;
+let middle = List.map (function s -> s^"gobble");;
+middle ["have";"a";"good";"day"];;
 
 (* This also shows why these "anonymous" functions are useful. *)
 
@@ -350,7 +358,7 @@ let plus3 x = x+3;;
 let times2 x = x*2;;
 let times2plus3 = compose plus3 times2;;
 times2plus3 10;;
-(compose (function x -> x+3) (function x -> x*2)) 10;; (* equivalent way *)
+compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent way *)
 let composerest = compose (function x -> x+3);;
 composerest (function x -> x*2) 10;;
 
@@ -385,16 +393,31 @@ map (function x -> (float x) *. 10.0) [1;2;2;32];;
 (*
  * Only 'let'-defined functions are polymorphic (yuck)
  *)
+
+(* Background: turning a let-defined function into an argument to a function *)
+
+let add1 = fun x -> x + 1;;
+add1 4;;
+
+(* Equivalent way to do the above: define add1 as an anonymous function and pass in *)
+
+(function addup -> addup 4)(fun x -> x + 1);;
+
+(* Lets try to do the same refactoring for a polymorphic function *)
+
 let id = function x -> x;;
 
 match id (true) with 
     true -> id (3) 
   | false -> id(4);;
 
-(* The below will error - variable mono_id is not defined by let so it can't be polymorphic *)
-(* (function mono_id -> match mono_id(true) with 
+
+(* The below will error - variable mono_id is not defined by let so it can't be polymorphic
+
+(function mono_id -> 
+	match mono_id(true) with 
                 true -> mono_id(3) 
-              | false -> mono_id(4)) id;;
+              | false -> mono_id(4)) (fun x -> x);;
 *)
 
 (* If only used at one type its OK: *)
@@ -604,7 +627,7 @@ let addNC p =
 let addNC (x, y) = x + y;;
 
 
-(* hotice how the type of the above differs from addC's type *)
+(* Notice how the type of the above differs from addC's type *)
 addNC (3, 4);;
 (* addNC 3;; *) (* error, need all or no arguments supplied *)
 
