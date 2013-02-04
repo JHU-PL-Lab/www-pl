@@ -22,15 +22,15 @@ here are a few tips and tricks for usig OCaIDE instead.  These assume
 you have already installed OCaIDE.
 
 <ul>
+    <li>Use Window -&gt; Open Perspective -&gt; Other .. and select OCaml to open the perspective if it is not already open.
+    </li>
     <li>
         For the first couple homeworks, you'll want to use the "Ocaml Managed Project" variety of project.  This spares you the details of
         compilation and allows you to focus on learning the language.  It also
         allows you to view the types of various expressions in the editor.
     </li>
-    <li>Use Window -&gt; Open Perspective -&gt; Other .. and select OCaml to open the perspective.
-    </li>
     <li>
-        Use Window -&gt; show View -&gt; OCaml Toplevel to start a new top-loop,
+        Use Window -&gt; show View -&gt; OCaml Toplevel if you need to start a new top-loop,
         which appears below.  Type your input in the small lower window.
     </li>
     <li>

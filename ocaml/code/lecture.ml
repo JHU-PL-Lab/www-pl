@@ -120,7 +120,7 @@ let dum = [3;5;9];;  (* Note this list notation is shorthand for 3 :: ( 5 :: (9 
 
 match dum with
 	[] -> []
-| head :: tail -> tail
+| hd :: tl -> tl
 ;;
 
 let getTail l = 
@@ -167,6 +167,9 @@ let getHead l =
     head :: tail -> head
 ;;
 
+let test x = 
+  match x with 4 -> 3 | 5 -> 5;;
+
 (* getHead [];; *)  (* Caml warned before that this case is not covered *)
 
 
@@ -202,6 +205,7 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
 (rev [2;3]) @ [1];;
 (rev[3] @ [2]) @ [1];;
+((rev[]@[3]) @ [2]) @ [1];;
 (([]@[3]) @ [2]) @ [1];;
 
 (* Theorem: rev reverses any list.
@@ -223,7 +227,7 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
  *)
 let x = 5 in
   let f y = x + y in
-    let x = 7 in  (* this is a nested (re-)definition of x, not an assignment *)
+    let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
       (f 1) + x (* x is 5 in the function (!), it was the value of x when f was defined *)
 ;;
 
@@ -238,7 +242,7 @@ f 1 + x;;
  * Function definitions are similar, you can't mutate an existing definition.
  * HINT: When interactively editing a group of functions that call each other, 
  *       re-submit ALL the functions to the top loop when you change any ONE 
- *       of them.  Otherwise you can have some functions using the old version.
+ *       of them.  Otherwise you can have some functions using a now-shadowed version.
  *       One advantage of using ocamlc compiler is you will not have this problem.
  *)
 
@@ -249,12 +253,12 @@ let g x = f (f x);;
 (* lets change f, say we made an error in its definition above *)
 let f x = if x <= 0 then 0 else x + 1;; 
 
-g (-5);; (* we didn't recompile g and the version above still refers to original f - !! *)
+g (-5);; (* we didn't recompile g and the version above still refers to now-shadowed f - !! *)
 
 let g x = f (f x);; (* need to resubmit (identical) g code since it depends on f *)
 g (-6);; (* now it works as expected *)
 
-(* mutually recursive functions need to be defined together via "and" keywd *)
+(* mutually recursive functions must be defined together via the "and" keywd (yuck) *)
 let rec 
      take l = match l with 
               [] -> []
@@ -269,7 +273,7 @@ skip [1;2;3;4;5;6;7;8;9;10];;
 
 (* here is a version that hides the skip function -- make both internal and export one *)
 						
-let realtake ll =
+let justtake ll =
 	let rec 
      ltake l = match l with 
               [] -> []
@@ -281,7 +285,7 @@ and
 in 
  ltake ll;;
 			
-realtake [1;2;3;4;5;6;7;8;9;10];;
+justtake [1;2;3;4;5;6;7;8;9;10];;
 						  
 (* 
  * Higher Order Functions - 
@@ -296,7 +300,9 @@ realtake [1;2;3;4;5;6;7;8;9;10];;
  *         a pattern can be pulled out as a function parameter
  *)
 
-(* here is a concrete piece of code - multiply each element of a list by ten *)
+(* Lets show the power by extracting out some pluggable code *)
+
+(* Example: multiply each element of a list by ten *)
 
 let rec timestenlist l =
   match l with 
@@ -305,7 +311,7 @@ let rec timestenlist l =
 
 timestenlist [3;2;50];;
 
-(* here is another concrete piece of code - append gobble to a list of words *)
+(* Example: append gobble to a list of words *)
 
 
 let rec appendgobblelist l =
@@ -327,28 +333,26 @@ let rec map f l =
 map (function x -> x * 10) [3;2;50];;
 map (function s -> s^"gobble") ["have";"a";"good";"day"];;
 
-(* above also shows why these "anonymous" functions are useful. *)
+(* This also shows why these "anonymous" functions are useful. *)
 
 (* an equivalent way to do the same thing - give function a name first: *)
 let f x = x * 10;;
 map f [1;2;3;34;56;90];;
 
-(* composition function - takes in any 2 functions and returns their composition
-                          function as result
+(* Composition function g o f - takes in any 2 functions and returns their composition
  *)
-(* g o f *)
 let compose g f = (function x -> g (f x));;
 let compose g f x =  g (f x);;
 let compose = (function g -> (function f -> (function x -> g(f x))));;
+(* All three of the above definitions produce the same function *)
 
 let plus3 x = x+3;;
 let times2 x = x*2;;
-let times2plus3 = compose (plus3) (times2);;
+let times2plus3 = compose plus3 times2;;
 times2plus3 10;;
 (compose (function x -> x+3) (function x -> x*2)) 10;; (* equivalent way *)
 let composerest = compose (function x -> x+3);;
 composerest (function x -> x*2) 10;;
-
 
 (*
   Parametric and object polymorphism
@@ -371,15 +375,15 @@ map (function x -> (float x) *. 10.0) [1;2;2;32];;
 	   what comes out is the *same* type as what came in. Generics is
 	   another term for parametric polymorphism.
 
-     Java 5+ has parametric polymorphism via generic types - same principle but
+     Java has parametric polymorphism via generic types - same principle but
 		 the types must be explicitly declared in Java and are inferred in ML.
 
-     C++ Templates are related but different; we will cover them later in course
+     C++ Templates are fundamentally different under the hood; we will cover them later in course
 *)
 
 
 (*
- * only 'let'-defined functions are polymorphic
+ * Only 'let'-defined functions are polymorphic (yuck)
  *)
 let id = function x -> x;;
 
@@ -387,7 +391,7 @@ match id (true) with
     true -> id (3) 
   | false -> id(4);;
 
-(* The below will error - mono_id is not defined by let so it can't be polymorphic *)
+(* The below will error - variable mono_id is not defined by let so it can't be polymorphic *)
 (* (function mono_id -> match mono_id(true) with 
                 true -> mono_id(3) 
               | false -> mono_id(4)) id;;
@@ -395,7 +399,7 @@ match id (true) with
 
 (* If only used at one type its OK: *)
 
-(function mono_id -> mono_id 4) id;; (* mono_id is of type int -> int only *)
+(function mono_id -> mono_id 4) id;; (* mono_id is solely of type int -> int, thats OK *)
 
 
 (* ******************************************************************* *)
@@ -483,7 +487,7 @@ toUpperCase ['a'; 'q'; 'B'; 'Z'; ';'; '!'];;
 
 let toUpperCase l = List.map toUpperChar l ;;
 
-(* could have also defined it even more simply - partly apply map : *)
+(* could have also defined it even more simply - partly apply the Curried map : *)
 
 let toUpperCase = map toUpperChar ;;
 
@@ -592,7 +596,7 @@ let addC = function x -> (function y -> x + y);;
 let addC x = function y -> x + y;;
 addC 1 2;; (* same result as above *)
 
-(* Also recall the related  non-curry'ing version: use a pair of arguments instead *)
+(* Also recall the related  non-Curry'ing version: use a pair of arguments instead *)
 let addNC p =
 	match p with (x,y) -> x+y;;
 
