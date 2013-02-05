@@ -19,7 +19,7 @@ yet anyway, you should be fine.<p>
 <h3>Resources to help you</h3>
 <p>Here is a reminder of some resources at your disposal.
 <ul>
-  <li>Consult the <a href="../ocaml/code/">code examples run in
+  <li>Consult the <a href="../ocaml/code/lecture.ml">code examples run in
 class</a>.  
   <li>For more Caml examples etc, read and
 copy/paste the code defined in the <a
