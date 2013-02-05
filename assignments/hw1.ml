@@ -94,7 +94,7 @@ let rec filter fn lst = () ;; (* ANSWER *)
 *)
 
 (*
-  2c. Given a list of values, turn it in to a list of non-increasing values by deleting
+  2c. Given a list of values, turn it in to a list of non-decreasing values by deleting
       any values that are less than the previous. 
   
       It is possible to use the < operator for comparison since it is polymorphic. However we
