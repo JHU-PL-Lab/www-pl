@@ -690,13 +690,14 @@ f (2, 3);; (* can pass it to the function expecting an intpair due to type defn 
  *           - constructing values of the variant type
  *           - inspecting them by pattern matching
  *      - constructors must start with Capital Letter to distinguish from variables
+ *      - type declarations needed but once they are in place type inference on them works
  *)
 
 (* 
  * variant type for doing mixed arithmetic (integers and floats) 
  *)
 
-type number = Fixed of int | (* OR *) Floating of float;;
+type number = Fixed of int | Floating of float;;  (* read "|" as "or", same as match *)
 
 Fixed 5;;
 Floating 4.0;;
@@ -715,7 +716,7 @@ add_num (Fixed 123) (Floating 3.14159);;
 
 
 (*
- * Enumerated types 
+ * Enum types 
  *     - special case of variant types, 
  *       where all alternatives are constants:
  *)
@@ -724,7 +725,7 @@ type sign = Positive | Negative | Zero;;
 let sign_int n = if n >= 0 then Positive else Negative;;
 sign_int 6;;
 
-(* Multiple data items in a construct?  Use product! *)
+(* Multiple data items in a construct?  Use product type *)
 
 type complex = Zero | Nonzero of float * float;;
 
@@ -736,6 +737,8 @@ type complex = Zero | Nonzero of float * float;;
  * e.g. binary trees:
 *)
 type itree = Nothing | ANode of int * itree * itree;; 
+
+ANode(4,Nothing,ANode(2,ANode(18,Nothing,Nothing),Nothing));;
 
 (* Polymorphic version of above which allows any type at leaves: *)
 
@@ -753,11 +756,34 @@ let bt = Node("fiddly ",
 	        whack);;
 
 
+(* Lists could have been built with a recursive type declaration *)
+
+type 'a mylist = Nil | Cons of 'a * 'a mylist;;
+
+let mylisteg = Cons(3,Cons(5,Cons(7,Nil)));; (* isomorphic to [3;5;7] *)
+
+let rec double_list_elts ml = 
+	match ml with
+	| Nil -> Nil
+	| Cons(mh,mt) -> Cons(mh * 2,double mt);;
+
+double_list_elts mylisteg;;
+
 (*
- * Operations on binary trees are naturally expressed as recursive
- * functions following the same structure as the type definition itself
+ * Operations on binary trees are similar to how we have been doing lists
  *
  *)
+
+
+let rec add_gobble_tree_elts bintree =
+   match bintree with
+     Empty -> Empty
+   | Node(y, left, right) ->
+       Node(y^"gobble",add_gobble_tree_elts left,add_gobble_tree_elts left)
+;;
+
+let gobtree = add_gobble_tree_elts bt;;
+
 
 let rec walk_inorder bintree =
    match bintree with
@@ -767,6 +793,7 @@ let rec walk_inorder bintree =
 ;;
 
 walk_inorder bt;;
+
 
 let rec lookup x bintree =
    match bintree with
@@ -781,6 +808,7 @@ let rec lookup x bintree =
 ;;
 
 lookup "whack!" bt;;
+lookup "flack" bt;;
 
 let rec insert x bintree =
    match bintree with
@@ -793,7 +821,7 @@ let rec insert x bintree =
 ;;
 
 let goobt = insert "goober " bt;;
-bt;; (* remember that OCaml data structures are generally immutable! *)
+bt;; (* remember that OCaml data structures are by default immutable! *)
 let goobt = insert "slacker " goobt;;
 
 
@@ -833,15 +861,14 @@ let add_ratio r1 r2 = {num   = r1.num * r2.denom + r2.num * r1.denom;
 		       denom = r1.denom * r2.denom};;
 add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
-(* Annoying issue: there is one global namespace of record labels!! *)
-type scale = {num: int; coeff: float};; (* overdefine label num *)
+(* Annoying shadowing issue: there is one global namespace of record labels - yuck! *)
+type scale = {num: int; coeff: float};; (* shadowing ratio's label num *)
 (* q.num;; *) (* error: no longer can access q's num label since scale now owns "num" *)
 q.denom;; (* this is still OK, label not overdefined *)
 function x -> x.num;; (* this is why there is only one version of num allowed - inference *)
 
 (* Caml programmers often use tuples instead of records since the record name
  * issue is not handled satisfactorily *)
-
 
 (* 
  * State 
@@ -891,7 +918,7 @@ type mitree = Nothing | ANode of int * mitree ref * mitree ref
 
 let x = ref 4;;
 let f () = !x;;
-let x = ref 6;; (* a nested redefinition, not an assignment to x *)
+let x = ref 6;; (* a shadowing old previous x definition, not an assignment to x *)
 f ();;
 
 (* more on mutable records *)
@@ -904,14 +931,14 @@ translate mypoint 1.0 2.0;;
 mypoint;;
 
 
-(* while loop *)
+(* Yes, we can even write a while loop now! *)
 let x = ref 1;;
 while !x < 10 do 
  (print_int !x; 
  print_string "\n"); 
  x := !x + 1
 done;;
-!x;;
+
 
 (*
  * Why is immutability good?
@@ -921,7 +948,7 @@ done;;
  * ML still lets you express mutation, but its extra so you only use it when 
  *   its really needed
  *
- * Haskell is a pure functional language: there is no mutation whatsoever.
+ * Haskell has a pure core which doesn't allow mutation to enter at all
  * Don't use mutation on any HW problem unless there is an explicit OK to do so.
  *)
 
