@@ -703,6 +703,13 @@ Fixed 5;;
 Floating 4.0;;
 (* note these look like functions but they are not -- you always need to give arg *)
 
+let pullout x = 
+	match x with 
+	| Fixed n -> n 
+	| Floating z -> int_of_float z;;
+
+pullout (Fixed 5);;
+
 (* arithmetic operations on 'number' variant type *)
 let add_num n1 n2 =
    match (n1, n2) with    (* aside -- note use of temporary pair here to simult. match on two variables  *)
@@ -722,12 +729,12 @@ add_num (Fixed 123) (Floating 3.14159);;
  *)
 type sign = Positive | Negative | Zero;;
 
-let sign_int n = if n >= 0 then Positive else Negative;;
-sign_int 6;;
+let sign_int n = if n > 0 then Positive else Negative;;
+sign_int (-6);;
 
 (* Multiple data items in a construct?  Use product type *)
 
-type complex = Zero | Nonzero of float * float;;
+type complex = CZero | Nonzero of float * float;;
 
 (* 
  * Recursive data structures - most common usage of variant types 
@@ -765,7 +772,7 @@ let mylisteg = Cons(3,Cons(5,Cons(7,Nil)));; (* isomorphic to [3;5;7] *)
 let rec double_list_elts ml = 
 	match ml with
 	| Nil -> Nil
-	| Cons(mh,mt) -> Cons(mh * 2,double mt);;
+	| Cons(mh,mt) -> Cons(mh * 2,double_list_elts mt);;
 
 double_list_elts mylisteg;;
 
@@ -779,20 +786,22 @@ let rec add_gobble_tree_elts bintree =
    match bintree with
      Empty -> Empty
    | Node(y, left, right) ->
-       Node(y^"gobble",add_gobble_tree_elts left,add_gobble_tree_elts left)
+       Node(y^"gobble",add_gobble_tree_elts left,add_gobble_tree_elts right)
 ;;
 
 let gobtree = add_gobble_tree_elts bt;;
 
 
-let rec walk_inorder bintree =
+let rec walk_inorder bintree doer =
    match bintree with
      Empty -> ()
    | Node(y, left, right) ->
-       walk_inorder left; print_string y; walk_inorder right
+       walk_inorder left doer; doer y; walk_inorder right doer
 ;;
 
-walk_inorder bt;;
+let mydoer = print_string;;
+
+walk_inorder bt mydoer;;
 
 
 let rec lookup x bintree =
@@ -822,7 +831,7 @@ let rec insert x bintree =
 
 let goobt = insert "goober " bt;;
 bt;; (* remember that OCaml data structures are by default immutable! *)
-let goobt = insert "slacker " goobt;;
+let gooobt = insert "slacker " goobt;;
 
 
 (* END variants *)
@@ -918,6 +927,10 @@ type mitree = Nothing | ANode of int * mitree ref * mitree ref
 
 let x = ref 4;;
 let f () = !x;;
+
+x := 234;;
+f();;
+
 let x = ref 6;; (* a shadowing old previous x definition, not an assignment to x *)
 f ();;
 
@@ -973,11 +986,13 @@ exception Foo;;  (* This is a new form of top-level declaration, along with let,
 let f _ = raise Foo;; (* note no need to declare "raises Foo" here as in Java; no inference of it either *)
 f ();;
 
+exception Bar;;
+
 let g _ = 
   try 
     f () 
   with 
-    Foo ->  5;;
+    Foo ->  5 | Bar -> 3;;
 g ();;
 
 (* exceptions that pass up an argument *)
@@ -1010,7 +1025,7 @@ g ();;
   
 Some principles of modules:
 
-  -  Modules have names they can be referred to by.
+  -  Modules have names they can be referenced by.
   -  A module itself contains declarations of functions, classes,  types, etc.
   -  The module has an interface in which it 
       * imports some things (e.g. other modules) from the outside and  
@@ -1042,13 +1057,13 @@ Some principles of modules:
   - Have to have at least the .class files of the imports around to compile
   - Hard to read off publics - what is being exported from code  (JavaDoc helps this)
 
- Conclusion:  Better than C/C++
+ Conclusion:  Java's modules are better than C/C++'s
 
 *)
 
 (* 
    Caml module definitions are called "structures" (struct keyword) 
-    - collections of related definitions (functions, types, otheer structures, 
+    - collections of related definitions (functions, types, other structures, 
                                           exceptions, values, ...) given a name
     - The types of structs are called signatures (the sig keyword)
           - they are the interfaces for structures, and are something like Java interfaces
@@ -1056,45 +1071,47 @@ Some principles of modules:
 					- structure contents can be regular values, functions, **types**, exceptions
  *)
 
-module FSet = 
-  struct
-    
-    exception NotFound
-
-    type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-
-    let emptyset : 'a set = []
-
-    let rec add x (s: 'a set) = ((x :: s) : ('a set))
-			    
-    let rec remove x (s: 'a set) = 
-      match s with
-	[] -> raise NotFound
-      | hd :: tl -> 
-	  if hd = x then
-	    tl
-	  else
-	    hd :: remove x tl
-			    
-    let rec contains x (s: 'a set) = 
-      match s with
-	[] -> false
-      | hd :: tl -> 
-	  if x = hd then
-	    true
-	  else
-	    contains x tl
-  end
+module FSet =
+struct
+	
+	exception NotFound
+	
+	type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+	
+	let emptyset : 'a set = []
+	
+	let rec add x (s: 'a set) = ((x :: s) : ('a set))
+	
+	let rec remove x (s: 'a set) =
+		match s with
+			[] -> raise NotFound
+		| hd :: tl ->
+				if hd = x then
+					(tl: 'a set)
+				else
+					hd :: remove x tl
+	
+	let rec contains x (s: 'a set) =
+		match s with
+			[] -> false
+		| hd :: tl ->
+				if x = hd then
+					true
+				else
+					contains x tl
+end
 ;;
 
 (* observe what is printed in the top loop when the above is entered: a module *signature* is inferred *)
+
+(* Using modules: its something like Java packages, qualify the name *)
 
 let mySet = FSet.add 5 [];;
 let myNextSet = FSet.add 22 mySet;;
 FSet.contains 5 mySet;;
 FSet.remove 5 myNextSet;;
 
-open FSet;; (* puts an implicit "FSet." in front of all things in FSet *)
+open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shadow some names *)
 
 add "a" ["b"];;
 contains "a" ["a"; "b"];;
@@ -1115,12 +1132,14 @@ module StupidSet = (FSet: STUPIDSET);; (* put a signature on a structure -- forc
 
 (* StupidSet.remove;; *) (* Error: remove not in signature! *)
 
+FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making StupidSet *)
+
 (* Now lets do some non-stupid hiding.  Hiding types is possible and allows "black box" data structures 
    - good software engineering practice to enforce hiding of internals *)
 
 module type  HIDDENSET= 
   sig
-    type 'a set    (* hide the type 'a list here by not giving it in signature *)
+    type 'a set    (* hide the type 'a list here by not giving 'a set definition in signature *)
     val emptyset : 'a set
     val add: 'a -> 'a set -> 'a set
     val remove : 'a -> 'a set -> 'a set
@@ -1132,9 +1151,8 @@ module HiddenSet = (FSet: HIDDENSET);;
 
 (* HiddenSet.add 3 [];; *) (* Error: [] not a set since we HID the fact that sets are really lists *)
 
-let hs = HiddenSet.add 3 HiddenSet.emptyset;; (* now it works - <abstr> result means type is abstract *)
+let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 HiddenSet.contains 3 hs;;
-
 
 (* Separate Compilation with Caml
 
@@ -1155,13 +1173,13 @@ Here is how the ocamlc compiler makes object files
       .mli --ocamlc--> .cmi
 *)
 
-module FSet3: sig (* contents of file fSet3.mli *) end
-          = struct (* contents of file fSet3.ml *) end;;
+module FSett: sig (* contents of file fSett.mli *) end
+          = struct (* contents of file fSett.ml *) end;;
 
 module Main: sig (* contents of main.mli *) end
            = struct (* contents of main.ml *) end;;
 
-(* see the .../code/sep_compile directory for an example.
+(* See http://pl.cs.jhu.edu/pl/ocaml/code/sep.zip for the example we cover in lecture.
    see the ocaml manual Chapter 8 for the full documentation *)
 
 
