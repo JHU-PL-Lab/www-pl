@@ -690,17 +690,25 @@ f (2, 3);; (* can pass it to the function expecting an intpair due to type defn 
  *           - constructing values of the variant type
  *           - inspecting them by pattern matching
  *      - constructors must start with Capital Letter to distinguish from variables
+ *      - type declarations needed but once they are in place type inference on them works
  *)
 
 (* 
  * variant type for doing mixed arithmetic (integers and floats) 
  *)
 
-type number = Fixed of int | (* OR *) Floating of float;;
+type number = Fixed of int | Floating of float;;  (* read "|" as "or", same as match *)
 
 Fixed 5;;
 Floating 4.0;;
 (* note these look like functions but they are not -- you always need to give arg *)
+
+let pullout x = 
+	match x with 
+	| Fixed n -> n 
+	| Floating z -> int_of_float z;;
+
+pullout (Fixed 5);;
 
 (* arithmetic operations on 'number' variant type *)
 let add_num n1 n2 =
@@ -715,18 +723,18 @@ add_num (Fixed 123) (Floating 3.14159);;
 
 
 (*
- * Enumerated types 
+ * Enum types 
  *     - special case of variant types, 
  *       where all alternatives are constants:
  *)
 type sign = Positive | Negative | Zero;;
 
-let sign_int n = if n >= 0 then Positive else Negative;;
-sign_int 6;;
+let sign_int n = if n > 0 then Positive else Negative;;
+sign_int (-6);;
 
-(* Multiple data items in a construct?  Use product! *)
+(* Multiple data items in a construct?  Use product type *)
 
-type complex = Zero | Nonzero of float * float;;
+type complex = CZero | Nonzero of float * float;;
 
 (* 
  * Recursive data structures - most common usage of variant types 
@@ -736,6 +744,8 @@ type complex = Zero | Nonzero of float * float;;
  * e.g. binary trees:
 *)
 type itree = Nothing | ANode of int * itree * itree;; 
+
+ANode(4,Nothing,ANode(2,ANode(18,Nothing,Nothing),Nothing));;
 
 (* Polymorphic version of above which allows any type at leaves: *)
 
@@ -753,20 +763,46 @@ let bt = Node("fiddly ",
 	        whack);;
 
 
+(* Lists could have been built with a recursive type declaration *)
+
+type 'a mylist = Nil | Cons of 'a * 'a mylist;;
+
+let mylisteg = Cons(3,Cons(5,Cons(7,Nil)));; (* isomorphic to [3;5;7] *)
+
+let rec double_list_elts ml = 
+	match ml with
+	| Nil -> Nil
+	| Cons(mh,mt) -> Cons(mh * 2,double_list_elts mt);;
+
+double_list_elts mylisteg;;
+
 (*
- * Operations on binary trees are naturally expressed as recursive
- * functions following the same structure as the type definition itself
+ * Operations on binary trees are similar to how we have been doing lists
  *
  *)
 
-let rec walk_inorder bintree =
+
+let rec add_gobble_tree_elts bintree =
+   match bintree with
+     Empty -> Empty
+   | Node(y, left, right) ->
+       Node(y^"gobble",add_gobble_tree_elts left,add_gobble_tree_elts right)
+;;
+
+let gobtree = add_gobble_tree_elts bt;;
+
+
+let rec walk_inorder bintree doer =
    match bintree with
      Empty -> ()
    | Node(y, left, right) ->
-       walk_inorder left; print_string y; walk_inorder right
+       walk_inorder left doer; doer y; walk_inorder right doer
 ;;
 
-walk_inorder bt;;
+let mydoer = print_string;;
+
+walk_inorder bt mydoer;;
+
 
 let rec lookup x bintree =
    match bintree with
@@ -781,6 +817,7 @@ let rec lookup x bintree =
 ;;
 
 lookup "whack!" bt;;
+lookup "flack" bt;;
 
 let rec insert x bintree =
    match bintree with
@@ -793,8 +830,8 @@ let rec insert x bintree =
 ;;
 
 let goobt = insert "goober " bt;;
-bt;; (* remember that OCaml data structures are generally immutable! *)
-let goobt = insert "slacker " goobt;;
+bt;; (* remember that OCaml data structures are by default immutable! *)
+let gooobt = insert "slacker " goobt;;
 
 
 (* END variants *)
@@ -833,15 +870,14 @@ let add_ratio r1 r2 = {num   = r1.num * r2.denom + r2.num * r1.denom;
 		       denom = r1.denom * r2.denom};;
 add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
-(* Annoying issue: there is one global namespace of record labels!! *)
-type scale = {num: int; coeff: float};; (* overdefine label num *)
+(* Annoying shadowing issue: there is one global namespace of record labels - yuck! *)
+type scale = {num: int; coeff: float};; (* shadowing ratio's label num *)
 (* q.num;; *) (* error: no longer can access q's num label since scale now owns "num" *)
 q.denom;; (* this is still OK, label not overdefined *)
 function x -> x.num;; (* this is why there is only one version of num allowed - inference *)
 
 (* Caml programmers often use tuples instead of records since the record name
  * issue is not handled satisfactorily *)
-
 
 (* 
  * State 
@@ -891,7 +927,11 @@ type mitree = Nothing | ANode of int * mitree ref * mitree ref
 
 let x = ref 4;;
 let f () = !x;;
-let x = ref 6;; (* a nested redefinition, not an assignment to x *)
+
+x := 234;;
+f();;
+
+let x = ref 6;; (* a shadowing old previous x definition, not an assignment to x *)
 f ();;
 
 (* more on mutable records *)
@@ -904,14 +944,14 @@ translate mypoint 1.0 2.0;;
 mypoint;;
 
 
-(* while loop *)
+(* Yes, we can even write a while loop now! *)
 let x = ref 1;;
 while !x < 10 do 
  (print_int !x; 
  print_string "\n"); 
  x := !x + 1
 done;;
-!x;;
+
 
 (*
  * Why is immutability good?
@@ -921,7 +961,7 @@ done;;
  * ML still lets you express mutation, but its extra so you only use it when 
  *   its really needed
  *
- * Haskell is a pure functional language: there is no mutation whatsoever.
+ * Haskell has a pure core which doesn't allow mutation to enter at all
  * Don't use mutation on any HW problem unless there is an explicit OK to do so.
  *)
 
@@ -946,11 +986,13 @@ exception Foo;;  (* This is a new form of top-level declaration, along with let,
 let f _ = raise Foo;; (* note no need to declare "raises Foo" here as in Java; no inference of it either *)
 f ();;
 
+exception Bar;;
+
 let g _ = 
   try 
     f () 
   with 
-    Foo ->  5;;
+    Foo ->  5 | Bar -> 3;;
 g ();;
 
 (* exceptions that pass up an argument *)
@@ -983,7 +1025,7 @@ g ();;
   
 Some principles of modules:
 
-  -  Modules have names they can be referred to by.
+  -  Modules have names they can be referenced by.
   -  A module itself contains declarations of functions, classes,  types, etc.
   -  The module has an interface in which it 
       * imports some things (e.g. other modules) from the outside and  
@@ -1015,13 +1057,13 @@ Some principles of modules:
   - Have to have at least the .class files of the imports around to compile
   - Hard to read off publics - what is being exported from code  (JavaDoc helps this)
 
- Conclusion:  Better than C/C++
+ Conclusion:  Java's modules are better than C/C++'s
 
 *)
 
 (* 
    Caml module definitions are called "structures" (struct keyword) 
-    - collections of related definitions (functions, types, otheer structures, 
+    - collections of related definitions (functions, types, other structures, 
                                           exceptions, values, ...) given a name
     - The types of structs are called signatures (the sig keyword)
           - they are the interfaces for structures, and are something like Java interfaces
@@ -1029,45 +1071,47 @@ Some principles of modules:
 					- structure contents can be regular values, functions, **types**, exceptions
  *)
 
-module FSet = 
-  struct
-    
-    exception NotFound
-
-    type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-
-    let emptyset : 'a set = []
-
-    let rec add x (s: 'a set) = ((x :: s) : ('a set))
-			    
-    let rec remove x (s: 'a set) = 
-      match s with
-	[] -> raise NotFound
-      | hd :: tl -> 
-	  if hd = x then
-	    tl
-	  else
-	    hd :: remove x tl
-			    
-    let rec contains x (s: 'a set) = 
-      match s with
-	[] -> false
-      | hd :: tl -> 
-	  if x = hd then
-	    true
-	  else
-	    contains x tl
-  end
+module FSet =
+struct
+	
+	exception NotFound
+	
+	type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+	
+	let emptyset : 'a set = []
+	
+	let rec add x (s: 'a set) = ((x :: s) : ('a set))
+	
+	let rec remove x (s: 'a set) =
+		match s with
+			[] -> raise NotFound
+		| hd :: tl ->
+				if hd = x then
+					(tl: 'a set)
+				else
+					hd :: remove x tl
+	
+	let rec contains x (s: 'a set) =
+		match s with
+			[] -> false
+		| hd :: tl ->
+				if x = hd then
+					true
+				else
+					contains x tl
+end
 ;;
 
 (* observe what is printed in the top loop when the above is entered: a module *signature* is inferred *)
+
+(* Using modules: its something like Java packages, qualify the name *)
 
 let mySet = FSet.add 5 [];;
 let myNextSet = FSet.add 22 mySet;;
 FSet.contains 5 mySet;;
 FSet.remove 5 myNextSet;;
 
-open FSet;; (* puts an implicit "FSet." in front of all things in FSet *)
+open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shadow some names *)
 
 add "a" ["b"];;
 contains "a" ["a"; "b"];;
@@ -1088,12 +1132,14 @@ module StupidSet = (FSet: STUPIDSET);; (* put a signature on a structure -- forc
 
 (* StupidSet.remove;; *) (* Error: remove not in signature! *)
 
+FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making StupidSet *)
+
 (* Now lets do some non-stupid hiding.  Hiding types is possible and allows "black box" data structures 
    - good software engineering practice to enforce hiding of internals *)
 
 module type  HIDDENSET= 
   sig
-    type 'a set    (* hide the type 'a list here by not giving it in signature *)
+    type 'a set    (* hide the type 'a list here by not giving 'a set definition in signature *)
     val emptyset : 'a set
     val add: 'a -> 'a set -> 'a set
     val remove : 'a -> 'a set -> 'a set
@@ -1105,9 +1151,8 @@ module HiddenSet = (FSet: HIDDENSET);;
 
 (* HiddenSet.add 3 [];; *) (* Error: [] not a set since we HID the fact that sets are really lists *)
 
-let hs = HiddenSet.add 3 HiddenSet.emptyset;; (* now it works - <abstr> result means type is abstract *)
+let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 HiddenSet.contains 3 hs;;
-
 
 (* Separate Compilation with Caml
 
@@ -1128,13 +1173,13 @@ Here is how the ocamlc compiler makes object files
       .mli --ocamlc--> .cmi
 *)
 
-module FSet3: sig (* contents of file fSet3.mli *) end
-          = struct (* contents of file fSet3.ml *) end;;
+module FSett: sig (* contents of file fSett.mli *) end
+          = struct (* contents of file fSett.ml *) end;;
 
 module Main: sig (* contents of main.mli *) end
            = struct (* contents of main.ml *) end;;
 
-(* see the .../code/sep_compile directory for an example.
+(* See http://pl.cs.jhu.edu/pl/ocaml/code/sep.zip for the example we cover in lecture.
    see the ocaml manual Chapter 8 for the full documentation *)
 
 

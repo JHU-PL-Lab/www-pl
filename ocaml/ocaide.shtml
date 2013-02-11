@@ -16,13 +16,12 @@ within Eclipse on how to use it.  <b>Warning:</b> Be sure that you have
 installed OCaml <i>before</i> you install OcaIDE to make sure things go
 smoothly.
 
-<h3>Tips</h3>
-Generally in the course materials we are assuming you are using emacs;
-here are a few tips and tricks for usig OCaIDE instead.  These assume
+<h3>General Tips</h3>
+These tips assume
 you have already installed OCaIDE.
 
 <ul>
-    <li>Use Window -&gt; Open Perspective -&gt; Other .. and select OCaml to open the perspective if it is not already open.
+    <li>Use Window -&gt; Open Perspective -&gt; Other .. and select OCaml to open the OCaIDE perspective if it is not already open.
     </li>
     <li>
         For the first couple homeworks, you'll want to use the "Ocaml Managed Project" variety of project.  This spares you the details of
@@ -48,10 +47,16 @@ you have already installed OCaIDE.
         and then type #open Myfilename to the toplevel to make your functions
         directly available in the toplevel (where myfilename.ml is the file you
         were editing).
-    </li>
-    <li>
-        For the homeworks which use the F&#x266d;DK (F&#x266d; development kit),
-        you should set up your project differently.  For Linux or Mac users,
+    </li></ul>
+
+
+    
+<h3>Using the FbDK with ODaIDE</h3>
+The FbDK uses ocamlc to develop standalone applications and different setup instructions are needed for that.
+<ul>
+  <li>First, see the tips above.
+  <li>
+       For Linux or Mac users,
         the following instructions apply:
         <ol>
             <li>
@@ -136,7 +141,7 @@ you have already installed OCaIDE.
                 been disabled, the errors reported by Eclipse are meaningless.
             </li>
         </ol>
-    <li>
+    
         You may want to use the top loop to interact with
         <strong>F&#x266d;</strong> rather than the executable; for that, edit
         the fbdktoploop.ml file, select all, and  Eval in Toplevel.  Now you
@@ -145,9 +150,12 @@ you have already installed OCaIDE.
         must perform it manually each time you save changes.  You will need
         to uncomment the "#cd" command to point the toploop to the right
         location to load the files.
-    </li>
-</ul>
 </div>
+
+
+
+
+
 
 <!--#include virtual="/pl/footer.html" -->
 

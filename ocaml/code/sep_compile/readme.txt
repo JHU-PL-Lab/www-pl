@@ -1,5 +1,15 @@
-The Makefile here should work with Eclipse OCaIDE on Linux/Mac/Cygwin if you add these files 
-to an OCaml Empty Makefile Project.
+The Makefile here should work with Eclipse OCaIDE on Linux/Mac/Cygwin.
+
+Here are some detailed instructions to get this example working in Eclipse/OCaIDE:
+1) Make a new "OCaml Empty Makefile Project"
+2) Add all the files
+3) under Properties/Makefile, 
+   set make targets for rebuild to all, 
+   set make targets for clean to clean, 
+   under additional options you may need to put -f Makefile
+4) Under the Eclipse preferences for OCaIDE, make sure the paths to all the
+    executables are correct, including a path to the "make" command.
+       
 
 Its also very easy to hand compile:
 

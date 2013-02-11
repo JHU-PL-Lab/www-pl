@@ -48,7 +48,6 @@ allSrc: $(OBJ)
 all: allSrc allExe
 
 main.cmi: 
-	$(OCAMLC) $(INCLUDEDPATHS) $(PROJECTFLAGS) -c main.mli
 
 fSet.cmi: fSet.mli
 	$(OCAMLC) $(INCLUDEDPATHS) $(PROJECTFLAGS) -c fSet.mli
