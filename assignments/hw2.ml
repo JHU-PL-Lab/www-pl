@@ -84,9 +84,9 @@ let exp10 = ();; (* ANSWER *)
 
 (*
   OCaml is an eager language. So you cannot create infinite lists/sequences directly. However you can
-	encode them fairly easily in the language.
-	
-	For the purpose of this exercise we will encode (potentially) infinite lists using the following type. 
+  encode them fairly easily in the language.
+
+  For the purpose of this exercise we will encode (potentially) infinite lists using the following type. 
 *)
 type 'a sequence = Nil | Sequence of 'a * (unit -> 'a sequence);;
 
@@ -99,9 +99,9 @@ let one_and_two = Sequence(1, fun () -> Sequence(2, fun () -> Nil)) ;;
 
 (*
   2a. Write a function to convert a sequence to a list. Of course if you try to evaluate this on an infinite
-	    sequence, it will not finish. But we will assume sanity on the caller's part and ignore that issue
-	
-	[5 Points]
+      sequence, it will not finish. But we will assume sanity on the caller's part and ignore that issue
+
+      [5 Points]
 *)
 let rec list_of_sequence s = () ;; (* ANSWER *)
 
@@ -112,14 +112,14 @@ let rec list_of_sequence s = () ;; (* ANSWER *)
 
 (* 
   2b. While it is nice to have these infinite sequences, it is often useful to "cut" them to a fixed size. Write
-	    a function that cuts off a sequence after a fixed number of values. The return value is a finite sequence
-	    of the same type. 
-			
-			(Treat the given count 'n' as the maximum number of elements allowed in the output sequence. So if the input 
-			is a finite sequence and its length is less than the specified count, the output sequence can have less than
-			'n' values)
-	
-	    [5 Points]
+      a function that cuts off a sequence after a fixed number of values. The return value is a finite sequence
+      of the same type. 
+
+      (Treat the given count 'n' as the maximum number of elements allowed in the output sequence. So if the input 
+      is a finite sequence and its length is less than the specified count, the output sequence can have less than
+      'n' values)
+
+      [5 Points]
 *)
 let rec cut_sequence n s =  () ;; (* ANSWER *)
 
@@ -131,11 +131,11 @@ let rec cut_sequence n s =  () ;; (* ANSWER *)
 
 (*
   2c. You can also encode finite sequences directly using the above type. For this question encode the sequence
-	    corresponding to an arithmetic progression given an initial value, the end value (inclusive) and the common
-	    difference (the step size of the sequence)
-	 
-	    [5 Points]
-*)	
+      corresponding to an arithmetic progression given an initial value, the end value (inclusive) and the common
+      difference (the step size of the sequence)
+
+      [5 Points]
+*)
 let rec ap initv endv diff =  () ;; (* ANSWER *)
 
 (*
@@ -147,21 +147,21 @@ let rec ap initv endv diff =  () ;; (* ANSWER *)
 
 (*
   2d. Now write an infinite sequence of fibonacci numbers that start at 0. i.e. The sequence 0, 1, 1, 2, 3 ..
-	    
-			[5 Points]
+
+      [5 Points]
 *) 
 let fib =  () ;; (* ANSWER *)
-(*	
+(*
 # list_of_sequence (cut_sequence 10 fib) ;;
 - : int list = [0; 1; 1; 2; 3; 5; 8; 13; 21; 34]
 *)
-	 
+
 (*
   2e. Write a map function (analogous to List.map) which takes a function and a sequence 
-	    as input and returns a new sequence where the values have been mapped using the input
-			function.
-			
-		  [5 Points]    
+      as input and returns a new sequence where the values have been mapped using the input
+      function.
+
+      [5 Points]    
 *)
 let rec map_sequence fn s =  () ;; (* ANSWER *)
 
@@ -176,13 +176,13 @@ let rec map_sequence fn s =  () ;; (* ANSWER *)
 
 (*
   2f. Write a filter function (analogous to List.filter) which takes a predicate and a sequence 
-	    as input and returns a new sequence of elements from the input sequence that satisfies the
-			predicate
-			
-			Note that if the input is an infinite sequence and the predicate is never satisfied by any
-			element in the sequence, this function may not terminate. You can ignore this issue.
-			
-		  [5 Points]    
+      as input and returns a new sequence of elements from the input sequence that satisfies the
+      predicate
+
+      Note that if the input is an infinite sequence and the predicate is never satisfied by any
+      element in the sequence, this function may not terminate. You can ignore this issue.
+
+      [5 Points]    
 *)
 let rec filter_sequence fn s =  () ;; (* ANSWER *)
 
@@ -217,7 +217,7 @@ let rec filter_sequence fn s =  () ;; (* ANSWER *)
     
       NOTE: When you query the type of your functions in the top loop, it might return the fully qualified type signatures.
       E.g: empty : unit -> 'a GDeque.queue instead of just unit -> 'a queue. This is fine. 
-		
+
       [10 Points]
 *)
 
