@@ -23,6 +23,9 @@ you have already installed OCaIDE.
 <ul>
     <li>Use Window -&gt; Open Perspective -&gt; Other .. and select OCaml to open the OCaIDE perspective if it is not already open.
     </li>
+  	    <li>Under the Eclipse Preferences -&gt; OCaIDE -&gt; Paths, make sure the paths to all the
+    ocaml executables are correct, and also the path to your computer's "<code>make</code>" command (Mac users may need to install <code>make</code>, it comes with the Developer Tools addition for example).
+     </li>
     <li>
         For the first couple homeworks, you'll want to use the "Ocaml Managed Project" variety of project.  This spares you the details of
         compilation and allows you to focus on learning the language.  It also
@@ -47,7 +50,8 @@ you have already installed OCaIDE.
         and then type #open Myfilename to the toplevel to make your functions
         directly available in the toplevel (where myfilename.ml is the file you
         were editing).
-    </li></ul>
+    </li>
+</ul>
 
 
     
@@ -56,8 +60,7 @@ The FbDK uses ocamlc to develop standalone applications and different setup inst
 <ul>
   <li>First, see the tips above.
   <li>
-       For Linux or Mac users,
-        the following instructions apply:
+       For <strong>Linux or Mac users</strong>:
         <ol>
             <li>
                 Create an "OCaml Makefile" project (<i>not</i> an empty Makefile
@@ -73,6 +76,8 @@ The FbDK uses ocamlc to develop standalone applications and different setup inst
                 Eclipse project directory to create the makefile.
             </li>
             <li>Refresh the project from within Eclipse.</li>
+            <li>To be safe that the project will build properly, select "Properties" of the project, and under "Paths",  set make targets for rebuild to <code>all</code>, 
+   set make targets for clean to <code>clean</code>, and under additional options put <code>-f Makefile</code> (these should be the defaults but OCaIDE occasionally forgets them).</li>
             <li>Select "Clean Project" from the Project menu to build your project.</li>
             <li>
                 In the Run Configurations dialog, create a new OCaml Executable
@@ -82,8 +87,7 @@ The FbDK uses ocamlc to develop standalone applications and different setup inst
                 interpreter.
             </li>
         </ol>
-        For Windows users, the following set of alternate instructions may be
-        helpful:
+        For <strong>Windows users</strong>:
         <ol>
             <li>Create a new OCaml Managed Project.</li>
             <li>
