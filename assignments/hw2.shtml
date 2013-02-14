@@ -1,0 +1,23 @@
+<!--#include virtual="/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+
+<h2>Homework-2: OCaml Programming
+</h2>
+<h4>Due: Wednesday Feb 20th</h4>
+<p>
+
+You are to write several small programs in Caml.  As in the previous
+homework, follow <a href="hw2.ml">the template files</a>.
+
+<h3>Submission Method</h3>
+Same as HW1.
+
+
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
