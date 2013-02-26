@@ -124,7 +124,11 @@ install: $(OCAMLBEST) install_bindir $(foreach interp,$(INTERPRETERS),install_$(
 EXPORTDIR=$(PROJECT)-$(VERSION)
 TAR=$(EXPORTDIR).tar
 BINARY = $(EXPORTDIR)-byte
+<<<<<<< HEAD
 BINARY_CMOS = $(BINARY)/cmos
+=======
+BINARY_CMOS = $(BINARY)/cmo
+>>>>>>> 59d450122ecbb65d624bb31b3ce6f80f4e8f075f
 
 FILES = $(TEMPLATES)/*.ml version.txt $(SRCDIR)/*.ml* \
 	$(foreach interp,$(INTERPRETERS),$(call interpdir,$(interp))/*.ml*) \
@@ -138,7 +142,12 @@ export_dir:
 .PHONY: $(foreach interp,$(INTERPRETERS),export_$(interp))
 $(foreach interp,$(INTERPRETERS),export_$(interp)): export_%: export_dir
 	cp $(call interppfx,$(patsubst export_%,%,$@)).byte $(EXPORT)/$(BINARY)/
+<<<<<<< HEAD
 	cp $(call interpdir,$(patsubst export_%,%,$@))/*.cmo $(EXPORT)/$(BINARY_CMOS)/
+=======
+	#cp $(call interpcmos_for_pfx,$(patsubst export_%,%,$@)) $(EXPORT)/$(BINARY_CMOS)/
+	cp $(call interpcmos,$(patsubst export_%,%,$@)) $(EXPORT)/$(BINARY_CMOS)/
+>>>>>>> 59d450122ecbb65d624bb31b3ce6f80f4e8f075f
 
 export: source byte export_dir $(foreach interp,$(INTERPRETERS),export_$(interp))
 	(cd $(EXPORT); tar czf $(BINARY).tar.gz $(BINARY))
