@@ -111,10 +111,10 @@ let fb_identity_ast = Function(Ident("x"), Var(Ident("x")));;
 let fblt = parse "" ;; (* ANSWER *)
 
 (*
-# ppeval (Appl(Appl(fble, Plus(Int 1, Int 1)), Int 3)) ;;
+# ppeval (Appl(Appl(fblt, Plus(Int 1, Int 1)), Int 3)) ;;
 ==> True
 - : unit = ()
-# ppeval (Appl(Appl(fble, Minus(Int 0, Int 1)), Minus(Int 0, Int 3))) ;;
+# ppeval (Appl(Appl(fblt, Minus(Int 0, Int 1)), Minus(Int 0, Int 3))) ;;
 ==> False
 - : unit = ()
 *)
