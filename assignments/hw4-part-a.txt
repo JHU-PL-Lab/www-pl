@@ -68,6 +68,6 @@ Operational Semantics
     [13 Points]
 
 2c. Write out the proof tree describing the evaluation of the following FbL expression:
-    (Function l -> Match l With [[ ]] -> 0 0 | h ++ t -> h) ((1 + 1) ++ 2)
+    (Function l -> Match l With [[ ]] -> 0 0 | h ++ t -> h) ((1 + 1) ++ 2 ++ [[]])
 
     [5 Points]
