@@ -1,0 +1,113 @@
+600.426 - Programming Languages
+JHU Spring 2013
+Homework - 4 - Part B (60 points)
+
+----------------------------------------------------------------------------------------
+HEADER: PLEASE FILL THIS IN
+----------------------------------------------------------------------------------------
+
+Name                  :
+List of team Members  :
+List of discussants   :
+
+----------------------------------------------------------------------------------------
+Section 1: Operational Equivalence
+----------------------------------------------------------------------------------------
+
+1. For each of the following FbS expressions, indicate whether operational equivalence
+   holds. If it does not, show some context that evaluates differently dependent upon
+   which of the two expressions you use. (Remember: it only takes one of the infinitely
+   many contexts to make the two expressions operationally inequivalent)
+
+   In the expressions below e, e0, e1 and e2 indicate *arbitrary* FbS expressions and 
+   x, y, z etc are variables.
+
+   [15 Points]
+
+   1. e1 + x =~ x + e1
+
+   2. e1 + x + e2 =~ e2 + x + e1
+
+   3. Let z = x in e =~ e
+
+   4. Function x -> Function y -> x + x - y =~ Function y -> Function x -> y - x + y
+
+   5. Let x = e1 in e2 =~ (Function x -> e2) e1
+
+
+----------------------------------------------------------------------------------------
+Section 2: Matters of State (and other side effects)
+----------------------------------------------------------------------------------------
+
+2a. The book does not exhaustively describe the operational semantics rules for FbSR. But
+    they are straightforward. As a warm up, write out the rule(s) for the following
+    FbSR expressions:
+
+    1. And expression (i.e. e1 And e2)
+    2. Let .. In expression (i.e Let x = e In e')
+
+    [10 Points]
+
+2b. In the presence of state, traditional looping constructs make sense once again. Let us
+    try introducing a new python style "While" loop to FbS with the following grammar:
+      While e: e Else: e
+
+    The behavior of an expression While e1: e2 Else: e3 is as follows:
+      - As long as e1 evaluates to True, e2 gets evaluated repeatedly (as you would expect
+        in most languages)
+      - When e1 evaluates to False, e3 gets evaluated (once) instead.
+      - The result of the while expression is the result of e3. The result of e2 is never
+        really used. (This is different from Python since while in python does not return 
+        a value.  But we like our values)
+
+    E.g. Let t = Ref 0 in
+         Let i = Ref 0 in
+         While (Not (!i = 10)):
+           t := !t + !i + 1 ;
+           i := !i + 1
+         Else:
+           !t
+
+        returns 55;
+
+
+    Write down the operational semantics for the above While expression.
+
+    [10 Points]
+
+2c. For the following programs, write out a proof tree of their execution.
+
+   1. The FbS expression:
+      (Function x -> Function y -> x := !x + y) (Ref 0) 10
+
+   2. The FbX expression:
+      (Function x -> Try If x = 0 Then Raise #Invalid 0 Else x + 1 With #Invalid n -> n - 1) 0
+
+   [15 Points]
+
+----------------------------------------------------------------------------------------
+Section 3: Objects - Encoding Multiple Inheritance
+----------------------------------------------------------------------------------------
+
+3. Section 5.1.5 describes how to encode single inheritance in FbSR. Your task is to take 
+   the colorPointClass code (currently based on single inheritance from pointClass) and 
+   refactor it such that it now inherits from *two* base classes, pointClass and colorClass,
+   without changing its behavior. Specifically:
+     - Write a new class, colorClass, that holds a color value and has a brightness method
+     - Change colorPointClass to (multiply) inherit from the original pointClass and the 
+       new colorClass.
+
+   Ensure that your encoding retains key abilities of the original inheritance encoding 
+   like the ability to extend and override methods.
+
+   Your code should work in the FbSR interpreter and should look like this:
+
+     Let pointClass = ... In
+     Let colorClass = ... In
+     Let colorPointClass = ...
+
+   Note: We are not worried much about the logic of the operations. So brightness calculation 
+   can be something as simple as the sum of the RGB components.
+
+   [10 Points]
+
