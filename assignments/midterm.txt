@@ -1,0 +1,118 @@
+600.426 - Programming Languages
+JHU Spring 2013
+Take Home Midterm (50 points)
+
+----------------------------------------------------------------------------------------
+INSTRUCTIONS
+----------------------------------------------------------------------------------------
+
+This is a Take Home Midterm and as such operates on different rules from your regular
+assignments. You are expected to work on this by yourself. You are encouraged to talk to
+the TA/Prof in office hours if you are stuck. You are NOT allowed to get help from,
+discuss or collaborate with anyone on this exam other than the Prof/TA.
+
+----------------------------------------------------------------------------------------
+HEADER: PLEASE FILL THIS IN
+----------------------------------------------------------------------------------------
+
+Name                  :
+
+----------------------------------------------------------------------------------------
+Questions
+----------------------------------------------------------------------------------------
+
+1. The evaluation rules for Fb give a general definition for the substitution function
+   e[v/x]. However if we were to start out evaluating closed expressions, not all values of 
+   e, v and x are legitimate. 
+
+   For each of the following, determine whether it is a valid substitution that can occur
+   during the course of evaluation of (some) closed expression. If yes, write down a
+   closed expression that causes the particular substitution to occur,
+
+   The substitution expressions below are given in the e[v/x] form.
+
+     a. (x + y)[3/x]
+     b. (Function x -> x + y)[3/y]
+     c. (Function x -> x + 1)[3/x]
+     d. x [(Function x -> x + y)/x]
+
+  [10 Points]
+
+2. Questions of Equivalence
+
+   a. The following is a (flawed) alternate definition for operational equivalence:
+        e =~ e' if and only if for all contexts C, C[e] ==> v if and only if C[e'] ==> v
+        for some v. 
+
+      There is a subtle issue with this definition. Explain what is wrong by giving an example where
+      it is not giving a correct result.
+
+   b. Operational Equivalence is not always a perfect definition of equivalence in the
+      real world. Give an example of two programs that are operationally equivalent, but 
+      when typed in to FbSR produces observably different behaviors.
+
+   [7 Points]
+
+3. Show why the following 2 expressions cannot typecheck in TFb (i.e. no derivation tree
+   could ever be built; there are lots of possibilities out there, infinitely many, so you
+   need to show none of them will work).
+
+     a. If (0 = 1) Then 0 Else False
+     b. (Function x:Int -> x) x
+
+   [8 Points]
+
+4. Consider the language FbD - Fb augmented with immutable dictionaries (maps). 
+   Dictionaries map keys to values. The following is the concrete syntax for dictionaries:
+   - Literal syntax for creating dictionaries: { `key1 => e1 ; ... `keyn -> en } 
+     E.g. { `Foo => False ; `Bar => 1 + 3 ; `Moo => 10 } 
+     (Notice the special syntax for keys)
+   - Accessing values by key: e[`key]
+     E.g. { `Foo => False ; `Bar => 1 + 3 }[`Bar] results in 4
+   - Augment dictionary: e @@ (`key => value) produces a new dictionary that adds the
+     specific `key, value mapping in to dictionary. If there is another mapping for `key
+     already present in the dictionary, it is overwritten.
+     E.g { `Foo => 1 } @@ (`Bar => False) results in { `Foo => 1; ` Bar => False} and
+         { `Foo => 1 } @@ (`Foo => False) results in  { `Foo => False }
+
+    a. Write the operational semantics for FbD.
+
+
+    b. Assume that the abstract syntax for FbD is like this:
+
+       type key = Key of string
+       type expr = ... | List of key * expr | Get of expr * key | Augment of expr * key * expr
+
+       where (... indicates the original Fb AST) 
+
+       Write eval function for FbD. (You just have to specify the new cases that need to
+       be added to the Fb interpreter)
+
+       [15 points]
+
+5. In the last assignment, we did a simple python style While loop. 
+
+   Recall its concrete syntax: "While e1: e2 Else: e3" and its behavior - The
+   loop evaluates e2 as long as e1 evaluates to True. When e1 evaluates to
+   False, it evaluates e3 once and returns the result as the return value from
+   the While expression
+
+   Languages like Python and C also have special statements like break and
+   continue to modify control flow within loops. 
+
+   For this question add a 'continue' expression to this language -  When the
+   While expression encounters a 'continue' in the course of evaluating e2, it
+   will abort the rest of the expression evaluation and start the next
+   iteration of the loop.
+
+   Explain with rules how to implement 'continue' in the language. Be sure to
+   include all critical rules; if you need to make general changes to existing
+   rules, it is sufficient to show a couple of examples and explain the
+   changes.
+
+   Note: Encountering a 'continue' in any other location than the body of a
+   While loop is an error in most languages. But it is not necessary to detect
+   this explicitly for the purposes of this question.
+
+   [10 points]
+
