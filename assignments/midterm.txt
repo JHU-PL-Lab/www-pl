@@ -81,7 +81,7 @@ Questions
     b. Assume that the abstract syntax for FbD is like this:
 
        type key = Key of string
-       type expr = ... | List of key * expr | Get of expr * key | Augment of expr * key * expr
+       type expr = ... | Dict of (key * expr) list | Get of expr * key | Augment of expr * key * expr
 
        where (... indicates the original Fb AST) 
 
