@@ -7,6 +7,7 @@
 
 <h2>Programming Languages Assignment 6</h2>
 <h4>Due: Wednesday Apr 24th</h4>
+
 <p/>
 
 <ol>
@@ -72,4 +73,4 @@
 
 </div>
 
-<!--#include virtual="/~scott/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->
