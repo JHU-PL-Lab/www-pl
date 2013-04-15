@@ -22,28 +22,40 @@ There are many important PLs, but a few are arguably more important than others.
   <li>Modern scripting languages (Python, Javascript, and Ruby)
 </ul>
 
-<h3>The Main Features list</h3>
-Here is an historical list of key features that we will discuss.  The key language(s) introducing it are in parens after.
+<h3>The Historical Features list</h3>
+Here is an historical list of key features.  The key language(s) introducing it are in parens after.
 <ul>
   <li>Sequences of statements (Machine)
   <li>Memory read and write, including indirect read/write (primitive pointers) (Machine)
   <li>Basic arithmetical operations (not expressions, just direct on two locations) (Machine)
   <li>(un)Conditional branching (Machine)
+  <li>Arithmetic <em>expression</em> syntax, e.g.<code>4+3 / y</code>, on top of the above <em>command</em> syntax
   <li>Basic data types of ints, floats and arrays and typechecking them (FORTRAN)
   <li>For loops and (non-reentrant or non-recursive) subroutines (FORTRAN)
-  <li>Structured data a la C structs and dynamic allocation thereof (Algol)
+  <li>Structured (recursive) data a la C structs and dynamic allocation thereof (Algol)
   <li>Structured control a la C while and if (Algol)
   <li>Recursive functions (Algol)
   <li>Objects, classes, messages, and inheritance (Simula/Smalltalk)
-  <li>Nested function defns (Pascal)
   <li>Modules that are not just files (Modula)
   <li>Higher-order functions (Lisp)
   <li>Dynamic typing (Lisp)
-  <li>Implicit dynamic memory allocation and de-allocation (Lisp)
-  <li>Algebraic data types (variants 
+  <li>Implicit dynamic memory allocation and de-allocation, and implicit pointers (Lisp)
+  <li>Algebraic data types (pointer-free recursive types, e.g. variants and records)
   <li>Type generics (parametric polymorphism) (ML)
   <li>Type inference (ML)
-  <li>Nonlocal exception handling (ML perhaps)
+  <li>Exceptions and exception handlers (?)
+</ul>
+
+
+<h3>A Quick Tour through other general dimensions</h3>
+We focused on the most core topics of language design but its worth an overview of the following
+<ul>
+  <li>Commands vs expressions
+  <li>Modularity, interfaces and information hiding
+  <li>Mutation and the limiting thereof (final/immutable)
+  <li>Runtime footprint spectrum: nothing - garbage collector - dynamic types - dynamic (new) code loader - JIT compiler
+  <li>Operator overloading, implicit coercions, user-defined infix operators
+  <li>Metaprogramming: programs about programs.  Compile-time = <em>macros</em>/<em>templates</em>, run-time = <em>reflection</em>
 </ul>
 </div>
 
