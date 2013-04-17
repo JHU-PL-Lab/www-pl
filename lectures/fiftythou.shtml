@@ -29,7 +29,7 @@ Here is an historical list of key features.  The key language(s) introducing it 
   <li>Memory read and write, including indirect read/write (primitive pointers) (Machine)
   <li>Basic arithmetical operations (not expressions, just direct on two locations) (Machine)
   <li>(un)Conditional branching (Machine)
-  <li>Arithmetic <em>expression</em> syntax, e.g.<code>4+3 / y</code>, on top of the above <em>command</em> syntax
+  <li>Arithmetic <em>expression</em> syntax, e.g. <code>4+3 / y</code>, on top of the above <em>command</em> syntax
   <li>Basic data types of ints, floats and arrays and typechecking them (FORTRAN)
   <li>For loops and (non-reentrant or non-recursive) subroutines (FORTRAN)
   <li>Structured (recursive) data a la C structs and dynamic allocation thereof (Algol)
@@ -51,8 +51,8 @@ Here is an historical list of key features.  The key language(s) introducing it 
 We focused on the most core topics of language design but its worth an overview of the following
 <ul>
   <li>Commands vs expressions
-  <li>Modularity, interfaces and information hiding
-  <li>Mutation and the limiting thereof (final/immutable)
+  <li>Modularity, interfaces and information hiding; separate compilation
+  <li>Mutation and the limiting thereof (<code>final</code>/<code>immutable</code>)
   <li>Runtime footprint spectrum: nothing - garbage collector - dynamic types - dynamic (new) code loader - JIT compiler
   <li>Operator overloading, implicit coercions, user-defined infix operators
   <li>Metaprogramming: programs about programs.  Compile-time = <em>macros</em>/<em>templates</em>, run-time = <em>reflection</em>

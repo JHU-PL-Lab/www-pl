@@ -5,43 +5,41 @@
 
 <div id="content"> <h2>Study of Java</h2>
 Our reference here  is  the <a
-href="http://docs.oracle.com/javase/specs/jls/se5.0/html/j3TOC.html">Java
-Language Specification, 3rd Edition</a>.  Part of the goal of this
-lecture is for  you  to gain expertise in "spec reading". Some of the examples below
-are  taken from the Java spec.<p>
+href="http://docs.oracle.com/javase/specs/jls/se7/html/index.html">Java
+Language Specification, SE 7 Edition</a>.<p>
 <ul>
-  <li>In lecture we covered three languages which reflect the key principles of Java: <strong>FbOB</strong>, <strong>STFb</strong>, and <strong>PEFb</strong>. 
-  <li> The former had objects but was untyped, the next added subtyping and the last added polymorphism.
-  <li>The language corresponding to Java is "<strong>PSTFbOB</strong>", basically putting polymorphic types and subtypes on to <strong>FbOB</strong>.  
-  <li>We did not explcitly study that combination because there is not a lot of new stuff there -- subtyping on objects is like subtyping on records.
-  <li>(Well, there is in fact one subtle issue if we tried to directly type our object encoding in <strong>STFbSR</strong> -- the self-passing means intuitively the type of a point object is
-      <pre>PointType = { x : Int; y : Int; magnitude: PointType -> Int -> Int; ...}</pre>
-      -- notice how this type is <em>recursive</em>, it is self-referential.  <strong>STFbSR</strong> has no recursive types; the <strong>CFbR</strong> system in the book which we did not cover does include recursive types and subtyping, and will be able to typecheck such programs)
-
+  <li>In lecture we covered three languages which cover the principles underlying Java: <strong>FbOB</strong> (objects), <strong>STFb</strong> (subtyping), and <strong>PEFb</strong> (the P, polymorphism/generics part, not the inference part). 
+  <li>A Fb language corresponding to Java would be "<strong>PSTFbOB</strong>"
+  <li>We did not cover this but most of the aspects would not be surprising to you; a few gaps include
+      <ul>
+	<li><strong>STFb</strong> had subtyping on records and we need subtyping on objects for Java; <em>but</em>, as we know from the <strong>FbOB</strong> encoding, objects and records are very similar
+	<li><code>this</code> imposes some additional issues in object typing.  Notice that
+	          <pre>PointType = { x : Int; y : Int; magnitude: PointType -> Int -> Int; ...}</pre>
+	    should be a proper type for our point object encoding, and notice how it is self-referential (recursive) and also how <code>PointType</code> is contravariant, it is in the domain of the magnitude method.  Both of these issues need to be addressed.
+      </ul>
 </ul>
 
 <h3>Classes and inheritance</h3>
-We can easily encode in <strong>STFbSR</strong> nearly all of the features of basic java class declarations and inheritance.
+We can encode in <strong>STFbSR</strong> nearly all of the features of basic java class declarations and inheritance.
 <ul>
-  <li>information hiding is possible in Java via private/protected fields; information hiding in <strong>STFbOB</strong> is easily accomplished by subsumption (use subsumption after every <code>new</code> of an object to hide the private/protected bits).
-  <li>Static fields are easily encoded, its in the book (basically make the class itself an object, <code>new</code> is just a method on the class.
-  <li>Java classes can have multiple constructors, this is also easy in an encoding by making other constructors besides <code>new</code> in this class-object.
-  <li>But, while the spirit of constructors is easy, they contain all sorts of hairy extensions that significantly complicate the picture:
+  <li>Information hiding is possible in Java via <code>private/protected</code> fields; information hiding in <strong>STFbOB</strong> is accomplished by subsumption -- use subsumption after every <code>new</code> of an object to hide the private/protected bits.
+  <li>Static fields are easily encoded, think of the class as itself being an object.
+  <li>Java classes can have multiple constructors, this is possible in an encoding by making other constructors besides <code>new</code> in the class-object of the previous point.
+  <li>The devil lies in the details however - Java has many tweaks to what the straightforward encoding does.
 <ul>
   <li>Java by default inserts <code>super();</code> in front of the
-  constructor if  another constructor is not invoked at  the  start; this  is a bit of a
-  hack. 
-  <li>There is a default constructor w/ body <code>super();</code> if none is declared.
-  <li>Inner classs and generics add a whole load of complications to constructors.
+  constructor if  another constructor is not invoked.
+  <li>There is a default constructor w/ body just <code>super();</code> if none is declared.
+  <li>etc etc etc
 </ul>
 
 </ul>
 
-An example of some static fields and constructors in <strong>FbSR</strong> taken from the book:
+An example of encoding static fields and multiple constructors in <strong>FbSR</strong> taken from the book:
 <pre>
 Let pointClass = {
 
-  newWithXY = Function class ->
+  newWithXY = Function thisClass ->
     Function newx -> 
     Function newy -> {
 
@@ -51,9 +49,9 @@ Let pointClass = {
       sqrt ((!(this.x)) + (!(this.y)))
   };
 
-  new = Function class -> Function _ -> 
-    (class.newWithXY) class (class.xdefault) 
-                            (class.ydefault);
+  new = Function thisClass -> Function _ -> 
+    (thisClass.newWithXY) thisClass (thisClass.xdefault) 
+                            (thisClass.ydefault);
 
   xdefault = 0;
   ydefault = 0
@@ -63,7 +61,7 @@ Let point = (pointClass.new) pointClass {} In
 (point.magnitude) point {}
 
     </pre>
-<h4>Java Public/Private/package protected/Protected vs Caml Module information hiding</h4>
+<h4>Information Hiding Contrast: Java public/private/package protected/protected vs Caml module</h4>
 
 <ul>
   <li>Caml allows arbitrary multiple views of the same module
@@ -72,12 +70,11 @@ Let point = (pointClass.new) pointClass {} In
       fixed forms of multiple view: subclasses may see more
       (protected) and within vs without a package may see more
       (package protected)
-  <li>Caml is more flexible, but Java approach is simpler (on the
-      surface at least).
+  <li>Caml is more flexible, but Java is much simpler.
 </ul>
 
 
-<h3><a href="http://docs.oracle.com/javase/specs/jls/se5.0/html/typesValues.html#4.10">Subtyping</a></h3>
+<h3>Nominal Subtyping</h3>
 <ul>
   <li>Subtype relationships in Java are <em>nominal</em>: they must be declared via extends/implements aclass/aninterface, except for primitive type subtyping;<br>
 -- even if a class clearly implements all the methods of an interface, if the interface is not specified in the header there is no subtyping possible.
@@ -85,82 +82,17 @@ Let point = (pointClass.new) pointClass {} In
       depended on the structure of the underlying records.
       <strong>STFb</strong> subtyping is thus <em>purely
       structural</em> and Java's is not.
+      <ul>
+	<li>Structural subtyping is more flexible.
+	<li>Nominal subtyping lets you think about subtyping in terms of names of things, not the details of whats inside.
+      </ul>
   <li>In Java pre-5 there was no "deep" subtyping on objects: unlike in our <strong>STFbR</strong> subtyping of records where e.g. <pre>{ {x : Int; y : Int}; q : Bool} &lt;: { {x : Int}; q :Bool} </pre> but now Java supports this, 
-      you can refine the type in a subclass - <a href="http://docs.oracle.com/javase/specs/jls/se5.0/html/classes.html#8.4.8.3">see here</a>.<br>
-  <li>Summary: <strong>STFb</strong> is more expressive but Java's is
-      easier to use due to names being given.
+      you can refine the type in a subclass - <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-8.html#jls-8.4.5">see here</a>.<br>
 </ul>
-<h3><a href="http://docs.oracle.com/javase/specs/jls/se5.0/html/classes.html#295574">Inner Classes</a></h3>
-Lets start with reviewing what <strong>FbOB</strong> had in this area:
-<ul>
-  
-  <li>In <strong>FbOB</strong> we had the ability to declare classes
-      anywhere, including inside  other  class methods, etc.  Those
-      classes could  also be returned as result values of methods, to  
-      be <code>new</code>-ed in a completely different context.
-  <li><strong>FbOB</strong> also has  syntax for directly defining
-      objects: <code>Object Inst ... Meth ..</code>.
-  <li>In general, this is an example of <em>fully higher-order</em>
-      classes and objects -- no restrictions on where they can be
-      defined, used or passed to.
-</ul>
-Java inner classes give some but not all of the above <strong>FbOB</strong> functionality.
-<ul>
-  <li>They do allow local classes to be defined just about anywhere.
-  <li>They do support something similar to the <code>Object</code>
-      syntax of  <strong>FbOB</strong>, via anonymous local classes
-      which are  immediately  <code>new</code>-ed. 
-  <li>They do support multiple levels of nesting: inner classes  can
-      have inner classes inside  them.
-  <li>At runtime, each inner class instance holds a pointer to the
-      instance of the class nesting it that created it; it can access
-      fields of that class via that reference (see spec linked above
-      for examples).
-  <li>The main lack is the ability for classes to be passed around as
-      data items, e.g. methods  returning classes.
-  <li>The JVM is  not "aware" of inner classes, they are implemented
-      as regular classes with mangled names like <code>Foo$1Boo</code> for
-      an inner class <code>Boo</code> inside  <code>Boo</code>.
- </ul>
-
-Inner classes / <strong>FbOB</strong> object declarations vs the
- higher-order functions of Caml etc:
- <ul>
-   <li><strong>FbOB</strong> objects with just one method called
- e.g. <code>theFunction</code> are a full and faithful encoding of higher-order functions.
-   <li>Smalltalk takes the view of rather than having first-class
- objects just add higher-order functions directly; they are called
- <em>blocks</em> in Smalltalk.
-   <li><a href="http://openjdk.java.net/projects/lambda/">Project
-      Lambda</a> is a proposal to add full higher-order 
-      functions to JDK 8.
- </ul>
- Terminology aside: <em>closure</em>
- <ul>
-   <li>A <em>closure</em> is just a higher-order
- function return value
-   <li>The term "closure" comes from how they are
- implemented -- all variables not local to the function must be remembered
-   <li>(We didn't have this problem in our interpreters because we
- substituted when we did function application, but that is not very efficient)
-   <li>Caml example:
-       <pre>
-       let x = 5 in
-         let f y = x + y in (* f is at runtime a closure: a pair (f's-code, {x |-> 5}) *)
-           let x = 22 in
-             f 2 (* prints 7 because x was 5 in f's closure *)
-       </pre>
- </ul>
 
 <h3><a
- href="http://docs.oracle.com/javase/specs/jls/se5.0/html/typesValues.html#108850">Generics</a>
+ href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.4">Generics</a>
  </h3>
-(other links: <a
- href="http://docs.oracle.com/javase/specs/jls/se5.0/html/classes.html#8.1.2">their
- use in
- classes</a>; <a
- href="http://www.oracle.com/technetwork/articles/javase/generics-136597.html">an
- overview</a>)
  <p>
 Generics are Java's version of parametric types.  These notes assume
       familiarity with them; read a <a
@@ -204,7 +136,7 @@ and this relation fails because it also requires <code>Object &lt;:
       would be a legal subtyping in our <strong>STFb</strong> rules
       assuming <code>String &lt;: Object</code>. 
   <li>Java is
-      basically assuming that <code>List<T></code> will have
+      conservatively assuming that <code>List<T></code> will have
       <code>T</code> both as argument and return type of methods  and
       so always forces invariance here.  But, for the case the list class was immutable and T was never an argument the above subtyping would hold and our <strong>STFb</strong> approach would support that.
 </ul>      
@@ -224,17 +156,14 @@ To get around this weakness, Java 5 adds <em>bounded subtyping</em>
       addPoint(P p) { ... } 
       Iterator&lt;P&gt; walk() { ... }
       double calcPathLength() { ... } </pre>
-  <li>The constraint-based
-      <strong>CFbR</strong> (which we may not have covered) with let-polymorphism also allows such
-      sorts of types to be expressed:
-     <pre> test : 'a -> void \ { 'a <: C, 'a <: I }</pre>
+  <li>In terms of type theory this is is called <em>bounded polymorphism</em>: there are subtype bounds on the parametric types.
   <li>Java also allows type variable wildcards, <code>?</code> - this is
       a form of <em>existential type</em> -- the typing  holds  for
   <em>some</em> <code>?</code>.
 </ul>
 
 
-<h3><a href="http://docs.oracle.com/javase/specs/jls/se5.0/html/classes.html#8.4.9">Method Overloading</a></h3>
+<h3><a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
 The take-home message here is brief:
 <ul>
   <li> Java method  overloading can be
@@ -255,11 +184,71 @@ data: it has universal meaning.<p>
   <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior.
 </ul>
 
+<h3>Inner Classes</a></h3>
+Lets start with reviewing what <strong>FbOB</strong> had in this area:
+<ul>
+  
+  <li>In <strong>FbOB</strong> we had the ability to declare classes
+      anywhere, including inside  other  class methods, etc.  Those
+      classes could  also be returned as result values of methods, to  
+      be <code>new</code>-ed in a completely different context.
+  <li><strong>FbOB</strong> also has  syntax for directly defining
+      objects: <code>Object Inst ... Meth ..</code>.
+  <li>In general, this is an example of <em>fully higher-order</em>
+      classes and objects -- no restrictions on where they can be
+      defined, used or passed to.
+</ul>
+Java inner classes give some but not all of the above <strong>FbOB</strong> functionality.
+<ul>
+  <li>They do allow local classes to be defined just about anywhere.
+  <li>They do support something similar to the <code>Object</code>
+      syntax of  <strong>FbOB</strong>, via anonymous local classes
+      which are  immediately  <code>new</code>-ed. 
+  <li>They do support multiple levels of nesting: inner classes  can
+      have inner classes inside  them.
+  <li>At runtime, each inner class instance holds a pointer to the
+      instance of the class nesting it that created it; it can access
+      fields of that class via that reference.
+  <li>The main lack is the ability for classes to be passed around as
+      data items, e.g. methods  returning classes.
+  <li>The JVM is  not "aware" of inner classes, they are implemented
+      as regular classes with mangled names like <code>Foo$1Boo</code> for
+      an inner class <code>Boo</code> inside  <code>Boo</code>.
+ </ul>
 
+Inner classes / <strong>FbOB</strong> object declarations vs the
+ higher-order functions of Caml etc:
+ <ul>
+   <li><strong>FbOB</strong> objects with just one method called
+ e.g. <code>theFunction</code> are a full and faithful encoding of higher-order functions.
+   <li>Smalltalk takes the view of rather than having first-class
+ objects just add higher-order functions directly; they are called
+ <em>blocks</em> in Smalltalk.
+   <li><a href="http://openjdk.java.net/projects/lambda/">Project
+      Lambda</a> is a proposal to add full higher-order 
+      functions to JDK 8.
+ </ul>
+ Terminology aside: <em>closure</em>
+ <ul>
+   <li>A <em>closure</em> is just a higher-order
+ function return value
+   <li>The term "closure" comes from how they are
+ implemented -- all variables not local to the function must be remembered
+   <li>(We didn't have this problem in our interpreters because we
+ substituted when we did function application, but that is not very efficient)
+   <li>Caml example:
+       <pre>
+       let x = 5 in
+         let f y = x + y in (* f is at runtime a closure: a pair (f's-code, {x |-> 5}) *)
+           let x = 22 in
+             f 2 (* prints 7 because x was 5 in f's closure *)
+       </pre>
+ </ul>
+ 
 <h3>Concurrency</h3>
 The book chapter on concurrency reviews the Java concurrency model.
 
-<h3>Other issues of comparison between Java and Caml / Fb family of languages</h3>
+<h3>Other points of comparison between Java and Caml / Fb</h3>
 <ul>
   <li>Java variant types analogue? <br>
 -- used to not exist but now there are enums
@@ -267,14 +256,15 @@ The book chapter on concurrency reviews the Java concurrency model.
   <li>Type Inference -- types are declared in Java; avoids all the
       glitches in the OCaml design to support inference but requires
       more programmer typing.
-  <li>Java Exceptions -- very similar to how we did them in <strong>TFbX</strong> but no <code>throws</code> declarations in our types.
+  <li>Java Exceptions -- very similar to how we did them in <strong>TFbX</strong> but we had no <code>throws</code> declarations in our types.
 </ul>
 
-<h3>Some interesting dimensions of Java we did not study in this course
+<h3>Dimensions of Java we did not get very close to
 </h3><ul>
+  <li>The implementation side: the JVM, JNI, etc
   <li>Reflection
   <li>Dynamic class loading
-  <li>JNI - interfacing with native code
+  <li>Java packages
 </ul>
 
 
