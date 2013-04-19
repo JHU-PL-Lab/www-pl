@@ -166,16 +166,15 @@ To get around this weakness, Java 5 adds <em>bounded subtyping</em>
 <h3><a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
 The take-home message here is brief:
 <ul>
-  <li> Java method  overloading can be
+  <li> Java method overloading can be
   viewed as concatenating all of the argument types onto the method
   name. 
   <li>So it is really just a form of syntactic sugar. 
-  <li>We will briefly look at the examples in the above  spec.
+  <li>We will briefly look at the examples in the above spec.
 </ul>
 
 <h3>Immutable Data</h3>
-One  of the key lessons  of Caml is  the importance of known immutable
-data: it has universal meaning.<p>
+One  of the key lessons of Caml is the importance of immutable data: its not changing underneath your feet.<p>
 <ul>
   <li>Java allows fields to not mutate if qualified with <code>final</code>.
   <li>Caml analogy: a <code>let</code>-defined variable.
