@@ -31,39 +31,49 @@ Pluses and minuses of explicit memory
   will always be a need for some explicit memory
 </ul>
 In this course we pretty much stuck to the implicit memory view throughout because it is becoming more and  more prevalent in code, but it will never be irrelevant.
-<h3>Multiple Inheritance - the fantastic and the horrible</h3>
+<h3>Multiple Inheritance - good and bad</h3>
 <ul>
-  <li>Multiple inheritance is great: it simultaneously gives you 
-      <ul>
-	<li>Interfaces for free: an interface is an abstract class will null methods.
-	<li>A form of <a
-	    href="http://en.wikipedia.org/wiki/Mixin">Mixin
-	    classes</a><br>
- -  (mixins are an idea originating in CLOS, the  Common Lisp Object System)
-      </ul>
-      -- we will discuss both of these briefly.
+  <li>Multiple inheritance is great: it amounts to being able to define fields and method bodies on your interfaces
   <li>The major technical  hiccup is <a
 href="http://en.wikipedia.org/wiki/Diamond_problem">The Diamond
-Problem</a>.  Blech!  We will briefly review the C++ solutions to this
-      problem, including <a href="http://en.wikipedia.org/wiki/Virtual_inheritance">virtual inheritance</a>.
-  <li>In our <code>FbSR</code> encoding of objects, recall that we explicitly inherited by grabbing methods out of our "superclass object"; using this approach we could easily make two or more "superclass objects" and then explicitly pick which one we are inheriting a method from, meaning no diamond ambiguity will arise.  However there will be two copies of the "top" class in a diamond which may cause anomolous behavior.
+Problem</a>.  Blech! 
+      <ul>
+	<li>Basic solution in most languages is to have one copy of the super-super but make a priority order on when classes were defined in terms of whose copy "wins".
+	<li>In C++ you need to use the keyword <code>virtual</code> on inheritance to get this behavior, otherwise you just get two copies of the super-super.
+	<li>Even without this very messy problem there still is an issue of what to do when two superclasses define a method of the same name.
+      </ul>  <li>In our <code>FbSR</code> encoding of objects, recall that we explicitly inherited by grabbing methods out of our "superclass object"; using this approach we could easily make two or more "superclass objects" and then explicitly pick which one we are inheriting a method from, meaning no diamond ambiguity will arise.  However there will be two copies of the "top" class in a diamond in this obvious encoding, similar to non-virtual inheritance in C++.
+</ul>
+<h4>Aside: Multiple inheritance, mixins, and traits</h4>
+<ul>
+  <li>Multiple inheritance is a generalization of mixins which is a generalization of traits<br>
+-- but thats the opposite of the historical order, mixins/traits were created to solve the diamond problem and other problems.
+  <li><a
+	    href="http://en.wikipedia.org/wiki/Mixin">Mixins</a> support only two levels: the "super" level which is all abstract classes and the "class" level below it which can multiply inherit.  No three levels means no diamond problem.
+      <ul>
+	<li>Mixins are an idea originating in CLOS, the  Common Lisp Object System
+	<li>Ruby also uses mixins, as does Scala (where they are confusingly called <em>traits</em>)
+      </ul>
+  <li>Mixins still have a priority order on mixing in terms of which super to get a certain method from.  Traits are a strict form of mixin that requires there to be no overlap or to explicitly disambiguate;<br>
+-- C++ multiple inheritance takes a similar approach when two supers have overridden the same method.
 </ul>
 <h3><a
 href="http://en.wikibooks.org/wiki/C++_Programming/RTTI">Dynamic
 Typing in C++: RTTI</a></h3>
-RTTI is RunTime Type Infomation.
+"RTTI" in C++ stands for RunTime Type Infomation.
 <ul>
-  <li>This is a simple concept, objects carry their originating class
-  names around at runtime.
-  <li>(Recall that declared types and runtime types may differ in
+  <li>RTTI is a simple concept: objects carry their creating class
+  name around at runtime.
+  <br>&nbsp;&nbsp;&nbsp;(Recall that declared types and runtime types may differ in
       languages with subtyping: the static type there means "this type or a
       subclass / implementing class")
+  <li>In general, any type information carried around at run-time is "RTTI"<br>
+-- all dynamically typed languages carry types of all entities around at runtime.
   <li>In Java this always happens due to its need to ensure safety of
-  downcasts (raise an exception if they are  bad).
+  runtime downcasts, instance-of, and <code>.getClass</code> queries.
   <li>The downside is there is extra runtime overhead on adding this
       information to objects.
   <li>In C++ the runtime type information is only added by the
-  compiler if you need it (you are using RTTI on that object).
+  compiler if you need it (it infers if you are using RTTI on that object).
 </ul>
 We will briefly look at some  of the code linked above to see how it
 is  done in practice.
@@ -80,8 +90,6 @@ is  done in practice.
   <li>The latter point makes it hard to debug type errors in
       templates -- you need to explicitly think about staged
       compilation (see below) to understand what the compiler is doing!
-  <li>But, Java generics get really complicated as well due to all of
-      the sub-sub-sub cases and various needed extensions.
   <li>Here is a cool example of how mixins can be done with single inheritance but with templates: <a
 	    href="http://www.artima.com/weblogs/viewpost.jsp?thread=132988">Mixin
 	    classes in C++</a>
@@ -95,7 +103,6 @@ computation</em>.
 <ul>
   <li>Partial evaluation: evaluate some of the program code at compile
       time,  e.g. apply functions if (enough) arguments are known at compile-time.
-      This is a whole subfield of research. 
   <li><a
       href="http://www.usenix.org/events/dsl99/full_papers/sheard/sheard_html/node3.html">MetaML</a>
       is a cleaner and more general notion than C++ template
@@ -126,26 +133,31 @@ specialized at instantiation time.
 	<li>Template specialization is somewhat similar to Java overloading - different versions for different types
       </ul>
 <h3><a href="http://en.wikipedia.org/wiki/Operator_overloading">C++ Overloading</a></h3>
-The overloading debate is longstanding.
+There are three dimensions of overloading:
+      <ul>
+	<li>Methods only: methods can be overloaded, different bodies can handle differently-typed arguments (Java)
+	<li>Existing operator overloading: the say <code>+</code> operator can be used on user-defined types, with the user defining the meaning (C++).<br>
+-- can shrink code size a lot but can also make code too unreadable.
+	<li>New operator creation: users can make new infix operators, e.g. <code>+*+</code> (Standard ML).<br>
+-- not really overloading since operator is new.  Operator precedence and associativity is tricky here
+      </ul>
+
+Operator overloading has been hotly debated.
 <ul>
-  <li>Overloading is great: such compact syntax with such great power!
-  <li>Overloading is horrible: I have no idea  which operators were
+  <li>Its great: such compact syntax with such great power!
+  <li>Its horrible: I have no idea  which operators were
       overloaded where so I don't know what the heck this program is doing!
 </ul>
-In general this topic is part of the debate of minimal vs maximal
-feature sets for languages.
-<br>
-"How many handy dandy special cases should be supported by <em>FaveLang</em>?"
+
+
+<h3>Various new C++ features</h3>
 <ul>
-  <li><strong>LOTS!</strong> - but, now you have to worry about all of the contentious
-      overlap between fancy feature 12 and fancy feature 41...
-  <li><strong>LITTLE!</strong> - but, now you have to write more code for various
-      patterns, over and over and over...
+  <li>
+ <a href="https://en.wikipedia.org/wiki/C%2B%2B11#Type_inference">C++ performs some local type inference now</a>.
+  <li> More explicit multithreading support.
+  <li> C++-11 has some support for garbage collected implementations; programmers need to pick this option and live in a restricted programming model for it to work.
+  <li><a href="http://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B">C++ now has anonymous functions</a>.
 </ul>
-
-
-<h3>Lambdas</h3>
-C++ now has anonymous functions: <a href="http://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B">see here</a>.
 </div>
 
 
