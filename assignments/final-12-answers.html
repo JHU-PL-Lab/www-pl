@@ -54,12 +54,12 @@ This one example should illustrate how the proposed <code>If e Has l Then e Else
 <strong>Answer:</strong>
     <pre>
     If Has:
-    e1 => l v1    e2 => v2    v1 v2 => v
+    e1 => l v1    e2 => v2    v2 v1 => v
     ------------------------------------
     If e1 Has l Then e2 Else e3 => v
 
     If Has Not:
-    e1 => v'    e2 => v2    v1 v2 => v  v' is not l v'' for any v''
+    e1 => v'    e3 => v    v' is not l v'' for any v''
     --------------------------------------------------------------
     If e1 Has l Then e2 Else e3 => v
     </pre>
@@ -88,7 +88,7 @@ This one example should illustrate how the proposed <code>If e Has l Then e Else
 <li> Show how you can write a recursive function <code>summate</code> such that <code>summate(n) = 1 + ...  + n</code> in <strong>TFbSRX</strong>, <em>without</em> using the <code>Let Rec</code> syntax.  Recall the <code>Y</code> combinator is not typeable in <strong>TFbSRX</strong> so that won't work either.<br>
 <strong>Answer:</strong>
 The trick here is to use state.  We will use Let in our answer, it expands via the usual encoding.
-    <pre>Let summateCell : Int -> Int = Ref (Fun x: Int -> x) In
+    <pre>Let summateCell : (Int -> Int) Ref = Ref (Fun x: Int -> x) In
     (summateCell := Fun n -> If n = 0 Then 0 else n + (!summateCell) (n-1));
     !summateCell</pre>
 </ol>
