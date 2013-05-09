@@ -72,7 +72,7 @@ Here is the key information
       will be our main reference.  You may occasionally need to look at
       Part II, the reference manual, Part III for some commands, and
       Part IV for libraries (the <a
-      href="http://caml.inria.fr/pub/docs/manual-ocaml/manual033.html">core
+      href="http://caml.inria.fr/pub/docs/manual-ocaml/manual034.html">core
       library</a> docs are particularly useful for standard string,
       etc functions built into ocaml).
 </dl>

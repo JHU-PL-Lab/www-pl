@@ -87,7 +87,7 @@ is  done in practice.
   <li>There is no need for the fancy bounded subtyping of Java -
       just instantiate and compile; the final code may have a type
       error due to a subtyping error
-  <li>The latter point makes it hard to debug type errors in
+  <br>&nbsp;&nbsp;&nbsp;--this point makes it hard to debug type errors in
       templates -- you need to explicitly think about staged
       compilation (see below) to understand what the compiler is doing!
   <li>Here is a cool example of how mixins can be done with single inheritance but with templates: <a
@@ -122,7 +122,9 @@ Observe
 	analogous to the &lt;bracketed&gt; code in MetaML since its
 	running is delayed.
       </ul></ul>
-We will go through the C++ example above.
+We will go through the C++ example in <a
+      href="http://en.wikipedia.org/wiki/Template_metaprogramming">Template
+      Metaprogramming</a>.
 
 <h3><a
 href="http://en.wikipedia.org/wiki/Generic_programming#Template_specialization">Template

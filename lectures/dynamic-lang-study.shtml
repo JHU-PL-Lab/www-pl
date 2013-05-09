@@ -60,7 +60,6 @@ The "classic" dynamic OO languages
   <li>Smalltalk
       aka squeak
   <li>CLOS, the Common Lisp Object System
-  <li>Dylan - based on CLOS, now in the dustbin of history
 </ul>
 
 
@@ -97,32 +96,64 @@ etc -- many such rules are needed.  But, thats about all there is to it.
     code loading.
 </ul>
 We will now look at some crosscutting aspects of these languages.
-<h3>Blocks of code aka higher order functions</h3>
+
+<h3>Universal Data Structure</h3>
+Most dynamic languages are built around the philosophy that all data are "X"'s, where X is:
+<ul>
+  <li>Lisp: Lists
+  <li>Smalltalk: Objects
+  <li>Python: Dictionaries (Objects are tweaks on dictionaries)
+  <li>Ruby: Objects
+  <li>Javascript: Objects (Use objects as dictionaries as well)
+</ul>
+
+      <h3>Inheritance</h3>
+<ul>
+  <li>Smalltalk: regular single inheritance
+  <li>Python: multiple inheritance (and the associated <a
+      href="http://en.wikipedia.org/wiki/Diamond_problem">Diamond
+      Problem</a> of course)
+  <li>Ruby: single inheritance plus arbitrary <a
+      href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/classes.html#UC">mixin
+      modules</a> which are basically classic mixins.  Modules are like classes but since these modules are themselves at the top of
+      the hierarchy (modules cannot have supermodules) there is no
+      dreaded diamond property -- you can only build three of the four
+      edges of the diamond.
+</ul>
+
+
+
+
+<h3>Higher order functions</h3>
 <ul>
 
- <li>Lisp/Scheme: <code>(lambda (x) ... )</code> - Lisp was the first
-  language with implemented  higher-order functions
+ <li>Lisp/Scheme: <code>(lambda (x) ... )</code>
+     <ul>
+       <li> Lisp was the first language with implemented  higher-order functions
+       <li>But, they didn't quite get it right, they used <em>dynamic binding</em> for nonlocal variables which is bone-headed.
+     </ul>
   <li>Smalltalk: <a
       href="http://en.wikipedia.org/wiki/Smalltalk#Code_blocks">code
-      blocks</a>
-  <li>Ruby: blocks which are similar to Smalltalk's.
-  <li>Python: <a href="http://docs.python.org/tutorial/controlflow.html#lambda-forms">lambda-forms</a> (but`, Python's lambdas don't deal with nonlocal variables well)
+      blocks</a> subsume higher-order functions.
+  <li>Ruby: has blocks which are similar to Smalltalk's.
+  <li>Python: <a href="http://docs.python.org/tutorial/controlflow.html#lambda-forms">lambda-forms</a> (but, <a href="http://stackoverflow.com/questions/141642/what-limitations-have-closures-in-python-compared-to-language-x-closures">Pre-3 Python's lambdas don't let you write to nonlocal variables</a>)
 </ul>
 
 <h3>Flexibility of the notion of object</h3>
 <h4>Smalltalk</h4>
       <ul>
-	<li>Everything is an object in Smalltalk: Even <a href="http://en.wikipedia.org/wiki/Smalltalk#Control_structures">if-then-else</a> and <code>+</code> are expressed via messaging syntax (but, actual implementations are more efficient)
-	<li>Global variables is nothing but a systemwide dictionary
-	    (hashset).
+	<li>Everything is an object in Smalltalk: Even <a href="http://en.wikipedia.org/wiki/Smalltalk#Control_structures">if-then-else</a> and <code>+</code> are expressed via messaging syntax e.g. <code>if: ... then: .. else: ...</code> is an <code>if:then:else:</code> message
+	<li>Global variables are a systemwide dictionary object
+	    (a HashMap).
 	    <pre>     Smalltalk at: #f put: (Foo new) </pre>
 	    adds a new Foo named <code>#f</code> to the globals which
 	    is a dictionary affiliated  with object <code>Smalltalk</code>.
 	<li>Classes themselves are nothing but atoms in this
 	    dictionary -- <code>#Foo</code> in the above case is in
-	    the global dictionary, <code>Smalltalk</code>.
+	    <code>Smalltalk</code>.
 	<li>Classes are fully objects - they can be passed around as data
 	<li>Methods are not first-class in Smalltalk however, they cannot be pulled out of their object.
+	<li>Objects are not extensible dynamically so they are weaker than dictionaries.
       </ul>  
 
 <h4>Ruby</h4>
@@ -137,35 +168,31 @@ We will now look at some crosscutting aspects of these languages.
       </ul>
 <h4>Python</h4>
       <ul>
-	<li>Python classes are also objects.
+	<li>Objects are duck-taped onto the more fundamental notion of "everything is a dictionary" in Python.
+	<li>Unlike Ruby, the object and dictionary access syntax is different; Ruby is a more elegant design by unifying the two. 
+	<li>Python objects are thus similar to our <strong>FbSR</strong> objects (a record is a restricted dictionary): <code>self</code> is an explicit parameter, classes are themselves just records, methods are just self-taking funtions in these records, etc.
+	<li>Classes are objects (which are really just dictionaries)
 	<li>Methods are first-class:  <a
       href="http://docs.python.org/tutorial/classes.html#method-objects">Example</a>.
-	<li>Python objects are similar to our <strong>FbSR</strong> objects: <code>self</code> is an explicit parameter, classes are themselves just records, methods are just self-taking funtions in these records, etc.
-	<li>In some ways they are even more flexible: their "records" are completely dynamic even for extending -- <a href="http://docs.python.org/tutorial/classes.html#instance-objects">example</a>.  <strong>FbSR</strong> records cannot be extended (we did it that way so we could type them easily).
+	<li>Python dictionaries can be dynamically extended -- <a href="http://docs.python.org/tutorial/classes.html#instance-objects">example</a>.
       </ul>
 
 <h3>Reflection</h3>
       <ul>
-	<li>Given some object at runtime, can you poke around to find its class, methods,
-etc? 
-	<li>another term for this is it has a <em>MOP</em> - a Meta-Object Protocol
-	<li>  This stuff is  very easy to do in a dynamically-typed language because the program data structure
-is  around explicitly at runtime.
+	<li>"Reflection" means given some object at runtime, can you poke around to find its class, methods, etc? 
+	<li>  Reflection is easy to do in a dynamically-typed language because the program data structure is always around explicitly at runtime (its also around in Java so reflection also possible there, but the type system gets in the way).
 	<li>Another common feature is the ability to <code>eval</code> -- to invoke the compiler/interpreter directly so you can turn a string of Smallktalk/Python/Ruby source into a running program.
       </ul>
 
 Smalltalk
       <ul>
-	<li>Can easily turn a string into a method name to
+	<li>Can turn a string into a method name to
       invoke.  
 	<li>Objects can also <code>become</code> a completely new behavior.
       </ul>
 Ruby
       <ul>
-	<li> Can turn string into method  to invoke -  <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ospace.html#S3">documentation</a>
-	<li>Can take  an object an specialize  it with its  own
-	    singleton class, adding new  methods; the objects old
-	    class becomes the superclass of this new class.  <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ospace.html#UB">example</a>
+	<li> Can turn string into method to invoke -  <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ospace.html#S3">documentation</a>
       </ul>
 Python
       <ul>
@@ -173,31 +200,15 @@ Python
 	    Related to <code>become</code> of Smalltalk
       </ul>
 
-Ruby is much cleaner here,  it has clean notions of adding methods and
-Smalltalk and Python can blow up because methods will disappear, and
-field references are wacky.
-<h3>Inheritance</h3>
-<ul>
-  <li>Smalltalk: regular single inheritance
-  <li>Python: multiple inheritance (and the associated <a
-      href="http://en.wikipedia.org/wiki/Diamond_problem">Diamond
-      Problem</a> of course)
-  <li>Ruby: single inheritance plus arbitrary <a
-      href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/classes.html#UC">mixin
-      modules</a>.  Modules are like classes but since these modules are themselves at the top of
-      the hierarchy (modules cannot have supermodules) there is no
-      dreaded diamond property -- you can only build three of the four
-      edges of the diamond.
-</ul>
-
 
 <h3>Overloading and shortcut syntax</h3>
 <ul>
-  <li>Smalltalk - can do it yourself manually since operators  are all only
-      messages (but ugly); no regular expressions
-  <li>Python: yes
-  <li>Ruby: yes
+  <li>Smalltalk: no
+  <li>Python: no overloading but has variable-argument functions, implicit values for missing arguments, multiple syntactic conventions for invoking functions.
+  <li>Ruby: operators like <code>+</code> can be overloaded since <code>+</code> is "just" a method name.  Methods can't be overloaded.  Similar variable-argument etc niceties of Python.
 </ul>
+
+None of these languages has a general pattern matching on data structures (not just strings) like OCaml does; Python 3 adds some.<p>
 
 </div>
 
