@@ -7,11 +7,8 @@
 <h2>PL Supplementary Resources </h2>
 <p>
 Here is a list of the best resources to supplement the
-material presented in lecture.  There is a wide range of notation used
-so for each reference you will have to spend some time to get used to
-the notation.   There also is an amazing amount of material we are not
-covering in this course; each reference below overlaps only slightly
-with what we will be covering.
+material presented in lecture.  Unfortunately there is a wide range of notation used
+so past experience has been these are not particularly helpful for this course.  
 
 <h2>References by topic</h2>
 
@@ -39,15 +36,6 @@ operational semantics this book is highly recommended.  It is <a
 href="http://www.cogs.susx.ac.uk/users/matthewh/semnotes.ps.gz">available
 online</a> as well.<p>
 
-<h3>Simple Interpreters</h3>
-<p>
-The book <cite>Essentials of Programming Languages </cite> by
-Friedman, Wand, and Haynes includes many implementations of small
-interpreters of the sort we study.  The book is written in the Scheme
-language however, so requires a significant initial investment if you
-don't already know Scheme.
-
-
 <H3>Type Systems and Type Inference</H3>
 <p>
 <cite>Semantics of Programming Languages</cite> by Carl Gunter.
@@ -61,6 +49,11 @@ Benjamin C. Pierce is the leading advanced reference.
 Dave Schmidt has a book, <cite>The Structure of Typed Programming 
 Languages </cite>
 which I am not very familiar with but should cover the basic concepts.  
+<p>
+
+<h3>General PL Texts</h3>
+
+<a href="http://cs.brown.edu/courses/cs173/2012/book/">Programming Languages: Application and Interpretation</a> is a great general textbook which covers some of the topics of this course.  You can't just skim a mid-chapter however due to the pervasive use of Scheme as notation.
 <p>
 
 </div>
