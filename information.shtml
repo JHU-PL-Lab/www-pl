@@ -13,16 +13,14 @@ leaning OCaml.
 Some of the later lecture topics are also not in the book, but the lecture
 notes are found on the <a href="dateline.shtml">dateline</a>.<p>
 
-<h3>Blackboard</h3> <p> Blackboard will be used for three things in the course:
-<ul>
-      <li>Course announcements will be posted there;
-	<li>The Discussion board is a key place to ask questions on course material; the professor, TA, and your fellow students will be able to answer questions.
-	  <li>Assignments will be submitted there and grades posted.
-	</ul>
+<h3>Blackboard</h3> <p> Blackboard will be used for assignment submission and grade posting only.
 
-<p> The Questions and Discussions forum is a critical course
-resource; please ask questions you have there, and the professor, TA, and
-fellow students will answer them.
+<h3>Piazza</h3>
+<p>
+We will be using Piazza for online discussions.
+If you added late, you will need to register for The PL Piazza Page <a href="http://localhost/pl/piazza.com/jhu/spring2014/600426/home">(link here)</a> so you can receive course
+         announcements and discuss the material with other students. (At the start of the semester we will add all enrolled students so if you were enrolled as of the first class you don't need to do anything)
+    
 
 <h3> Assignments</h3> All assignments are linked from the  <a
 href="dateline.shtml">dateline</a>.<p>
@@ -46,11 +44,9 @@ Please make sure to consult the course <a href="integrity.shtml">Academic Integr
 There will be a take-home midterm and an in-class final examination.
 
 <h3>The Collab Lab and Office Hours</h3>
-The Collab lab is a cross between office hours and group project lab time.  A TA/CA/Prof will always be around in collab lab hours and can work with groups or individuals on problems.  The Collab Lab will run on Tues and Thurs from 5:00-6:30PM, and Friday from 1:30-2:30PM, in the Undergraduate Lab.<p>
+The Collab lab is a chance to work on the homework and being able to consult both with fellow students and TA/Profs.  A TA/CA/Prof will always be around in collab lab hours and can work with groups or individuals on problems. 
 
-A few regular office hours are also available.<p>
-
-Information about office hours, the Collab Lab, and other contact information can be found on the
+Collab Lab hours and other contact information can be found on the
 <a href="contact.shtml">Contact Information</a> page.
 
 <h3>Grading</h3>
