@@ -19,7 +19,7 @@ class</a>. We pretty much just run through these as the lecture.  For the separa
 
 <h3>Our ML Dialect</h3> There are more ML dialects out
 there than you would believe.  We are going to use <a
-href="http://caml.inria.fr/">OCaml</a>, version 4.00.1 (any version from
+href="http://caml.inria.fr/">OCaml</a>, version 4.01.0 (any version from
 3.06 on should be good enough for our purposes).  OCaml is not
 completely compatible with the most standard dialect of ML, SML, but
 is nonetheless similar.  It includes classes and objects, something
@@ -44,7 +44,7 @@ shell directly.
 <dl>
   <dt><a href="http://www.eclipse.org">Eclipse</a> <a href="http://www.algo-prog.info/ocaide/"><strong>OCaIDE</strong></a>
   <dd>
-This is an Eclipse plugin for OCaml which works very well; it is the "official recommended method" and is what will be used in lecture. See <a href =
+This is an Eclipse plugin for OCaml; it is the "official recommended method" and is what will be used in lecture. See <a href =
 ocaide.shtml>information on using OCaIDE</a> for more information.
   <dt><strong>Emacs</strong>
   <dd>See <a href =
@@ -66,13 +66,13 @@ Here is the key information
   <dt><a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
       manual</a> (download your local copy from the links at the top).
   <dd><a
-      href="http://caml.inria.fr/pub/docs/manual-ocaml/manual003.html">Part
+      href="http://caml.inria.fr/pub/docs/manual-ocaml-4.01/coreexamples.html">Part
       I Chapter 1</a> is a brief but readable introduction to the core
       language.  This
       will be our main reference.  You may occasionally need to look at
       Part II, the reference manual, Part III for some commands, and
       Part IV for libraries (the <a
-      href="http://caml.inria.fr/pub/docs/manual-ocaml/manual034.html">core
+      href="http://caml.inria.fr/pub/docs/manual-ocaml-4.01/core.html">core
       library</a> docs are particularly useful for standard string,
       etc functions built into ocaml).
 </dl>
