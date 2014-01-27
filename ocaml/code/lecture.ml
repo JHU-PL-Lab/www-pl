@@ -1,7 +1,7 @@
 (*  OCaml I - Examples *)
 
 3 + 4;; (* use ;; to end input.  Notice how  types are INFERRED *)
-let x = 3 + 4;; (* this is an "open-ended let" -- x forever more is 7 *)
+let x = 3 + 4;; (* x forever more is 7 *)
 x + 5;;
 let y = 5 in x + y;; (* y is local when let .. in .. is used *)
 (* y + 6 ;; *) (* errors because y was only defined locally in previous line *)
