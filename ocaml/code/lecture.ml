@@ -19,11 +19,6 @@ true || false;;
 (* 4.0 * 1.5;; *) (* error - '*' operator is only for 'integers' *)
 4.0 *. 1.5;; (* this works -- '*.' is for floats *)
 
-(* everything in caml returns values (i.e. is an 'expression') - no commands *)
-if (x = 3) then (5 + 35) else 6;;
-(if (x = 3) then 5 else 6) * 2;; (* two branches of 'if' must have SAME type *)
-(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error *)
-
 (* Lists are easy to create and manipulate *)
 [1; 2; 3];;
 [1; 1+1; 1+1+1];;
@@ -37,6 +32,12 @@ if (x = 3) then (5 + 35) else 6;;
 let x = [2; 4; 6];;
 let y = 0 :: x;;
 x;; (* NOTICE: did not mutate list x by putting 0 on front, its still [2; 4; 6] *)
+
+(* everything in caml returns values (i.e. is an 'expression') - no commands *)
+if (x = 3) then (5 + 35) else 6;;
+(if (x = 3) then 5 else 6) * 2;; (* two branches of 'if' must have SAME type *)
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error *)
+
 
 (* ====================================================================== *)
 

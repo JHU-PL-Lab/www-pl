@@ -55,7 +55,7 @@ you have already installed OCaIDE.
 
 
     
-<h3>Using the FbDK with ODaIDE</h3>
+<h3>Using the FbDK with OCaIDE</h3>
 The FbDK uses ocamlc to develop standalone applications and different setup instructions are needed for that.
 <ul>
   <li>First, see the tips above.
