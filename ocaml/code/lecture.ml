@@ -178,7 +178,7 @@ let cadd p = match p with (x, y) -> x + y;;
 let cadd (x, y) = x + y;; (* same result as the above - match on the argument directly (only works for 1-case matches) *)
 
 (* This 'cadd' takes only a SINGLE argument - a tuple - more like how C etc functions are called *)
-cadd (1, 2);; (* contrast with 'add 1 2' from above *)
+cadd (1, 2);;
 
 (* compare above add to this earlier one above, recalling: *)
 let add x y = x + y;;

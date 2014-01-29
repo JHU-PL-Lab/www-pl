@@ -58,25 +58,7 @@ There are several ways you can get this mode installed.
       manually install your own copy of the caml mode.  You may also
       want to install your own copy becuase then you can use the
       <strong>Tuareg</strong> version which is slightly better.
-      <ol>
-	<li>Download the files from <a href="http://www-rocq.inria.fr/~acohen/tuareg/">here</a> 
-	<li>Follow the install instructions in the README file. 
-	<li>Note for Windows users: Emacs is often not aware of your
-	    "home" directory for looking for the files you just
-	    installed above; if it is not finding the mode just use the
-	    complete path where you put the files,
-	    e.g."C:Meoohmy/Camlstuff/foo" instead of just "foo".  Also
-	    some Windows emacs installs may use a file named <code>_emacs</code>
-	    instead of the <code>.emacs</code> referred to in the README.  Lastly
-	    Windows may have trouble finding the <code>_emacs</code> file since
-	    it is looking in the wrong place (it is supposed to be in
-	    your home directory). If it is not finding your .emacs
-	    file, start up emacs and type ESC x eval RETURN (getenv
-	    "HOME") RETURN (use the ESC 
-      and RETURN keys) - this will show the value of HOME at the
-      bottom.  Put the required configuration lines in a file in that
-	    folder, and name it <code>_emacs</code>.
-      </ol>
+      An overview of Tuareg is <a href="http://www.emacswiki.org/emacs/TuaregMode">here</a>.
 </ol>
 
 <h3>Using Caml Mode</h3>
