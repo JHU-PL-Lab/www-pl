@@ -27,9 +27,12 @@ you have already installed OCaIDE.
     ocaml executables are correct, and also the path to your computer's "<code>make</code>" command (Mac users may need to install <code>make</code>, it comes with the Developer Tools addition for example).
      </li>
     <li>
-        For the first couple homeworks, you'll want to use the "Ocaml Managed Project" variety of project.  This spares you the details of
-        compilation and allows you to focus on learning the language.  It also
-        allows you to view the types of various expressions in the editor.
+        For the first couple homeworks, you'll want to use the "Ocaml Managed Project" variety of project.  This spares you the work of
+        writing a makefile and allows you to focus on learning the language. For the most part, you only need the editor and the built-in toploop 
+        for these assignments.
+        (<em>Note:</em> By default, eclipse attempts to compile your project when you save it. Unfortunately OCaIDE's 
+        compilation process for "Ocaml Managed Project" is a bit buggy at the moment and it will give your an error. To avoid this, ensure that the 
+        menu item "Build Automatically" under the "Project" menu is unchecked).
     </li>
     <li>
         Use Window -&gt; show View -&gt; OCaml Toplevel if you need to start a new top-loop,
