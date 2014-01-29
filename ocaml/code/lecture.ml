@@ -78,18 +78,19 @@ fib 10;;
 *)
 
 (* anonymous functions: define a function as an expression *)
-let funny = function x -> x + 1;; (* "x" is argument here -- can do one-argument functions only *)
-((function x -> x + 1) 4) + 7;; (* such a function is an expression and can be used anywhere *)
+let funny_add1 = function x -> x + 1;; (* "x" is argument here -- can do one-argument functions only *)
+funny_add1 3;;
+((function x -> x + 1) 4) + 7;; (*  an "->" function is an expression and can be used anywhere *)
 
 (* 
  * functions can be passed to and returned from functions --> HIGHER-ORDER
  *)
 
-(* multiple arguments - just leave  spaces between multiple arguments - this is "Currying" *)
+(* multiple arguments - just leave spaces between multiple arguments in definition and use *)
 let add x y = x + y;;
 add 3 4;;
 (add 3) 4;; (* same meaning as previous *)
-let add3 = add 3;; (* don't need to give all arguments at once -- 'add3' is now a function like 'function y -> 3 + y' *)
+let add3 = add 3;; (* don't need to give all arguments at once!  Type of add is in fact int -> (int -> int) *)
 add3 4;;
 add3 20;;
 
@@ -103,7 +104,7 @@ add3 20;;
 (* Basic pattern match with numbers *)
 
 "Hawaii " ^ (match 5 with
-	0 -> "Zero"
+	  0 -> "Zero"
 	| 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
 	| _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
 
@@ -113,15 +114,15 @@ let mixemup n =
 	| 5 -> 0
 	| x -> x + 1;; (* default case giving a name to the matched number, x *)
 
-mixemup 3;; (* matches last case and x becomes 3 *)
+mixemup 3;; (* matches last case and x is bound to the value 3 *)
 
 (* List matching *)
 
-let dum = [3;5;9];;  (* Note this list notation is shorthand for 3 :: ( 5 :: (9 :: [])) *)
+let dum = [3;5;9];;  (* NOTE: this list notation is shorthand for 3 :: ( 5 :: (9 :: [])) *)
 
 match dum with
 	[] -> []
-| hd :: tl -> tl
+| hd :: tl -> tl (* observe how the '::' lets us break lists into first element and rest of list -- all lists can be broken like this *)
 ;;
 
 let getTail l = 
@@ -159,7 +160,7 @@ let getSecond t =
 ;;
 getSecond (2, "hi");;
 
-let getSecond (f,s) = s (* equivalent to the above *)
+let getSecond (f,s) = s (* equivalent to the above - implicit pattern match in function argument *)
 ;;
 
 (* warning - non-exhaustive pattern matching; avoid this *)
@@ -167,9 +168,6 @@ let getHead l =
   match l with
     head :: tail -> head
 ;;
-
-let test x = 
-  match x with 4 -> 3 | 5 -> 5;;
 
 (* getHead [];; *)  (* Caml warned before that this case is not covered *)
 
@@ -179,14 +177,14 @@ let cadd p = match p with (x, y) -> x + y;;
 
 let cadd (x, y) = x + y;; (* same result as the above - match on the argument directly (only works for 1-case matches) *)
 
-(* This 'cadd' takes only a SINGLE argument - a tuple - like how C etc functions are called *)
-cadd (1, 2);;
+(* This 'cadd' takes only a SINGLE argument - a tuple - more like how C etc functions are called *)
+cadd (1, 2);; (* contrast with 'add 1 2' from above *)
 
 (* compare above add to this earlier one above, recalling: *)
 let add x y = x + y;;
 add 1 2;; (* notice different calling convention -- two ways to write the same function in Caml *)
 
-let add = (+);; (* aside: this is how you can give any built-in infix operator a name as a function *)
+let add = (+);; (* aside: this syntax is how you can give any built-in infix operator a name as a function *)
 
 (* using patterns in recursive functions: a function to reverse a list 
    
@@ -202,7 +200,7 @@ let rec rev l =
 ;;
 rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
-(* Unwind this: the recursive calls to compute the above are: *)
+(* Trace this: the recursive calls to compute the above are as follows *)
 
 (rev [2;3]) @ [1];;
 (rev[3] @ [2]) @ [1];;
@@ -212,7 +210,7 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 (* Theorem: rev reverses any list.
  * Proof: by induction on the length of the list, say l.
  * Case  l = []: obviously [] is correct
- * Case l is x :: xs for some x and xs:  we assume by induction that "rev xs" reverses the tail;
+ * Case l is x :: xs for some x and xs:  we assume by INDUCTION that "rev xs" reverses the tail;
  * then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED. 
  *)
 
