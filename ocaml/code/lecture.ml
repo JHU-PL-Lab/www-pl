@@ -29,9 +29,9 @@ true || false;;
 (* Operations on lists.  Lists are represented as BINARY TREES with left child a leaf. *)
 0 :: [1; 2; 3];; (* 'consing' an element to the front of a list - fast *)
 [1; 2; 3] @ [4; 5];; (* appending lists - slower *)
-let x = [2; 4; 6];;
-let y = 0 :: x;;
-x;; (* NOTICE: did not mutate list x by putting 0 on front, its still [2; 4; 6] *)
+let z = [2; 4; 6];;
+let y = 0 :: z;;
+z;; (* NOTICE: did not mutate list z by putting 0 on front, its still [2; 4; 6] *)
 
 (* everything in caml returns values (i.e. is an 'expression') - no commands *)
 if (x = 3) then (5 + 35) else 6;;
@@ -158,7 +158,8 @@ let getSecond t =
   match t with
     (f, s) -> s
 ;;
-getSecond (2, "hi");;
+let s = getSecond (2, "hi");;
+let s = getSecond mypair;;
 
 let getSecond (f,s) = s (* equivalent to the above - implicit pattern match in function argument *)
 ;;
@@ -167,6 +168,12 @@ let getSecond (f,s) = s (* equivalent to the above - implicit pattern match in f
 let getHead l = 
   match l with
     head :: tail -> head
+;;
+
+let getHead l = 
+  match l with
+	| [] -> 5
+  |  head :: tail -> 5
 ;;
 
 (* getHead [];; *)  (* Caml warned before that this case is not covered *)
@@ -224,10 +231,11 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
  * All variable declarations in Caml are IMMUTABLE -- value will never change
  * helps in reasoning about programs, we know the variable's value is fixed
  *)
-let y = 55 in let x = 5 in
-  let f y = x + y in
-    let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
-      (f y) + x (* x is 5 in the function (!), it was the value of x when f was defined *)
+let y = 55 in 
+  let x = 5 in
+    let f y = x + y in
+      let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
+        (f (y - 1)) + x (* note x is 5 and y is 54 in the function body *)
 ;;
 
 (* top loop is conceptually an open-ended series of lets which never close: compare following with previous *)
@@ -235,7 +243,7 @@ let y = 55;;
 let x = 5;;
 let f y = x + y;;
 let x = 7;; (* as in previous example, this is a nested definition, not assignment! *)
-f y + x;;
+f (y-1) + x;;
 
 
 (*
@@ -258,11 +266,16 @@ g (-5);; (* we didn't recompile g and the version above still refers to now-shad
 let g x = f (f x);; (* need to resubmit (identical) g code since it depends on f *)
 g (-6);; (* now it works as expected *)
 
-let rec ident l = match l with 
+(* warm up to the next function - write a stupid no-op function on a list *)
+
+let rec noop l = match l with 
               [] -> []
-            | hd :: tl ->  hd::(ident tl)
-						
-						(* mutually recursive functions must be defined together via the "and" keywd (yuck) *)
+            | hd :: tl ->  hd::(noop tl)
+
+noop [1;2;3;4;5;6;7;8;9;10];;
+												
+												
+(* mutually recursive functions must be defined together via the "and" keywd *)
 let rec 
      take l = match l with 
               [] -> []
@@ -282,13 +295,22 @@ let justtake ll =
      ltake l = match l with 
               [] -> []
             | hd :: tl ->  hd::(lskip tl)
-and
-     lskip l = match l with 
+  and
+     lskip l = match l 
+		
+		
+		
+		
+		
+		
+		
+		
+		with 
               [] -> []
             | x :: xs -> ltake xs
 		
-in 
- ltake ll;;
+  in 
+   ltake ll;;
 			
 justtake [1;2;3;4;5;6;7;8;9;10];;
 						  
@@ -337,7 +359,7 @@ let rec map f l =
   | hd::tl -> (f hd) :: map f tl;;
 
 map (function x -> x * 10) [3;2;50];;
-let middle = List.map (function s -> s^"gobble");;
+let middle = List.map (function s -> s^"gobble");;  (* here we use the built-in List.map which is the same as the one we defined *)
 middle ["have";"a";"good";"day"];;
 
 (* This also shows why these "anonymous" functions are useful. *)
@@ -351,15 +373,13 @@ map f [1;2;3;34;56;90];;
 let compose g f = (function x -> g (f x));;
 let compose g f x =  g (f x);;
 let compose = (function g -> (function f -> (function x -> g(f x))));;
-(* All three of the above definitions produce the same function *)
+(* All three of the above definitions are different notation for the same function *)
 
 let plus3 x = x+3;;
 let times2 x = x*2;;
 let times2plus3 = compose plus3 times2;;
 times2plus3 10;;
 compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent way *)
-let composerest = compose (function x -> x+3);;
-composerest (function x -> x*2) 10;;
 
 (*
   Parametric and object polymorphism
@@ -370,8 +390,8 @@ let id = function x -> x;;
 id 3;;
 (* SAME id applied to bool returns a bool *)
 id true;;
-(* conclusion: the type of id is PARAMETRIC, i.e. the return type is 
-   parameterized by the type of the argument.  These are called Generic in Java.
+(* conclusion: the type of id ('a -> 'a) is PARAMETRIC, i.e. the return type is 
+   parameterized by the type of the argument.  These are called "generics" in Java.
 	
 	 We already saw many parametric functions, e.g. map above: *)
 
@@ -616,6 +636,7 @@ let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is 
 let addC = function x -> (function y -> x + y);;
 (* yet another identical way .. *)
 let addC x = function y -> x + y;;
+
 addC 1 2;; (* same result as above *)
 
 (* Also recall the related  non-Curry'ing version: use a pair of arguments instead *)
