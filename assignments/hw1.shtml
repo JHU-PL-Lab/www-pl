@@ -23,7 +23,7 @@ yet anyway, you should be fine.<p>
 class</a>.  
   <li>For more Caml examples etc, read and
 copy/paste the code defined in the <a
-href="http://caml.inria.fr/pub/docs/manual-ocaml/manual003.html">Caml
+href="http://caml.inria.fr/pub/docs/manual-ocaml-4.01/coreexamples.html">Caml
 manual Part I Chapter 1</a>.  
   <li>If you are looking for how some standard library function is expressed in Caml, like not equal, etc, consult the <a
       href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Caml Pervasives</a> which are the predefined functions available in Caml.
@@ -32,9 +32,8 @@ href="../ocaml/ocaide.shtml">OCaIDE</a> in Eclipse or the <a
 href="../ocaml/emacs.shtml">emacs caml mode</a> to easily edit and debug Caml code.
   <li>Find a partner or two to work on some of the problems with.
   <li>Come to the PL Collab Labs, in the CS Undergrad Lab in NEB 225, to get help from Prof, TAs, and your peers.
-  <li>If you cannot make a Collab Lab time there are also 
-<a href="../contact.shtml">office hours</a> times.
-  <li>There is also the Blackboard Discussion board for online help and question clarification.
+  <li>There is also <a href="https://piazza.com/jhu/spring2014/600426/home">Piazza</a> for online help and 
+      question clarification.
 </ul><p>
 
 <h3>Submission Method</h3>
