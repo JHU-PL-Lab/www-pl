@@ -39,10 +39,10 @@
 
 (*
   1a. A predicate function is a function that accepts an argument and returns a boolean value. Given a
-	    list and a predicate, return the index of the first element in the list for which the predicate 
-			evaluates to true. If no element in the list matches the predicate, return -1.
-			
-			[5 Points]
+      list and a predicate, return the index of the first element in the list for which the predicate 
+      evaluates to true. If no element in the list matches the predicate, return -1.
+      
+      [5 Points]
 *) 
 
 let rec index_of lst predicate = () ;; (* ANSWER *)
@@ -56,9 +56,9 @@ let rec index_of lst predicate = () ;; (* ANSWER *)
 
 (*
   1b. Given a list and a number n, write a function that returns the last n elements of the list
-	    if n is greater than the length of the list, your function should return the entire list
-			
-			[5 Points]
+      if n is greater than the length of the list, your function should return the entire list
+      
+      [5 Points]
 *)
 
 let rec back lst n = () ;; (* ANSWER *)
@@ -72,9 +72,9 @@ let rec back lst n = () ;; (* ANSWER *)
 
 (*
   1c. Write a function that when given a list returns true if there are duplicate elements in
-	    the list.
-			
-			[5 Points]
+      the list.
+      
+      [5 Points]
 *)
 
 let rec has_duplicates lst = () ;; (* ANSWER *)
@@ -112,13 +112,13 @@ let rec cartesion_product lst_1 lst_2 = () ;; (* ANSWER *)
 
 (*
   1e. Given a number n >= 1, write a function to compute the first n rows of Pascal's triangle
-	    (https://en.wikipedia.org/wiki/Pascal%27s_triangle)
-			
-			[8 Points]
+      (https://en.wikipedia.org/wiki/Pascal%27s_triangle)
+      
+      [8 Points]
 *) 
 
 let rec pascal n = () ;; (* ANSWER *)
-	  
+    
 (*
 # pascal 3 ;;
 - : int list list = [[1]; [1; 1]; [1; 2; 1]]
@@ -133,13 +133,13 @@ let rec pascal n = () ;; (* ANSWER *)
 
 (*
   2a. Given two sorted lists, merge them in to a single sorted list.
-	
-	    It is possible to use the <= operator for comparison since it is polymorphic. However we can
+  
+      It is possible to use the <= operator for comparison since it is polymorphic. However we can
       generalize this a bit further by allowing the caller to supply a comparison function. The 
       comparison function is expected to have the type (a -> a -> bool) and return true if the first
-			parameter is less than or equal to the second. See test cases below.
-	
-	    [7 Points]
+      parameter is less than or equal to the second. See test cases below.
+  
+      [7 Points]
 *)
 
 let rec merge_lists comparison_fn lst_1 lst_2 = () ;; (* ANSWER *)
@@ -154,8 +154,8 @@ let rec merge_lists comparison_fn lst_1 lst_2 = () ;; (* ANSWER *)
 (*
   2b. Now write a function to sort a given list using the mergesort algorithm. You take a comparison function
       (similiar to the one used in question 3a) and a list of data as input.
-			
-			[8 Points]
+      
+      [8 Points]
 *)
 
 let rec mergesort comparison_fn lst = () ;; (* ANSWER *)
@@ -175,8 +175,8 @@ let rec mergesort comparison_fn lst = () ;; (* ANSWER *)
 (*
   3a. Given a list of values, produce a run-length encoding of it. The result should be a list of pairs 
       where each one has the form (count, value)
-			
-			[8 Points]
+      
+      [8 Points]
 *) 
 
 let rec run_length_encode lst =  () ;; (* ANSWER *)
@@ -191,8 +191,8 @@ let rec run_length_encode lst =  () ;; (* ANSWER *)
 (*
   3b. Given a run-length encoded list as (count, value) pairs, like the one produced from run_length_encode, 
       return a decoded list 
-			
-			[7 Points]
+      
+      [7 Points]
 *) 
 
 let rec run_length_decode lst = () ;; (* ANSWER *)
@@ -241,22 +241,22 @@ val fn_list : (int -> int) list = [<fun>; <fun>; <fun>; <fun>; <fun>]
 
 (*
   In this section we will build the core of a simple (simplistic?) package management system.
-	
-	Generally package management systems require you to declaratively specify for each package a package 
+  
+  Generally package management systems require you to declaratively specify for each package a package 
   identifier as well any dependencies on other packages. (Most sane package management systems also require 
   version information; but we will ignore those for simplicity)
-	
-	We represent this information ("package configuration") as a list of key-value pairs - the first element 
+  
+  We represent this information ("package configuration") as a list of key-value pairs - the first element 
   (the "key") of each pair is the package identifier (represented as a string) and the second element is the 
   list of package (identifiers) that it depends on.
-	
-	For example, the list 
-		[("Package-A", ["Package-B"; "Package-C"]);
-		 ("Package-B", ["Package-C"]);
-		 ("Package-C", ["Package-D"]);
-		 ("Package-D", [])
-		]
-	represents a system where Package-A depends on both Package-B and Package-C, Package-B also depends on 
+  
+  For example, the list 
+    [("Package-A", ["Package-B"; "Package-C"]);
+     ("Package-B", ["Package-C"]);
+     ("Package-C", ["Package-D"]);
+     ("Package-D", [])
+    ]
+  represents a system where Package-A depends on both Package-B and Package-C, Package-B also depends on 
   Package-C and Package-C only depends on Package-D. The latter has no dependencies.
 *) 
 
@@ -265,11 +265,11 @@ type package_info = string * string list ;;
 (*  
   5a. In the example above, Package-A has an indirect dependency on Package-D (since Package-A depends on Package-C
       which in turn depends on Package-D.
-			
-			Given two package names (package_a and package_b), determine whether package_a has any dependency on 
+      
+      Given two package names (package_a and package_b), determine whether package_a has any dependency on 
       package_b
-			
-			[9 Points]
+      
+      [9 Points]
 *) 
 
 (* package_info list -> string -> string -> bool *)
@@ -309,17 +309,17 @@ let rec is_dependent_on package_config package_a package_b = () ;; (* ANSWER *)
 (*
   5b. As we saw in 4a, packages can have deep dependencies. In fact the dependencies can be circular (which can 
       be an issue when trying to install them).
-			
-			E.g. 
+      
+      E.g. 
       [("Package-A", ["Package-B"; "Package-C"]);
        ("Package-B", ["Package-C"]);
        ("Package-C", ["Package-D"]);
        ("Package-D", ["Package-B"])
-		  ]
-			indicates a package configuration with a circular dependency. (Package-B indirectly depends on Package-D 
+      ]
+      indicates a package configuration with a circular dependency. (Package-B indirectly depends on Package-D 
       and Package-D depends on Package-B.
-			
-			For this question, given a package configuration, determine whether it has any circular dependencies.
+      
+      For this question, given a package configuration, determine whether it has any circular dependencies.
       
       [9 Points]
 *) 
@@ -357,16 +357,16 @@ let rec has_circular_dependency package_config = () ;; (* ANSWER *)
   5c. A package can only be installed if all the packages it depends on are installed. Assuming that the 
       package configuration has no circular dependencies, it should be possible to install any package as
       long as you install the dependencies in the right order.
-			
-			For this question you are given the identifier for a package to install as well as a list of already
+      
+      For this question you are given the identifier for a package to install as well as a list of already
       installed packages. Your task is to return the list of packages to be installed in the order in which
       they should be installed.
-			
-			Note: Depending on the package configuration, there may be multiple orders in which the packages can be
+      
+      Note: Depending on the package configuration, there may be multiple orders in which the packages can be
       installed. The order generated by your code does not have to precisely match the examples below. It just
       needs to be "correct".  
-			
-			[12 Points]  
+      
+      [12 Points]  
 *) 
 
 (* package_info list -> string -> string list -> string list *)
