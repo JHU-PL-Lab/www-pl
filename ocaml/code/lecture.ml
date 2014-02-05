@@ -27,7 +27,7 @@ true || false;;
 [];; (* empty list *)
 
 (* Operations on lists.  Lists are represented as BINARY TREES with left child a leaf. *)
-0 :: [1; 2; 3];; (* 'consing' an element to the front of a list - fast *)
+0 :: [1; 2; 3];; (* 'Consing' an element to the front of a list - fast *)
 [1; 2; 3] @ [4; 5];; (* appending lists - slower *)
 let z = [2; 4; 6];;
 let y = 0 :: z;;
@@ -259,6 +259,8 @@ let f x = x + 1;;
 let g x = f (f x);;
 
 (* lets change f, say we made an error in its definition above *)
+let shad = f;;
+
 let f x = if x <= 0 then 0 else x + 1;; 
 
 g (-5);; (* we didn't recompile g and the version above still refers to now-shadowed f - !! *)
@@ -272,7 +274,7 @@ let rec noop l = match l with
               [] -> []
             | hd :: tl ->  hd::(noop tl)
 
-noop [1;2;3;4;5;6;7;8;9;10];;
+let result = noop [1;2;3;4;5;6;7;8;9;10];;
 												
 												
 (* mutually recursive functions must be defined together via the "and" keywd *)
@@ -296,16 +298,7 @@ let justtake ll =
               [] -> []
             | hd :: tl ->  hd::(lskip tl)
   and
-     lskip l = match l 
-		
-		
-		
-		
-		
-		
-		
-		
-		with 
+     lskip l = match l with 
               [] -> []
             | x :: xs -> ltake xs
 		
@@ -361,6 +354,10 @@ let rec map f l =
 map (function x -> x * 10) [3;2;50];;
 let middle = List.map (function s -> s^"gobble");;  (* here we use the built-in List.map which is the same as the one we defined *)
 middle ["have";"a";"good";"day"];;
+
+map (function (x,y) -> x + y) [(1,2);(3,4)];;
+
+map (function x -> function y -> x + y) ;; (* mind blower *)
 
 (* This also shows why these "anonymous" functions are useful. *)
 
@@ -703,13 +700,13 @@ f (2, 3);; (* can pass it to the function expecting an intpair due to type defn 
 
 (* 
  * Variant Type Declaration 
- *    - related to union types in C: "this OR that OR theother"
+ *    - related to union types in C or enums in Java: "this OR that OR theother"
  *    - BUT like list/tuple they are immutable data structures
- *    - each case of the union is identified by a name called 'constructor'
+ *    - each case of the union is identified by a name called 'Constructor'
  *      which serves for both
- *           - constructing values of the variant type
+ *           - Constructing values of the variant type
  *           - inspecting them by pattern matching
- *      - constructors must start with Capital Letter to distinguish from variables
+ *      - Constructors must start with Capital Letter to distinguish from variables
  *      - type declarations needed but once they are in place type inference on them works
  *)
 
@@ -725,14 +722,14 @@ Floating 4.0;;
 
 let pullout x = 
 	match x with 
-	| Fixed n -> n 
+	| Fixed n -> n              (* variants fit very well into pattern matching syntax *)
 	| Floating z -> int_of_float z;;
 
 pullout (Fixed 5);;
 
 (* arithmetic operations on 'number' variant type *)
 let add_num n1 n2 =
-   match (n1, n2) with    (* aside -- note use of temporary pair here to simult. match on two variables  *)
+   match (n1, n2) with    (* aside -- note use of pair hack to simult. match on two variables  *)
      (Fixed i1, Fixed i2) ->       Fixed  (i1       +  i2)
    | (Fixed i1,   Floating f2) ->  Floating(float i1 +. f2) (* need to coerce here *)
    | (Floating f1, Fixed i2)   ->  Floating(f1       +. float i2) (* ditto *)
@@ -745,19 +742,20 @@ add_num (Fixed 123) (Floating 3.14159);;
 (*
  * Enum types 
  *     - special case of variant types, 
- *       where all alternatives are constants:
+ *       where all alternatives are Constatants:
  *)
+
 type sign = Positive | Negative | Zero;;
 
 let sign_int n = if n > 0 then Positive else Negative;;
 sign_int (-6);;
 
-(* Multiple data items in a construct?  Use product type *)
+(* Multiple data items in a Construct?  Use product type *)
 
 type complex = CZero | Nonzero of float * float;;
 
 (* 
- * Recursive data structures - most common usage of variant types 
+ * Recursive data structures - the primary usefulness of variant types 
  *
  *  - recursive types can refer to themselves in their own definition
  * 
@@ -785,14 +783,14 @@ let bt = Node("fiddly ",
 
 (* Lists could have been built with a recursive type declaration *)
 
-type 'a mylist = Nil | Cons of 'a * 'a mylist;;
+type 'a mylist = MtList | ColonColon of 'a * 'a mylist;;
 
-let mylisteg = Cons(3,Cons(5,Cons(7,Nil)));; (* isomorphic to [3;5;7] *)
+let mylisteg = ColonColon(3,ColonColon(5,ColonColon(7,MtList)));; (* isomorphic to [3;5;7] *)
 
 let rec double_list_elts ml = 
 	match ml with
-	| Nil -> Nil
-	| Cons(mh,mt) -> Cons(mh * 2,double_list_elts mt);;
+	| MtList -> MtList
+	| ColonColon(mh,mt) -> ColonColon(mh * 2,double_list_elts mt);;
 
 double_list_elts mylisteg;;
 
@@ -810,18 +808,6 @@ let rec add_gobble_tree_elts bintree =
 ;;
 
 let gobtree = add_gobble_tree_elts bt;;
-
-
-let rec walk_inorder bintree doer =
-   match bintree with
-     Empty -> ()
-   | Node(y, left, right) ->
-       walk_inorder left doer; doer y; walk_inorder right doer
-;;
-
-let mydoer = print_string;;
-
-walk_inorder bt mydoer;;
 
 
 let rec lookup x bintree =
@@ -864,12 +850,13 @@ let gooobt = insert "slacker " goobt;;
  *   - types are declared just like variants.
  *   - can be used in pattern matches as well.
  *   - again the fields are immutable by default
+ *   - not used super often, most data is a variant with tupled multiple arguments
  *)
 
 (* record to represent rational numbers *)
 type ratio = {num: int; denom: int};;
 
-let q = {num = 53; denom = 6};; (* contrast with the malloc approach of C *)
+let q = {num = 53; denom = 6};;
 
 q.num;;
 q.denom;;
@@ -892,7 +879,7 @@ add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
 (* Annoying shadowing issue: there is one global namespace of record labels - yuck! *)
 type scale = {num: int; coeff: float};; (* shadowing ratio's label num *)
-(* q.num;; *) (* error: no longer can access q's num label since scale now owns "num" *)
+(* q.num;; *) (* error: no longer can access q's num label since scale now owns "num" ARGH *)
 q.denom;; (* this is still OK, label not overdefined *)
 function x -> x.num;; (* this is why there is only one version of num allowed - inference *)
 
@@ -915,7 +902,8 @@ function x -> x.num;; (* this is why there is only one version of num allowed - 
  *)
 
 (* References *)
-let x = ref 4;;
+
+let x = ref 4;;    (* always have to declare initial value when creating a reference *)
 (* x + 1;; *) (* a type error ! *)
 
 !x + 1;; (* need !x to get out the value; something like *x in C *)
@@ -946,12 +934,12 @@ type mitree = Nothing | ANode of int * mitree ref * mitree ref
  *)
 
 let x = ref 4;;
-let f () = !x;;
+let f () = !x;; (* note this is syntax for a 0-argument function in Caml - it only takes () as argument *)
 
 x := 234;;
 f();;
 
-let x = ref 6;; (* a shadowing old previous x definition, not an assignment to x *)
+let x = ref 6;; (* a shadowing old previous x definition, NOT an assignment to x *)
 f ();;
 
 (* more on mutable records *)
