@@ -72,21 +72,21 @@ let exp10 = ();; (* ANSWER *)
 
 (*
   2. There are various ways to represent a Set in a language. For this question, we will implement a Set
-	   module in terms of a "characteristic function" - i.e. a predicate that determines whether an element
-		 is a member of the set. 
-		
-		 Sets defined this way often allow large (or even infinite) sets to be concisely represented. For example, 
-		 the predicate (fun x -> x > 0 && x mod 2 = 0) represent the set of even naturals, while a predicate 
-		 (fun x -> x > 0.0 && x < 1.0) represents the set of floating point numbers between 0 and 1.
+     module in terms of a "characteristic function" - i.e. a predicate that determines whether an element
+     is a member of the set. 
+    
+     Sets defined this way often allow large (or even infinite) sets to be concisely represented. For example, 
+     the predicate (fun x -> x > 0 && x mod 2 = 0) represent the set of even naturals, while a predicate 
+     (fun x -> x > 0.0 && x < 1.0) represents the set of floating point numbers between 0 and 1.
      
-		 Create a set module that has the following methods:
-		   create    : ('a -> bool) -> 'a set       - Create a new set instance based on the given predicate
-			 member    : 'a set -> 'a -> bool         - Returns true if that given element is a member of the set
-			 union     : 'a set -> 'a set -> 'a set   - Returns a new set that is the union of two sets
-			 intersect : 'a set -> 'a set -> 'a set   - Returns a new set that is the intersection of two sets 
-		   exclude   : 'a set -> 'a -> 'a set       - Returns a new set that excludes the specific element 
-			
-		 In the section below, fill out the signature and the implementation details. You must explicitly leave any
+     Create a set module that has the following methods:
+       create    : ('a -> bool) -> 'a set       - Create a new set instance based on the given predicate
+       member    : 'a set -> 'a -> bool         - Returns true if that given element is a member of the set
+       union     : 'a set -> 'a set -> 'a set   - Returns a new set that is the union of two sets
+       intersect : 'a set -> 'a set -> 'a set   - Returns a new set that is the intersection of two sets 
+       exclude   : 'a set -> 'a -> 'a set       - Returns a new set that excludes the specific element 
+      
+     In the section below, fill out the signature and the implementation details. You must explicitly leave any
      types in the signature abstract. (This is good practice in the software engineering sense. By not explicitly
      binding the types on the interface, you allow different implementations to choose types best suited
      for their goals)
@@ -148,7 +148,7 @@ type 'a tree = Node of 'a * 'a tree list ;;
       Node('e',
         [Node('f',
            [Node('g', [])])])])
-											
+                      
 represents the tree:
 
         a
