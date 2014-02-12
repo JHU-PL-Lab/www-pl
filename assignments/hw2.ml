@@ -37,7 +37,7 @@ let exp1 = ();; (* ANSWER *)
 (* Give an expression which has the following type: 'a list -> bool *)
 let exp2 = ();; (* ANSWER *)
 
-(* Give an expression which has the following type: ('a -> 'b) -> a -> 'b *)
+(* Give an expression which has the following type: ('a -> 'b) -> 'a -> 'b *)
 let exp3 = ();; (* ANSWER *)
 
 (* Give an expression which has the following type: 'a list -> 'a list list -> 'a list *)
