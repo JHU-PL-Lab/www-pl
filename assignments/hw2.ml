@@ -418,7 +418,7 @@ cf 4;;
   elements from the list. Invoking the function after all the elements are exhausted, should return None.
 *)
 
-(* 'a list -> (() -> 'a option) *)
+(* 'a list -> unit -> 'a option *)
 let create_list_iterator lst = () (* ANSWER *) ;; 
 
 (*
@@ -444,7 +444,7 @@ val iter : unit -> int option = <fun>
   arithmetic progression - i.e. an iterator over the infinite sequence (a, a + d, a + 2d ..... )
 *)
 
-(* int -> int -> (() -> int option) *)
+(* int -> int -> unit -> int option *)
 let create_ap_iterator a d = () (* ANSWER *) ;;
 
 (*
