@@ -221,7 +221,7 @@ let rec encode_tree tree = () (* ANSWER *) ;;
 *)
 
 (*
-  3c. Write a function that takes as input, a function (of type 'a -> 'a) and a tree and creates a new tree by 
+  3c. Write a function that takes as input, a function (of type 'a -> 'b) and a tree and creates a new tree by 
       applying the function to each node.
       
       [5 Points]
