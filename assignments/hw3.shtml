@@ -49,7 +49,7 @@ Once you have <code>make</code>'d all the files, run <code>ocaml</code> from the
 href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/source/fbdk-1.23/src/Fb/fbdktoploop.ml"><code>.../src/Fb/fbdktoploop.ml</code></a>
     file -- this will load the
 	F&#x266d; interpreter structures.  Look at the source of this file for
-    the functions it contains. (NOTE: You may need to add a <code>#cd [your Fb directory here] ;;</code> at the top of the file to make it load correctly. Check the comments in the file for details)
+    the functions it contains. (NOTE: You may need to add a <code>#cd [your Fb directory here] ;;</code> at the top of the file to make it load correctly. Check the comments in the file for details).  Note you fan also use <code>fbdktoploop.ml</code> with the binaries by using the <code>.cmo</code> files in the subdirectory <code>cmo/</code> of the binary distribution.
 <li>The F&#x266d;DK distribution also contains the source of all F&#x266d; code examples in
     the book, <a
 href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/source/fbdk-1.23/src/Fb/fbexamples.ml"><code>.../src/Fb/fbexamples.ml</code></a>

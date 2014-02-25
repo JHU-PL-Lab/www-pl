@@ -528,7 +528,7 @@ let toUpperCase l = List.map toUpperChar l ;;
 
 (* could have also defined it even more simply - partly apply the Curried map : *)
 
-let toUpperCase = map toUpperChar ;;
+let toUpperCase = List.map toUpperChar ;;
 
 (*
    3. Write a function 'nth' which takes a list (l) and index (n) and returns
@@ -714,7 +714,7 @@ f (2, 3);; (* can pass it to the function expecting an intpair due to type defn 
  * variant type for doing mixed arithmetic (integers and floats) 
  *)
 
-type number = Fixed of int | Floating of float;;  (* read "|" as "or", same as match *)
+type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or", same as match *)
 
 Fixed 5;;
 Floating 4.0;;
@@ -727,7 +727,7 @@ let pullout x =
 
 pullout (Fixed 5);;
 
-(* arithmetic operations on 'number' variant type *)
+(* arithmetic operations on 'mynumber' variant type *)
 let add_num n1 n2 =
    match (n1, n2) with    (* aside -- note use of pair hack to simult. match on two variables  *)
      (Fixed i1, Fixed i2) ->       Fixed  (i1       +  i2)
@@ -780,6 +780,13 @@ let bt = Node("fiddly ",
 			      Empty)),
 	        whack);;
 
+let bt2 = Node("fiddly ",
+	        Node("backer ",
+		       Empty,
+		       Node("cracw ",
+			      Empty,
+			      Empty)),
+	        whack);;
 
 (* Lists could have been built with a recursive type declaration *)
 
@@ -907,9 +914,8 @@ let x = ref 4;;    (* always have to declare initial value when creating a refer
 (* x + 1;; *) (* a type error ! *)
 
 !x + 1;; (* need !x to get out the value; something like *x in C *)
-
 x := 6;; (* assignment - x must be a ref cell *)
-!x + 1;; (* Woo wee!!  Mutation finally!!!!  Ahhhh!!!  (says the  hacker) *)
+!x + 1;; (* Mutation finally!!!!  Ahhhh!!!  (says the  hacker) *)
 
 (* 'a ref is really implemented by a mutable record with one field, contents: 
      'a ref abbreviates the type { mutable contents: 'a }
@@ -946,7 +952,8 @@ f ();;
 type mutable_point = { mutable x: float; mutable y: float };;
 let translate p dx dy = 
                 p.x <- (p.x +. dx); (* observe use of ";" here to sequence effects *)
-                p.y <- (p.y +. dy);;
+                p.y <- (p.y +. dy)
+								;;
 let mypoint = { x = 0.0; y = 0.0 };;
 translate mypoint 1.0 2.0;;
 mypoint;;
@@ -1039,7 +1046,7 @@ Some principles of modules:
       * imports some things (e.g. other modules) from the outside and  
       * exports some things it has declared for outsiders to use; hides other things
   -  Module names may also be around at run-time (or not; depends on the language)
-      this helps minimize name clashes across modules: com.bozo.Wank is different from com.fred.Wank
+      this helps minimize name clashes across modules: com.bozo.UI.Wank is different from com.bozo.DB.Wank
 
   -  Modules may support separate compilation: not all code is needed to compile
        Java: mostly but not completely supported (need all .class files on CLASSPATH)
@@ -1047,7 +1054,7 @@ Some principles of modules:
        Caml: yes in ocamlc mode (.mli interface file of modules used is all that is needed)
 
 
- The C/C++ module system
+ The C/C++ "module" system
    - Informal use of files and filesystem directories as modules 
    - .h file declaring what is externally visible for a module
 
@@ -1082,7 +1089,7 @@ Some principles of modules:
 module FSet =
 struct
 	
-	exception NotFound
+	exception NotFound (* any top-level definition can be included in a module *)
 	
 	type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
 	
