@@ -1,5 +1,4 @@
 open Fbsrast;;
-open Fbsrtype;;
 
 let pretty_print_fun f e = (f e "") ^ "\n"
 
