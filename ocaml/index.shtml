@@ -19,8 +19,7 @@ class</a>. We pretty much just run through these as the lecture.  For the separa
 
 <h3>Our ML Dialect</h3> There are more ML dialects out
 there than you would believe.  We are going to use <a
-href="http://caml.inria.fr/">OCaml</a>, version 4.01.0 (any version from
-3.06 on should be good enough for our purposes).  OCaml is not
+href="http://caml.inria.fr/">OCaml</a>, version 4.01.0 (earlier versions will generally work as well, but the binary distibutions of the FbDK can be picky on which version they are run under).  OCaml is not
 completely compatible with the most standard dialect of ML, SML, but
 is nonetheless similar.  It includes classes and objects, something
 not found in SML.  We will often call OCaml just "Caml", you can view
