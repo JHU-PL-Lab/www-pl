@@ -90,7 +90,8 @@ The FbDK uses ocamlc to develop standalone applications and different setup inst
                 interpreter.
             </li>
         </ol>
-        For <strong>Windows users</strong>:
+        For <strong>Windows users</strong>: 
+        <div>* See also the experimental instructions below</div>
         <ol>
             <li>Create a new OCaml Managed Project.</li>
             <li>
@@ -148,15 +149,37 @@ The FbDK uses ocamlc to develop standalone applications and different setup inst
                 been disabled, the errors reported by Eclipse are meaningless.
             </li>
         </ol>
+
+        <strong style="color: red">(Experimental)</strong> For the <em>adventurous</em> <strong>windows users</strong>:
+        <div>The goal is to get you enough of a POSIX environment to make working with FbDK in OCaIDE easier on windows.</div>
+        <ol>
+            <li>Install Msys. There are detailed instructions <a href=http://www.mingw.org/wiki/Getting_Started>here</a>. But it may be too detailed. So here are the steps you need to follow:
+                <ol>
+                    <li>Download mingw-get-setup.exe from the page above and start the installation.</li>
+                    <li>Continue with the installation until it presents you with the "MinGW Installation Manager"</li>
+                    <li>Here make sure to mark both "mingw-developer-toolkit" and "msys-base" for installation.</li>
+                    <li>Start the installation by clicking "Apply Changes" in the "Installation" menu. It will ask you to confirm and proceed to download and install a slew of packages.</li>
+                    <li>Once installation is completed, add "C:\MinGW\bin" and "C:\MinGW\msys\1.0\bin" to your path (assuming you installed to the default path)</li>
+                </ol>
+            
+            At this point you should have a usable bash, make and autoconf installation.
+
+            <li>Open up your eclipse and under the Eclipse Preferences -> OCaIDE -> Paths, ensure that the path to the "make" command is set correctly. (An easy way to find the full path to msys make is to open a command prompt and type "where make")</li>
+
+            <li>You can now follow the same instructions as for Linux and Mac users with a minor tweak - at step 3, you need to open a command prompt, navigate to the project directory and invoke "bash -c ./configure" instead of just "./configure".</li>
+        </ol>
     
-        You may want to use the top loop to interact with
-        <strong>F&#x266d;</strong> rather than the executable; for that, edit
-        the fbdktoploop.ml file, select all, and  Eval in Toplevel.  Now you
-        have all the functions in that file available in the top loop
-        below.  Note that this step will not automatically rebuild - you
-        must perform it manually each time you save changes.  You will need
-        to uncomment the "#cd" command to point the toploop to the right
-        location to load the files.
+    <li>
+    You may want to use the top loop to interact with
+    <strong>F&#x266d;</strong> rather than the executable; for that, edit
+    the fbdktoploop.ml file, select all, and  Eval in Toplevel.  Now you
+    have all the functions in that file available in the top loop
+    below.  Note that this step will not automatically rebuild - you
+    must perform it manually each time you save changes.  You will need
+    to uncomment the "#cd" command to point the toploop to the right
+    location to load the files.
+    </li>
+</ul>
 </div>
 
 
