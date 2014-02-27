@@ -28,7 +28,7 @@ List of discussants   :
 (* -------------------------------------------------------------------------------------------------- *)
 
 (*
-Problem 1b. (5 points)
+Problem 1a. (5 points)
 
 The operational semantics for Fb provide a set of proof rules which are used by the interpreter to
 perform evaluation.  In this problem, you will build a proof by hand.  Write an operational semantics
