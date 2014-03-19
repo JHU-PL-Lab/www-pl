@@ -161,10 +161,9 @@ Translation and Encoding (Part 1: 20 points)
        Let v2 = [| e2 |] (Right v1) In
        ((Left v1) (Left v2)) (Right v2)
 
-   [| Let Rec f x = e1 In e2 |] = 
+   [| Let Rec f x = e1 In e2 |] =
      Function s0 ->
        Let Rec f x = [| e1 |] In [| e2 |] s0
-
 
    [| Put e1 |] =
      Function s0 ->
@@ -186,7 +185,7 @@ Translation and Encoding (Part 1: 20 points)
        => (True, 0)
 
      [| Get |]
-       => Function s0 -> (0, s0)
+       => Function s0 -> (s0, s0)
 
      TopLevel( Get )
        => (0, 0)
@@ -232,10 +231,10 @@ Translation and Encoding (Part 1: 20 points)
 
    h. e1 ; Get 0
 
-   i. e1 ; 
+   i. e1 ;
       (If Get 0
        Then False
-       Else (If Not (Get 1) 
+       Else (If Not (Get 1)
              Then False
              Else (If Get 2
                    Then False
