@@ -25,7 +25,8 @@ Operational Equivalence (20 points)
 
   Assume that semicolon is encoded as in section 4.1.1 of the book.
 
-  FbS
+  FbS: for this section, e1 and e2 are FbS expressions and contexts may
+  contain FbS expressions (Ref, !, and :=, for example, are allowed).
 
   a. e1 ~= e1; e1
   b. e1 + e2 =~ e2 + e1
@@ -34,7 +35,9 @@ Operational Equivalence (20 points)
   e. x := y =~ y
   f. Let x = y In !x + !y =~ !y + !y
 
-  FbX
+  FbX: for this section, e1 and e2 are FbX expressions and contexts may
+  contain FbX expressions (Raise, Try-With, and #exn, for example, are
+  allowed).
 
   g. e1 ~= e1 ; e1
   h. e1 + e2 =~ e2 + e1
@@ -54,13 +57,8 @@ Translation and Encoding (Part 1: 20 points)
 --------------------------------------------------------------------------------------------------
 
 3. Consider a simplified version of FbS where there is only one cell
-   (FbS-). There is no need for "Ref" operator (assume that the cell is
-   always in scope and starts out containing the value "0") or for cell
-   names, and assignment and dereference become unary and nullary
-   operations, respectively. Let's encode this in Fb with pairs (FbP).
-
-   Section 5.2.3 of the book defines a translation from FbOB to FbSR;
-   here we will define a translation from FbS- to FbP.
+   (FbS-). The grammar of FbS- and some examples to get an intuition
+   follow:
 
    The grammar of FbS- includes two new expression forms:
 
@@ -73,7 +71,7 @@ Translation and Encoding (Part 1: 20 points)
    book.)
 
      True
-       => True
+       => (True, 0)
 
      Get
        => (0, 0)
@@ -112,87 +110,97 @@ Translation and Encoding (Part 1: 20 points)
      ; False
        => (False, 5)
 
+   FbS- differes from FbS in a few ways: there is no need for "Ref"
+   operator (assume that the cell is always in scope and starts out
+   containing the value "0") or for cell names, and assignment and
+   dereference become unary and nullary operations, respectively. In
+   this assignment, you will be asked to encode parts of FbS- in Fb with
+   pairs (FbP).
+
+   Recall that FbP has three new expression forms and one new value form.
+
+     e ::= ... | (e, e) | Left e | Right e
+     v ::= ... | (v, v)
+
+   Section 5.2.3 of the book defines a translation from FbOB to FbSR;
+   here we will define a translation from FbS- to FbP.
+
    We will represent values in this language as pairs in FbP, the Right
    side representing the state of the cell and the Left side
-   representing the actual value. For example, "Pr 0 1" represents the
+   representing the actual value. For example, "(0, 1)" represents the
    value "0" when the cell contains the value "1". Expressions are
    represented as functions returning pairs, whose input is the state in
    which they are run.
 
    We use [| e |] to indicate the translation of terms from FbS- to FbP.
 
+   To ensure the correct behavior of Get before any Puts have occurred,
+   we need a slightly different translation for top-level expressions
+   than for internal ones:
+
+     TopLevel( e ) = [| e |] 0
+
    We define some of these operations; fill in the others such that the
    examples evaluate correctly.
 
-   (We use "Let Pr x1 x2 = e1 In e2" as shorthand for "Let x0 = e1 In
-   Let x1 = Left x0 In Let x2 = Right x1 In e2")
-
    [| e1 + e2 |] =
      Function s0 ->
-       Let Pr v1 s1 = [| e1 |] s0 In
-       Let Pr v2 s2 = [| e2 |] s1 In
-       Pr (v1 + v2) s2
+       Let v1 = [| e1 |] s0 In
+       Let v2 = [| e2 |] (Right v1) In
+       (v1 + v2, Right v2)
 
    [| Function x -> e |] =
-     Function s0 -> Pr (Function x -> Function s1 -> [| e |] s1) s0
+     Function s0 -> (Function x -> Function s1 -> [| e |] s1, s0)
 
    [| v |] (where v is not a function) =
-     Function s0 -> Pr v s0
+     Function s0 -> (v, s0)
 
    [| e1 e2 |] =
      Function s0 ->
-       Let Pr v1 s1 = [| e1 |] s0 In
-       Let Pr v2 s2 = [| e2 |] s1 In
-       (v1 v2) s2
+       Let v1 = [| e1 |] s0 In
+       Let v2 = [| e2 |] (Right v1) In
+       ((Left v1) (Left v2)) (Right v2)
 
    [| Let Rec f x = e1 In e2 |] = 
      Function s0 ->
        Let Rec f x = [| e1 |] In [| e2 |] s0
 
-   [| Get |] = Function s0 -> Pr s0 s0
 
    [| Put e1 |] =
      Function s0 ->
-       Let Pr v1 s1 = [| e1 |] s0 In
-       Pr 0 v1
+       Let v1 = [| e1 |] s0 In
+       (0, v1)
 
-   a. [| Not e1 |] = ?
+   a. [| Get |] = Function s0 -> ?
 
-   b. [| If e1 Then e2 Else e3 |] = ?
+   b. [| Not e1 |] = ?
 
-   Notice that, since all expressions translate to functions, we are not
-   quite done; in order to actually run the FbS- program, we need to
-   translate the expression occurring at top-level slightly
-   differently. Namely, there is some FbP function that we need to pass
-   the result to. Replace the question mark with that function:
+   c. [| If e1 Then e2 Else e3 |] = ?
 
-   c. TopLevelTranslate(e) = ? [| e |]
-
-   Examples:
+   Examples (note how [| |] differs from TopLevel( )):
 
      [| True |]
-       => Function s0 -> Pr True s0
+       => Function s0 -> (True, s0)
 
-     TopLevelTranslate( True )
-       => Pr True 0
+     TopLevel( True )
+       => (True, 0)
 
      [| Get |]
-       => Function s0 -> Pr 0 s0
+       => Function s0 -> (0, s0)
 
-     TopLevelTranslate( Get )
-       => Pr 0 0
+     TopLevel( Get )
+       => (0, 0)
 
      [| Put False; True |] =
        => v
-       where v =~ Function s0 -> Pr True False
+       where v =~ Function s0 -> (True, False)
 
      TopLevelTranslate( Put False; True )
-       => Pr True False
+       => (True, False)
 
-   Put always evaluates to zero but changes the state. Write an
-   translation rule for a variant, Put', that evaluates to the value
-   written to the state. If you wanted to encode Put', how would you do
-   so in FbS-?
+   Put always evaluates to zero but changes the state. Let us consider a
+   similar operation, Put', that evaluates to the value written to the
+   state.
 
    Examples:
 
@@ -202,14 +210,21 @@ Translation and Encoding (Part 1: 20 points)
      (Put' 6) + 1
        => (7, 6)
 
+   How would you translate Put' from FbS- to FbP
+
    d. [| Put' e1 |] = ?
+
+   How would you encode Put' in FbS-? (That is, imagine that Put' is a
+   macro in FbS- written in terms of other FbS- expressions, simliar to
+   how Let is a macro over Fb.)
 
    e. Put' e1 def= ?
 
    For each of the following, provide an e1 such that the FbS-
    expression given evaluates to True:
 
-   f.
+   f. (These two should be straightforward)
+
       1. e1 ; True
       2. e1
 
@@ -259,12 +274,7 @@ Translation and Encoding (Part 2: 12 points)
      created by a Ref expression; how about a counter?
 
      You will need somewhere to store such a counter; how about in a
-     cell that programmers are not expected to interact with?
-
-     It might be helpful to think of the state in FbS as a really big
-     record, integers as a variant with constructors 0, 1, -1, 2, and so
-     on, and of the duality between records and variants described in
-     section 3.3.2.)
+     cell that programmers are not expected to interact with?)
 
    l. [| Ref e |] = ?
 
