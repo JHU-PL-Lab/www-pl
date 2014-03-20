@@ -248,10 +248,13 @@ Translation and Encoding (Part 1: 20 points)
       Else False
 
 --------------------------------------------------------------------------------------------------
-Translation and Encoding (Part 2: 12 points)
+Translation and Encoding (Part 2: 5 points, extra credit)
 --------------------------------------------------------------------------------------------------
 
-   Write a translation function [| |] from FbS to FbS-. Your translation
+   -- This part is extra credit: you are not required to do it for full
+   -- credit on the assignment; you may skip to the next part.
+
+4. Write a translation function [| |] from FbS to FbS-. Your translation
    may be more permissive than the FbS semantics but must be faithful:
 
    That is to say, if e => v in FbS, then [| e |] => v' in FbS- where v'
@@ -275,12 +278,172 @@ Translation and Encoding (Part 2: 12 points)
      You will need somewhere to store such a counter; how about in a
      cell that programmers are not expected to interact with?)
 
-   l. [| Ref e |] = ?
+   a. [| Ref e |] = ?
 
-   m. [| e := e' |] = ?
+   b. [| e := e' |] = ?
 
-   n. [| ! e |] = ?
+   c. [| ! e |] = ?
 
-   o. Give an example FbS expression, e, that gets stuck but whose
+   d. Give an example FbS expression, e, that gets stuck but whose
       corresponding [| e |] does not, or explain why this cannot be the
       case in your translation.
+
+--------------------------------------------------------------------------------------------------
+Objects and Records (12 points)
+--------------------------------------------------------------------------------------------------
+
+5. Recall the object encoding in FbSR from section 5.1. In this problem,
+   you will be asked to understand a variant of FbR which adds _record
+   extension_ (FbR+) and the corresponding stateful language FbSR+; you
+   will also be asked to encode an OO concept called _mixins_ in FbSR+.
+
+   FbR+ adds one new expression form to FbR
+
+     e ::= ... | e += { l = e }
+
+   where l is a field label. Note that although the syntactic construct to the
+   right of += looks like a record, it is only allowed to have one
+   field. Here are some examples of this construct in use:
+
+     1 += {b = 0}
+       =/>
+
+     {a = 1} += {b = 0}
+       => {a = 1 ; b = 0}
+
+     {a = 1} += {b = 0} += {c = False}
+       => {a = 1 ; b = 0 ; c = False}
+
+     ((Function x -> {a = x ; b = x}) 5) += {c = 0}
+       => {a = 5 ; b = 5 ; c = 0}
+
+     {a = 0 ; b = 0} += {a = 1}
+       => {a = 1 ; b = 0}
+
+   These examples illustrate some key points:
+     * Record extension gets stuck when its left argument is not a
+       record.
+     * Record extensions can chain (in terms of parsing, it associates
+       to the left.
+     * Record extension can override fields.
+
+   a. In the color point inheritance example (section 5.1.5), show how
+      you could use record extension to avoid explicitly repeating the
+      fields and methods of the superclass:
+
+      Let pointClass = ... In
+      Let colorPointClass = Function _ ->
+         ?
+      In ...
+
+   b. In OOP, inheritance is one way to avoid duplication by sharing
+      common code between related objects (or classes); another way is
+      called _mixins_. A mixin can be thought of as a function taking an
+      object as input and producing a new, related object with more
+      fields and/or more methods as output. Using record extension,
+      write a mixin to produce an object with a brightness method that
+      depends on its magnitude and color. The code provided should
+      evaluate.
+
+      Let point2 = {
+        x = Ref 4;
+        y = Ref 3;
+      } In
+      Let mag2MixIn = Function obj ->
+        obj += {magnitude = Function this -> Function _ ->
+                 !(this.x) + !(this.y)} In
+      Let point3 = {
+        x = Ref 4;
+        y = Ref 3;
+        z = Ref 1
+      } In
+      Let mag3MixIn = Function obj ->
+        obj += {magnitude = Function this -> Function _ ->
+                 !(this.x) + !(this.y) + !(this.z)} In
+      Let colorMixIn = Function color -> Function obj ->
+        obj += {color = Ref color} In
+
+      Let brightnessMixIn = ? In
+
+      Let cm2point = colorMixIn (mag2MixIn point2) In
+      Let cm3point = colorMixIn (mag3MixIn point3) In
+      Let bpoint2 = brightnessMixIn cm2point In
+      Let bpoint3 = brightnessMixIn cm3point In
+      (bpoint2 <- brightness ; bpoint3 <- brightness)
+
+   c. Sometimes, a mixin might want to have its own private state; one
+      possible reason for this is to avoid interfering with the object's
+      fields. Change the following counter mixin so that it adds no
+      fields to the object and only one method, but otherwise behaves
+      identically.
+
+      Let counterMixIn = Function obj ->
+        obj += {ctrState = Ref 0}
+            += {inc = Function this -> Function _ ->
+                  Let i = !(this.ctrState) In
+                  (this.ctrState := i + 1 ; i)}
+      In ...
+
+      Let privateCounterMixIn = ?
+
+   d. In what circumstances might you prefer to use mixins over
+      inheritance?
+
+--------------------------------------------------------------------------------------------------
+Streams, again (5 points, extra credit)
+--------------------------------------------------------------------------------------------------
+
+   -- This part is extra credit: you are not required to do it for full
+   -- credit on the assignment; there is no next part.
+
+6. Recall from last assignment Fb with streams:
+
+    e ::= ... | Stream e e | Cons e e | First e | Rest e
+    v ::= ... | Stream v e
+
+    One possible set of opsem rules follows:
+
+               e1 => v1                       e1 => v1    e2 => v2
+    --------------------------------     ------------------------------
+      Stream e1 e2 => Stream v1 e2         Cons e1 e2 => Stream v1 v2
+
+
+          e1 => Stream v1 e2        e1 => Stream v1 e2   e2 => v2
+        ----------------------    ---------------------------------
+            First e1 => v1                 Rest e1 => v2
+
+
+    a. Write a find function which will return the first element in a
+       stream satisfying a predicate; it should not terminate if no such
+       element exists.
+
+       Let Rec find p = ?
+       In
+       Let Rec countUp n = Stream n (countUp (n + 1)) In
+       Let nats = countUp 1 In
+       Let three = find (Function x -> x = 3) nats In
+       Let zero = find (Function x -> x = 0) In
+       ...
+
+       In the example above, the first call to find should return 3, but
+       the second call should not terminate.
+
+    b. Write a function which takes two streams and interleves them in
+       such a way that each element from both streams appears in the
+       resulting stream in the original order. The following
+       equivalence should hold:
+
+       find x (interleave y z) =~ find x y  OR
+       ...                     =~ find x z
+
+       Let Rec interleave ? = ?
+       In ...
+
+    c. Using find and interleave, you can search any finite number of
+       streams. What if you have a stream of streams? Write a function
+       diag which will take a stream of streams and produce a stream
+       which contains each element from each stream in the original
+       order. The following equivalence should hold:
+
+       find x (diag (Stream y e)) =~ find x y  OR
+       ...                        =~ find x (diag e)
