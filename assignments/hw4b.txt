@@ -413,20 +413,21 @@ Streams, again (5 points, extra credit)
             First e1 => v1                 Rest e1 => v2
 
 
-    a. Write a find function which will return the first element in a
-       stream satisfying a predicate; it should not terminate if no such
-       element exists.
+    a. Write a find function which will return the index of first
+       element in a stream satisfying a predicate; it should not
+       terminate if no such element exists.
 
        Let Rec find p = ?
        In
        Let Rec countUp n = Stream n (countUp (n + 1)) In
        Let nats = countUp 1 In
-       Let three = find (Function x -> x = 3) nats In
+       Let firstOne = find (Function x -> x = 1) nats In
+       Let firstThree = find (Function x -> x = 3) nats In
        Let zero = find (Function x -> x = 0) In
        ...
 
-       In the example above, the first call to find should return 3, but
-       the second call should not terminate.
+       In the example above, the first call to find should return 0, the
+       second should return 2, but the third call should not terminate.
 
     b. Write a function which takes two streams and interleves them in
        such a way that each element from both streams appears in the
