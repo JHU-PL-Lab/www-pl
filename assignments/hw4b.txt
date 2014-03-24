@@ -21,28 +21,38 @@ Operational Equivalence (20 points)
    infinitely many contexts to make the two expressions operationally
    inequivalent)
 
-  e1 and e2 are arbitrary expressions; x and y are variables.
+   e1 and e2 are arbitrary expressions; x and y are variables.
 
-  Assume that semicolon is encoded as in section 4.1.1 of the book.
+   Assume that semicolon is encoded as in section 4.1.1 of the book.
 
-  FbS: for this section, e1 and e2 are FbS expressions and contexts may
-  contain FbS expressions (Ref, !, and :=, for example, are allowed).
+   FbS: for this section, e1 and e2 are FbS expressions and contexts may
+   contain FbS expressions (Ref, !, and :=, for example, are allowed).
 
-  a. e1 ~= e1; e1
-  b. e1 + e2 =~ e2 + e1
-  c. e1 ; 0 0 =~ 0 0
-  d. x := y =~ x := y ; x := y
-  e. x := y =~ y
-  f. Let x = y In !x + !y =~ !y + !y
+   a. e1 ~= e1; e1
+      (**ANSWER**)
+   b. e1 + e2 =~ e2 + e1
+      (**ANSWER**)
+   c. e1 ; 0 0 =~ 0 0
+      (**ANSWER**)
+   d. x := y =~ x := y ; x := y
+      (**ANSWER**)
+   e. x := y =~ y
+      (**ANSWER**)
+   f. Let x = y In !x + !y =~ !y + !y
+      (**ANSWER**)
 
-  FbX: for this section, e1 and e2 are FbX expressions and contexts may
-  contain FbX expressions (Raise, Try-With, and #exn, for example, are
-  allowed).
+   FbX: for this section, e1 and e2 are FbX expressions and contexts may
+   contain FbX expressions (Raise, Try-With, and #exn, for example, are
+   allowed).
 
-  g. e1 ~= e1 ; e1
-  h. e1 + e2 =~ e2 + e1
-  i. e1 ; 0 0 =~ 0 0
-  j. Function x -> #Exn 0 =~ Function x -> Raise #Exn 0
+   g. e1 ~= e1 ; e1
+      (**ANSWER**)
+   h. e1 + e2 =~ e2 + e1
+      (**ANSWER**)
+   i. e1 ; 0 0 =~ 0 0
+      (**ANSWER**)
+   j. Function x -> #Exn 0 =~ Function x -> Raise #Exn 0
+      (**ANSWER**)
 
 --------------------------------------------------------------------------------------------------
 Operational Semantics (Proof Trees) (8 points)
@@ -50,7 +60,8 @@ Operational Semantics (Proof Trees) (8 points)
 
 2. Construct a proof of evaluation for the following FbX expression:
 
-  Try (Try (Raise #Exn2 0) With #Exn1 n -> n - 1) With #Exn2 n -> n + 1
+   Try (Try (Raise #Exn2 0) With #Exn1 n -> n - 1) With #Exn2 n -> n + 1
+      (**ANSWER**)
 
 --------------------------------------------------------------------------------------------------
 Translation and Encoding (Part 1: 20 points)
@@ -170,11 +181,11 @@ Translation and Encoding (Part 1: 20 points)
        Let v1 = [| e1 |] s0 In
        (0, v1)
 
-   a. [| Get |] = Function s0 -> ?
+   a. [| Get |] = Function s0 -> (**ANSWER**)
 
-   b. [| Not e1 |] = ?
+   b. [| Not e1 |] = (**ANSWER**)
 
-   c. [| If e1 Then e2 Else e3 |] = ?
+   c. [| If e1 Then e2 Else e3 |] = (**ANSWER**)
 
    Examples (note how [| |] differs from TopLevel( )):
 
@@ -211,13 +222,13 @@ Translation and Encoding (Part 1: 20 points)
 
    How would you translate Put' from FbS- to FbP
 
-   d. [| Put' e1 |] = ?
+   d. [| Put' e1 |] = (**ANSWER**)
 
    How would you encode Put' in FbS-? (That is, imagine that Put' is a
    macro in FbS- written in terms of other FbS- expressions, simliar to
    how Let is a macro over Fb.)
 
-   e. Put' e1 def= ?
+   e. Put' e1 def= (**ANSWER**)
 
    For each of the following, provide an e1 such that the FbS-
    expression given evaluates to True:
@@ -225,12 +236,13 @@ Translation and Encoding (Part 1: 20 points)
    f. (These two should be straightforward)
 
       1. e1 ; True
+         (**ANSWER**)
       2. e1
-
+         (**ANSWER**)
    g. e1 ; Get
-
+      (**ANSWER**)
    h. e1 ; Get 0
-
+      (**ANSWER**)
    i. e1 ;
       (If Get 0
        Then False
@@ -242,11 +254,11 @@ Translation and Encoding (Part 1: 20 points)
 
       (That is to say, "Get 0" is False, "Get 1" is True, and "Get 2" is
       False.)
-
+      (**ANSWER**)
    j. If (e1 + Get) = 0
       Then Get = 3
       Else False
-
+      (**ANSWER**)
 --------------------------------------------------------------------------------------------------
 Translation and Encoding (Part 2: 5 points, extra credit)
 --------------------------------------------------------------------------------------------------
@@ -279,14 +291,15 @@ Translation and Encoding (Part 2: 5 points, extra credit)
      cell that programmers are not expected to interact with?)
 
    a. [| Ref e |] = ?
-
+      (**ANSWER**)
    b. [| e := e' |] = ?
-
+      (**ANSWER**)
    c. [| ! e |] = ?
-
+      (**ANSWER**)
    d. Give an example FbS expression, e, that gets stuck but whose
       corresponding [| e |] does not, or explain why this cannot be the
       case in your translation.
+      (**ANSWER**)
 
 --------------------------------------------------------------------------------------------------
 Objects and Records (12 points)
@@ -333,7 +346,7 @@ Objects and Records (12 points)
 
       Let pointClass = ... In
       Let colorPointClass = Function _ ->
-         ?
+        (**ANSWER**)
       In ...
 
    b. In OOP, inheritance is one way to avoid duplication by sharing
@@ -363,7 +376,7 @@ Objects and Records (12 points)
       Let colorMixIn = Function color -> Function obj ->
         obj += {color = Ref color} In
 
-      Let brightnessMixIn = ? In
+      Let brightnessMixIn = (**ANSWER**) In
 
       Let cm2point = colorMixIn (mag2MixIn point2) In
       Let cm3point = colorMixIn (mag3MixIn point3) In
@@ -384,67 +397,8 @@ Objects and Records (12 points)
                   (this.ctrState := i + 1 ; i)}
       In ...
 
-      Let privateCounterMixIn = ?
+      Let privateCounterMixIn = (**ANSWER**)
 
    d. In what circumstances might you prefer to use mixins over
       inheritance?
-
---------------------------------------------------------------------------------------------------
-Streams, again (5 points, extra credit)
---------------------------------------------------------------------------------------------------
-
-   -- This part is extra credit: you are not required to do it for full
-   -- credit on the assignment; there is no next part.
-
-6. Recall from last assignment Fb with streams:
-
-    e ::= ... | Stream e e | Cons e e | First e | Rest e
-    v ::= ... | Stream v e
-
-    One possible set of opsem rules follows:
-
-               e1 => v1                       e1 => v1    e2 => v2
-    --------------------------------     ------------------------------
-      Stream e1 e2 => Stream v1 e2         Cons e1 e2 => Stream v1 v2
-
-
-          e1 => Stream v1 e2        e1 => Stream v1 e2   e2 => v2
-        ----------------------    ---------------------------------
-            First e1 => v1                 Rest e1 => v2
-
-
-    a. Write a find function which will return the index of first
-       element in a stream satisfying a predicate; it should not
-       terminate if no such element exists.
-
-       Let Rec find p = ?
-       In
-       Let Rec countUp n = Stream n (countUp (n + 1)) In
-       Let nats = countUp 1 In
-       Let firstOne = find (Function x -> x = 1) nats In
-       Let firstThree = find (Function x -> x = 3) nats In
-       Let zero = find (Function x -> x = 0) In
-       ...
-
-       In the example above, the first call to find should return 0, the
-       second should return 2, but the third call should not terminate.
-
-    b. Write a function which takes two streams and interleves them in
-       such a way that each element from both streams appears in the
-       resulting stream in the original order. The following
-       equivalence should hold:
-
-       find x (interleave y z) =~ find x y  OR
-       ...                     =~ find x z
-
-       Let Rec interleave ? = ?
-       In ...
-
-    c. Using find and interleave, you can search any finite number of
-       streams. What if you have a stream of streams? Write a function
-       diag which will take a stream of streams and produce a stream
-       which contains each element from each stream in the original
-       order. The following equivalence should hold:
-
-       find x (diag (Stream y e)) =~ find x y  OR
-       ...                        =~ find x (diag e)
+      (**ANSWER**)
