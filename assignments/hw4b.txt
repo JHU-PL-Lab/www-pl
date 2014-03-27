@@ -179,7 +179,7 @@ Translation and Encoding (Part 1: 20 points)
    [| Put e1 |] =
      Function s0 ->
        Let v1 = [| e1 |] s0 In
-       (0, v1)
+       (0, Left v1)
 
    a. [| Get |] = Function s0 -> (**ANSWER**)
 
