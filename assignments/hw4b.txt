@@ -51,7 +51,7 @@ Operational Equivalence (20 points)
       (**ANSWER**)
    i. e1 ; 0 0 =~ 0 0
       (**ANSWER**)
-   j. Function x -> #Exn 0 =~ Function x -> Raise #Exn 0
+   j. Write anything in for this answer.
       (**ANSWER**)
 
 --------------------------------------------------------------------------------------------------
