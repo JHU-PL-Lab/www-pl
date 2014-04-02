@@ -1,0 +1,96 @@
+600.426 - Programming Languages
+Spring 2014
+Take Home Midterm
+
+----------------------------------------------------------------------------------------
+INSTRUCTIONS
+----------------------------------------------------------------------------------------
+
+This is a Take Home Midterm and as such operates on different rules from your regular
+assignments. You are expected to work on this by yourself. You are encouraged to talk to
+the TA/Prof in office hours if you are stuck. You are NOT allowed to get help from,
+discuss or collaborate with anyone on this exam other than the Prof/TA.
+
+----------------------------------------------------------------------------------------
+HEADER: PLEASE FILL THIS IN
+----------------------------------------------------------------------------------------
+
+Name                  :
+
+----------------------------------------------------------------------------------------
+Questions
+----------------------------------------------------------------------------------------
+
+1. [22 Points] Questions of Equivalence
+
+   a. The following is an alternate definition for operational equivalence in say Fb:
+
+        e ==~ e' if and only if for all contexts C, C[e] ==> 7 if and only if C[e'] ==> 7
+
+	Either give an e and e' where e ==~ e' and e =~ e' (the book version) give
+	different answers (in other words one of the two must have a context C to tell
+	them apart and the other has no such context), or argue that they are in fact
+	equivalent definitions.
+
+   b. Argue why 
+
+        0 1 =~ (Function x -> x x)(Function x -> x x)
+
+      in fact holds.
+  
+   c.  In this question you are to revisit your high school geometry days.  In Section
+   2.4.2 the book lists several equivalences that hold for Fb programs.  Using only those
+   laws, show that
+
+           Function x -> ((Function y -> x + y) 5) =~ Function x -> x + 5
+
+              Do the derivation step by step and cite which law you are using in each
+              step, just like your high school geometry proofs.
+
+   d. As for c. but show
+
+          (Function n -> 6) =~ ((Function w -> Function x -> If 0 = 0 Then summate 3 Else x) w)
+
+	      where summate is as defined in Section 2.3.5.  
+
+
+   If you are having trouble getting your head around c./d., here is an example.  
+   Theorem.  1 + (Function x -> x) 4 =~ 5.
+   Proof.
+         (Function x -> x) 4 =~ 4 by beta (2.20) so
+         1 + (Function x -> x) 4 =~ 1 + 4 by  congruence (2.19, letting C be  1 + hole) and
+         1 + 4 =~ 5 by 2.23, so
+         1 + (Function x -> x) 4 =~ 5 by transitivity between the two previous assertions.
+   QED.
+
+2.  [20 Points] Consider the language FbC, Fb extended with a simple global stateful
+integer counter.  The counter can go Up, and Down, and you can check if the counter has
+been Zeroed.  The initial counter value when the program starts is always zero.  Along
+with Up/Down moving the counter, they return True if the counter just was set to zero and
+False otherwise.  For example (we use the macro encodings of Let and ";" here):
+
+  Up   ==>   False (* the counter is now 1 so we return False *)
+  Up; Up; Down; Down   ==>   True (* the last Down returns True because it zeroed the counter *)
+  Let fourup = (Function x -> Up; Up; Up; Up) In fourup 0; Zeroed   ==>   False
+
+    a. Warm up: Zeroed is not strictly needed as primitive syntax, define Zeroed as a
+    macro in terms of other FbC constructs.
+
+    b. Write an encoding of FbC in FbS: for any FbC program, convert it to an FbS program
+    that will return the same answer.  Note you will need to think about the top level of
+    the encoding to get the counter set up properly.
+
+    c. Write operational semantics rules for FbC.  You don't need to give all the rules
+    for the base Fb syntax, just give the new Up/Down/Zeroed rules and the rule for say
+    "+" in the Fb part.
+
+
+3.  [8 Points] Show why the following two expressions cannot typecheck in TFb (i.e. no
+   derivation tree could ever be built; there are lots of possibilities out there,
+   infinitely many, so you need to show none of them will work).
+
+     a. If 0 Then 0 Else 0
+     b. (Function x:Int -> x) True
+
+  
+
