@@ -49,7 +49,7 @@ Questions
 
    d. As for c. but show
 
-          (Function n -> 6) =~ ((Function w -> Function x -> If 0 = 0 Then summate 3 Else x) w)
+          (Function n -> 6) =~ (Function w -> (Function x -> If 0 = 0 Then summate 3 Else x) w)
 
 	      where summate is as defined in Section 2.3.5.  
 
