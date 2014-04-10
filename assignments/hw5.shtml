@@ -18,7 +18,7 @@
 <p>
     Use the F&#x266d;DK to implement the type inference algorithm for <strong>EF&#x266d;</strong> in OCaml.  You will use the book presentation (also given in class) as the "specification" of your implementation.
 </p><p>
-    To complete this assignment, you will need to open <tt>fbtype.ml</tt> in the <tt>src/Fb</tt> directory and implement the <tt>typecheck</tt> function.  This function must return the type of that expression as specified by the EF&#x266d; algorithm; you should use the <tt>fbtype</tt> data type which appears in <tt>fbast.ml</tt>.  You may also wish to set <tt>typecheck_default_enabled</tt> to <tt>true</tt>; if you do not do this (and also do not pass a command-line flag), then the typechecker will not be used.
+    To complete this assignment, you will need to open <tt>fbtype.ml</tt> in the <tt>src/Fb</tt> directory and implement the <tt>typecheck</tt> function.  This function must return the type of that expression as specified by the EF&#x266d; algorithm; you should use the <tt>fbtype</tt> data type which appears in <tt>fbast.ml</tt>.  You may also wish to set <tt>typecheck_default_enabled</tt> to <tt>true</tt>; if you do not do this (and also do not pass a command-line flag), then the typechecker will not be used.  <b>For this part, you should turn in your <tt>fbtype.ml</tt> file and nothing else.</b>  Do not change fbast.ml or similar files, since your code will be tested with an otherwise correct implementation of the F&#x266d;DK by dropping your <tt>fbtype.ml</tt> file in.
 </p><p>
     As an example, a correctly working interpreter should behave as follows:
 </p>
@@ -96,6 +96,9 @@ Fatal error: exception Fbtype.TypeInferenceFailure("immediately inconsistent typ
 <h3>Part II</h3>
 <b>(30 points)</b>
 <ol>
+    <p>
+        In this part, you will be answering some theory questions about typing.  Your submission for this part should be a text file or a PDF containing your answers.
+    </p>
     <li>
         <b>(15 points)</b>
         <p>
