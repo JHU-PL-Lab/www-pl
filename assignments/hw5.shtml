@@ -128,7 +128,7 @@ Fatal error: exception Fbtype.TypeInferenceFailure("immediately inconsistent typ
     <li>
         <b>(15 points)</b>
         <p>
-            The book defines TF&#x266d;SRX: an explicitly typed version of F&#x266d; with state, records, and exceptions.  For this problem, we will consider variants.
+            The book defines TF&#x266d;SRX: an explicitly typed version of F&#x266d; with state, records, and exceptions.  That language does not include variants; for this problem, we will consider typing variant data.
         </p><p>
             To handle variants, we must add a new type to our type grammar: &tau; ::= ... | l<sub>1</sub> &tau;<sub>1</sub> + ... + l<sub>n</sub> &tau;<sub>n</sub>.  Here, "l &tau;" refers to a single variant type, such as <tt>`Positive Int</tt> (which would be the type of the expression <tt>`Positive 4</tt>).  We use "+" to indicate many variant types; that is, the expression <tt>If someBool Then `Yes 0 Else `No False</tt> would have type <tt>`Yes Int + `No Bool</tt>.  (Without these unions, there would be no way to have multiple possible variant types at the same time and so matching would be pretty useless.)
         </p>
