@@ -183,7 +183,7 @@ One  of the key lessons of Caml is the importance of immutable data: its not cha
   <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior.
 </ul>
 
-<h3>Inner Classes</a></h3>
+<h3>Inner Classes and Lambdas</h3>
 Lets start with reviewing what <strong>FbOB</strong> had in this area:
 <ul>
   
@@ -223,10 +223,15 @@ Inner classes / <strong>FbOB</strong> object declarations vs the
    <li>Smalltalk takes the view of rather than having first-class
  objects just add higher-order functions directly; they are called
  <em>blocks</em> in Smalltalk.
-   <li><a href="http://openjdk.java.net/projects/lambda/">Project
-      Lambda</a> is a proposal to add full higher-order 
-      functions to JDK 8.
  </ul>
+
+ Java 8: Lambdas!
+ <ul>
+   <li>Fully higher order functions are now available in Java
+   <li>Finally Java has caught up with Lisp circa 1964! It took only 50 years.
+   <li><a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Here is a tutorial</a>
+   <li>Lets put some chile peppers in our latte!  Here is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a>
+       </ul>
  Terminology aside: <em>closure</em>
  <ul>
    <li>A <em>closure</em> is just a higher-order
