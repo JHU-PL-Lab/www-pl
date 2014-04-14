@@ -1,0 +1,166 @@
+<!--#include virtual="/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+
+<h2>Programming Languages Assignment 5</h2>
+<h4>Due: Friday, April 25th</h4>
+<p/>
+
+<p>
+    This assignment comes in two parts.  For the first part, you will write a type inference algorithm for your F&#x266d; interpreter.  (Don't worry if your interpreter doesn't work correctly; you can still complete this assignment without fixing it!)  For the second part, you will answer a few supplemental questions of the same sort as you answered in Assignment 3.
+</p>
+
+<h3>Part I</h3>
+<b>(70 points)</b>
+<p>
+    Use the F&#x266d;DK to implement the type inference algorithm for <strong>EF&#x266d;</strong> in OCaml.  You will use the book presentation (also given in class) as the "specification" of your implementation.
+</p><p>
+    To complete this assignment, you will need to open <tt>fbtype.ml</tt> in the <tt>src/Fb</tt> directory and implement the <tt>typecheck</tt> function.  This function must return the type of that expression as specified by the EF&#x266d; algorithm; you should use the <tt>fbtype</tt> data type which appears in <tt>fbast.ml</tt>.  You may also wish to set <tt>typecheck_default_enabled</tt> to <tt>true</tt>; if you do not do this (and also do not pass a command-line flag), then the typechecker will not be used.  <b>For this part, you should turn in your <tt>fbtype.ml</tt> file and nothing else.</b>  Do not change fbast.ml or similar files, since your code will be tested with an otherwise correct implementation of the F&#x266d;DK by dropping your <tt>fbtype.ml</tt> file in.
+</p><p>
+    As an example, a correctly working interpreter should behave as follows:
+</p>
+<pre>
+Fb version 1.23         (typechecker enabled)
+
+# (Function x -> Function y -> x + y) 4;;
+: Int -> Int
+==> Function y ->
+4 + y
+# Function x -> x;;    
+: 'a -> 'a
+==> Function x ->
+x
+# True + 1;;
+Fatal error: exception Fbtype.TypeInferenceFailure("immediately inconsistent types")
+</pre>
+<p>
+    Note that, by default, the type of the expression is printed.  Note also that the exception which is raised by a type error is defined in the <tt>fbtype.ml</tt> module; you must define your own exception(s) to throw when the expression cannot be assigned a type.
+</p><p>
+    You need to implement the full algorithm <em>except</em> you do not need  to implement the cycle detection algorithm - your checker can loop forever on programs with cyclic constraints (but only on such programs).  Extra credit will be given for implementing cycle detection.  Also, you don't need to include let-polymorphism.
+</p><p>
+    Here are some suggestions:
+</p>
+<ul>
+    <li>
+        <p>
+            Break down your implementation into the same phases as in the book:
+        </p>
+        <ol>
+            <li>
+                <p>
+                    Generate the type <code>&tau; \ E</code> using the ideas in the type system (and also following the typechecker for <code>TF&#x266d;</code> in the book),
+                </p>
+            </li>
+            <li>
+                <p>
+                    Perform the closure on <code>E</code>,
+                </p>
+            </li>
+            <li>
+                <p>
+                    Check the closure for immediate inconsistencies, and
+                </p>
+            </li>
+            <li>
+                <p>
+                    Substitute equations of <code>E</code> into <code>&tau;</code> to solve.
+                </p>
+            </li>
+        </ol>
+    </li>
+    <li>
+        <p>
+            The <code>E</code> is a set of pairs (the type equations &tau; = &tau;'); the built-in Caml types such as <code>Set</code> or <code>Map</code> may prove useful in your implementation of this data structure.
+        </p>
+    </li>
+    <li>
+        <p>
+            In the closure outlined in the book, we assumed = was symmetric; in your implementation, one easy (but inefficient) method to achieve this to add an additional closure step: every time you add &tau; = &tau;' to the closure, also add &tau;' = &tau;.
+        </p>
+    </li>
+    <li>
+        <p>
+            The "substitute to solve" phase is the same idea as your substitution function you wrote on terms; just do it on types.
+        </p>
+    </li>
+    <li>
+        <p>
+            Don't worry about efficiency.  <b>Do</b> worry about correctness.
+        </p>
+    </li>
+</ul>
+
+<h3>Part II</h3>
+<b>(30 points)</b>
+<ol>
+    <p>
+        In this part, you will be answering some theory questions about typing.  Your submission for this part should be a text file or a PDF containing your answers.
+    </p>
+    <li>
+        <b>(15 points)</b>
+        <p>
+            This question concerns more precise typing for integers in TF&#x266d; (which does not include <tt>Let Rec</tt>).  Consider a new typechecked language; we'll call it ITF&#x266d;.  ITF&#x266d; is exactly like TF&#x266d; except that, instead of <tt>Int</tt>, there are two types: <tt>EvenInt</tt> and <tt>OddInt</tt>.  When an integer is typechecked, it must be assigned the correct type.  For instance, the expression <tt>Function x:EvenInt -> x + 1</tt> always returns an <tt>OddInt</tt>.
+        </p>
+        <ol type="a">
+            <li>
+                <b>(10 points)</b>
+                <p>
+                    Give any new type rules which are required to accommodate this more precise typing; also, name any rules from the original TF&#x266d; which should no longer be used.  (For example, you should give a rule which can typecheck the expression "6" and mention that the "Int" rule should no longer be used.)
+                </p>
+            </li>
+            <li>
+                <b>(2 points)</b>
+                <p>
+                    We can consider how a program in F&#x266d; can be type annotated for an explicitly typed language such as TF&#x266d;.  For instance, <tt>Function x -> x == 0</tt> might be annotated as <tt>Function x:Int -> x == 0</tt> in TF&#x266d; and as <tt>Function x:EvenInt -> x == 0</tt> in ITF&#x266d;.  Write an F&#x266d; program which can be type annotated in TF&#x266d; but which cannot be type annotated in ITF&#x266d; (that is, for which no ITF&#x266d; version exists).
+                </p>
+            </li>
+            <li>
+                <b>(3 points)</b>
+                <p>
+                    Let us consider another language: SITF&#x266d;, which is ITF&#x266d; with subtyping and the <tt>Int</tt> type (which represents all integer values).  We assume the rules in Section 6.5.2 of the book (though the Sub-Record rule clearly doesn't apply).  Write the appropriate additional subtyping rules for SITF&#x266d;.  Are there any programs which typecheck in TF&#x266d; but not in SITF&#x266d;.
+                </p>
+            </li>
+        </ol>
+    </li>
+    <li>
+        <b>(15 points)</b>
+        <p>
+            The book defines TF&#x266d;SRX: an explicitly typed version of F&#x266d; with state, records, and exceptions.  That language does not include variants; for this problem, we will consider typing variant data.
+        </p><p>
+            To handle variants, we must add a new type to our type grammar: &tau; ::= ... | l<sub>1</sub> &tau;<sub>1</sub> + ... + l<sub>n</sub> &tau;<sub>n</sub>.  Here, "l &tau;" refers to a single variant type, such as <tt>`Positive Int</tt> (which would be the type of the expression <tt>`Positive 4</tt>).  We use "+" to indicate many variant types; that is, the expression <tt>If someBool Then `Yes 0 Else `No False</tt> would have type <tt>`Yes Int + `No Bool</tt>.  (Without these unions, there would be no way to have multiple possible variant types at the same time and so matching would be pretty useless.)
+        </p>
+        <ol type="a">
+            <li>
+                <b>(5 points)</b>
+                <p>
+                    Consider TF&#x266d;V.  In this language, a match expression is written e.g. <tt>Match </tt><i>expr</i><tt> With `Yes x:Int -> x | `No y:Bool -> 0</tt>; that is, each variant's contents must be explicitly typed.  We require that <i>expr</i> have a type which is <i>exactly</i> the sum of the different branches (in this example, <tt>`Yes Int + `No Bool</tt>).  Write the type rules for TF&#x266d;V.
+                </p>
+            </li>
+            <li>
+                <b>(3 points)</b>
+                <p>
+                    Consider STF&#x266d;V: TF&#x266d;V with subtyping.  Give general subtyping rules which will allow expressions of the following form to typecheck in STF&#x266d;V: <tt>Match `Foo 0 With `Foo x:Int -> x | `Bar x:Int -> x</tt>
+                </p>
+            </li>
+            <li>
+                <b>(5 points)</b>
+                <p>
+                    Now write the type rules for EF&#x266d;V.  This is a little different; match expressions in EF&#x266d;V don't include explicit types, so you will need to use type variables for the contents of the variant labels.
+                </p>
+            </li>
+            <li>
+                <b>(2 points)</b>
+                <p>
+                    Give a program which will run correctly in F&#x266d;V but which will not typecheck in EF&#x266d;V.
+                </p>
+            </li>
+        </ol>
+    </li>
+</ol>
+
+</div>
+
+<!--#include virtual="/pl/footer.html" -->
