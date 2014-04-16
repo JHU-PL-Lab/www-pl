@@ -5,27 +5,32 @@
 
 <div id="content"> <h2>Study of Java</h2>
 Our reference here  is  the <a
-href="http://docs.oracle.com/javase/specs/jls/se7/html/index.html">Java
-Language Specification, SE 7 Edition</a>.<p>
+href="http://docs.oracle.com/javase/specs/jls/se8/html/index.html">Java
+Language Specification, SE 8 Edition</a>.<p>
 <ul>
-  <li>In lecture we covered three languages which cover the principles underlying Java: <strong>FbOB</strong> (objects), <strong>STFb</strong> (subtyping), and <strong>PEFb</strong> (the P, polymorphism/generics part, not the inference part). 
-  <li>A Fb language corresponding to Java would be "<strong>PSTFbOB</strong>"
+  <li>We are not going to write operational semantics for Java but we covered many of the "hard" design ideas behind Java already.
+  <li>The book contains three languages which collectively cover the core of Java: <strong>FbOB</strong> (objects), <strong>STFb</strong> (subtyping), and <strong>PEFb</strong> (the P, polymorphism/generics part, not the inference part). 
+  <li>An Fb family language corresponding to core Java would be "<strong>PSTFbOB</strong>"
   <li>We did not cover this but most of the aspects would not be surprising to you; a few gaps include
       <ul>
 	<li><strong>STFb</strong> had subtyping on records and we need subtyping on objects for Java; <em>but</em>, as we know from the <strong>FbOB</strong> encoding, objects and records are very similar
 	<li><code>this</code> imposes some additional issues in object typing.  Notice that
 	          <pre>PointType = { x : Int; y : Int; magnitude: PointType -> Int -> Int; ...}</pre>
-	    should be a proper type for our point object encoding, and notice how it is self-referential (recursive) and also how <code>PointType</code> is contravariant, it is in the domain of the magnitude method.  Both of these issues need to be addressed.
-      </ul>
+	    should be a proper type for our point object encoding, but notice how <code>PointType</code> is contravariant, it is in the domain of the magnitude method.  Consider
+	    <pre>ColorPointType = { x : Int; y : Int; c : Color; magnitude: ColorPointType -> Int -> Int; ...}</pre>
+ -- for <code>ColorPointType &lt;: PointType</code> to hold, <code>magnitude</code> subtyping would require 
+      <code>ColorPointType -> Int -> Int &lt;: PointType -> Int -> Int</code> which would need <code>PointType &lt;: ColorPointType</code> by function subtyping, which is <strong>false!</strong>
+	<li>Solution: pre-package the <code>self</code> into objects when created so they won't show up in object types.
+	<li>This issue is why there is no subtyping on classes in Java: static method dispatch is ... static.</ul>
 </ul>
 
 <h3>Classes and inheritance</h3>
-We can encode in <strong>STFbSR</strong> nearly all of the features of basic java class declarations and inheritance.
+We can encode in <strong>STFbOB</strong> nearly all of the features of basic java class declarations and inheritance.
 <ul>
   <li>Information hiding is possible in Java via <code>private/protected</code> fields; information hiding in <strong>STFbOB</strong> is accomplished by subsumption -- use subsumption after every <code>new</code> of an object to hide the private/protected bits.
   <li>Static fields are easily encoded, think of the class as itself being an object.
   <li>Java classes can have multiple constructors, this is possible in an encoding by making other constructors besides <code>new</code> in the class-object of the previous point.
-  <li>The devil lies in the details however - Java has many tweaks to what the straightforward encoding does.
+  <li>Java has countless subtle features to make programming easier that make the specification very complex however:
 <ul>
   <li>Java by default inserts <code>super();</code> in front of the
   constructor if  another constructor is not invoked.
@@ -83,21 +88,19 @@ Let point = (pointClass.new) pointClass {} In
       <strong>STFb</strong> subtyping is thus <em>purely
       structural</em> and Java's is not.
       <ul>
-	<li>Structural subtyping is more flexible.
+	<li>Any nominal subtyping system only adds <em>additional</em> constraints over pure structural subtyping; you need structural subtyping to hold or the system will be unsound.
+	<li>Structural subtyping is more flexible: "use your own implicit interface without needing to declare it". 
 	<li>Nominal subtyping lets you think about subtyping in terms of names of things, not the details of whats inside.
       </ul>
-  <li>In Java pre-5 there was no "deep" subtyping on objects: unlike in our <strong>STFbR</strong> subtyping of records where e.g. <pre>{ {x : Int; y : Int}; q : Bool} &lt;: { {x : Int}; q :Bool} </pre> but now Java supports this, 
-      you can refine the type in a subclass - <a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-8.html#jls-8.4.5">see here</a>.<br>
 </ul>
 
 <h3><a
- href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-4.html#jls-4.4">Generics</a>
+ href="http://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.4">Generics</a>
  </h3>
  <p>
 Generics are Java's version of parametric types.  These notes assume
-      familiarity with them; read a <a
-      href="http://download.oracle.com/javase/tutorial/extra/generics/index.html">tutorial</a>
-      if you are not.
+      familiarity with them; here is a <a
+      href="http://download.oracle.com/javase/tutorial/extra/generics/index.html">tutorial</a>.
 
 <p>
 The <strong>PEFb</strong> language includes both type inference and polymorphism so it is the only language we studied with polymorphism.  The main idea of how generic types are handled are expressed there, but in an inference context.<p>
@@ -105,12 +108,10 @@ The <strong>PEFb</strong> language includes both type inference and polymorphism
  Here are some
       comparisons with the <strong>PEFb</strong> or Caml-style parametric types that we  studied:
 <ul>
-  <li>Caml infers generic types <code>'a</code> automatically; in Java, you must
+  <li>Caml/<strong>PEFb</strong> infers generic types <code>'a</code> automatically; in Java, you must
       declare them as <code>&lt;T&gt;</code>.
-  <li>Caml infers generic types for functions defined by <code>let</code>; in Java you can declare generic types on classes and methods<br>
---note both of these forms are modeled by <code>Let</code>-defined functions in our <strong>FbSR</strong> object encodings, showing the form of where parametric poly is allowed is analogous
-  <li>Java generics have some features not found in Caml due to the
-      combination of polymorphism and subtyping.
+  <li>Caml variables of type <code>'a</code> you can <em>never</em> under the hood to see what structure is there; in Java you can typecast a <code>&lt;T&gt;</code> to learn about the structure.
+  <li>Java generics also have <em>bounded subtyping</em>, a feature not found in Caml due to the combination of polymorphism and subtyping.
 </ul>
 <h4>Bounded subtyping</h4>
 <ul>
@@ -141,13 +142,11 @@ and this relation fails because it also requires <code>Object &lt;:
       so always forces invariance here.  But, for the case the list class was immutable and T was never an argument the above subtyping would hold and our <strong>STFb</strong> approach would support that.
 </ul>      
 
-To get around this weakness, Java 5 adds <em>bounded subtyping</em>
+To get around this weakness, Java includes <em>bounded subtyping</em>
   <ul>
-    <li>In generics  you can write things like <code>&lt;T extends C &amp; I&gt; void test(T t) </code>
-  <li>the "<code>extends C &amp; I</code>" means <code>T</code> can be
-      any type which extends both class <code>C</code> and interface
-      <code>I</code> -- in other words, <code>T &lt;: C</code> and  <code>T &lt;:
-      I</code> in our subtyping terminology.
+    <li>You can also write things like <code>&lt;T extends Comparable&lt;T&gt;&gt; void test(List&lt;T&gt; t) </code>
+  <li>the "<code>T extends Comparable&lt;T&gt;&gt;</code>" means <code>T</code> can be
+      any type which extends <code>Comparable&lt;T&gt;&gt;</code> -- in other words, <code>T &lt;: Comparable&lt;T&gt;&gt;</code> in our subtyping terminology.
   <li>This adds more flexibility, <code>T</code> need not be any type,
   but from a restricted range of types which gives added flexibility later.
   <li>Example: Suppose we had Java analogues <code>Point</code>, <code>ColorPoint</code> which were the obvious Java versions of our <strong>FbSR</strong> encodings; consider then a
@@ -163,7 +162,7 @@ To get around this weakness, Java 5 adds <em>bounded subtyping</em>
 </ul>
 
 
-<h3><a href="http://docs.oracle.com/javase/specs/jls/se7/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
+<h3><a href="http://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
 The take-home message here is brief:
 <ul>
   <li> Java method overloading can be
@@ -260,7 +259,7 @@ The book chapter on concurrency reviews the Java concurrency model.
   <li>Type Inference -- types are declared in Java; avoids all the
       glitches in the OCaml design to support inference but requires
       more programmer typing.
-  <li>Java Exceptions -- very similar to how we did them in <strong>TFbX</strong> but we had no <code>throws</code> declarations in our types.
+  <li>Java Exceptions -- very similar to Caml or <strong>TFbX</strong> but Caml has no <code>throws</code> declarations in the types: less apparent what is being thrown.
 </ul>
 
 <h3>Dimensions of Java we did not get very close to
