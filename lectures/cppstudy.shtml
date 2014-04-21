@@ -24,23 +24,23 @@ Pluses and minuses of explicit memory
   <em>implicit</em> memory model to avoid these bugs<br>
  -- Implicit memory has no ability to take address-of, memory
   allocation is implicit, and memory is implicitly deleted by a garbage collector
-  <li>But code can be less efficient with an implicit memory since one more memory access is often needed when accessing the contents
+  <li>But code can be less efficient with an implicit memory since one more memory access is often needed when accessing the contents (in particular arrays and stack-allocated objects of C++ need one less dereference).
   <li>But but compilers keep getting better and are slowly closing the gap
   <li>But but but low-level systems programs such as operating systems
   kernels and device drivers need the explicit memory model so there
   will always be a need for some explicit memory
 </ul>
-In this course we pretty much stuck to the implicit memory view throughout because it is becoming more and  more prevalent in code, but it will never be irrelevant.
+In this course we pretty much stuck to the implicit memory view throughout because it is becoming more and  more prevalent in code, but explicit memory will never be irrelevant.
 <h3>Multiple Inheritance - good and bad</h3>
 <ul>
   <li>Multiple inheritance is great: it amounts to being able to define fields and method bodies on your interfaces
   <li>The major technical  hiccup is <a
 href="http://en.wikipedia.org/wiki/Diamond_problem">The Diamond
-Problem</a>.  Blech! 
+Problem</a>.
       <ul>
 	<li>Basic solution in most languages is to have one copy of the super-super but make a priority order on when classes were defined in terms of whose copy "wins".
 	<li>In C++ you need to use the keyword <code>virtual</code> on inheritance to get this behavior, otherwise you just get two copies of the super-super.
-	<li>Even without this very messy problem there still is an issue of what to do when two superclasses define a method of the same name.
+	<li>Even without this messy problem there still is an issue of what to do when two superclasses define a method of the same name.
       </ul>  <li>In our <code>FbSR</code> encoding of objects, recall that we explicitly inherited by grabbing methods out of our "superclass object"; using this approach we could easily make two or more "superclass objects" and then explicitly pick which one we are inheriting a method from, meaning no diamond ambiguity will arise.  However there will be two copies of the "top" class in a diamond in this obvious encoding, similar to non-virtual inheritance in C++.
 </ul>
 <h4>Aside: Multiple inheritance, mixins, and traits</h4>
@@ -75,8 +75,7 @@ Typing in C++: RTTI</a></h3>
   <li>In C++ the runtime type information is only added by the
   compiler if you need it (it infers if you are using RTTI on that object).
 </ul>
-We will briefly look at some  of the code linked above to see how it
-is  done in practice.
+
 <h3><a href="http://en.wikipedia.org/wiki/Generic_programming#Templates_in_C.2B.2B">Templates</a></h3>
 <ul>
   <li>The C++ answer to parametric  polyorphism / generics
@@ -88,43 +87,42 @@ is  done in practice.
       just instantiate and compile; the final code may have a type
       error due to a subtyping error
   <br>&nbsp;&nbsp;&nbsp;--this point makes it hard to debug type errors in
-      templates -- you need to explicitly think about staged
-      compilation (see below) to understand what the compiler is doing!
+      templates -- you need to explicitly think about metaprogramming
+  to understand what the compiler is doing!
   <li>Here is a cool example of how mixins can be done with single inheritance but with templates: <a
 	    href="http://www.artima.com/weblogs/viewpost.jsp?thread=132988">Mixin
 	    classes in C++</a>
 </ul>
 <h3><a
-      href="http://en.wikipedia.org/wiki/Template_metaprogramming">Template
+      href="http://en.wikipedia.org/wiki/Template_metaprogramming">Templates and
+
       Metaprogramming</a>
  </h3>
-Template metaprogramming in C++ is part of a larger topic: <em>staged
-computation</em>.
 <ul>
-  <li>Partial evaluation: evaluate some of the program code at compile
+  <li>Simplest form of metaprogramming is a macro preprocesser, e.g. <code>cpp</code><br>
+-- macro languauge takes program, runs all the macros and inlines the results in the source code.
+  <li>C++ templates generalize such macro mechanisms; they are in fact Turing complete -- see the examples in <a
+      href="http://en.wikipedia.org/wiki/Template_metaprogramming">the wikipedia page</a>.
+
+  <li>Partial evaluation: no new syntax, but compiler can evaluate some of the program code at compile
       time,  e.g. apply functions if (enough) arguments are known at compile-time.
-  <li><a
-      href="http://www.usenix.org/events/dsl99/full_papers/sheard/sheard_html/node3.html">MetaML</a>
-      is a cleaner and more general notion than C++ template
-      metaprogramming - code is first-class, can
-      be combined almost like strings, but in a well-typed way.
-      <ol>
-	<li>Run the first stage, which can do arbitrary computations;
-	    the result returned is the second-stage program.
-	<li>run the second stage, returning third stage program.
-	<li>etc - run until the final program results.
-	<li>... then run that to do the actual application task.
-      </ol>
-Observe
+  <li><a href="http://www.haskell.org/haskellwiki/Template_Haskell">Template Haskell</a>
+is a cleaner and more general notion than C++ templates 
       <ul>
-	<li>     In terms of this model, C++ template metaprogramming is a 2-stage process.
-	<li> Also the default is reversed: unlabelled C++ code is
-	analogous to the &lt;bracketed&gt; code in MetaML since its
-	running is delayed.
-      </ul></ul>
-We will go through the C++ example in <a
-      href="http://en.wikipedia.org/wiki/Template_metaprogramming">Template
-      Metaprogramming</a>.
+	<li>"macro" and "main" language use the same syntax
+	<li>code in the "main" is data to the "macro" language.
+	<li>"macro" level explicitly specifies where to splice code it produces into "main".
+      </ul>
+  <li><a href="http://en.wikipedia.org/wiki/Eval"><code>eval</code></a> and <a
+      href="http://www.usenix.org/events/dsl99/full_papers/sheard/sheard_html/node3.html">MetaML</a> 
+      <ul>
+	<li><code>eval</code> is the standard name for a program which takes a program-as-data as argument (either in the form of a string or an abstract syntax tree) and runs it.
+	<li><code>eval</code> is found in Lisp, Scheme, Python, Ruby, Javascript, etc.
+	<li>Subtle issue is how nonlocal variables behave (<code>x = 5; eval("x + 1")</code>)
+	<li>MetaML is a "typed" version of <code>eval</code>: the argument to <code>eval</code> is code returning type <code>t</code> for some type <code>t</code>.
+      </ul>
+
+</ul>
 
 <h3><a
 href="http://en.wikipedia.org/wiki/Generic_programming#Template_specialization">Template
@@ -151,14 +149,18 @@ Operator overloading has been hotly debated.
       overloaded where so I don't know what the heck this program is doing!
 </ul>
 
-
+<h3>Anonymous functions in C++11</h3>
+<ul>
+  <li>Everyone is joining the anonymous functions party!  C++11 is not yet the default but you can request it on your C++ compiler.
+  <li>Details <a href="http://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B_.28since_C.2B.2B11.29">here</a>.  We will discuss the issue of closures.
+</ul>
 <h3>Various new C++ features</h3>
 <ul>
   <li>
  <a href="https://en.wikipedia.org/wiki/C%2B%2B11#Type_inference">C++ performs some local type inference now</a>.
   <li> More explicit multithreading support.
   <li> C++-11 has some support for garbage collected implementations; programmers need to pick this option and live in a restricted programming model for it to work.
-  <li><a href="http://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B">C++ now has anonymous functions</a>.
+  <li>C++-14 has <a href="">generic lambdas</a> (in the template spirit however).
 </ul>
 </div>
 

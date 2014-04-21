@@ -47,14 +47,16 @@ Here is an historical list of key features.  The key language(s) introducing it 
 </ul>
 
 
-<h3>A Quick Tour through other general dimensions</h3>
-We focused on the most core topics of language design but its worth an overview of the following
+<h3>Crosscutting dimensions</h3>
+Some other dimensions are interwoven through the above:
 <ul>
+  <li>Object Oriented Programming: why did it arise?
   <li>Commands vs expressions
   <li>Modularity, interfaces and information hiding; separate compilation
-  <li>Mutation and the limiting thereof (<code>final</code>/<code>immutable</code>)
-  <li>Runtime footprint spectrum: nothing - garbage collector - dynamic types - dynamic (new) code loader - JIT compiler
+  <li>Mutation and the limiting thereof (<code>final</code>/<code>immutable</code>, ML and Haskell)
+  <li>Runtime footprint spectrum: nothing - garbage collector - dynamic types - dynamic code loading - JIT compiler
   <li>Operator overloading, implicit coercions, user-defined infix operators
+  <li>The <em>ecosystem</em> of a programming language: editors, compilers, debuggers, testing, file and library structure, extent of libraries, etc.
   <li>Metaprogramming: programs about programs.  Compile-time = <em>macros</em>/<em>templates</em>, run-time = <em>reflection</em>
 </ul>
 </div>
