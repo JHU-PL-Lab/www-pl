@@ -134,7 +134,7 @@ We will now look at some crosscutting aspects of these languages.
       href="http://en.wikipedia.org/wiki/Smalltalk#Code_blocks">code
       blocks</a> subsume higher-order functions.
   <li>Ruby: has blocks which are similar to Smalltalk's.
-  <li>Python: <a href="http://docs.python.org/tutorial/controlflow.html#lambda-forms">lambda-forms</a> (but, <a href="http://stackoverflow.com/questions/141642/what-limitations-have-closures-in-python-compared-to-language-x-closures">Pre-3 Python's lambdas don't let you write to nonlocal variables</a>, and you can only put expressions, not commands, in the body)
+  <li>Python: <a href="http://docs.python.org/3.4/tutorial/controlflow.html#lambda-forms">lambda-forms</a> (but, <a href="http://stackoverflow.com/questions/141642/what-limitations-have-closures-in-python-compared-to-language-x-closures">Pre-3 Python's lambdas don't let you write to nonlocal variables</a>, and you can only put expressions, not commands, in the body)
 </ul>
 
 <h3>Flexibility of the notion of object</h3>
@@ -195,6 +195,15 @@ Let ob = (ObsClass.new  ObsClass) In (* object creation -- need to pass class to
 	<li>Python dictionaries can be dynamically extended -- <a href="http://docs.python.org/3.4/tutorial/classes.html#instance-objects">example</a>.  Our <strong>FbSR</strong> records don't support extension.
       </ul>
 
+<h4>Implementing Object Dispatch</h4>
+      <ul>
+	<li>In all the dynamic OO languages they are <em>duck typed</em>: if an object has a <code>quack</code> method it should respond to it when sent a <code>quack()</code> message.
+	<li>The runtime cannot always put <code>quack</code> method in the same slot in the method table, or it would be too inefficient.  So, some table compression is needed.
+	<li>Additionally, you don't even know the names of all the methods since code could be dynamically loaded. Best answer: use the <strong>Flyweight</strong> design pattern and give each new method string a fresh integer to compress names to one word.
+	<li>Slowness compared to C++'s simple following of a couple pointers is a big reason for slowness of these languages.
+	<li>Java is between C++ and fully dynamic since new classes can be loaded at runtime.
+      </ul>
+      
 <h3>Reflection</h3>
       <ul>
 	<li>"Reflection" means given some object at runtime, can you poke around to find its class, methods, etc? 
