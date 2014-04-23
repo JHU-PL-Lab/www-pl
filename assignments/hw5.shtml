@@ -46,6 +46,11 @@ Fatal error: exception Fbtype.TypeInferenceFailure("immediately inconsistent typ
 <ul>
     <li>
         <p>
+            The reference implementation binaries that we provide for this class already have an implementation of EF&#x266d;, so you can experiment.  Run the <tt>Fb</tt> binary with the flag <tt>--typecheck</tt>.  (Using this flag is equivalent to setting <tt>typecheck_default_enabled</tt> to <tt>true</tt>.)
+        </p>
+    </li>
+    <li>
+        <p>
             Break down your implementation into the same phases as in the book:
         </p>
         <ol>
