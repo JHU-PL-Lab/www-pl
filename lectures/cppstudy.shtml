@@ -89,9 +89,6 @@ Typing in C++: RTTI</a></h3>
   <br>&nbsp;&nbsp;&nbsp;--this point makes it hard to debug type errors in
       templates -- you need to explicitly think about metaprogramming
   to understand what the compiler is doing!
-  <li>Here is a cool example of how mixins can be done with single inheritance but with templates: <a
-	    href="http://www.artima.com/weblogs/viewpost.jsp?thread=132988">Mixin
-	    classes in C++</a>
 </ul>
 <h3><a
       href="http://en.wikipedia.org/wiki/Template_metaprogramming">Templates and
@@ -104,7 +101,7 @@ Typing in C++: RTTI</a></h3>
   <li>C++ templates generalize such macro mechanisms; they are in fact Turing complete -- see the examples in <a
       href="http://en.wikipedia.org/wiki/Template_metaprogramming">the wikipedia page</a>.
 
-  <li>Partial evaluation: no new syntax, but compiler can evaluate some of the program code at compile
+  <li><em>Partial evaluation:</em> no new syntax, but compiler can evaluate some of the program code at compile
       time,  e.g. apply functions if (enough) arguments are known at compile-time.
   <li><a href="http://www.haskell.org/haskellwiki/Template_Haskell">Template Haskell</a>
 is a cleaner and more general notion than C++ templates 
@@ -124,14 +121,6 @@ is a cleaner and more general notion than C++ templates
 
 </ul>
 
-<h3><a
-href="http://en.wikipedia.org/wiki/Generic_programming#Template_specialization">Template
-Specialization</a></h3>
-      <ul>
-	<li>Another handy feature of templates, it allows implementations to be
-specialized at instantiation time.
-	<li>Template specialization is somewhat similar to Java overloading - different versions for different types
-      </ul>
 <h3><a href="http://en.wikipedia.org/wiki/Operator_overloading">C++ Overloading</a></h3>
 There are three dimensions of overloading:
       <ul>
@@ -160,7 +149,7 @@ Operator overloading has been hotly debated.
  <a href="https://en.wikipedia.org/wiki/C%2B%2B11#Type_inference">C++ performs some local type inference now</a>.
   <li> More explicit multithreading support.
   <li> C++-11 has some support for garbage collected implementations; programmers need to pick this option and live in a restricted programming model for it to work.
-  <li>C++-14 has <a href="">generic lambdas</a> (in the template spirit however).
+  <li>C++-14 has <a href="http://en.wikipedia.org/wiki/C++14#Generic_lambdas">generic lambdas</a> (in the template spirit however).
 </ul>
 </div>
 

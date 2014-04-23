@@ -6,7 +6,7 @@
 
 Here we briefly survey some key issues in programming language implementation.
 
-<h3>Runtime memory models</h3>
+<h3>Runtime memory models (skipping this in 2014)</h3>
 To review, programming language implementations have three tiers of memory:
 <ul>
   <li>Globals (globals of C/C++, static fields and class methods of class-based languages)
