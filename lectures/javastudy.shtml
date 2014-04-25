@@ -232,6 +232,7 @@ Java 8 has Lambdas!
            let x = 22 in
              f 2 (* prints 7 because x was 5 in f's closure *)
        </pre>
+   <li>The PL book Section 8.1 describes <em>closure conversion</em>, a method to "implement" closures in <strong>FbSR</strong> itself by modifying functions to explicitly record the information.
  </ul>
  
 <h3>Concurrency</h3>

@@ -17,7 +17,7 @@ A <em>dynamically typed language</em> is a language which
 Upsides
       <ul>
 	<li>Can be more freewheeling: incrementally add code to current runtime, extend objects, etc.
-	<li>Even better than type inference in terms of overhead of dealing with writing out type information.
+	<li>ZERO overhead of dealing with writing out type information.
       </ul>
 
 
@@ -25,15 +25,17 @@ Upsides
 Downsides
   <ul>
   <li>Programs run slower due to the run-time overhead of dynamic checks and uncertain layouts.
+  <li>You lose the types-as-specifications aspect of types.  Libraries must be typed informally and such types are sloppy.
   <li>Type errors are caught much later, making debugging much more challenging in some cases.
   <li>Freewheeling style bites you for larger apps which don't
 	    fit in your mental cache anymore
 </ul>
 
-Overall verdict
+Overall verdict?
       <ul>
 	  <li>Dynamically-typed languages tend to be better for small- and perhaps
-      medium-scale applications where speed is not critical, and tend to be worse for large-scale
+      medium-scale applications where speed is not critical;
+	  <li>they tend to be worse for large-scale
       applications and speed-critical applications.
       </ul>
       
@@ -50,8 +52,8 @@ The non-OO school
 <ul>
   <li>Lisp, the original dynamically-typed language, and the related Scheme which is "<code>(add1 Lisp)</code>"
   <li><a
-      href="http://en.wikipedia.org/wiki/Scripting_programming_language">Scripting
-      languages</a>, e.g. the  UNIX shells (sh, csh), awk, tcl, etc. 
+      href="http://en.wikipedia.org/wiki/Scripting_programming_language">Unix scripting
+      languages</a>, e.g. sh, csh, bash, awk, tcl, etc. 
   <li>early Perl (pre-5)
 </ul>
 
@@ -90,19 +92,15 @@ class="cmtt-10">Raise (#</span><span
 class="cmti-10">TypeMismatch</span> <span 
 class="cmmi-10">True</span><span 
 class="cmtt-10">)</span></td></tr> </table> </td> </tr>  </table>
-etc -- many such rules are needed.  But, thats about all there is to it.
-<li>As with Java there are also some dimensions of these languages we
-    missed, in particular all the reflection-type stuff and dynamic
-    code loading.
+etc. 
 </ul>
 We will now look at some crosscutting aspects of these languages.
 
-<h3>Universal Data Structure</h3>
-Most dynamic languages are built around the philosophy that all data are "X"'s, where X is:
+<h3>Data Structures</h3>
 <ul>
-  <li>Lisp: Lists
-  <li>Smalltalk: Objects
-  <li>Python: Dictionaries (Objects are tweaks on dictionaries)
+  <li>Lisp: Everything is a List (including your source code!  Great for metaprogramming)
+  <li>Smalltalk: Everything is an Object
+  <li><a href="https://docs.python.org/3.4/tutorial/datastructures.html#tuples-and-sequences">Python</a>: Lists (which are mutable so also serve as arrays), Sets, Tuples (immutable lists), Dictionaries, Objects (which are dictionaries with sugar on top)
   <li>Ruby: Objects
   <li>Javascript: Objects (Use objects as dictionaries as well)
 </ul>
@@ -136,7 +134,7 @@ Most dynamic languages are built around the philosophy that all data are "X"'s, 
       href="http://en.wikipedia.org/wiki/Smalltalk#Code_blocks">code
       blocks</a> subsume higher-order functions.
   <li>Ruby: has blocks which are similar to Smalltalk's.
-  <li>Python: <a href="http://docs.python.org/tutorial/controlflow.html#lambda-forms">lambda-forms</a> (but, <a href="http://stackoverflow.com/questions/141642/what-limitations-have-closures-in-python-compared-to-language-x-closures">Pre-3 Python's lambdas don't let you write to nonlocal variables</a>)
+  <li>Python: <a href="http://docs.python.org/3.4/tutorial/controlflow.html#lambda-forms">lambda-forms</a> (but, <a href="http://stackoverflow.com/questions/141642/what-limitations-have-closures-in-python-compared-to-language-x-closures">Pre-3 Python's lambdas don't let you write to nonlocal variables</a>, and you can only put expressions, not commands, in the body)
 </ul>
 
 <h3>Flexibility of the notion of object</h3>
@@ -166,17 +164,46 @@ Most dynamic languages are built around the philosophy that all data are "X"'s, 
 	<li>Methods are first-class in Ruby: <a href="http://ruby-doc.org/docs/ProgrammingRuby/html/ref_c_method.html">Example</a>.
 	<li>Can add methods to existing objects - <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ref_c_object.html#Object.extend">documentation</a>
       </ul>
-<h4>Python</h4>
+<h4><a href="https://docs.python.org/3.4/tutorial/classes.html#class-definition-syntax">Python</a></h4>
       <ul>
-	<li>Objects are duck-taped onto the more fundamental notion of "everything is a dictionary" in Python.
-	<li>Unlike Ruby, the object and dictionary access syntax is different; Ruby is a more elegant design by unifying the two. 
-	<li>Python objects are thus similar to our <strong>FbSR</strong> objects (a record is a restricted dictionary): <code>self</code> is an explicit parameter, classes are themselves just records, methods are just self-taking funtions in these records, etc.
-	<li>Classes are objects (which are really just dictionaries)
+	<li>Objects are extensions of dictionaries in Python.
+	<li>Python objects are thus related to our <strong>FbSR</strong> objects in that a record is a restricted dictionary: 
+	    <ul>
+	      <li><code>self</code> needs to be an explicit parameter on each method, 
+	      <li>classes just make dictionaries;
+	    </ul>
+      <li>Unlike <strong>FbSR</strong>, self-passing upon method invocation is sugared to be implicit: <code>ob.foo()</code> is all that is needed.
+      <li>Python also lets you pun between an object view and a class view -- <code>ObsClass.foo(ob)</code> is the same as writing <code>ob.foo()</code> if <code>ObsClass</code> was the class that created <code>ob</code>.
+      <li>An <strong>FbSR</strong> view of Python objects will make this more clear:
+	  <pre>
+Let ObsClass = {
+  new =  Function thisclass -> 
+	   { x = Ref 0; class = thisclass };  (* the "object" is just the fields and my class *)
+
+  foo = Function thisob -> Function _ -> !(thisob.x) + 1 (* adding one is so much fun! *)
+} In
+
+Let ob = (ObsClass.new  ObsClass) In (* object creation -- need to pass class to itself *)
+	  (ObsClass.foo ob ());  (* message sending, need to pass object to itself *)
+	  (ob.class.foo ob ());  (* message sending starting from ob only, not its class *)
+	      </pre>
+	  - the last line shows how the sugar <code>ob.foo()</code> can work, the runtime needs to know which class has the methods.
+	<li>Classes have only one constructor; write a class method that is a factory if you want to pass an argument.
 	<li>Methods are first-class:  <a
-      href="http://docs.python.org/tutorial/classes.html#method-objects">Example</a>.
-	<li>Python dictionaries can be dynamically extended -- <a href="http://docs.python.org/tutorial/classes.html#instance-objects">example</a>.
+      href="https://docs.python.org/3.4/tutorial/classes.html#method-objects">Example</a>.  In the <strong>FbSR</strong> encoding we can get this behavior by <br>
+<code>Let rippedOut = ob.class.foo ob In ... rippedOut() ... (* rip out method, now its just a function *) </code>
+	<li>Python dictionaries can be dynamically extended -- <a href="http://docs.python.org/3.4/tutorial/classes.html#instance-objects">example</a>.  Our <strong>FbSR</strong> records don't support extension.
       </ul>
 
+<h4>Implementing Object Dispatch</h4>
+      <ul>
+	<li>In all the dynamic OO languages they are <em>duck typed</em>: if an object has a <code>quack</code> method it should respond to it when sent a <code>quack()</code> message.
+	<li>The runtime cannot always put <code>quack</code> method in the same slot in the method table, or it would be too inefficient.  So, some table compression is needed.
+	<li>Additionally, you don't even know the names of all the methods since code could be dynamically loaded. Best answer: use the <strong>Flyweight</strong> design pattern and give each new method string a fresh integer to compress names to one word.
+	<li>Slowness compared to C++'s simple following of a couple pointers is a big reason for slowness of these languages.
+	<li>Java is between C++ and fully dynamic since new classes can be loaded at runtime.
+      </ul>
+      
 <h3>Reflection</h3>
       <ul>
 	<li>"Reflection" means given some object at runtime, can you poke around to find its class, methods, etc? 
