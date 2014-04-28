@@ -151,7 +151,7 @@ Fatal error: exception Fbtype.TypeInferenceFailure("immediately inconsistent typ
                 </p>
             </li>
             <li>
-                <b>(5 points)</b>
+                <b>(5 points)</b> <b><i>(No longer required.)</i></b>
                 <p>
                     Now write the type rules for EF&#x266d;V.  This is a little different; match expressions in EF&#x266d;V don't include explicit types, so you will need to use type variables for the contents of the variant labels.
                 </p>
