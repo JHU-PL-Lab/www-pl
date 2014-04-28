@@ -164,7 +164,7 @@ We will now look at some crosscutting aspects of these languages.
 	<li>Methods are first-class in Ruby: <a href="http://ruby-doc.org/docs/ProgrammingRuby/html/ref_c_method.html">Example</a>.
 	<li>Can add methods to existing objects - <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ref_c_object.html#Object.extend">documentation</a>
       </ul>
-<h4><a href="https://docs.python.org/3.4/tutorial/classes.html#class-definition-syntax">Python</a></h4>
+<h4><a name="python_objects"></a><a href="https://docs.python.org/3.4/tutorial/classes.html#class-definition-syntax">Python</a></h4>
       <ul>
 	<li>Objects are extensions of dictionaries in Python.
 	<li>Python objects are thus related to our <strong>FbSR</strong> objects in that a record is a restricted dictionary: 
