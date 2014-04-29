@@ -1,0 +1,45 @@
+<!--#include virtual="/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+
+<h2>Homework - 6</h2>
+<p>
+
+You can find the instructions and questions <a href="hw6.txt">here</a>.
+
+<p>
+An experimental version of the AFbV interpreter is available as afbv.byte in the FbDK binary distribution.  Here are some points about the interpreter.
+<ul>
+  <li>It is an implementation of the AFbV semantics from the book. It is not multithreaded or distributed however as OCaml core libraries don't have such facilities.
+  <li>The code you type into the evaluator will run in a fresh actor world as the body of one (anonymous) actor in that world. 
+  <li>The interpreter includes a few language extensions to make programming easier: Let .. In, sequencing ( ; operator ), pairs ( including keywords Fst and Snd to extract values ), lists ( supports construction via the :: operator and the standard [v1; v2; v3] notation and has keywords Head and Tail to extract the head and tail respectively ) and also an ability to Print integers and booleans.
+  <li>It does not include Let Rec. You can use the Y combinator to get around that and it is easy to do with Let .. In.
+  <li>If you start the interpreter with the --debug flag, it will print out the current set of actors and messages before it processes messages. This is useful, but may be too much information on screen.
+</ul>
+
+Here for example is a count down test which can be pasted into the interpreter and run:
+
+<pre>Let y = (Function body -> Let wrapper = Function self -> Function msg -> 
+          body (self self) msg In wrapper wrapper) In
+Let actorFn = Function me -> y (Function this -> Function data -> Function msg ->
+                                    Match msg With
+                                        `count(n) ->
+                                            (Print n);
+                                            (If n = 0 Then 0 Else (me <- (`count (n-1))));
+                                            this data
+                               ) In
+Let actor = Create(actorFn, 0) In
+actor <- `count 4
+</pre>
+
+<h3>Submission Method</h3>
+Same as the previous homeworks.
+
+
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->

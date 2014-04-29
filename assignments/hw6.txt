@@ -1,0 +1,98 @@
+600.426 - Programming Languages
+JHU Spring 2014
+Homework - 6 (50 Points)
+
+--------------------------------------------------------------------------------
+HEADER: PLEASE FILL THIS IN
+--------------------------------------------------------------------------------
+
+Name                  :
+List of team Members  :
+List of discussants   :
+
+--------------------------------------------------------------------------------
+ Actors
+--------------------------------------------------------------------------------
+
+The following question involves actor programming.
+
+1a. While the AFbV interpreter has lists built in, they are also
+    encodable after a fashion by using an actor to embody a list. A
+    list actor can handle exactly one type of message: "`next(a)",
+    where "a" is the address of the actor to which to send the next
+    element of the list.  When responding to a "`next(a)" message, the
+    list actor will either send a "`some(v)" message, where "v" is the
+    next value in the list, or "`none(_)" if the entire list has
+    already been consumed. After it sends a "`none(_)" response, it
+    will only ever send "`none(_)" responses.  So, these lists can be
+    read only once and then they are gone.
+
+    Write an actor that corresponds to the above interface and represents the
+    list [1;2;3].
+
+   [5 Points]
+
+1b. Write an actor 
+
+    Let summateList = (* fill in *)
+
+    so that 
+
+    In summateList <- `summate(alist,cust)
+
+    would summate all the (integer) values in alist, an actor-defined
+    list as described in 1a, and send the final answer to actor cust,
+    the customer, as a message e.g. cust <- `answer(6).
+
+   [10 points]
+
+
+1c. Write an AFbV actor that parallelizes summateList:
+
+    Let parSummateList = (* fill in *)
+
+    so that 
+
+    In parSummateList <- `summate(alist,cust)
+
+
+    has the exact same functional behavior as the above summateList
+    actor, but in fact (internally) creates four summateList actors
+    and puts them to work summating the list elements, and then
+    combines their `answer results to give the final sum `answer. Take
+    advantage of the fact that addition is commutative and
+    associative.  (Note that the interpreter will in fact not run any
+    faster since it is not multithreaded.)
+
+    [10 points]
+
+
+--------------------------------------------------------------------------------
+ Objects in Python
+--------------------------------------------------------------------------------
+
+2a. In lecture we sketched how Python views objects by providing a
+    rough outline of an FbSR encoding of Python's object model.  See
+    http://pl.cs.jhu.edu/pl/lectures/dynamic-lang-study.shtml#python_objects
+    for some details.  Show this encoding in action by encoding the
+    usual PointClass in the book: define FbSR expression pointClass
+    and write code to create a point and send it the isZero message.
+    Your magnitide method can just sum the x and y fields, no need for
+    square/root.  Make sure your object encoding will allow isZero to
+    be implemented by invoking the point's own magnitude method.  Note
+    that the lecture encoding above is incomplete, it needs to be
+    modified a bit to allow methods in an object to invoke other
+    methods in the same object.
+
+    [15 Points]
+
+
+2b. The Python encoding of objects into FbSR works fine in a
+    dynamically-typed context, but our subtype-based STFb language is
+    too weak to type the encoding.  Show why this is the case (note
+    that STFb has no state so it cannot type the mutable fields; you
+    can assume for this quesiton that fields are simply immutable
+    values).  In particular, show that the types of STFb are too weak
+    and no type annotation will allow the encoding to typecheck.
+
+    [10 Points]
