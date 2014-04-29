@@ -18,17 +18,18 @@ The following question involves actor programming.
 
 1a. While the AFbV interpreter has lists built in, they are also
     encodable after a fashion by using an actor to embody a list. A
-    list actor can handle exactly one type of message: "`next(a)",
-    where "a" is the address of the actor to which to send the next
-    element of the list.  When responding to a "`next(a)" message, the
-    list actor will either send a "`some(v)" message, where "v" is the
-    next value in the list, or "`none(_)" if the entire list has
-    already been consumed. After it sends a "`none(_)" response, it
-    will only ever send "`none(_)" responses.  So, these lists can be
-    read only once and then they are gone.
+    list actor can handle exactly one type of message: "`next(cust)",
+    where "cust" is the customer, the address of the actor to which to
+    send the next element of the list.  When responding to a
+    "`next(cust)" message, the list actor will either send a
+    "cust <- `some(v)" message, where "v" is the next value in the list, or
+    "cust <- `none(_)" if the entire list has already been consumed. After it
+    sends a "`none(_)" response, it will only ever send "`none(_)"
+    responses.  So, these lists can be read only once and then they
+    are gone.
 
-    Write an actor that corresponds to the above interface and represents the
-    list [1;2;3].
+    Write an actor that corresponds to the above list interface and
+    represents the list [1;2;3].
 
    [5 Points]
 
