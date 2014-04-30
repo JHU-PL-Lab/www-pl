@@ -176,17 +176,18 @@ We will now look at some crosscutting aspects of these languages.
       <li>Python also lets you pun between an object view and a class view -- <code>ObsClass.foo(ob)</code> is the same as writing <code>ob.foo()</code> if <code>ObsClass</code> was the class that created <code>ob</code>.
       <li>An <strong>FbSR</strong> view of Python objects will make this more clear:
 	  <pre>
-Let ObsClass = {
+Let obsClass = {
   new =  Function thisclass -> 
-	   { x = Ref 0; class = thisclass };  (* the "object" is just the fields and my class *)
+       { x = Ref 0; class = thisclass };  (* the "object" is just the fields and my class *)
 
   foo = Function thisob -> Function _ -> !(thisob.x) + 1 (* adding one is so much fun! *)
 } In
 
-Let ob = (ObsClass.new  ObsClass) In (* object creation -- need to pass class to itself *)
-	  (ObsClass.foo ob ());  (* message sending, need to pass object to itself *)
-	  (ob.class.foo ob ());  (* message sending starting from ob only, not its class *)
-	      </pre>
+(* Note that we use "junk" below to encode sequencing (i.e. semicolon) *)
+Let ob = ((obsClass.new) obsClass) In (* object creation -- need to pass class to itself *)
+    Let junk = (obsClass.foo) ob {} In (* message sending, need to pass object to itself *)
+    (ob.class.foo) ob {} (* message sending starting from ob only, not its class *)
+	  </pre>
 	  - the last line shows how the sugar <code>ob.foo()</code> can work, the runtime needs to know which class has the methods.
 	<li>Classes have only one constructor; write a class method that is a factory if you want to pass an argument.
 	<li>Methods are first-class:  <a
