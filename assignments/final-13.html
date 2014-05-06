@@ -1,0 +1,93 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<HEAD>
+<title>PL Final 2013</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Princples of Programming Languages
+<br> Spring 2013
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.  You can write on both
+sides.  No printer output is allowed, it must all  be hand-written.<p>
+
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+
+<li> (15? points) Lets play "pull out the points": for each of the <strong>Fb</strong> expressions below, make an <strong>Fb</strong> context <code>C</code> to "get the exam points out" of the expression we give you.   Your context <code>C</code> <em>cannot</em> contain any integer literals <code>0,1,-1,2,..</code> or any integer operations <code>+/-</code>.  Concretely, for each expression <code>e</code> below make a <code>C</code> such that <code>C[e] ==> n</code> where <code>n</code> is the number of points you will get on that sub-question.  Note any number greater than <code>4</code> we will coerce to <code>4</code> in the grading (we will also give partial credit for close answers).
+
+ <ol type="a">
+<li> <code>(Function succ -> Function y -> y succ 0)(Function x -> x + 1)</code>
+<li> <code>(Function q -> q (Function r -> r (Function s -> s 4)))</code>
+<li> <code>(Function w -> (Function q -> If q 0 1 = 0 Then Function z -> 1 Else Function z -> 3)(Function x -> w))</code>
+<li> <code>(Function p -> p (Function this -> Function that -> Function x -> If x = 2 then 4 Else this that (x+1)) (0-2))</code>
+</ol>
+
+<p>
+<li> (14 points) This question concerns operational equivalence.
+    <ol type="a">
+<li>Informally explain why <strong>Fb</strong> expression <code>0 + True</code> is operationally equivalent to <code>(Function x -> x x)(Function x -> x x)</code>.
+<li>Give two concrete <strong>Fb</strong> expressions which are operationally equivalent, but which are not equivalent when viewed as <strong>FbS</strong> expressions (recall <strong>Fb</strong> is a sublanguage of <strong>FbS</strong>).
+<li>Our definition of operational equivalence also works for Java, Python, etc: two Java program fragments are operationally equivalent if no Java program context can tell them apart (note that if one compiles and the other generates a compiler error, we view that as trivially telling them apart!).  Consider two Java program fragments, one defining a class called <code>ThingOne</code> and the other defining a class called <code>ThingTwo</code>.  Besides the difference in class names, the code of the code fragments is <em>identical</em>.  Are these fragments operationally equivalent?  Argue why or why not.
+<li>Prove that operational equivalence for <strong>Fb</strong> is always transitive.  Use the definition of operational equivalence to derive this fact.
+    </ol>
+<p>
+
+<li>  (16 points)
+    Consider <strong>Fb</strong> extended with a bizarre built-in operation <code>buz</code>.  When <code>buz</code> is given a boolean expression as in <code>buz (Not False)</code>, it evaluates to <code>True</code>; when <code>buz</code> is given an integer, it evaluates to <code>False</code>.  For other inputs you can make it do (or not do) whatever you want.  We  call this language <strong>FbBuz</strong>.
+
+    <ol type="a">
+      <li>Write the operational semantics rule(s) for the <code>buz</code> expression.
+      <li>Can the <code>buz</code> operation be encoded in <strong>Fb</strong> as a macro extension?  Give the macro or argue why it is not encodeable.
+      <li> Consider <strong>EFbBuz</strong>: <strong>FbBuz</strong> with the <strong>EFb</strong> types and type inference rules. Can we write type rules for buz?  If so, show them.  If not, explain why they cannot be written.  You are not allowed to add any new types to the grammar, or new forms of constraint in <code>E</code>.
+<br>&nbsp;<br>
+
+
+       Now consider <strong>Fb</strong> extended with another unusual built-in operation <code>biz</code>.  When <code>biz</code> is given an odd integer (e.g., <code>biz (3+2)</code>), it evaluates to <code>False</code>; when it is given an even integer, it evaluates to <code>0</code>.  We  call this language <strong>FbBiz</strong>.
+
+
+      <li>Write the operational semantics rule(s) for the <code>biz</code> expression.
+      <li>Can the <code>biz</code> operation be encoded in <strong>Fb</strong> as a macro extension?  Give the macro or argue why it is not encodeable.
+      <li>Consider <strong>EFbBiz</strong>: <strong>FbBiz</strong> with the <strong>EFb</strong> types and type inference rules. Can we write type rules for biz?  If so, show them.  If not, explain why they cannot be written.   You are not allowed to add any new types to the grammar, or new forms of constraint in <code>E</code>.
+
+
+    </ol>
+    
+<p>
+<li>(9 points)
+    In <strong>FbR</strong> we pulled data out of records via the syntax <code>e.l</code> for <code>l</code> some label.  OCaml additionally supports pattern matching on records; for this question we consider replacing <code>e.l</code> syntax of <strong>FbR</strong> with such a pattern matching construct:
+
+    <pre>Match e With {l1 = x1; ...; ln = xn} -> e</pre>
+    Lets call this new language variation <strong>FbR'</strong>.
+
+
+    An example <strong>FbR'</strong> program and its evaluation would then be <pre>(Function r -> Match r With {x = xx; y = yy} -> xx+yy)({x=2;y=3}) ==> 5</pre>
+    
+<ol type="a">
+<li>Write the operational semantics rules for <strong>FbR'</strong>, the new <code>Match</code> rule(s) in particular.
+
+<li>The typed version <strong>TFbR</strong> has a similar variant <strong>TFBR'</strong> with <code>Match</code> replacing <code>e.l</code> syntax.  Write the type rule for this <code>Match</code>.  In <strong>TFbR'</strong> the <code>Match</code> syntax would include declared types on variables, so it would be
+
+   <pre>Match e With {l1 : tau1 = x1; ...; ln : taun = xn} -> e</pre> -- note the types on each record component in the pattern.
+    
+
+</ol>
+
+
+<p> 
+<li> (6 points) This question concerns subtyping.
+    <ol type ="a">
+    <li> Warm up: write out the function subtyping rule which lets you show one function type is a subtype of another, <code>tau1 -> tau1' &lt;: tau2 -> tau2'</code>
+    <li> Give a <strong>STFbR</strong> expression and prove it is typable by building a type derivation for it.  You have to satify only one constraint: you must use the aforementioned function subtyping rule <em>somewhere</em> in your type derivation, and <em>none</em> of the <code>tau1/tau1'/tau2/tau2'</code> can be the same type.
+</ol>
+    
+<p>
+
+<li> (8 points)
+       In <strong>AFbVP</strong> (<strong>Fb</strong> with actors, variants, and pairs), write a "Dr. Jekyll and Mr. Hyde" actor: like the fictional characters, this actor changes its personality with every message it receives.  In particular, our actor starts out as Dr. Jekyll.  When the actor is Dr. Jekyll, it responds to a message of the form <code>`inc (target, num)</code> by sending a message to the actor <code>target</code> of the form <code>`answer (num+1)</code>; the actor then becomes Mr. Hyde.  When the actor is Mr. Hyde, it responds to that same message by sending a message to the actor <code>target</code> of the form <code>`answer (1000)</code>; it then becomes Dr. Jekyll.  Give code which will construct this actor using the <code>Create</code> operation.
+  
+<p>
+
+<!-- Describe how exceptions can be encoded in Fb -->

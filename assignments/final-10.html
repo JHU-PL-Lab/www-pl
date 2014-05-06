@@ -1,0 +1,312 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<HEAD>
+<title>PL Final 2010</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Programming Languages
+<br> Spring 2010
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.  You can write on both
+sides.  No printer output is allowed, it must all  be hand-written.<p>
+
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+  <li>(4 points) For <strong>FbSR</strong>, answer whether the following operational
+      equivalences hold.  If the answer is no, give a context C
+      showing  that fact.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;a)  <code>Function x -> y + 1  ~= Function y
+      -> x + 1</code><br>
+&nbsp;&nbsp;&nbsp;&nbsp;b) <code>f x + x ~= x + f x</code>
+
+<br>&nbsp; <li>(5 points) Variants are also useful for encoding basic
+  data.  Show how booleans can be encoded with variants in
+  <strong>FbV</strong>: give macro definitions for <code>True</code>,
+  <code>False</code>, and <code>If-Then-Else</code> that use variants
+  and don't use the built-in <strong>Fb</strong> booleans.  Note that
+  you may not simply use the Church encodings using only functions for
+  your answer, you must make fundamental use of variants to accomplish
+  your encoding. 
+<!-- As with a) but for non-negative integers, not booleans (it is
+      possible to do all integers but for simplicity just do positive
+      integers). Again do not use the WWWstrong>FbWWW/strong> integers in
+      your macro encodings; you must show how WWWcode>0,1,2,3,..WWW/code>
+      are encoded and also how the WWWcode>+WWW/code> and WWWcode>=WWW/code>
+      operators are encoded (you can skip WWWcode>-WWW/code>).  WWWbr>
+Note that for these two questions you may not simply use the Church
+      encodings using only functions for your answer, you must make
+      fundamental use of variants to accomplish your encoding.
+ -->
+
+
+<br>&nbsp; <li>
+(5 points)
+
+In encoding objects using <strong>FbSR</strong>, we observed that method
+<i>overriding</i> (the process by which a subclass uses a different
+method than that of its superclass) can be accomplished by simply
+    changing the method in the subclass
+
+<pre>
+Let super = ... In
+{
+getX = super.getX; (* inherited, not overridden *)
+getY = super.getY; (* inherited, not overridden *)
+setX = Function this -> Function _ -> count := !count + 1;
+                 super.setX this _  (* override *)
+...
+}
+</pre>
+
+Method <i>overloading</i>, on the other hand, is the process by which
+    the same name can represent multiple different methods, such as in
+    the following Java-like code:
+
+<pre>
+public class FooBar
+{
+  public int foo(int x) {
+    return x + 1;
+  }
+  public int foo(int x, int y) {
+    return x + y;
+  }
+}    
+</pre>
+
+The compiler then decides which of the methods to call based upon the
+types of the arguments it observes.  How could method overloading be
+encoded in <strong>FbSR</strong>?  Encode the above <tt>FooBar</tt> class example to show
+your method.
+
+
+      <br>&nbsp;
+  <li>(6 points)  This question concerns subtyping in
+  <strong>STFbR</strong>.<br>
+a) Give a <strong>STFbR</strong> function type which has no subtypes or
+      supertypes (other than itself).
+  <br>b) Now give a function type with only <em>one</em> subtype other
+      than itself.
+  <br>c) As b) but for supertype.
+
+
+    <br>&nbsp;
+<li>(8 points) Write an <strong>Fb</strong> function <code>cheapY</code> which works like the
+    <code>Y</code>-combinator but only supports ten levels deep of recursive
+    call.  So for example
+    <pre>
+    cheapY (Function this -> Function x ->
+         If x = 1 then 1 Else x + this (x-1)) 10</pre>
+returns <code>55</code> but if the <code>10</code> was replaced with
+    <code>11</code> it diverges since the recursion tried to go 11
+    levels deep.  This behavior is the same as a
+    recursive function invocation with a runtime stack depth of at
+    most 10 in e.g. the C language.  Hint: you don't actually need a
+    counter to count the number of recursive calls, its easier than that.
+
+<br>&nbsp;
+
+  <li>(9 points) For this question we study some variants of <strong>Fb</strong>
+  with different operational semantics rules for <code>=</code>.<br>
+a) Suppose the existing <strong>Fb</strong> rule for <code>=</code> was
+  replaced with the following two rules:
+      <pre>
+    e1 and e2 are identical integers
+  ------------------------------------
+            e1 = e2 ==> True
+
+</pre>
+plus
+<pre>
+     e1 and e2 are both integers but are not identical
+  -------------------------------------------------------
+                     e1 = e2 ==> False
+</pre>
+      This would in fact be a pretty bad set of rules to have; give an example
+      program which would suffer if this was the <code>=</code> rule.
+
+      <br>
+b) Suppose the <strong>Fb</strong> rule for <code>=</code> was
+  replaced with the following two rules:
+      <pre>
+     e1 ==> v   e2 ==> v
+  -------------------------
+      e1 = e2 ==> True
+
+</pre>
+plus
+<pre>
+    e1 ==> v   e2 ==> v'  v is not identical to v'
+  --------------------------------------------------
+                   e1 = e2 ==> False
+</pre>
+This rule set looks very nice but it also has a big problem, not in terms
+      of how programs run but how it would mess up operational
+      equivalence.  Assuming we used our usual <strong>Fb</strong>
+      definition of operational equivalence for this modified
+      language, give an example of an operational equivalence that
+      held for <strong>Fb</strong> (and rightly so), but which would
+      no longer hold using these new rules.  <br>
+
+c) Repeat b) but the two expressions of your example cannot themselves
+      include any uses of <code>=</code>.  Note the context C could
+      include <code>=</code>.  Feel free to use the same answer for b)
+      and c) if it satisfies both questions.
+
+<br>&nbsp; <li>(10 points) It is possible to imagine all sorts of unusual kinds
+  of programming languages and completely specify them with
+  operational semantics.  For this question we want to develop a
+  stateful language with "state snapback" -- its syntax is
+  <strong>FbS</strong> but with two additional pieces of syntax,
+  <code>checkpoint</code> and <code>snapback</code> which are
+  expressions (not values).  Executing <code>checkpoint</code> makes a
+  full checkpoint of the current state; later on if
+  <code>snapback</code> is ever executed it rolls back all of the
+  values that were checkpointed to their old checkpointed values.  We
+  will call this new language <strong>FbSnap</strong>.  For this
+  question you are to write the operational semantics rules for
+  <strong>FbSnap</strong>.  Since there are many rules you only need
+  to give the rules for function application, assignment <code>:=</code>,
+      <code>checkpoint</code>,
+  and <code>snapback</code>.  
+    Here are answers to a few questions you
+  may have. First, start with the <strong>FbS</strong> operational
+  semantics as your basis.  Note that any newly allocated locations should still be
+  kept around at snapback -- new memory locations could have been allocated since
+  the previous checkpoint and variables could reference them, so only
+  snap back for the things that existed back then.  The
+  checkpoint is global in the sense that a second checkpointing just
+  overwrites any previous checkpoint if any.  (Hint: the operational semantics execution
+  state should be a triple here, not a pair as was the case in <strong>FbS</strong>.)
+Here are a few examples of evaluations (only showing the initial and
+  final values, not the full state).
+
+<pre>
+Let x = Ref 5 In
+       (checkpoint; x := 3; snapback; !x) returns 5
+checkpoint; Let x = Ref 5 In
+       (snapback; !x) returns 5 (* checkpoint empty *)
+Let x = Ref 5 In
+       (snapback; !x) returns 5 (* no checkpoint same as empty *)
+Let x = Ref 5 In
+       (checkpoint; x := 3; checkpoint; x := 6; snapback; !x) returns 3   </pre>
+
+
+<br>&nbsp; <li>
+(18 points)
+
+Let's define a new language, <strong>FbN</strong>, which extends
+    <strong>Fb</strong> to include the
+<tt>null</tt> concept as expressed in Java and other languages.  In
+Java, the value <code>null</code> is of a special type (the <code>null</code> type).  The
+keyword <code>null</code> represents the only value of this special type.  The <code>null</code>
+value may be used in place of values of any reference type; for
+instance, the keyword <code>null</code> may be used where a String is expected. We
+use the set of values from <strong>Fb</strong> and add the value
+<tt>Null</tt>.  Operations which make use of <tt>Null</tt> will
+diverge; for instance, <tt>Null + 1 =/&gt;</tt> and <tt>Null And True
+=/&gt;</tt>.  We also introduce the keyword <tt>IsNull</tt> which
+tests whether or not a value is <tt>Null</tt>.  For example,
+<tt>IsNull Null ==&gt; True</tt> and <tt>IsNull 5 ==&gt; False</tt>.
+
+<br>&nbsp;<br>
+ a)
+What new operational semantics rules beyond the <strong>Fb</strong>
+    rules are required for
+    <strong>FbN</strong> to support <tt>Null</tt>?  Show them.
+
+
+<br> b)
+
+Consider <strong>TFbN</strong>: <strong>FbN</strong> with declared
+types (or, if you like, <strong>TFb</strong> with <code>Null</code>).  The value <tt>Null</tt> has the type <tt>Null</tt> (just as
+the value <tt>5</tt> has the type <tt>Int</tt>).  However, we can use
+<tt>Null</tt> whenever any other type is expected.  For instance,
+<tt>(Function x:Int -> 4) Null ==&gt; 4</tt> even though <tt>Null</tt>
+is not an <tt>Int</tt>.  We cannot use other types in place of
+<tt>Null</tt>; for instance, <tt>(Function x:Null -> 4) 0 =/&gt;</tt>.
+<br>
+How will our type rules change from <strong>TFb</strong> to support
+this behavior?  In particular, show the revised
+<strong>TFbN</strong> type rules for addition, <code>If-Then-Else</code>,
+and function application, as well as any new rules needed in
+    <strong>TFbN</strong> for which there was no analogous
+    <strong>TFb</strong> rule.
+
+
+<br> c)
+
+Now consider <strong>EFbN</strong>: <strong>FbN</strong> with type
+inference (or, if you like, <strong>EFb</strong> with
+<code>Null</code>).  For example, <tt>(Function f -> f Null)</tt> has type <tt>('a ->
+'b) -> 'b \ emptyset</tt> -- observe that the use of a <tt>Null</tt> argument did
+not assign the type <tt>Null</tt> to the function so the inferred type
+for <code>f</code> is pretty much completely unconstrained.
+
+<br>
+
+How will our type rules change from <strong>EFb</strong> to support
+this behavior?  In particular, show the
+<strong>EFbN</strong> type rules for addition, <code>If-Then-Else</code>,
+function application, and any new rules plus any changes to closure or
+consistency.  (Hint: its a good idea for <code>Function x ->
+Null</code> to have type <code>'a -> 'b \ emptyset</code>).
+
+<br> d)
+
+<strong>TFb</strong> and <strong>EFb</strong> both guarantee that any
+program that has a type will never reach a stuck state; that is, there
+will always be an operational semantics rule which will apply.  Is the
+same true of <strong>TFbN</strong> and <strong>EFbN</strong>?  Why or
+why not?
+
+  </ol> 
+
+
+<p>&nbsp;<p>
+
+
+</BODY> </html>
+
+
+  <!-- 
+
+
+   WWWbr>&nbsp; WWWli>(x points) 
+     One problem that often occurs in Fb is not knowing the type of
+     data which is stored in a variable.  For instance, one may wish
+     to know whether a variable WWWtt>xWWW/tt> contains an WWWtt>IntWWW/tt> or
+     a WWWtt>BoolWWW/tt>.  One solution to this is to use pairs: the first
+     element is the value and the second element indicates its type.
+     But consider the addition of a new set of semantics added to the
+     Fb language: 
+
+     WWWpre>
+e ==&gt; v    the value in x is an Int
+-----------------------------------
+Assert x : Int In e ==&gt; v
+
+e ==&gt; v    the value in x is a Bool
+-----------------------------------
+Assert x : Bool In e ==&gt; v
+WWW/pre>
+
+Examples of these expressions include the following:
+
+WWWul>
+WWWli>WWWtt>(Function x -> Assert x:Int In x + 1) 5 ==&gt; 6WWW/tt>
+WWWli>WWWtt>(Function x -> Assert x:Bool In Not x) True ==&gt; FalseWWW/tt>
+WWWli>WWWtt>(Function x -> Assert x:Int In x + x) True =/&gt;WWW/tt>
+WWWli>WWWtt>(Function x -> Assert x:Bool In x) True =/&gt;WWW/tt>
+WWW/ul>
+
+Is this new syntax helpful?  Is there any program which is easier to
+write in this new language that is harder to write in normal Fb?  If
+so, give an example and explain why it is better to write it using
+these new rules.  If not, explain why these new rules cannot be
+helpful and what could be done to improve them.
+
+ -->
