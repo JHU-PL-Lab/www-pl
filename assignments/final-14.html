@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>PL Final 2014</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Princples of Programming Languages
+<br> Spring 2014
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.  You can write on both
+sides.  No printer output is allowed, it must all  be hand-written.<p>
+
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+
+
+  <li>(6 points) Joey had a job working for the Webb Space Telescope, developing a compiler for the language running on the telescope which was going to be burned into the ROM chips in the telescope.  He was a very annoying guy and got himself fired before the telescope was launched.  He decided to exact revenge on his bosses and on his last day of work changed the implementation of integer addition so that it would not add 0: if the programmer ever tried to do e.g. <code>0 + 3</code> or <code>2 + 0</code> the circuit board would melt (it would still add any non-0 numbers). He also broke subtraction but we are only focusing on addition in this problem.  Joeys bosses didn't find out his trickery until the compiler was burned into ROM and the telescope was already in orbit and about to be powered up.  Fortunately no code had been uploaded to it for compiling and running yet.
+      <ol type="a">
+	<li>First, assuming Joeys language was more or less <strong>Fb</strong>, give the operational semantics rule for the bad <code>+</code> operation Joey implemented.
+	<li>Now write a function <code>patchedPlus = Function x -> Function y -> ... </code> (fill in the dots) so that the programmers can still write their code as long as they use <code>patchedPlus</code> in place of the built-in <code>+</code>.  You need to still use the built-in integers, any Church encoding or the like will be too slow for the telescope to function.  Remember that your encoding needs to guarantee that the circuit board will never melt.
+      </ol>
+
+      <p>
+
+  <li>(14 points) Consider the <strong>Fb</strong> extension <strong>FbOpt</strong> which includes as a built-in the behavior of OCaml's <code>option</code> type.  Example <strong>FbOpt</strong> code could be:
+      <pre>
+(Fun f -> f None + f Some(3)) (Fun x -> Match x With Some(y) -> y + 1 | None -> 0)
+      </pre>
+
+      Note this would easily be encoded with variants, but the main goal for this question is to make a <em>primitive</em> notion of "potentially present data".  So <strong>FbOpt</strong> extends <strong>Fb</strong> with expressions <code>None</code>, <code>Some(e)</code>, and <code>Match e With Some(x) -> e | None -> e</code>.
+      <ol type="a">
+  <li>For a warm-up, please in fact give an encoding of <strong>FbOpt</strong> in <strong>FbV</strong>, <strong>Fb</strong> with labeled variants.  Your encoding should be like the <strong>FbOB</strong> to <strong>FbSR</strong> encoding, it should show how each piece of <strong>FbOpt</strong> syntax maps on to some <strong>FbV</strong> syntax.
+  <li>Give the new operational semantics rules that need to be added to existing the <strong>Fb</strong> set to give you the full <strong>FbOpt</strong> operational semantics.  (Make sure to also define new <em>values</em>, if any)
+	<li>Now, consider <strong>TFbOpt</strong>, the obvious extension of the typed language <strong>TFb</strong> to include the above.  The syntax additions are exactly the same as above.   The <strong>TFbOpt</strong> types are defined as the <strong>TFb</strong> types plus the new type <code>t Option</code> which is analogous to OCaml's <code>t option</code> type. For clarity we illustrate by making a typed version of the above example:
+	    <pre>
+(Fun f : (Int Option -> Int) -> f None + f Some(3)) (Fun x : Int Option -> Match x With Some(y) -> y + 1 | None -> 0)
+	    </pre>
+	    Write out the (new) type rules needed for <strong>TFbOpt</strong> beyond the rules already present in <strong>TFb</strong>.
+	<li>Notice that <strong>TFb</strong> required types to be declared on function arguments.  Why did we need to declare types on function arguments but we did not require the <code>Match</code> syntax to also require a type be declared on the parameter to some, i.e. why didn't we make the modified <strong>TFbOpt</strong> syntax be <code>Match e With Some(x:t) -> e | None -> e</code>, adding a type declaration on the <code>x</code>?  Since both are variable definitions and not uses the first reaction might be to require such an explicit type declaration.  Explain why no additional type declaration is required.
+      </ol>
+      <p>
+
+<li> (10 points)  Recall the following encoding of a <code>point</code> object in <strong>FbSR</strong> that is in the book:
+    <pre>Let point = { x = Ref 4; y = Ref 3;
+   magnitude = Function this -> Function dummy ->  !(this.x) + !(this.y);
+   iszero = Function this -> Function dummy -> (this.magnitude this {}) = 0;
+   setx = Function this -> Function newx -> this.x := newx;
+   sety = Function this -> Function newy -> this.y := newy } In
+      point.magnitude point {}</pre>
+
+    <ol type="a">
+      <li>One disadvantage of this encoding is how we can't just say simply <code>point.magnitude {}</code> to send a <code>magnitude</code> message -- we need to explicitly pass the self every time, cluttering the syntax.  Provide an alternative encoding of this <code>point</code> object which has all the functionality but for which <code>point.magnitude {}</code> (and similarly for the other methods) is going to give the right answer, <code>7</code> here.
+      <li>Now extend your encoding to also hide the fields <code>x</code> and <code>y</code>: make them behave like <code>private</code> fields in Java.  Make sure the internal access to the fields still works.<br>
+In both of your answers to this question you can change how internal field access and internal messaging works if you want, but do keep your encoding general so it should be clear how it will encode any standard object.
+</ol>
+
+<p>
+<li>
+
+(18 points) This question concerns subtyping in <strong>STFbR</strong>.  Recall the subtyping relation t &lt;: t'. We can consider a subtyping graph in which vertices are types and directed edges are subtype relations from a subtype to a supertype. For instance, considering just the three types <code>{}</code>, <code>{x:Int}</code>, and <code>{x:Int,y:Int}</code>, we can draw the following graph:
+
+<p>
+    <img src="final-14-images/g1.png" width=200>
+<p>
+    
+   This graph expresses three statements: <code>{x:Int} &lt;: {}</code>, <code>{x:Int,y:Int} &lt;: {x:Int}</code>, and <code>{x:Int,y:Int} &lt;: {}</code>.
+    These statements are all true and they are the only three subtyping statements which can be made about these types. In this way, the above graph is exhaustive: it shows every subtyping relationship between the nodes.
+    <ol type="a">
+
+<li> Draw an exhaustive subtyping graph which includes all of the following types as nodes:
+    <ol type ="i">
+<li> <code>{}</code>
+<li> <code>{y:Bool}</code>
+<li> <code>{x:Int, f:{} -> Bool}</code>
+<li> <code>{x:Int, f:{z:Int} -> Bool}</code>
+<li> <code>{x:Int} -> {}</code>
+<li> <code>{} -> {x:Int}</code>
+<li> <code>{} -> {}</code>
+</ol>
+<li> Consider the following graph:
+
+    <p>
+    <img src="final-14-images/g2.png" width=150>
+<p>
+Is it possible for the above graph to be an exhaustive subtyping graph? If so, fill in the nodes with types to create an example. If not, explain why this is not possible.
+
+<li> Fill in the nodes in the following graph with types that cause it to be an exaustive subtyping graph.
+<p>
+    <img src="final-14-images/g3.png" width=320>
+<p>
+    </ol>
+
+      <p>
+
+<li> (14? points) Lets play every PL student's favorite game, "pull out the points": for each of the <strong>Fb</strong> expressions below, make an <strong>Fb</strong> context <code>C</code> to "get the exam points out" of the expression we give you.   Your context <code>C</code> <em>cannot</em> contain any integer literals <code>0,1,-1,2,..</code> or any integer operations <code>+/-</code>.  Concretely, for each expression <code>e</code> below make a <code>C</code> such that <code>C[e] ==> n</code> where <code>n</code> is the number of points you will get on that sub-question.  You need to give the whole exact context <code>C</code>, no "..." or approximate stuff!  <strong>Note</strong> the max is <code>4</code> and any number greater than <code>4</code> is a "TILT" and is worth 0 points, beware! We will also give partial credit for close answers.
+
+ <ol type="a">
+<li> <code>f o o d 4 t h o t </code> (each letter is a variable, space is function application as usual)
+<li> <code>q 100,000 (Function x -> x-1) (Function x -> x=0) (Function x -> .. (repeat Function x -> .. 99,999 times) .. -> 3)</code>
+<li> <code>g 0 (Function s -> If s = 1 Then (t 3) Else 0) (Function q -> Function r -> (r (If q = 0 Then 1 Else q)))</code>
+<li><code>(Function f -> f 1 (Function z -> Function z -> 2) (Function a -> a a (Function n -> Function m -> n - m)))
+</code>
+</ol>
+
+
+    </body> </html>
