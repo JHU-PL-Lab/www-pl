@@ -1,4 +1,4 @@
-<!--#include virtual="/pl/header.html" -->
+2<!--#include virtual="/pl/header.html" -->
 
 </div>
 
@@ -19,7 +19,7 @@ class</a>. We pretty much just run through these as the lecture.  For the separa
 
 <h3>Our ML Dialect</h3> There are more ML dialects out
 there than you would believe.  We are going to use <a
-href="http://caml.inria.fr/">OCaml</a>, version 4.01.0 (earlier versions will generally work as well, but the binary distibutions of the FbDK can be picky on which version they are run under).  OCaml is not
+href="http://caml.inria.fr/">OCaml</a>, version 4.02.1 (earlier versions will work as well for your own coding, but the binary distibutions of the FbDK are very picky on which version they are run under).  OCaml is not
 completely compatible with the most standard dialect of ML, SML, but
 is nonetheless similar.  It includes classes and objects, something
 not found in SML.  We will often call OCaml just "Caml", you can view
@@ -59,9 +59,8 @@ inside Emacs</a> to get going.
 <h3>OCaml Information on the Web</h3>
 Here is the key information
 <dl>
-  <dt><a href="http://caml.inria.fr/">The OCaml Homepage</a>
-  <dd>The ultimate source for everything.  The stuff below is all
-      found off the homepage.
+  <dt><a href="http://caml.inria.fr/">The INRIA OCaml Homepage</a>
+  <dd>The home of OCaml and where you can find downloads and core library documentation.
   <dt><a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
       manual</a> (download your local copy from the links at the top).
   <dd><a
@@ -77,26 +76,13 @@ Here is the key information
 </dl>
 Here is additional supplementary information
 <dl>
-  <dt><a href="http://caml.inria.fr/oreilly-book/">Developing
-      Applications with Objective Caml</a>, by Emmanuel Chailloux, Pascal Manoury and Bruno Pagano.
-  <dd>This is a complete on-line book covering OCaml.  It was
-      translated from the French by an ad-hoc group of people and so
-      is less than perfect writing.
-    <dt><a
-    href="http://caml.inria.fr/pub/docs/u3-ocaml/index.html">Using,
-    Understanding, and Unraveling The OCaml Language</a>
-  <dd> A foundational look at OCaml -- if you want to really
-  understand the deep internal concepts of OCaml, this is the source.
+  <dt><a href="http://ocaml.org">ocaml.org</a>
+  <dd>This is a new website intended for people serious about developing software in OCaml.  The <a href="http://ocaml.org/learn/tutorials/">tutorials</a> there are particularly good.
   <dt><a
-      href="http://www.cs.caltech.edu/courses/cs134/cs134b/book.pdf">Introduction to Objective Caml</a> by Jason Hickey
-  <dd>A more tutorial introduction to OCaml than the previous. 
-  <dt><a href="http://caml.inria.fr/resources/doc/faq/index.en.html">FAQ</a>
-  <dd>for basic questions you may have.  It  is not very complete at
-      this point so you may not find your  answer here.
-  <dt><a
-      href="http://caml.inria.fr/resources/doc/guides/guidelines.en.html">Programming
-      Guidelines</a>
-  <dd>Some standard coding conventions that are good to follow.
+      href="https://realworldocaml.org/v1/en/html/index.html">Real World OCaml</a> by Jason Hickey, Anil Madhavapeddy, and Yaron Minsky
+  <dd>A relatively new OCaml book available online.
+  <dt><a href="http://ocaml.org/learn/books.html">Books</a>
+  <dd>Still more books, from the ocaml.org page.
 </dl>
 
 
