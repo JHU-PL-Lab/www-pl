@@ -1,4 +1,4 @@
-2<!--#include virtual="/pl/header.html" -->
+<!--#include virtual="/pl/header.html" -->
 
 </div>
 
@@ -17,21 +17,23 @@ class</a>. We pretty much just run through these as the lecture.  For the separa
 
 </ul>
 
-<h3>Our ML Dialect</h3> There are more ML dialects out
-there than you would believe.  We are going to use <a
-href="http://caml.inria.fr/">OCaml</a>, version 4.02.1 (earlier versions will work as well for your own coding, but the binary distibutions of the FbDK are very picky on which version they are run under).  OCaml is not
+<h3>Our ML Dialect</h3> We are going to use <a
+href="http://caml.inria.fr/">OCaml</a>, version 4.01.0.  Earlier/later versions will work perfectly fine for your own coding, but the binary distibutions of the FbDK are very picky on which version they are run under; we will supply binaries for other versions if people are having problems getting 4.01.0 running.
+<p>
+OCaml is not
 completely compatible with the most standard dialect of ML, SML, but
 is nonetheless similar.  It includes classes and objects, something
 not found in SML.  We will often call OCaml just "Caml", you can view
 the two as synonyms.<p>
 
-<h3>Installing OCaml on Your Machine</h3>
+<h3>Installing OCaml 4.01.0 on Your Machine</h3>
 <p>
 OCaml is <em>free</em> and you should install it on your computer.
-Sources and binaries for
-OCaml for Windows,  MacOS, Linux, etc are found <a 
-href="http://caml.inria.fr/download.en.html">on the
-OCaml downloads page</a>.
+<ul>
+  <li> For OCaml on Windows we recommend going to <a href="http://protz.github.io/ocaml-installer/">OCaml on Windows</a> and installing the exe referenced there, <a href="http://gallium.inria.fr/~protzenk/caml-installer/ocaml-4.01.0-i686-mingw64-installer3.exe">ocaml-4.01.0-i686-mingw64-installer3.exe</a>
+  <li> For OCaml on Mac we recommend using the installer <a href="http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0-intel.dmg">http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0-intel.dmg</a>
+  <li> For Linux (also works on Mac) we recommend you use OPAM, a highly flexible OCaml package manager.  Start <a href="http://ocaml.org/docs/install.html">at OCaml.org's install page</a> for instructions.  The key steps are 1) install the <code>opam</code> binary via e.g. running the shell script  <a href="https://opam.ocaml.org/doc/Install.html#Binaryinstaller">opam_installer.sh</a>, 2) run command <code>opam switch 4.01.0</code> to build OCaml version 4.01.0; and 3) add the line <code>eval `opam config env`</code> to your <code>.profile/</code><code>.bashrc</code> shell init file to point your shell to the <code>ocaml</code> binary that <code>opam</code> installed at <code>~/.opam/4.01.0/bin/ocaml</code>.  Note that the Debian/Fedora/etc install tools cannot be counted on for version 4.01.0.  
+</ul>
 <p>
 OCaml is available  on all department Linux machines via the shell
 command  <kbd>ocaml</kbd>. <p>
