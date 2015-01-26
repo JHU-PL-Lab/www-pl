@@ -9,7 +9,7 @@ let y = 5 in x + y;; (* y is local when let .. in .. is used *)
 (* Boolean operations *)
 true && false;;
 true || false;;
-1 = 2;; (* = not == for boolean comparison *)
+1 = 2;; (* = not == for comparison *)
 1 <> 2;;
 
 (* Int/Float non-overloading *)
