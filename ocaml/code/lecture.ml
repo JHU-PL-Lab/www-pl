@@ -225,15 +225,15 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
  * All variable declarations in Caml are IMMUTABLE -- value will never change
  * helps in reasoning about programs, we know the variable's value is fixed
  *)
-let y = 55 in 
+let y = 3 in 
   let x = 5 in
     let f y = x + y in
       let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
-        (f (y - 1)) + x (* note x is 5 and y is 54 in the function body *)
+        (f (y - 1)) + x (* x is STILL 5 in the function body - thats what x was when f defined *)
 ;;
 
 (* top loop is conceptually an open-ended series of lets which never close: compare following with previous *)
-let y = 55;;
+let y = 3;;
 let x = 5;;
 let f y = x + y;;
 let x = 7;; (* as in previous example, this is a nested definition, not assignment! *)
@@ -252,31 +252,34 @@ let f x = x + 1;;
 
 let g x = f (f x);;
 
-(* lets change f, say we made an error in its definition above *)
-let shad = f;;
+let shad = f;; (* make a new name for f *)
+
+(* lets "change" f, say we made an error in its definition above *)
 
 let f x = if x <= 0 then 0 else x + 1;; 
 
-g (-5);; (* we didn't recompile g and the version above still refers to now-shadowed f - !! *)
+g (-5);; (* we didn't re-submit g, so the version above refers to now-shadowed f - !! *)
 
 let g x = f (f x);; (* need to resubmit (identical) g code since it depends on f *)
 g (-6);; (* now it works as expected *)
 
-(* warm up to the next function - write a stupid no-op function on a list *)
+(* warm up to the next function - write a (useless) copy function on lists *)
 
-let rec noop l = match l with 
+let rec copy l = match l with 
               [] -> []
-            | hd :: tl ->  hd::(noop tl)
+            | hd :: tl ->  hd::(copy tl)
 
-let result = noop [1;2;3;4;5;6;7;8;9;10];;
+let result = copy [1;2;3;4;5;6;7;8;9;10];;
+
+(* copy is useless because immutable data can be freely shared - no need to copy, ever! *)
 												
+(* Refine copy to flip back and forth between copying and not *)
 												
-(* mutually recursive functions must be defined together via the "and" keywd *)
 let rec 
      take l = match l with 
               [] -> []
             | hd :: tl ->  hd::(skip tl)
-and
+and  (* mutually recursive functions must be defined together via the "and" keywd *)
      skip l = match l with 
               [] -> []
             | x :: xs -> take xs;;
@@ -284,7 +287,11 @@ and
 take [1;2;3;4;5;6;7;8;9;10];;
 skip [1;2;3;4;5;6;7;8;9;10];;
 
-(* here is a version that hides the skip function -- make both internal and export one *)
+(* Understand the above by giving clear specifications 
+   Spec: take returns only the ODD elements of a list, skip returns only the EVEN ones *)
+
+(* Using let .. in to hide functions *)
+(* Here is a version that hides the skip function -- make both internal and export one *)
 						
 let justtake ll =
 	let rec 
@@ -349,9 +356,9 @@ map (function x -> x * 10) [3;2;50];;
 let middle = List.map (function s -> s^"gobble");;  (* here we use the built-in List.map which is the same as the one we defined *)
 middle ["have";"a";"good";"day"];;
 
-map (function (x,y) -> x + y) [(1,2);(3,4)];;
+map (fun (x,y) -> x + y) [(1,2);(3,4)];;  (* two-argument via a pair.  Note "fun" can be used as shorthand for "function" *)
 
-map (function x -> function y -> x + y) ;; (* mind blower *)
+map (fun x -> fun y -> x + y) [1;2;4] ;; (* mind blower *)
 
 (* This also shows why these "anonymous" functions are useful. *)
 
@@ -370,7 +377,7 @@ let plus3 x = x+3;;
 let times2 x = x*2;;
 let times2plus3 = compose plus3 times2;;
 times2plus3 10;;
-compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent way *)
+compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent but with anonymous functions *)
 
 (*
   Parametric and object polymorphism
@@ -384,20 +391,11 @@ id true;;
 (* conclusion: the type of id ('a -> 'a) is PARAMETRIC, i.e. the return type is 
    parameterized by the type of the argument.  These are called "generics" in Java.
 	
-	 We already saw many parametric functions, e.g. map above: *)
+	 We saw several parametric functions above: *)
 
-map (function x -> (float x) *. 10.0) [1;2;2;32];;
-
-(*
-     ML has parametric polymorphism -- the 'a -> 'a type of id is parametric:
-	   what comes out is the *same* type as what came in. Generics is
-	   another term for parametric polymorphism.
-
-     Java has parametric polymorphism via generic types - same principle but
-		 the types must be explicitly declared in Java and are inferred in ML.
-
-     C++ Templates are fundamentally different under the hood; we will cover them later in course
-*)
+take;;    (* observe type is 'a list -> 'a list *)
+map;;     (* type is ('a -> 'b) -> 'a list -> 'b list *)
+compose;; (* type is ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b *)
 
 
 (*
@@ -661,12 +659,16 @@ newaddNC (2,3);;
 let newaddC  = curry   addNC;;
 newaddC 2 3;;
 
+(* Observe the types themselves pretty much specify the behavior: *)
+(* curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c *)
+(* uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c *)
+
 let noop1 = curry (uncurry addC);; (* a no-op *)
-let noop2 = uncurry (curry addNC);; (* another no-op - no-ops together show isomorphism *)
+let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together show isomorphism *)
 
 (* End Currying topic *)
 
-(* Misc minor stuff *)
+(* Misc minor OCaml *)
 
 (* print_x for atomic types 'x', again no overloading in meaning here *)
 print_string ("hi\n");;
