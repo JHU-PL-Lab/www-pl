@@ -297,21 +297,21 @@ copyeven [1;2;3;4;5;6;7;8;9;10];;
 (* Using let .. in to hide functions *)
 (* Here is a version that hides the skip function -- make both internal and export one *)
 						
-let justtake ll =
+let copyoddonly ll =
 	( let rec 
-     ltake l = match l with 
+     copyoddlocal l = match l with 
               [] -> []
-            | hd :: tl ->  hd::(lskip tl)
+            | hd :: tl ->  hd::(copyevenlocal tl)
   and
-     lskip l = match l with 
+     copyevenlocal l = match l with 
               [] -> []
-            | x :: xs -> ltake xs
+            | x :: xs -> copyoddlocal xs
 		
   in 
-   ltake ll
+   copyoddlocal ll
 	);;
 	
-justtake [1;2;3;4;5;6;7;8;9;10];;
+copyoddonly [1;2;3;4;5;6;7;8;9;10];;
 						  
 (* 
  * Higher Order Functions - 
@@ -338,7 +338,6 @@ let rec timestenlist l =
 timestenlist [3;2;50];;
 
 (* Example: append gobble to a list of words *)
-
 
 let rec appendgobblelist l =
   match l with 
