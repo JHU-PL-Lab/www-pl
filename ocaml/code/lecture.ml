@@ -1,4 +1,4 @@
-(*  OCaml I - Examples *)
+(*  OCaml Lecture I  *)
 
 3 + 4;; (* use ;; to end input.  Notice how  types are INFERRED *)
 let x = 3 + 4;; (* x forever more is 7 *)
@@ -41,7 +41,7 @@ if (x = 3) then (5 + 35) else 6;;
 
 (* ====================================================================== *)
 
-(*  OCaml II  - Examples *)
+(*  OCaml Lecture II  *)
 
 
 (* Tuples - fixed length lists, but types of each element CAN differ, unlike lists *)
@@ -218,7 +218,7 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
 (* ====================================================================== *)
 
-(*  OCaml III  - Examples *)
+(*  OCaml Lecture III  *)
 
 (* Immutable declarations *)
 (*
@@ -433,9 +433,84 @@ match id (true) with
 (function mono_id -> mono_id 4) id;; (* mono_id is solely of type int -> int, thats OK *)
 
 
+(* One topic left in higher-order functions ...
+   Currying - by logician Haskell Curry
+*)
+
+(* First lets recall how functions allow incremental arguments to be passed *)
+let addC x y = x + y;;
+addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
+let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
+
+(* an identical way to define addC, clarifying what the above means: *)
+let addC = function x -> (function y -> x + y);;
+(* yet another identical way .. *)
+let addC x = function y -> x + y;;
+
+addC 1 2;; (* same result as above *)
+
+(* Also recall the related  non-Curry'ing version: use a pair of arguments instead *)
+let addNC p =
+	match p with (x,y) -> x+y;;
+
+(* recall this equivalent abbreviation *)
+let addNC (x, y) = x + y;;
+
+
+(* Notice how the type of the above differs from addC's type *)
+addNC (3, 4);;
+(* addNC 3;; *) (* error, need all or no arguments supplied *)
+
+(*
+ * Fact: these two approaches to a 2-argument function are isomorphic.
+ *
+ * We now define two cool higher-order functions: 
+ *
+ * curry   - takes in non-curry'ing 2-arg function and returns a curry'ing version 
+ *
+ * uncurry - takes in curry'ing 2-arg function and returns an non-curry'ing version 
+ * Since we can then go back and forth between the two reps, they are
+ *      ***ISOMORPHIC***
+ *)
+let curry fNC = function x -> function y -> fNC (x, y);;
+let uncurry fC = function (x, y) -> fC x y;;
+
+let newaddNC = uncurry addC;;
+newaddNC (2,3);;
+let newaddC  = curry   addNC;;
+newaddC 2 3;;
+
+(* Observe the types themselves pretty much specify the behavior: *)
+(* curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c *)
+(* uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c *)
+
+let noop1 = curry (uncurry addC);; (* a no-op *)
+let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together show isomorphism *)
+
+(* End Currying topic *)
+
+(* Misc minor OCaml *)
+
+(* print_x for atomic types 'x', again no overloading in meaning here *)
+print_string ("hi\n");;
+
+(* you CAN also declare types, anywhere in fact *)
+let add (x: float) (y: float) = x +. y;;
+let add (x: int) (y: int) = (((x:int) + y) : int);;
+
+(* type abbreviations via "type" *)
+type intpair = int * int;;
+let f (p : intpair) = match p with 
+                      (l, r) -> l + r
+;;
+(2,3);; (* ocaml doesn't call this an intpair by default *)
+f (2, 3);; (* can pass it to the function expecting an intpair due to type defn *)
+((2,3):intpair);; (* can also explicitly tag data with its type *)
+
+
 (* ******************************************************************* *)
 
-(* An old PL Homework 1  - lets work through some of it to get some experience  
+(* An old PL Homework 1  - lets work through some of it to get experience  
    with writing simple functional Caml programs *)
 
 (* 
@@ -612,83 +687,9 @@ diff [1;2]   [1;2;3];; (* should return [] *)
 
 
 
-(* One topic left in higher-order functions ...
-   Currying - by logician Haskell Curry
-*)
-
-(* First lets recall how functions allow incremental arguments to be passed *)
-let addC x y = x + y;;
-addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
-let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
-
-(* an identical way to define addC, clarifying what the above means: *)
-let addC = function x -> (function y -> x + y);;
-(* yet another identical way .. *)
-let addC x = function y -> x + y;;
-
-addC 1 2;; (* same result as above *)
-
-(* Also recall the related  non-Curry'ing version: use a pair of arguments instead *)
-let addNC p =
-	match p with (x,y) -> x+y;;
-
-(* recall this equivalent abbreviation *)
-let addNC (x, y) = x + y;;
-
-
-(* Notice how the type of the above differs from addC's type *)
-addNC (3, 4);;
-(* addNC 3;; *) (* error, need all or no arguments supplied *)
-
-(*
- * Fact: these two approaches to a 2-argument function are isomorphic.
- *
- * We now define two cool higher-order functions: 
- *
- * curry   - takes in non-curry'ing 2-arg function and returns a curry'ing version 
- *
- * uncurry - takes in curry'ing 2-arg function and returns an non-curry'ing version 
- * Since we can then go back and forth between the two reps, they are
- *      ***ISOMORPHIC***
- *)
-let curry fNC = function x -> function y -> fNC (x, y);;
-let uncurry fC = function (x, y) -> fC x y;;
-
-let newaddNC = uncurry addC;;
-newaddNC (2,3);;
-let newaddC  = curry   addNC;;
-newaddC 2 3;;
-
-(* Observe the types themselves pretty much specify the behavior: *)
-(* curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c *)
-(* uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c *)
-
-let noop1 = curry (uncurry addC);; (* a no-op *)
-let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together show isomorphism *)
-
-(* End Currying topic *)
-
-(* Misc minor OCaml *)
-
-(* print_x for atomic types 'x', again no overloading in meaning here *)
-print_string ("hi\n");;
-
-(* you CAN also declare types, anywhere in fact *)
-let add (x: float) (y: float) = x +. y;;
-let add (x: int) (y: int) = (((x:int) + y) : int);;
-
-(* type abbreviations via "type" *)
-type intpair = int * int;;
-let f (p : intpair) = match p with 
-                      (l, r) -> l + r
-;;
-(2,3);; (* ocaml doesn't call this an intpair by default *)
-f (2, 3);; (* can pass it to the function expecting an intpair due to type defn *)
-((2,3):intpair);; (* can also explicitly tag data with its type *)
-
 (* ====================================================================== *)
 
-(*  OCaml IV  - Examples *)
+(*  OCaml Lecture IV  *)
 
 (* ******************************************************************* *)
 
@@ -1026,7 +1027,7 @@ g ();;
 
 (* ====================================================================== *)
 
-(* OCaml V - Examples *)
+(* OCaml Lecture V  *)
 
 (* Caml Modules - structures and functors *)
 
