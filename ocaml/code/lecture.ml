@@ -14,10 +14,10 @@ true || false;;
 
 (* Int/Float non-overloading *)
 1;;
-1.0;; 
+1.;; 
 4 * 5;;
-(* 4.0 * 1.5;; *) (* error - '*' operator is only for 'integers' *)
-4.0 *. 1.5;; (* this works -- '*.' is for floats *)
+(* 4.0 * 1.5;; *) (* error - '*' operator is only for integers *)
+4.0 *. 1.5;;      (* works -- '*.' is for floats *)
 
 (* Lists are easy to create and manipulate *)
 [1; 2; 3];;
@@ -35,8 +35,8 @@ z;; (* NOTICE: did not mutate list z by putting 0 on front, its still [2; 4; 6] 
 
 (* everything in caml returns values (i.e. is an 'expression') - no commands *)
 if (x = 3) then (5 + 35) else 6;;
-(if (x = 3) then 5 else 6) * 2;; (* two branches of 'if' must have SAME type *)
-(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error *)
+(if (x = 3) then 5 else 6) * 2;;
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error:  two branches of if must have SAME type *)
 
 
 (* ====================================================================== *)
@@ -46,12 +46,12 @@ if (x = 3) then (5 + 35) else 6;;
 
 (* Tuples - fixed length lists, but types of each element CAN differ, unlike lists *)
 
-(2, "hi");;
+(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
 let tuple = (2, "hi");;
 
 (* Functions *)
 
-let squared x = x * x;; (* declare a function: "f" is its name, "x" is its one parameter.  return implicit.  *)
+let squared x = x * x;; (* declare a function: "squared" is its name, "x" is its one parameter.  return implicit.  *)
 squared 4;; (* call a function -- separate arguments with S P A C E S *)
 
 (*
@@ -71,19 +71,15 @@ let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (u
 
 fib 10;;
 
-(*
- * - immutable programming: for/while loops are useless (they either never loop 
- *   or forever since the test is the same), so recursion is the only means of
- *   iteration
-*)
-
 (* anonymous functions: define a function as an expression *)
-let funny_add1 = function x -> x + 1;; (* "x" is argument here -- can do one-argument functions only *)
+(* similar to lambdas in Python, Java, etc - all are based on the lambda calculus *)
+
+let funny_add1 = (function x -> x + 1);; (* "x" is argument here -- can do one-argument functions only *)
 funny_add1 3;;
 ((function x -> x + 1) 4) + 7;; (*  an "->" function is an expression and can be used anywhere *)
 
 (* 
- * functions can be passed to and returned from functions --> HIGHER-ORDER
+ * functions can be passed to and returned from functions --> HIGHER-ORDER functions
  *)
 
 (* multiple arguments - just leave spaces between multiple arguments in definition and use *)
@@ -98,7 +94,7 @@ add3 20;;
  * Observe 'int -> int -> int' is parenthesized as 'int -> (int -> int)' -- RIGHT associativity
  *)
 
-(*** Patterns ***)
+(*** Pattern matching: switch or case on steroids ***)
 
 
 (* Basic pattern match with numbers *)
@@ -118,7 +114,7 @@ mixemup 3;; (* matches last case and x is bound to the value 3 *)
 
 (* List matching *)
 
-let dum = [3;5;9];;  (* NOTE: this list notation is shorthand for 3 :: ( 5 :: (9 :: [])) *)
+let dum = [3;5;9];;  (* RECALL: this list notation is shorthand for 3 :: ( 5 :: (9 :: [])) *)
 
 match dum with
 	[] -> []
@@ -143,16 +139,16 @@ match ["hi"] with (* ["hi"] is "hi" :: [] *)
 | x :: y -> "second"
 | _ -> "third";;
 
-(* tuple - pattern matching *)
+(* tuple pattern matching *)
 let tuple = (2, "hi", 1.2);;
 
 match tuple with
   (f, s, th) -> s
 ;;
 
-(* let can be combined with a single pattern match to assign multiple values *)
-let mypair = (2.2, 'Z');;
-let (f, s) = mypair;;
+(* let pattern shorthand: a single pattern match to assign multiple values *)
+let mypair = (2.2, 3.3);;
+let (f, s) = mypair in f +. s;;  (* same behavior as "match mypair with (f,s) -> f +. s" *)
 
 let getSecond t = 
   match t with
@@ -160,9 +156,6 @@ let getSecond t =
 ;;
 let s = getSecond (2, "hi");;
 let s = getSecond mypair;;
-
-let getSecond (f,s) = s (* equivalent to the above - implicit pattern match in function argument *)
-;;
 
 (* warning - non-exhaustive pattern matching; avoid this *)
 let getHead l = 
@@ -173,10 +166,10 @@ let getHead l =
 let getHead l = 
   match l with
 	| [] -> 5
-  |  head :: tail -> 5
+  |  head :: tail -> head
 ;;
 
-(* getHead [];; *)  (* Caml warned before that this case is not covered *)
+(* getHead [];; *)  (* Caml warned before that this case is not covered: gives uncaught runtime exception *)
 
 
 (* patterns in function definitions *)
@@ -193,7 +186,8 @@ add 1 2;; (* notice different calling convention -- two ways to write the same f
 
 let add = (+);; (* aside: this syntax is how you can give any built-in infix operator a name as a function *)
 
-(* using patterns in recursive functions: a function to reverse a list 
+(* using patterns in recursive functions: a function to reverse a list
+  	 note this does not mutate the list, it makes a new list that reverses original
    
    We also want to study this function to show how its correctness is
    justified by an induction argument
