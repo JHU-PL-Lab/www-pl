@@ -225,11 +225,15 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
  * All variable declarations in Caml are IMMUTABLE -- value will never change
  * helps in reasoning about programs, we know the variable's value is fixed
  *)
-let y = 3 in 
-  let x = 5 in
-    let f y = x + y in
-      let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
-        (f (y - 1)) + x (* x is STILL 5 in the function body - thats what x was when f defined *)
+(let y = 3 in 
+  ( let x = 5 in
+    ( let f y = x + y in
+      ( let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
+        (f (y - 1)) + x 
+			)
+		)
+	)(* x is STILL 5 in the function body - thats what x was when f defined *)
+)
 ;;
 
 (* top loop is conceptually an open-ended series of lets which never close: compare following with previous *)
@@ -269,23 +273,23 @@ let rec copy l = match l with
               [] -> []
             | hd :: tl ->  hd::(copy tl)
 
-let result = copy [1;2;3;4;5;6;7;8;9;10];;
+let result = copy [1;2;3;4;5;6;7;8;9;10]
 
 (* copy is useless because immutable data can be freely shared - no need to copy, ever! *)
 												
 (* Refine copy to flip back and forth between copying and not *)
 												
 let rec 
-     take l = match l with 
+     copyodd l = match l with 
               [] -> []
-            | hd :: tl ->  hd::(skip tl)
+            | hd :: tl ->  hd::(copyeven tl)
 and  (* mutually recursive functions must be defined together via the "and" keywd *)
-     skip l = match l with 
+     copyeven l = match l with 
               [] -> []
-            | x :: xs -> take xs;;
+            | x :: xs -> copyodd xs;;
 
-take [1;2;3;4;5;6;7;8;9;10];;
-skip [1;2;3;4;5;6;7;8;9;10];;
+copyodd [1;2;3;4;5;6;7;8;9;10];;
+copyeven [1;2;3;4;5;6;7;8;9;10];;
 
 (* Understand the above by giving clear specifications 
    Spec: take returns only the ODD elements of a list, skip returns only the EVEN ones *)
@@ -294,7 +298,7 @@ skip [1;2;3;4;5;6;7;8;9;10];;
 (* Here is a version that hides the skip function -- make both internal and export one *)
 						
 let justtake ll =
-	let rec 
+	( let rec 
      ltake l = match l with 
               [] -> []
             | hd :: tl ->  hd::(lskip tl)
@@ -304,8 +308,9 @@ let justtake ll =
             | x :: xs -> ltake xs
 		
   in 
-   ltake ll;;
-			
+   ltake ll
+	);;
+	
 justtake [1;2;3;4;5;6;7;8;9;10];;
 						  
 (* 
@@ -363,14 +368,14 @@ map (fun x -> fun y -> x + y) [1;2;4] ;; (* mind blower *)
 (* This also shows why these "anonymous" functions are useful. *)
 
 (* an equivalent way to do the same thing - give function a name first: *)
-let f x = x * 10;;
-map f [1;2;3;34;56;90];;
+let timesten x = x * 10;;
+map timesten [1;2;3;34;56;90];;
 
 (* Composition function g o f - takes in any 2 functions and returns their composition
  *)
-let compose g f = (function x -> g (f x));;
+let compose g f = (fun x -> g (f x));;
 let compose g f x =  g (f x);;
-let compose = (function g -> (function f -> (function x -> g(f x))));;
+let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 (* All three of the above definitions are different notation for the same function *)
 
 let plus3 x = x+3;;
@@ -383,7 +388,9 @@ compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent but with anon
   Parametric and object polymorphism
 *)
 
-let id = function x -> x;;
+let id = fun x -> x;;
+let id x = x;;
+
 (* id applied to int returns an int *)
 id 3;;
 (* SAME id applied to bool returns a bool *)
@@ -393,7 +400,7 @@ id true;;
 	
 	 We saw several parametric functions above: *)
 
-take;;    (* observe type is 'a list -> 'a list *)
+copyodd;;    (* observe type is 'a list -> 'a list *)
 map;;     (* type is ('a -> 'b) -> 'a list -> 'b list *)
 compose;; (* type is ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b *)
 
