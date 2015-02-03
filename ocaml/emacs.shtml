@@ -51,7 +51,7 @@ C-c C-r		evaluate the whole selected region
 C-c C-s		show the shell window; will automatically start an ocaml shell if not running
 C-c `		go to exact error location in the source</pre>
 
-Note when it asks for <code>Ocaml toplevel to run</code>, you need to enter the full path to the <code>ocaml</code> binary, its pretty stupid about knowing where it is.  Use Unix shell command <code>which ocaml</code> to find that full path on Linux/Mac.  Once you have that full path you can add the line <code>(defvar tuareg-interactive-program "/Users/scott/.opam/4.01.0/bin/ocaml")</code> (assuming <code>/Users/scott/.opam/4.01.0/bin/ocaml</code> is what <code>which ocaml</code> reported) to your <code>~/.emacs</code> file and you won't need to type it each time you launch a new toplevel.
+Note when it asks for <code>Ocaml toplevel to run</code>, you need to enter the full path to the <code>ocaml</code> binary, its pretty stupid about knowing where it is.  Use Unix shell command <code>which ocaml</code> to find that full path on Linux/Mac.  Once you have that full path you can add the line <pre>(defvar tuareg-interactive-program "/Users/scott/.opam/4.01.0/bin/ocaml")</pre> (assuming <code>/Users/scott/.opam/4.01.0/bin/ocaml</code> is what <code>which ocaml</code> reported) to your <code>~/.emacs</code> file and you won't need to type it each time you launch a new toplevel.
 </div>
 
 
