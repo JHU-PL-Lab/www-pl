@@ -51,6 +51,8 @@ ocaide.shtml>information on using OCaIDE</a> for more information.
   <dd>See <a href =
 emacs.shtml>information on running OCaml 
 inside Emacs</a> to get going.  
+  <dt><a href="https://atom.io">Atom</a>
+  <dd>This new text editor has a caml syntax highlighting mode. Install Atom and search for the ocaml packages within Atom.  OCamltoplevel is also a package to run an ocaml toplevel within Atom, but it is in a very early stage of development, is hard to install, and may not work for you.
   <dt><strong>vim <a
     href="http://www.lix.polytechnique.fr/~dbaelde/productions/omlet.html">OMLet</a></strong>
   <dd>If you like vim, it now has a caml

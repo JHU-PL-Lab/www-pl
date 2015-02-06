@@ -17,14 +17,13 @@ installed OCaml <i>before</i> you install OcaIDE to make sure things go
 smoothly.
 
 <h3>General Tips</h3>
-These tips assume
-you have already installed OCaIDE.
+These tips assume you have already installed OCaIDE.
 
 <ul>
     <li>Use Window -&gt; Open Perspective -&gt; Other .. and select OCaml to open the OCaIDE perspective if it is not already open.
     </li>
   	    <li>Under the Eclipse Preferences -&gt; OCaIDE -&gt; Paths, make sure the paths to all the
-    ocaml executables are correct, and also the path to your computer's "<code>make</code>" command (Mac users may need to install <code>make</code>, it comes with the Developer Tools addition for example).
+    ocaml executables are correct (set the binaries directory to your ocaml/bin folder on your disk and you also need to set the library path to ocaml/lib on your disk), and also the path to your computer's "<code>make</code>" command (Mac users may need to install <code>make</code>, it comes with the Developer Tools addition for example).
      </li>
     <li>
         For the first couple homeworks, you'll want to use the "Ocaml Managed Project" variety of project.  This spares you the work of
