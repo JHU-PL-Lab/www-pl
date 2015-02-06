@@ -405,7 +405,7 @@ compose;; (* type is ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b *)
 
 
 (*
- * Only 'let'-defined functions are polymorphic (yuck)
+ * Self-study topic: in fact, only 'let'-defined functions are polymorphic
  *)
 
 (* Background: turning a let-defined function into an argument to a function *)
@@ -453,7 +453,7 @@ let addC = function x -> (function y -> x + y);;
 (* yet another identical way .. *)
 let addC x = function y -> x + y;;
 
-addC 1 2;; (* same result as above *)
+(addC 1) 2;; (* same result as above *)
 
 (* Also recall the related  non-Curry'ing version: use a pair of arguments instead *)
 let addNC p =
@@ -512,6 +512,7 @@ let f (p : intpair) = match p with
 (2,3);; (* ocaml doesn't call this an intpair by default *)
 f (2, 3);; (* can pass it to the function expecting an intpair due to type defn *)
 ((2,3):intpair);; (* can also explicitly tag data with its type *)
+let ip = ((2,3):intpair) in fst ip;; (* can also explicitly tag data with its type *)
 
 
 (* ******************************************************************* *)
@@ -643,22 +644,18 @@ nth [1;2;3] 3;; (* should raise exception *)
          e.g. let isPositive n = (n > 0);; 
  *)
 
-let rec partition p l = 
-  match l with
-    [] -> ([], [])
-  | x :: xs -> 
-      let (l1, l2) = partition p xs in
-      if p x then
-	(x :: l1, l2)
-      else
-	(l1, (x :: l2))
-;;
+let rec partition p l =
+	match l with [] -> ([],[])
+		| hd :: tl -> let (posl,negl) = partition p tl in
+										if (p hd) then (hd :: posl,negl)
+															else (posl,hd::negl)
 
 
 (* test *)
 let isPositive n = n > 0;;
 partition isPositive [1; -1; 2; -2; 3; -3];; (* should return             *)
 					     (*	([1; 2;	3], [-1; -2; -3]) *)
+
 
 (* 
    5. Write a function 'diff' which takes in two lists l1 and l2 and returns 
@@ -700,6 +697,8 @@ diff [1;2]   [1;2;3];; (* should return [] *)
 (* ******************************************************************* *)
 
 (* Next topic: user-defined data-structures -- variants & records *)
+(* Big change from above: we need to declare some types now.  *)
+(* Still more convenient than Java etc: declare a type once globally, infer thereafter *)
 
 (* 
  * Variant Type Declaration 
@@ -721,9 +720,10 @@ type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or", same as
 
 Fixed 5;;
 Floating 4.0;;
-(* note these look like functions but they are not -- you always need to give arg *)
+(* note constructors look like functions but they are not -- you always need to give arg *)
+(* define constructors! *)
 
-let pullout x = 
+let pullout ( x : mynumber ) = 
 	match x with 
 	| Fixed n -> n              (* variants fit very well into pattern matching syntax *)
 	| Floating z -> int_of_float z;;
@@ -732,9 +732,9 @@ pullout (Fixed 5);;
 
 (* arithmetic operations on 'mynumber' variant type *)
 let add_num n1 n2 =
-   match (n1, n2) with    (* aside -- note use of pair hack to simult. match on two variables  *)
-     (Fixed i1, Fixed i2) ->       Fixed  (i1       +  i2)
-   | (Fixed i1,   Floating f2) ->  Floating(float i1 +. f2) (* need to coerce here *)
+   match (n1, n2) with    (* note use of pair here to parallel-match on two variables  *)
+     (Fixed i1, Fixed i2) ->       Fixed   (i1       +  i2)
+   | (Fixed i1,   Floating f2) ->  Floating(float i1 +. f2)       (* need to coerce *)
    | (Floating f1, Fixed i2)   ->  Floating(f1       +. float i2) (* ditto *)
    | (Floating f1, Floating f2) -> Floating(f1       +. f2)
 ;;
@@ -745,7 +745,7 @@ add_num (Fixed 123) (Floating 3.14159);;
 (*
  * Enum types 
  *     - special case of variant types, 
- *       where all alternatives are Constatants:
+ *       where all alternatives are constants:
  *)
 
 type sign = Positive | Negative | Zero;;
@@ -753,42 +753,47 @@ type sign = Positive | Negative | Zero;;
 let sign_int n = if n > 0 then Positive else Negative;;
 sign_int (-6);;
 
-(* Multiple data items in a Construct?  Use product type *)
+(* Multiple data items in a construct?  Use the pre-existing product type! *)
 
 type complex = CZero | Nonzero of float * float;;
 
+let com = Nonzero(3.2,11.2);;
+
 (* 
- * Recursive data structures - the primary usefulness of variant types 
+ * Recursive data structures - a key use of variant types 
  *
  *  - recursive types can refer to themselves in their own definition
  * 
- * e.g. binary trees:
+ * e.g. binary trees with integers in nodes and empty leaves:
 *)
-type itree = Nothing | ANode of int * itree * itree;; 
+type itree = ILeaf | INode of int * itree * itree;; 
 
-ANode(4,Nothing,ANode(2,ANode(18,Nothing,Nothing),Nothing));;
+INode(4,ILeaf,INode(2,INode(18,ILeaf,ILeaf),ILeaf));;
 
-(* Polymorphic version of above which allows any type at leaves: *)
+(* Better polymorphic version of above which allows any type at leaves: *)
 
-type 'a btree = Empty | Node of 'a * 'a btree * 'a btree;;
+type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
+
+(* Observe how above type takes a (prefix) argument, 'a -- "btree" is a type function *)
+(* 'a list is a built-in example, a list of 'a 's *)
 
 (* example trees *)
 
-let whack = Node("whack!",Empty, Empty);;
+let whack = Node("whack!",Leaf, Leaf);;
 let bt = Node("fiddly ",
 	        Node("backer ",
-		       Empty,
+		       Leaf,
 		       Node("crack ",
-			      Empty,
-			      Empty)),
+			      Leaf,
+			      Leaf)),
 	        whack);;
 
 let bt2 = Node("fiddly ",
 	        Node("backer ",
-		       Empty,
+		       Leaf,
 		       Node("cracw ",
-			      Empty,
-			      Empty)),
+			      Leaf,
+			      Leaf)),
 	        whack);;
 
 (* Lists could have been built with a recursive type declaration *)
@@ -799,30 +804,30 @@ let mylisteg = ColonColon(3,ColonColon(5,ColonColon(7,MtList)));; (* isomorphic 
 
 let rec double_list_elts ml = 
 	match ml with
-	| MtList -> MtList
-	| ColonColon(mh,mt) -> ColonColon(mh * 2,double_list_elts mt);;
+	| MtList -> MtList (* vs [] -> [] *)
+	| ColonColon(mh,mt) -> ColonColon(mh * 2,double_list_elts mt);; (* vs mh :: mt -> .. *)
 
 double_list_elts mylisteg;;
 
 (*
- * Operations on binary trees are similar to how we have been doing lists
+ * Functions on binary trees are similar to functions on lists: use recursion!
  *
  *)
 
 
-let rec add_gobble_tree_elts bintree =
+let rec add_gobble bintree =
    match bintree with
-     Empty -> Empty
+     Leaf -> Leaf
    | Node(y, left, right) ->
-       Node(y^"gobble",add_gobble_tree_elts left,add_gobble_tree_elts right)
+       Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
 
-let gobtree = add_gobble_tree_elts bt;;
+let gobtree = add_gobble bt;;
 
 
 let rec lookup x bintree =
    match bintree with
-     Empty -> false
+     Leaf -> false
    | Node(y, left, right) ->
        if x = y then 
 	 true 
@@ -837,7 +842,7 @@ lookup "flack" bt;;
 
 let rec insert x bintree =
    match bintree with
-     Empty -> Node(x, Empty, Empty)
+     Leaf -> Node(x, Leaf, Leaf)
    | Node(y, left, right) ->
        if x <= y then 
 	 Node(y, insert x left, right)
@@ -933,7 +938,7 @@ x.contents + 1;; (* same effect as previous line *)
 
 (* mutable tree *)
 
-type mitree = Nothing | ANode of int * mitree ref * mitree ref
+type mtree = MLeaf | MNode of int * mitree ref * mitree ref
 ;;
 
 (*

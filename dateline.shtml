@@ -73,8 +73,7 @@ Lecture material is under the links; lectures with no such link will be based on
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.ml">OCaml III: more functions,
-        types, records, refs, arrays</a></div>
+            <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.ml">OCaml III: higher-order functions</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
@@ -92,7 +91,8 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.ml">OCaml IV: exceptions, Modules</a></div>
+            <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.ml">OCaml IV: variants,
+        type inference, records, refs, arrays, exceptions</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
