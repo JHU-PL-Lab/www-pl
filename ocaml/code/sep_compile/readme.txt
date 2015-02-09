@@ -1,8 +1,9 @@
-The Makefile here should work with Eclipse OCaIDE on Linux/Mac/Cygwin.
+The Makefile here should work with Eclipse OCaIDE on Linux/Mac/Cygwin.  
+Like any makefile, just type make from the shell to do the build.
 
 Here are some detailed instructions to get this example working in Eclipse/OCaIDE:
 1) Make a new "OCaml Empty Makefile Project"
-2) Add all the files
+2) Add all the files; it may just work now but if not continue to 3) and 4) below.
 3) under Properties/Makefile, 
    set make targets for rebuild to all, 
    set make targets for clean to clean, 
@@ -22,18 +23,18 @@ OR, to to all the above in one step,
 
 ocamlc -o main fSet.mli fSet.ml main.ml 
 
-Note that order is important, files on the left cannot depend on files on the right; like the top loop.
+Note that order is important, files on the left cannot depend on files on the
+right; its just like the OCaml top loop in that regard.
 
-These commands produce an executable called main which can be run: on Linux/Mac it will run from a shell directly;
-under any OS you can type
+These commands produce an executable called main which can be run: on Linux/Mac 
+it will run from a shell directly; under any OS you can type
 
 ocamlrun main
 
 to run it.  
 
-Of course if you are using Eclipse you can run main directly from within Eclipse.  Runnable Caml files
-have a "B" on their icon in OCaIDE.
-
+Of course if you are using Eclipse you can run main directly from within Eclipse.
+Runnable Caml files have a "B" on their icon in OCaIDE.
 
 Note that the top loop can also load and run compiled files: enter
 
@@ -41,6 +42,8 @@ Note that the top loop can also load and run compiled files: enter
 #load "fSet.cmo";;
 #load "main.cmo";;
 
- -- the effect of the above is the same as if those module definitions were typed into the top loop.
+ -- the effect of the above is the same as if those module definitions were
+  typed into the top loop.
  
-Note that the "#" above need to be typed, they are not the caml prompt.  So, its the #load directive, not load.
+Note that the "#" above need to be typed, they are not the caml prompt.  
+So, its the #load directive, not load.

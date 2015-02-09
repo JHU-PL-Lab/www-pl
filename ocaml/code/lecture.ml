@@ -923,7 +923,7 @@ let x = ref 4;;    (* always have to declare initial value when creating a refer
 
 !x + 1;; (* need !x to get out the value; something like *x in C *)
 x := 6;; (* assignment - x must be a ref cell *)
-!x + 1;; (* Mutation finally!!!!  Ahhhh!!!  (says the  hacker) *)
+!x + 1;; (* Mutation happens *)
 
 (* 'a ref is really implemented by a mutable record with one field, contents: 
      'a ref abbreviates the type { mutable contents: 'a }
@@ -936,38 +936,40 @@ x.contents <- 6;;  (* same effect as previous line: update contents field *)
 !x + 1;;
 x.contents + 1;; (* same effect as previous line *)
 
-(* mutable tree *)
+(* declaring your own mutable record *)
 
-type mtree = MLeaf | MNode of int * mitree ref * mitree ref
-;;
-
-(*
- * - Only ref typed variables or mutable records may be assigned to
- * - The notion of immutable variables is one of the great strengths of ML.
- * - 'let' doesn't turn into a mutation operator with 'ref's
- *)
-
-let x = ref 4;;
-let f () = !x;; (* note this is syntax for a 0-argument function in Caml - it only takes () as argument *)
-
-x := 234;;
-f();;
-
-let x = ref 6;; (* a shadowing old previous x definition, NOT an assignment to x *)
-f ();;
-
-(* more on mutable records *)
 type mutable_point = { mutable x: float; mutable y: float };;
 let translate p dx dy = 
                 p.x <- (p.x +. dx); (* observe use of ";" here to sequence effects *)
-                p.y <- (p.y +. dy)
+                p.y <- (p.y +. dy)  (* ";" is useless without side effects (think about it) *)
 								;;
 let mypoint = { x = 0.0; y = 0.0 };;
 translate mypoint 1.0 2.0;;
 mypoint;;
 
 
-(* Yes, we can even write a while loop now! *)
+
+(* tree with mutable nodes *)
+
+type mtree = MLeaf | MNode of int * mitree ref * mitree ref
+;;
+
+(*
+ * - ONLY ref typed variables or mutable records may be assigned to
+ * - The notion of immutable variables is one of the great strengths of ML.
+ * - Note: 'let' doesn't turn into a mutation operator with 'ref's
+ *)
+
+let x = ref 4;;
+let f () = !x;; (* This is syntax for a 0-argument function in Caml - it only takes () as argument *)
+
+x := 234;;
+f();;
+
+let x = ref 6;; (* shadowing previous x definition, NOT an assignment to x !! *)
+f ();;
+
+(* Yes, we can even write a while loop ! *)
 let x = ref 1;;
 while !x < 10 do 
  (print_int !x; 
@@ -979,7 +981,7 @@ done;;
 (*
  * Why is immutability good?
  *    - programmer can depend on the fact that something will never be mutated 
- *        when writing code
+ *        when writing code: permanent like mathematical definitions
  * 
  * ML still lets you express mutation, but its extra so you only use it when 
  *   its really needed
@@ -1002,11 +1004,11 @@ arr.(0) <- 55;; (* update *)
 arr;;
 
 
-(* Exceptions *)
+(* Exceptions: pretty standard and mostly Java-like *)
 
 exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
 
-let f _ = raise Foo;; (* note no need to declare "raises Foo" here as in Java; no inference of it either *)
+let f _ = raise Foo;; (* note no need to declare "raises Foo" in functions type as in Java *)
 f ();;
 
 exception Bar;;
@@ -1015,11 +1017,12 @@ let g _ =
   try 
     f () 
   with 
-    Foo ->  5 | Bar -> 3;;
+    Foo ->  5 | Bar -> 3;; (* Use power of pattern matching in handlers *)
 g ();;
 
 (* exceptions that pass up an argument *)
 exception Goo of string;;
+
 let f _ = raise (Goo "keyboard on fire");;
 f ();;
 
@@ -1096,14 +1099,13 @@ Some principles of modules:
 
 module FSet =
 struct
-	
 	exception NotFound (* any top-level definition can be included in a module *)
 	
 	type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
 	
 	let emptyset : 'a set = []
 	
-	let rec add x (s: 'a set) = ((x :: s) : ('a set))
+	let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
 	
 	let rec remove x (s: 'a set) =
 		match s with
@@ -1140,7 +1142,7 @@ add "a" ["b"];;
 contains "a" ["a"; "b"];;
 
 
-module type STUPIDSET = (* define a module type (signature) with no remove, probably a stupid idea *)
+module type GROWINGSET = (* define a module type (signature) with no remove; not very useful *)
   sig
     exception NotFound
     type 'a set = 'a list
@@ -1151,14 +1153,15 @@ module type STUPIDSET = (* define a module type (signature) with no remove, prob
 ;;
 
 
-module StupidSet = (FSet: STUPIDSET);; (* put a signature on a structure -- force it to have that sig *)
+module GrowingSet = (FSet: GROWINGSET);; (* put a signature on a structure -- force it to have that sig *)
+GrowingSet.add "a" ["b"];;
 
-(* StupidSet.remove;; *) (* Error: remove not in signature! *)
+(* GrowingSet.remove;; *) (* Error: remove not in signature! *)
 
-FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making StupidSet *)
+FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making GrowingSet *)
 
-(* Now lets do some non-stupid hiding.  Hiding types is possible and allows "black box" data structures 
-   - good software engineering practice to enforce hiding of internals *)
+(* Now lets do some useful hiding.  Hiding types is possible and allows "black box" data structures 
+   - can be good software engineering practice to enforce hiding of internals *)
 
 module type  HIDDENSET= 
   sig
@@ -1176,6 +1179,38 @@ module HiddenSet = (FSet: HIDDENSET);;
 
 let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 HiddenSet.contains 3 hs;;
+
+(* Can declare signature along with module - usually do it this way in fact. *)
+
+module FSet : HIDDENSET =
+struct
+	exception NotFound (* any top-level definition can be included in a module *)
+	
+	type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+	
+	let emptyset : 'a set = []
+	
+	let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
+	
+	let rec remove x (s: 'a set) =
+		match s with
+			[] -> raise NotFound
+		| hd :: tl ->
+				if hd = x then
+					(tl: 'a set)
+				else
+					hd :: remove x tl
+	
+	let rec contains x (s: 'a set) =
+		match s with
+			[] -> false
+		| hd :: tl ->
+				if x = hd then
+					true
+				else
+					contains x tl
+end
+;;
 
 (* Separate Compilation with Caml
 
