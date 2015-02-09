@@ -1152,7 +1152,6 @@ module type GROWINGSET = (* define a module type (signature) with no remove; not
   end
 ;;
 
-
 module GrowingSet = (FSet: GROWINGSET);; (* put a signature on a structure -- force it to have that sig *)
 GrowingSet.add "a" ["b"];;
 
@@ -1180,18 +1179,21 @@ module HiddenSet = (FSet: HIDDENSET);;
 let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 HiddenSet.contains 3 hs;;
 
-(* Can declare signature along with module - usually do it this way in fact. *)
+(* Can declare signature along with module *)
 
-module FSet : HIDDENSET =
+module FSet : 
+  sig
+    type 'a set
+    val emptyset : 'a set
+    val add: 'a -> 'a set -> 'a set
+    val remove : 'a -> 'a set -> 'a set
+    val contains: 'a -> 'a set -> bool    
+  end =
 struct
-	exception NotFound (* any top-level definition can be included in a module *)
-	
-	type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-	
+	exception NotFound
+	type 'a set = 'a list
 	let emptyset : 'a set = []
-	
-	let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
-	
+	let rec add x (s: 'a set) = ((x :: s) : ('a set))
 	let rec remove x (s: 'a set) =
 		match s with
 			[] -> raise NotFound
@@ -1200,7 +1202,6 @@ struct
 					(tl: 'a set)
 				else
 					hd :: remove x tl
-	
 	let rec contains x (s: 'a set) =
 		match s with
 			[] -> false
