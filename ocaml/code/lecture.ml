@@ -1183,7 +1183,7 @@ HiddenSet.contains 5 hs;;
 
 (* Can declare signature along with module *)
 
-module FSet : 
+module HFSet : 
   sig
     type 'a set
     val emptyset : 'a set
@@ -1215,7 +1215,7 @@ struct
 end
 ;;
 
-let hs = FSet.add 5 (FSet.add 3 FSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
+let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 
 (* Separate Compilation with Caml
 

@@ -58,7 +58,7 @@ These tips assume you have already installed OCaIDE.
 
     
 <h3>Using the FbDK with OCaIDE</h3>
-The FbDK uses ocamlc to develop standalone applications and different setup instructions are needed for that.
+The FbDK uses ocamlc to develop standalone applications and different setup instructions are needed for that.  Unfortunately OCaIDE is flakey enough that you need to follow the below closely or it probably will not work.
 <ul>
   <li>First, see the tips above.
   <li>
@@ -80,7 +80,7 @@ The FbDK uses ocamlc to develop standalone applications and different setup inst
             <li>Refresh the project from within Eclipse.</li>
             <li>To be safe that the project will build properly, select "Properties" of the project, and under "Paths",  set make targets for rebuild to <code>all</code>, 
    set make targets for clean to <code>clean</code>, and under additional options put <code>-f Makefile</code> (these should be the defaults but OCaIDE occasionally forgets them).</li>
-            <li>Select "Clean Project" from the Project menu to build your project.</li>
+            <li>Select "Build Project" from the Project menu to build your project.  Note if "Build automatically" there is checked, it should re-make every time you save.</li>
             <li>
                 In the Run Configurations dialog, create a new OCaml Executable
                 configuration.  Type the project name here exactly as you typed
