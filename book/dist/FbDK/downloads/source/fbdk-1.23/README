@@ -1,7 +1,7 @@
 Build Instructions
 ======================================================================
 
-To build FbDK, execute the following commands:
+To build the FbDK, execute the following commands:
 
 # ./configure
 # make

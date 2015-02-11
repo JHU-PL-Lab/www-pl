@@ -29,6 +29,7 @@ interpdir = $(SRCDIR)/$1
 interppfx = $(call interpdir,$1)/$(call lowercase,$1)
 interpcmos_for_pfx = $(CMO) \
 	$(foreach sfx,\
+		options.cmo \
 		ast.cmo \
 		parser.cmo \
 		pp.cmo \

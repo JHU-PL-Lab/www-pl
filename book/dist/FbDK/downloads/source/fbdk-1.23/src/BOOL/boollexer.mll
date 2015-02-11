@@ -15,7 +15,7 @@ rule token = parse
 | "("                  { LPAREN }
 | ")"                  { RPAREN }
 | ";;"                 { EOEX }
-| eof                  { EOEX }
+| eof                  { raise Exit }
 
 {} 
 

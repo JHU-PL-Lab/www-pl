@@ -25,6 +25,11 @@ module type LANGUAGE = sig
 		val typecheck: Ast.expr -> Ast.fbtype
 		val typecheck_default_enabled: bool
 	end
+    
+  module Options: sig
+    val set_debug: bool -> unit
+    val get_debug: unit -> bool
+  end
 
   module Pp: sig
     val pretty_print: Ast.expr -> string

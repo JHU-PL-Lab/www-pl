@@ -5,6 +5,7 @@ module Language = struct
   module Lexer = Tfbsrxlexer
   module Ast = Tfbsrxast
   module Pp = Tfbsrxpp
+  module Options = Tfbsrxoptions
   module Interpreter = Tfbsrxinterp
 	module Typechecker = Tfbsrxtype
 

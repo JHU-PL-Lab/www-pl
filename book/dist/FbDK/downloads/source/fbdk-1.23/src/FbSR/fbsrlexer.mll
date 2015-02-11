@@ -40,7 +40,7 @@ rule token = parse
 | '!'                  { GET }
 | decimal_literal      { INT (int_of_string(Lexing.lexeme lexbuf)) }
 | lowercase identchar* { IDENT (Lexing.lexeme lexbuf) }
-| eof                  { EOEX }
+| eof                  { raise Exit }
 
 {} 
 

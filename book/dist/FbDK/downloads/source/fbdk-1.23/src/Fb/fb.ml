@@ -5,6 +5,7 @@ module Language = struct
   module Lexer = Fblexer
   module Ast = Fbast
   module Pp = Fbpp
+  module Options = Fboptions
   module Interpreter = Fbinterp
 	module Typechecker = Fbtype
 

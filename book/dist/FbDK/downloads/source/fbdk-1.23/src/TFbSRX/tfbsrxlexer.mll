@@ -47,7 +47,7 @@ rule token = parse
 | ['#'] (identchar+ as id) ['@']   { EXN id } 
 | decimal_literal      { INT (int_of_string(Lexing.lexeme lexbuf)) }
 | lowercase identchar* { IDENT (Lexing.lexeme lexbuf) }
-| eof                  { EOEX }
+| eof                  { raise Exit }
 
 {} 
 

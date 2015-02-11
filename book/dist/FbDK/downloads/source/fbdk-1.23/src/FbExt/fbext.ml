@@ -5,6 +5,7 @@ module Language = struct
   module Lexer = Fbextlexer
   module Ast = Fbextast
   module Pp = Fbextpp
+  module Options = Fbextoptions
   module Interpreter = Fbextinterp
 	module Typechecker = Fbexttype
 

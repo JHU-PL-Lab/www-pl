@@ -898,6 +898,8 @@ type scale = {num: int; coeff: float};; (* shadowing ratio's label num *)
 q.denom;; (* this is still OK, label not overdefined *)
 function x -> x.num;; (* this is why there is only one version of num allowed - inference *)
 
+function (x : ratio) -> x.num;;
+
 (* Caml programmers often use tuples instead of records since the record name
  * issue is not handled satisfactorily *)
 
@@ -931,7 +933,7 @@ x := 6;; (* assignment - x must be a ref cell *)
 
 let x = { contents = 4};; (* identical to x's definition above *)
 x := 6;;
-x.contents <- 6;;  (* same effect as previous line: update contents field *)
+x.contents <- 7;;  (* same effect as previous line: update contents field *)
 
 !x + 1;;
 x.contents + 1;; (* same effect as previous line *)
@@ -951,7 +953,7 @@ mypoint;;
 
 (* tree with mutable nodes *)
 
-type mtree = MLeaf | MNode of int * mitree ref * mitree ref
+type mtree = MLeaf | MNode of int * mtree ref * mtree ref
 ;;
 
 (*
@@ -1008,16 +1010,16 @@ arr;;
 
 exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
 
-let f _ = raise Foo;; (* note no need to declare "raises Foo" in functions type as in Java *)
+let f () = raise Foo;; (* note no need to declare "raises Foo" in functions type as in Java *)
 f ();;
 
 exception Bar;;
 
 let g _ = 
-  try 
+  (try 
     f () 
   with 
-    Foo ->  5 | Bar -> 3;; (* Use power of pattern matching in handlers *)
+    Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
 g ();;
 
 (* exceptions that pass up an argument *)
@@ -1162,7 +1164,7 @@ FSet.remove;;  (* This is still fine, remember we are not mutating FSet when mak
 (* Now lets do some useful hiding.  Hiding types is possible and allows "black box" data structures 
    - can be good software engineering practice to enforce hiding of internals *)
 
-module type  HIDDENSET= 
+module type  HIDDENSET = 
   sig
     type 'a set    (* hide the type 'a list here by not giving 'a set definition in signature *)
     val emptyset : 'a set
@@ -1177,7 +1179,7 @@ module HiddenSet = (FSet: HIDDENSET);;
 (* HiddenSet.add 3 [];; *) (* Error: [] not a set since we HID the fact that sets are really lists *)
 
 let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
-HiddenSet.contains 3 hs;;
+HiddenSet.contains 5 hs;;
 
 (* Can declare signature along with module *)
 
@@ -1212,6 +1214,8 @@ struct
 					contains x tl
 end
 ;;
+
+let hs = FSet.add 5 (FSet.add 3 FSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 
 (* Separate Compilation with Caml
 

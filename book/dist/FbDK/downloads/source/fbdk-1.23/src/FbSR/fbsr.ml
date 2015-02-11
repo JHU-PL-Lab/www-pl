@@ -5,6 +5,7 @@ module Language = struct
   module Lexer = Fbsrlexer
   module Ast = Fbsrast
   module Pp = Fbsrpp
+  module Options = Fbsroptions
   module Interpreter = Fbsrinterp
 	module Typechecker = Fbsrtype
 
