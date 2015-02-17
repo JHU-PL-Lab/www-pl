@@ -1359,4 +1359,3 @@ AbstractIntSet.add 5 AbstractIntSet.empty;;
 
 (* end functors topic *)
 
-
