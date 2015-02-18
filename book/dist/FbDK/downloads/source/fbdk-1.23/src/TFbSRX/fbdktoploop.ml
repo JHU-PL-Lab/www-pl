@@ -18,7 +18,7 @@ open Tfbsrxpp ;;
 (* function parse parses FbSR concrete syntax you enter as a string *)
 
 let parse s = 
-    let lexbuf = Lexing.from_string s in
+    let lexbuf = Lexing.from_string (s^";;") in
   	Tfbsrxparser.main Tfbsrxlexer.token lexbuf;;
 
 (* Function pp is a top-loop pretty printer using FbDK's pretty printer *)

@@ -33,7 +33,7 @@ open Fbinterp;;
 (* function parse parses FbST concrete syntax you enter as a string *)
 
 let parse s = 
-    let lexbuf = Lexing.from_string s in
+    let lexbuf = Lexing.from_string (s^";;") in
   	Fbparser.main Fblexer.token lexbuf;;
 
 (* Function pp is a top-loop pretty printer using FBDK's pretty printer *)
