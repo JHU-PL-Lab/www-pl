@@ -87,6 +87,8 @@ Here is additional supplementary information
   <dd>A relatively new OCaml book available online.
   <dt><a href="http://ocaml.org/learn/books.html">Books</a>
   <dd>Still more books, from the ocaml.org page.
+  <dt><a href="http://www.seas.upenn.edu/~cis341/current/programming_style.shtml">UPenn OCaml Style Guide</a>
+  <dd>A good guide to proper formatting and other style concerns for OCaml.
 </dl>
 
 
