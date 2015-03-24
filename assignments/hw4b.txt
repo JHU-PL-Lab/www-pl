@@ -100,10 +100,10 @@ List of discussants   :
    
       
 --------------------------------------------------------------------------------------------------
-  Section 4: Objects and Encoding
+  Section 3: Objects and Encoding
 ----------------------------------------------------------------------------------------
 
-4a. Write the FbOb code corresponding to the following simple (and quite cheesy) class
+3a. Write the FbOb code corresponding to the following simple (and quite cheesy) class
     hierarchy written out in Java:
 
     public class CreditCard
@@ -137,7 +137,7 @@ List of discussants   :
 
     [10 Points]
 
-4b. Provide an FbSR translation for the FbOb code that you produced for 1a. For
+3b. Provide an FbSR translation for the FbOb code that you produced for 3a. For
     reference, the translation rules and examples are in section 5.2.3 of the book.
 
     You can test your implementation using the FbSR binaries provided on the course
