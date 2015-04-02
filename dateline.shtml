@@ -213,7 +213,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Records</div>
+            <div align="left" class="body">&nbsp;Tuples, Records, Variants</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -230,7 +230,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;State; Exceptions</div>
+            <div align="left" class="body">&nbsp;State</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a href="assignments/hw4.shtml">Homework 4A</a></div>
@@ -496,7 +496,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
 	<tr> 
           <td width="8%"> 
             <div align="center" class="body">May 11,
-        5:00-5:50PM (???)</div>
+        5:00-5:50PM</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Tue</div>
@@ -516,7 +516,7 @@ Shaffer 100</strong></div>
 	<tr> 
           <td width="8%"> 
             <div align="center" class="body">May 13,
-        9AM-noon (???) </div>
+        9AM-noon</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
