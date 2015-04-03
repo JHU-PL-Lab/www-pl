@@ -42,7 +42,7 @@ Questions
    axioms and rules for proving facts.  We can in fact also play the "proof"
    game for operational equivalences: in the book Section 2.4.2 there are
    several equivalences listed that are known to hold for Fb programs.  So for
-   example, "(Function x -> e) ∼= ((Function z -> Function x -> e) z)",
+   example, "(Function x -> e) ∼= (Function z -> (Function x -> e) z)",
    so-called eta-equivalence, is one such known fact.  This particular principle
    is an axiom, there are no preconditions on it.
 
