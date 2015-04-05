@@ -58,7 +58,7 @@ Questions
               
    c. As for b. but show
 
-          (Function n -> 6) =~ (Function w -> (Function x -> If 0 = 0 Then 6 Else x) w
+          (Function n -> 6) =~ (Function w -> (Function x -> If 0 = 0 Then 6 Else x) w)
 
 
    If you are having trouble getting your head around b./c., here is an example.  
