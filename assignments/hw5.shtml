@@ -17,7 +17,7 @@
 <b>(70 points)</b>
 <p>
     The F&#x266d;DK has been designed to be extensible with typechecking. It is just turned off by default. For Part-I of the homework, 
-    use the F&#x266d;DK to implement the type inference algorithm for <strong>EF&#x266d;</strong> in OCaml.  You will use the book presentation (also given in class) as the "specification" of your implementation.
+    use the F&#x266d;DK to implement the type inference algorithm for <strong>EF&#x266d;</strong> in OCaml. Your implementation is expected to handle all of EF&#x266d; with the exception of <tt>Let Rec</tt>.
 </p><p>
     To complete this assignment, you will need to open <tt>fbtype.ml</tt> in the <tt>src/Fb</tt> directory and implement the <tt>typecheck</tt> function.  This function must return the type of that expression as specified by the EF&#x266d; algorithm; you should use the <tt>fbtype</tt> data type which appears in <tt>fbast.ml</tt>.  You may also wish to set <tt>typecheck_default_enabled</tt> to <tt>true</tt> in <tt>fbtype.ml</tt>; if you do not do this (and also do not pass <tt>--typecheck</tt> command-line flag), then the typechecker will not be used.  <b>For this part, you should turn in your <tt>fbtype.ml</tt> file and nothing else.</b>  Do not change fbast.ml or similar files, since your code will be tested with an otherwise correct implementation of the F&#x266d;DK by dropping your <tt>fbtype.ml</tt> file in.
 </p><p>
