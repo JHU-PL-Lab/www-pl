@@ -4,7 +4,7 @@
 
 <div id="content"> <h2>The 50,000 foot view of PLs: history and features</h2>
 
-At this point in the course we have covered some of the most key features of modern languages. In this lecture we step back a bit to look at features, and include some more features we did not get a chance to cover earlier.
+At this point in the course we have covered some of the most key features of modern languages. In this lecture we step back a bit to look at features, and patch up a few holes of features we did not get a chance to cover well earlier.
 
 <h3>The Historically Influential PLs list</h3>
 <p>
@@ -24,18 +24,28 @@ There are many important PLs, but a few are arguably more important than others.
 </ul>
 
 <h3>The Historical Features list</h3>
-Here is an historical list of key features.  The key language(s) introducing it are in parens after.
+Here is a historical list of key features.  The key language(s) introducing it are in parens after.<p>
+Early features:
 <ul>
   <li>Sequences of statements (Machine)
   <li>Memory read and write, including indirect read/write (primitive pointers) (Machine)
   <li>Basic arithmetical operations (not expressions, just direct on two locations) (Machine)
-  <li>(un)Conditional branching (Machine)
-  <li>Arithmetic <em>expression</em> syntax, e.g. <code>4+3 / y</code>, on top of the above <em>command</em> syntax
+  <li>Conditional branching (Machine)
+  <li>Arithmetic <em>expression</em> syntax, e.g. <code>4+3 / y</code> (FORTRAN)
   <li>Basic data types of ints, floats and arrays and typechecking them (FORTRAN)
   <li>For loops and (non-reentrant or non-recursive) subroutines (FORTRAN)
+ </ul>
+<p>
+Structured programming:
+ <ul>	
   <li>Structured (recursive) data a la C structs and dynamic allocation thereof (Algol)
   <li>Structured control a la C while and if (Algol)
   <li>Recursive functions (Algol)
+</ul>
+
+<p>
+"Modern" features:
+<ul>
   <li>Objects, classes, messages, and inheritance (Simula/Smalltalk)
   <li>Modules that are not just files (Modula)
   <li>Higher-order functions (Lisp)
@@ -52,25 +62,25 @@ Here is an historical list of key features.  The key language(s) introducing it 
 <p>
 Some other dimensions are interwoven through the above:
 <ul>
-  <li>Object Oriented Programming<br>
-(Question: why did it arise?)
+  <li>Object Oriented Programming (Question: why did it arise when records of functions work pretty well?)
   <li>Modularity, interfaces and information hiding; separate compilation
   <li>Mutation and the limiting thereof (<code>final</code>/<code>immutable</code>, ML and Haskell)
   <li>Runtime footprint spectrum: nothing - garbage collector - dynamic types - dynamic code loading - JIT compiler
   <li>The <em>ecosystem</em> of a programming language: editors, compilers, debuggers, testing, file and library structure, extent of libraries, etc.
-  <li>Metaprogramming: programs about programs.  Compile-time = <em>macros</em>/<em>templates</em>, run-time = <em>reflection</em>
 </ul>
 
 <h3>Lesser dimensions/features</h3>
 <p>
-Some features are arguably less important than the above.
+These features are somewhat less important than the above.
 
 <ul>
+  <li>Metaprogramming: programs about programs.  Compile-time = <em>macros</em>/<em>templates</em>, run-time = <em>reflection</em>
   <li>Information hiding: who has access to what, when and how?
   <li>Operator overloading, implicit coercions, user-defined infix operators
   <li>Named and default arguments on functions/methods
   <li>Commands vs expressions - where to draw the line?<br>
 --side effects have no result, that is why imperative languages have commands
+  <li>Dynamic code loading: can new code be loaded in at runtime?
 </ul>
 <h3>Modules</h3>
 <ul>
@@ -118,7 +128,7 @@ Some features are arguably less important than the above.
 	<li>JIT: Runtime compiler translating heavily-used bytecodes into machine code during runtime
 	<li>Reflection system (<code>eval</code>)
 </ul>
-Early languages had little or no runtime; more modern languages can have large runtimes.
+Early languages had little or no runtime codebase; more modern languages can have large runtimes.
 
 <h3>Input/Output</h3>
 <p>
