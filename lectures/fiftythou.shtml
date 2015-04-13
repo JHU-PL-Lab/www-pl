@@ -4,9 +4,10 @@
 
 <div id="content"> <h2>The 50,000 foot view of PLs: history and features</h2>
 
-At this point in the course we have covered some of the most key features of modern languages. In this lecture we step back a bit to look at the historical evolution of features, and include some more features we did not get a chance to cover earlier.
+At this point in the course we have covered some of the most key features of modern languages. In this lecture we step back a bit to look at features, and include some more features we did not get a chance to cover earlier.
 
-<h3>The Influential PLs list</h3>
+<h3>The Historically Influential PLs list</h3>
+<p>
 There are many important PLs, but a few are arguably more important than others.  Here is the main list we will focus on.
 <ul>
   <li>Machine / Assembly language
@@ -40,7 +41,7 @@ Here is an historical list of key features.  The key language(s) introducing it 
   <li>Higher-order functions (Lisp)
   <li>Dynamic typing (Lisp)
   <li>Implicit dynamic memory allocation and de-allocation, and implicit pointers (Lisp)
-  <li>Algebraic data types (pointer-free recursive types, e.g. variants and records)
+  <li>Algebraic data types (pointer-free recursive types, variants and records, pattern matching)
   <li>Type generics (parametric polymorphism) (ML)
   <li>Type inference (ML)
   <li>Exceptions and exception handlers (?)
@@ -48,17 +49,95 @@ Here is an historical list of key features.  The key language(s) introducing it 
 
 
 <h3>Crosscutting dimensions</h3>
+<p>
 Some other dimensions are interwoven through the above:
 <ul>
-  <li>Object Oriented Programming: why did it arise?
-  <li>Commands vs expressions
+  <li>Object Oriented Programming<br>
+(Question: why did it arise?)
   <li>Modularity, interfaces and information hiding; separate compilation
   <li>Mutation and the limiting thereof (<code>final</code>/<code>immutable</code>, ML and Haskell)
   <li>Runtime footprint spectrum: nothing - garbage collector - dynamic types - dynamic code loading - JIT compiler
-  <li>Operator overloading, implicit coercions, user-defined infix operators
   <li>The <em>ecosystem</em> of a programming language: editors, compilers, debuggers, testing, file and library structure, extent of libraries, etc.
   <li>Metaprogramming: programs about programs.  Compile-time = <em>macros</em>/<em>templates</em>, run-time = <em>reflection</em>
 </ul>
+
+<h3>Lesser dimensions/features</h3>
+<p>
+Some features are arguably less important than the above.
+
+<ul>
+  <li>Information hiding: who has access to what, when and how?
+  <li>Operator overloading, implicit coercions, user-defined infix operators
+  <li>Named and default arguments on functions/methods
+  <li>Commands vs expressions - where to draw the line?<br>
+--side effects have no result, that is why imperative languages have commands
+</ul>
+<h3>Modules</h3>
+<ul>
+  <li>Module systems did not exist in early programming languages
+  <li>As size of codebase grew, code organization became difficult; enter <em>modules</em>!
+</ul>
+
+<h4>Principles of modules</h4>
+
+<ul>
+  <li>  A given module contains declarations of functions, classes,  types, etc.
+  <li>  Modules have interfaces in which they
+      <ul>
+	<li> import some things (e.g. other modules) from the outside and  
+	<li> export some things it has declared for outsiders to use; hides other things
+      </ul>
+  <li>  Modules have names they are referenced by
+  <li> Module names are often used to give hierarchical namespaces: <code>com.bozo.UI.Wank</code> is different from <code>com.bozo.DB.Wank</code><br>
+-- can be used to avoid name clashes in large codebases
+</ul>
+<h4>Modules and separate compilation</h4>
+ <p>
+ Modules may support separate compilation: one module can be compiled without source to some others
+      <ul>
+	<li>      Java: mostly but not completely supported (need all .class files on CLASSPATH)
+	<li>       C/C++: yes (.h file is all that is needed for imports)
+	<li>    Caml: yes in ocamlc mode (.mli interface file of modules used is all that is needed)
+      </ul>
+
+
+<h3>Language runtimes</h3>
+      <p>
+      Language runtimes are code at runtime "overseeing" some aspect of the running code.  They are like a library but the language would not work without them.
+<ul>
+  <li>Call/return stack: a basic feature of nearly all programming languages
+	<li>Memory allocator: getting fresh memory when needed
+	<li>Garbage collection: implicitly free memory at runtime<br>
+(Question: is there a reason why there are still languages used without garbage collectors? (such as C))
+	<li>Type tags and tag checking: 
+	    <ul>
+	      <li>Any language with dynamic typing needs them to check types at runtime as part of runtime
+	      <li>Also many typed languages have them (Java does to support downcasts)
+	    </ul>
+	<li>Thread manager: spawn new threads, messaging between threads, locking, etc.
+	<li>JIT: Runtime compiler translating heavily-used bytecodes into machine code during runtime
+	<li>Reflection system (<code>eval</code>)
+</ul>
+Early languages had little or no runtime; more modern languages can have large runtimes.
+
+<h3>Input/Output</h3>
+<p>
+<ul>
+  <li>I/O is just another side effect
+  <li>Like state and actors, the stepping relation ==> is extended to include the side-channel information
+  <li>One way: add I and O parameters to evaluation, e.g. <blockquote>e ==I/O==&gt; v</blockquote> with I a list of inputs, O a list of outputs<br>
+-- Start computation with I set to the input data, accumulate O like the S of actors but a list instead of a set
+  <li>In some sense I/O is the only real "observable" we care about, operational semantics should be defined in terms of I/O (but we didn't have it in Fb).
+</ul>
+<h3>Language translators</h3>     
+
+<p>
+<ul>
+  <li>A <em>translator</em> is just a function T taking programs in one language to programs in another
+  <li>A <em>sound</em> translator is one which preserves the I/O behavior of programs: <br>
+If e ==I/O==> v and T(e) = p (the result of compilation is p), then p ==I/O==> p' (the compiled program has the same I/O behavior when it is run).
+</ul>      
+
 </div>
 
 
