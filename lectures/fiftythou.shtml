@@ -4,7 +4,9 @@
 
 <div id="content"> <h2>The 50,000 foot view of PLs: history and features</h2>
 
-At this point in the course we have covered some of the most key features of modern languages. In this lecture we step back a bit to look at features, and patch up a few holes of features we did not get a chance to cover well earlier.
+<p>
+At this point in the course we have covered some of the most key features of modern languages. In this lecture we step back a bit to look at features, and patch up a few holes of features we did not get a chance to cover well earlier.<p>
+2015: We will build a decision tree of languages in lecture to get an initial classification of PLs.
 
 <h3>The Historically Influential PLs list</h3>
 <p>
@@ -24,6 +26,7 @@ There are many important PLs, but a few are arguably more important than others.
 </ul>
 
 <h3>The Historical Features list</h3>
+<p>
 Here is a historical list of key features.  The key language(s) introducing it are in parens after.<p>
 Early features:
 <ul>
@@ -98,12 +101,16 @@ These features are somewhat less important than the above.
 	<li> export some things it has declared for outsiders to use; hides other things
       </ul>
   <li>  Modules have names they are referenced by
-  <li> Module names are often used to give hierarchical namespaces: <code>com.bozo.UI.Wank</code> is different from <code>com.bozo.DB.Wank</code><br>
--- can be used to avoid name clashes in large codebases
-</ul>
+  <li> Module names are often used to give hierarchical namespaces: <code>com.bozo.UI.Wank</code> is different from <code>com.bozo.DB.Wank</code>
+      <ul>
+	<li>Used to avoid name clashes in large codebases -- very difficult to use two libraries clashing on a function name.
+	<li>Pretty much all module systems include such a feature, except for really old ones such as C's.
+	<li>(C++'s namespaces don't have to line up with code modules but usually do)
+
+      </ul></ul>
 <h4>Modules and separate compilation</h4>
  <p>
- Modules may support separate compilation: one module can be compiled without source to some others
+ Modules may support separate compilation: one module can be compiled without having source code for others
       <ul>
 	<li>      Java: mostly but not completely supported (need all .class files on CLASSPATH)
 	<li>       C/C++: yes (.h file is all that is needed for imports)

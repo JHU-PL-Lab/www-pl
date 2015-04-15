@@ -90,7 +90,8 @@ Let point = (pointClass.new) pointClass {} In
       <ul>
 	<li>Any nominal subtyping system only adds <em>additional</em> constraints over pure structural subtyping; you need structural subtyping to hold or the system will be unsound.
 	<li>Structural subtyping is more flexible: "use your own implicit interface without needing to declare it". 
-	<li>Nominal subtyping lets you think about subtyping in terms of names of things, not the details of whats inside.
+	<li>Nominal subtyping lets you think about subtyping in terms of names of things, not the details of whats inside<br>
+-- a helpful abstraction of detail in many cases.
       </ul>
 </ul>
 
@@ -174,6 +175,7 @@ One  of the key lessons of Caml is the importance of immutable data: its not cha
   <li>Like Caml, immutability is only shallow - the field could
       contain <em>components</em> that mutate.
   <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior.
+  <li>One advantage of Java is lack of need for OCaml's "<code>!</code>" for accessing mutable data - gets real annoying real fast.
 </ul>
 
 <h3>Inner Classes and Lambdas</h3>
@@ -213,9 +215,10 @@ Java 8 has Lambdas!
    <li>Fully higher order functions are now available in Java
    <li>Finally Java has caught up with Lisp circa 1964! It took only 50 years.
    <li><a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Here is a tutorial</a>
-   <li>Java 8 higher-order functions can "pun" as any interface with only one method in it.
+   <li>Java 8 higher-order functions can "pun" as any interface with only one method in it.<br>
+-- the function is taken to be the body of that single method, no need to write the method name when declaring the function then.
    <li>There is also some (limited) type inference for Lambda parameters.
-   <li>Lets put some cayenne in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a>
+   <li>Lets put some cayenne in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a> that we will go through.
        </ul>
  Terminology aside: <em>closure</em>
  <ul>
