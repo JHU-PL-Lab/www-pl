@@ -41,6 +41,7 @@ Problem</a>.
 	<li>Basic solution in most languages is to have one copy of the super-super but make a priority order on when classes were defined in terms of whose copy "wins".
 	<li>In C++ you need to use the keyword <code>virtual</code> on inheritance to get this behavior, otherwise you just get two copies of the super-super.
 	<li>Even without this messy problem there still is an issue of what to do when two superclasses define a method of the same name.
+	<li>Java 8 also has some of the Diamond Problem peeking in, because Java interfaces now support <a href="https://docs.oracle.com/javase/tutorial/java/IandI/defaultmethods.html">default methods</a>.
       </ul>  <li>In our <code>FbSR</code> encoding of objects, recall that we explicitly inherited by grabbing methods out of our "superclass object"; using this approach we could easily make two or more "superclass objects" and then explicitly pick which one we are inheriting a method from, meaning no diamond ambiguity will arise.  However there will be two copies of the "top" class in a diamond in this obvious encoding, similar to non-virtual inheritance in C++.
 </ul>
 <h4>Aside: Multiple inheritance, mixins, and traits</h4>
@@ -83,12 +84,11 @@ Typing in C++: RTTI</a></h3>
       parametric polymorphism but in fact are a completely different beast - they are more like macros
   <li>Templates are all instantiated by a preprocessor at compile-time
       with the actual types, and  that  expanded code is what is compiled
-  <li>There is no need for the fancy bounded subtyping of Java -
+  <li>Templates are "evaluated"/"run" to get the results - they are programs taking and producing programs - <em>metaprograms</em>
+  <li>There is no need for Java's bounded subtyping  -
       just instantiate and compile; the final code may have a type
       error due to a subtyping error
-  <br>&nbsp;&nbsp;&nbsp;--this point makes it hard to debug type errors in
-      templates -- you need to explicitly think about metaprogramming
-  to understand what the compiler is doing!
+  <li>Downsides: hard to debug since type errors show up in expanded code which you can't actually see; and, templates really do produce new code and can bloat code size.
 </ul>
 <h3><a
       href="http://en.wikipedia.org/wiki/Template_metaprogramming">Templates and
@@ -97,12 +97,15 @@ Typing in C++: RTTI</a></h3>
  </h3>
 <ul>
   <li>Simplest form of metaprogramming is a macro preprocesser, e.g. <code>cpp</code><br>
--- macro languauge takes program, runs all the macros and inlines the results in the source code.
+-- macro language takes program, runs all the macros and inlines the results in the source code.
   <li>C++ templates generalize such macro mechanisms; they are in fact Turing complete -- see the examples in <a
       href="http://en.wikipedia.org/wiki/Template_metaprogramming">the wikipedia page</a>.
 
-  <li><em>Partial evaluation:</em> no new syntax, but compiler can evaluate some of the program code at compile
-      time,  e.g. apply functions if (enough) arguments are known at compile-time.
+  <li><em>Compile-time metaprogramming:</em> a general term for code that runs at compile time and generates more code (e.g. macros) but possibly allows more general programming such as recursion, etc
+      <ul>
+	<li>C++ templates started out as fancy macros and evolved to compile-time metaprogramming (unintentionally)
+	<li>Template Haskell is a better example, was designed that way from the start
+      </ul>
   <li><a href="http://www.haskell.org/haskellwiki/Template_Haskell">Template Haskell</a>
 is a cleaner and more general notion than C++ templates 
       <ul>
@@ -110,13 +113,14 @@ is a cleaner and more general notion than C++ templates
 	<li>code in the "main" is data to the "macro" language.
 	<li>"macro" level explicitly specifies where to splice code it produces into "main".
       </ul>
-  <li><a href="http://en.wikipedia.org/wiki/Eval"><code>eval</code></a> and <a
-      href="http://www.usenix.org/events/dsl99/full_papers/sheard/sheard_html/node3.html">MetaML</a> 
+  <li><a href="http://en.wikipedia.org/wiki/Eval"><code>eval</code></a> for <em>run-time</em> (as opposed to compile-time like Templates) metaprogramming
       <ul>
 	<li><code>eval</code> is the standard name for a program which takes a program-as-data as argument (either in the form of a string or an abstract syntax tree) and runs it.
-	<li><code>eval</code> is found in Lisp, Scheme, Python, Ruby, Javascript, etc.
-	<li>Subtle issue is how nonlocal variables behave (<code>x = 5; eval("x + 1")</code>)
-	<li>MetaML is a "typed" version of <code>eval</code>: the argument to <code>eval</code> is code returning type <code>t</code> for some type <code>t</code>.
+	<li><code>eval</code> is found in Lisp, Scheme, Python, Ruby, Javascript, etc.<br>
+-- it fits very nicely in dynamically typed languages; statically typed languages don't know what type it returns so hard to fit.
+	<li>Subtle issue of how nonlocal variables behave (<code>x = 5; eval("x + 1")</code>)
+	<li> <a
+      href="http://www.usenix.org/events/dsl99/full_papers/sheard/sheard_html/node3.html">MetaML</a>  is a "typed" version of <code>eval</code>: the argument to <code>eval</code> is of type <code>&lt;t&gt;</code> for some type <code>t</code>, the <code>&lt;&gt;</code> meaning "code of".
       </ul>
 
 </ul>
@@ -126,19 +130,13 @@ There are three dimensions of overloading:
       <ul>
 	<li>Methods only: methods can be overloaded, different bodies can handle differently-typed arguments (Java)
 	<li>Existing operator overloading: the say <code>+</code> operator can be used on user-defined types, with the user defining the meaning (C++).<br>
--- can shrink code size a lot but can also make code too unreadable.
+-- can shrink code size a lot but can also make code unreadable.
 	<li>New operator creation: users can make new infix operators, e.g. <code>+*+</code> (Standard ML).<br>
 -- not really overloading since operator is new.  Operator precedence and associativity is tricky here
       </ul>
 
-Operator overloading has been hotly debated.
-<ul>
-  <li>Its great: such compact syntax with such great power!
-  <li>Its horrible: I have no idea  which operators were
-      overloaded where so I don't know what the heck this program is doing!
-</ul>
 
-<h3>Anonymous functions in C++11</h3>
+<a name="lambdas"></a><h3>Anonymous functions in C++11</h3>
 <ul>
   <li>Everyone is joining the anonymous functions party!  C++11 is not yet the default but you can request it on your C++ compiler.
   <li>Details <a href="http://en.wikipedia.org/wiki/Anonymous_function#C.2B.2B_.28since_C.2B.2B11.29">here</a>.  We will discuss the issue of closures.

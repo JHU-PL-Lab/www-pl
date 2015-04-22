@@ -16,8 +16,9 @@ A <em>dynamically typed language</em> is a language which
 
 Upsides
       <ul>
-	<li>Can be more freewheeling: incrementally add code to current runtime, extend objects, etc.
-	<li>ZERO overhead of dealing with writing out type information.
+	<li>Can be more freewheeling: extend objects, easy <code>eval</code>-ing, etc.
+	<br> -- some programming patterns are very hard to typecheck, they are left out of typed languages but can be very powerful.
+	<li>ZERO programmer overhead of writing out type information.
       </ul>
 
 
@@ -183,33 +184,34 @@ Let obsClass = {
   foo = Function thisob -> Function _ -> !(thisob.x) + 1 (* adding one is so much fun! *)
 } In
 
-(* Note that we use "junk" below to encode sequencing (i.e. semicolon) *)
 Let ob = ((obsClass.new) obsClass) In (* object creation -- need to pass class to itself *)
-    Let junk = (obsClass.foo) ob {} In (* message sending, need to pass object to itself *)
-    (ob.class.foo) ob {} (* message sending starting from ob only, not its class *)
+    (obsClass.foo) ob {}; (* message sending, need to pass object to itself *)
+    (ob.class.foo) ob {}  (* message sending starting from ob only, not its class *)
 	  </pre>
 	  - the last line shows how the sugar <code>ob.foo()</code> can work, the runtime needs to know which class has the methods.
 	<li>Classes have only one constructor; write a class method that is a factory if you want to pass an argument.
 	<li>Methods are first-class:  <a
       href="https://docs.python.org/3.4/tutorial/classes.html#method-objects">Example</a>.  In the <strong>FbSR</strong> encoding we can get this behavior by <br>
 <code>Let rippedOut = ob.class.foo ob In ... rippedOut() ... (* rip out method, now its just a function *) </code>
-	<li>Python dictionaries can be dynamically extended -- <a href="http://docs.python.org/3.4/tutorial/classes.html#instance-objects">example</a>.  Our <strong>FbSR</strong> records don't support extension.
+	<li>Python dictionaries can be dynamically extended -- <a href="http://docs.python.org/3.4/tutorial/classes.html#instance-objects">example</a>.  Our <strong>FbSR</strong> records could also do this if we had a record extension operator.
       </ul>
 
 <h4>Implementing Object Dispatch</h4>
       <ul>
-	<li>In all the dynamic OO languages they are <em>duck typed</em>: if an object has a <code>quack</code> method it should respond to it when sent a <code>quack()</code> message.
-	<li>The runtime cannot always put <code>quack</code> method in the same slot in the method table, or it would be too inefficient.  So, some table compression is needed.
-	<li>Additionally, you don't even know the names of all the methods since code could be dynamically loaded. Best answer: use the <strong>Flyweight</strong> design pattern and give each new method string a fresh integer to compress names to one word.
-	<li>Slowness compared to C++'s simple following of a couple pointers is a big reason for slowness of these languages.
-	<li>Java is between C++ and fully dynamic since new classes can be loaded at runtime.
+	<li>All dynamic OO languages are <em>duck typed</em>: if an object has a <code>quack</code> method it should respond to it when sent a <code>quack()</code> message.
+	<li>When the runtime needs to dispatch <code>ob.quack()</code>, it has no idea how <code>ob</code> is laid out or if it even has a <code>quack</code> method.
+	<li>Basic solution: <code>ob</code> has a dispatch hashtable say <code>hash</code> and runtime performs <code>hash("quack")</code> to get a pointer to the code for <code>quack</code> (or error if not in table).
+	<li>Standard optimization on the above: use the <strong>Flyweight</strong> design pattern and give each method string a fresh integer equivalent to compress message names to one word.  So, if "quack" is #453, do <code>hash(453)</code> instead.
+	<li>Hashing makes dispatch much, much slower than e.g. C++ where only a couple pointers need to be followed, only a few machine instructions.
+	<li>Java is between C++ and fully dynamic since the object can be in an <em>interface</em> variable and could be many different objects at runtime with <code>quack()</code> code in different slots.  But the types still give a lot of information and clever tricks can make dispatch fast.
       </ul>
       
-<h3>Reflection</h3>
+<h3>Reflection and metaprogramming</h3>
       <ul>
-	<li>"Reflection" means given some object at runtime, can you poke around to find its class, methods, etc? 
-	<li>  Reflection is easy to do in a dynamically-typed language because the program data structure is always around explicitly at runtime (its also around in Java so reflection also possible there, but the type system gets in the way).
-	<li>Another common feature is the ability to <code>eval</code> -- to invoke the compiler/interpreter directly so you can turn a string of Smallktalk/Python/Ruby source into a running program.
+	<li>"Reflection" means given some object at runtime, can you poke around to find its class, methods, etc. 
+	<li>  Reflection is easy to do in a dynamically-typed language because the program data structure is always around explicitly at runtime<br>
+ (Reflection is also possible in Java, but its much more clunky to use due to the type system in the way).
+	<li> Run-time metaprogramming with <code>eval</code> -- we discussed this with metaprogramming in the C++ lecture.
       </ul>
 
 Smalltalk

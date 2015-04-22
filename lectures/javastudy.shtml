@@ -178,37 +178,7 @@ One  of the key lessons of Caml is the importance of immutable data: its not cha
   <li>One advantage of Java is lack of need for OCaml's "<code>!</code>" for accessing mutable data - gets real annoying real fast.
 </ul>
 
-<h3>Inner Classes and Lambdas</h3>
-Lets start with reviewing what <strong>FbOB</strong> had in this area:
-<ul>
-  
-  <li>In <strong>FbOB</strong> we had the ability to declare classes
-      anywhere, including inside  other  class methods, etc.  Those
-      classes could  also be returned as result values of methods, to  
-      be <code>new</code>-ed in a completely different context.
-  <li><strong>FbOB</strong> also has  syntax for directly defining
-      objects: <code>Object Inst ... Meth ..</code>.
-  <li>In general, this is an example of <em>fully higher-order</em>
-      classes and objects -- no restrictions on where they can be
-      defined, used or passed to.
-</ul>
-Java inner classes give some but not all of the above <strong>FbOB</strong> functionality.
-<ul>
-  <li>They do allow local classes to be defined just about anywhere.
-  <li>They do support something similar to the <code>Object</code>
-      syntax of  <strong>FbOB</strong>, via anonymous local classes
-      which are  immediately  <code>new</code>-ed. 
-  <li>They do support multiple levels of nesting: inner classes  can
-      have inner classes inside  them.
-  <li>At runtime, each inner class instance holds a pointer to the
-      instance of the class nesting it that created it; it can access
-      fields of that class via that reference.
-  <li>The main lack is the ability for classes to be passed around as
-      data items, e.g. methods  returning classes.
-  <li>The JVM is  not "aware" of inner classes, they are implemented
-      as regular classes with mangled names like <code>Foo$1Boo</code> for
-      an inner class <code>Boo</code> inside  <code>Boo</code>.
- </ul>
+<h3>Lambdas</h3>
 
 Java 8 has Lambdas!
  <ul>
@@ -218,7 +188,7 @@ Java 8 has Lambdas!
    <li>Java 8 higher-order functions can "pun" as any interface with only one method in it.<br>
 -- the function is taken to be the body of that single method, no need to write the method name when declaring the function then.
    <li>There is also some (limited) type inference for Lambda parameters.
-   <li>Lets put some cayenne in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a> that we will go through.
+   <li>Lets put some spice in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a> that we will go through.
        </ul>
  Terminology aside: <em>closure</em>
  <ul>
@@ -235,6 +205,14 @@ Java 8 has Lambdas!
            let x = 22 in
              f 2 (* prints 7 because x was 5 in f's closure *)
        </pre>
+   <li>Caml example writing out the let:
+       <pre># let f = (fun x -> fun y -> x + y) 4;;
+val f : int -> int = &lt;fun&gt;
+# f 3;;
+- : int = 7
+       </pre>
+       -- note how <code>x</code> is a function parameter and is remembered in spite of function returning, means <code>x</code> needs to be <em>copied</em> into the closure.
+   <li>Closures are more difficult to deal with in C++11's lambdas due to its lower-level memory model - see <a href="cppstudy.shtml#lambdas">the C++ notes</a>.
    <li>The PL book Section 8.1 describes <em>closure conversion</em>, a method to "implement" closures in <strong>FbSR</strong> itself by modifying functions to explicitly record the information.
  </ul>
  
