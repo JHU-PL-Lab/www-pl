@@ -23,12 +23,13 @@
 #load "fblexer.cmo";;
 #load "fbpp.cmo";;
 #load "fbinterp.cmo";;
+(* for typechecker: #load "fbtype.cmo";; *)
 
 (* Make some structs available at the top for easier use *)
 
 open Fbast;;
 open Fbinterp;;
-
+(* for typechecker: open Fbtype;; *)
 
 (* function parse parses FbST concrete syntax you enter as a string *)
 
@@ -47,6 +48,7 @@ let ppeval x = print_string "==> ";pp (eval x);;
 (* function rep is a read-eval-print function for Fb programs: an interpreter *)
 
 let rep s = ppeval (parse s);;
+
 
 (* Examples. *)
 
@@ -67,3 +69,7 @@ pp result1;;
 ppeval ex1;;
 
 rep s1;; 
+
+(* For typechecking when we get to that in class:
+
+typecheck ex1;; *)

@@ -16,7 +16,7 @@ A <em>dynamically typed language</em> is a language which
 
 Upsides
       <ul>
-	<li>Can be more freewheeling: extend objects, easy <code>eval</code>-ing, etc.
+	<li>Can be more freewheeling: extend objects, easy <code>eval</code>-ing, lists and tuples can be merged, etc.
 	<br> -- some programming patterns are very hard to typecheck, they are left out of typed languages but can be very powerful.
 	<li>ZERO programmer overhead of writing out type information.
       </ul>
@@ -101,7 +101,7 @@ We will now look at some crosscutting aspects of these languages.
 <ul>
   <li>Lisp: Everything is a List (including your source code!  Great for metaprogramming)
   <li>Smalltalk: Everything is an Object
-  <li><a href="https://docs.python.org/3.4/tutorial/datastructures.html#tuples-and-sequences">Python</a>: Lists (which are mutable so also serve as arrays), Sets, Tuples (immutable lists), Dictionaries, Objects (which are dictionaries with sugar on top)
+  <li><a href="https://docs.python.org/3.4/tutorial/datastructures.html#tuples-and-sequences">Python</a>: Dictionaries, Objects (which are dictionaries with sugar on top); Lists (which are mutable so also serve as arrays), Sets, Tuples (immutable lists)
   <li>Ruby: Objects
   <li>Javascript: Objects (Use objects as dictionaries as well)
 </ul>

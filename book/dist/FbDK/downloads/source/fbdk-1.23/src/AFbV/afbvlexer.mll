@@ -1,5 +1,7 @@
 {
   open Afbvparser;;
+  
+  exception StringSyntaxError of string
 } 
 
 let blank = [' ' '\t' '\n' '\r']
@@ -12,6 +14,7 @@ rule token = parse
   ['(']['*']([^'*']|['*'][^')'])*['*'][')'] 
     {token lexbuf} (* Ignore comments *)
 | blank+               { token lexbuf }
+| '"'                  { STRING (read_string lexbuf) }
 | "And"                { AND }
 | "Or"                 { OR }
 | "Not"                { NOT }
@@ -50,6 +53,25 @@ rule token = parse
 | '`' identchar identchar* { VARIANT (Lexing.lexeme lexbuf) }
 | lowercase identchar* { IDENT (Lexing.lexeme lexbuf) }
 | eof                  { raise Exit }
+
+and read_string =
+  parse
+  | [^ '"' '\\']+ { 
+                    (* Must _explicitly_ force ordering due to side effects *)
+                    let text = Lexing.lexeme lexbuf in
+                    let rest = read_string lexbuf in
+                    text ^ rest
+                  }
+  | '"'           { "" }
+  | '\\' '/'      { "/" ^ read_string lexbuf }
+  | '\\' '\\'     { "\\" ^ read_string lexbuf }
+  | '\\' '"'      { "\"" ^ read_string lexbuf }
+  | '\\' 'n'      { "\n" ^ read_string lexbuf }
+  | '\\' 'r'      { "\r" ^ read_string lexbuf }
+  | '\\' 't'      { "\t" ^ read_string lexbuf }
+  | _             { raise (StringSyntaxError ("Illegal string character: " ^ Lexing.lexeme lexbuf)) }
+  | eof           { raise (StringSyntaxError ("String is not terminated")) }
+
 
 {} 
 

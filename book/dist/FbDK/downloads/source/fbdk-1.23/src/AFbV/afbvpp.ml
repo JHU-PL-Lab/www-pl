@@ -7,6 +7,7 @@ let rec pp e pad =
 		Bool(true) -> "True"
 	| Bool(false) -> "False"
 	| Int(x) -> string_of_int x
+	| String(x) -> x
   | EmptyList -> "[]"
 	| Plus(e1, e2) ->
 			pp e1 pad ^ " + " ^ pp e2 pad

@@ -4,6 +4,7 @@
 
 
 #load "afbvast.cmo";;
+#load "afbvoptions.cmo";;
 #load "afbvparser.cmo";;
 #load "afbvlexer.cmo";;
 #load "afbvpp.cmo";;
@@ -18,7 +19,7 @@ open Afbvinterp;;
 (* function parse parses FbST concrete syntax you enter as a string *)
 
 let parse s = 
-    let lexbuf = Lexing.from_string s in
+    let lexbuf = Lexing.from_string (s^";;") in
   	Afbvparser.main Afbvlexer.token lexbuf;;
 
 (* Function pp is a top-loop pretty printer using FBDK's pretty printer *)

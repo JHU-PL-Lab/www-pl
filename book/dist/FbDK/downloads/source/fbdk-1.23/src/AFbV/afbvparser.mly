@@ -24,6 +24,7 @@ let rec mkappl e args =
 %token IN
 %token IF
 %token <int> INT
+%token <string> STRING
 %token LET
 %token LPAREN
 %token MINUS
@@ -144,6 +145,8 @@ simple_expr:
       { Int $1 }
   | BOOL
       { Bool $1 }
+  | STRING
+      { String $1 }
   | ident_usage
       { $1 }
   | LPAREN expr RPAREN
