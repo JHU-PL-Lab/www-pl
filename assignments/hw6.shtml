@@ -1,0 +1,21 @@
+<!--#include virtual="/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+
+<h2>Homework-6</h2>
+<h4>Due: Friday May 1st</h4>
+<p>
+
+The questions are <a href="hw6.txt">here</a>.
+
+<h3>Submission Method</h3>
+Same as before.
+
+
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
