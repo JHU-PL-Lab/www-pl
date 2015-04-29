@@ -108,9 +108,9 @@ expr:
       { Let($2, $4, $6) }
   | expr COMMA expr %prec prec_pair
       { Pair($1, $3) }
-  | FST expr %prec prec_appl
+  | FST simple_expr %prec prec_appl
       { Fst $2 }
-  | SND expr  %prec prec_appl
+  | SND simple_expr  %prec prec_appl
       { Snd $2 }
   | VARIANT expr %prec prec_appl
       { Variant(Name $1, $2) }
