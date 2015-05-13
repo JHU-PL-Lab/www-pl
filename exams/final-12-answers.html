@@ -1,0 +1,172 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<HEAD>
+<title>PL Final 2012</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Princples of Programming Languages
+<br> Spring 2012
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.  You can write on both
+sides.  No printer output is allowed, it must all  be hand-written.<p>
+
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+
+<li> (13? points) Lets play "pull out the points": for each of the <strong>Fb</strong> expressions below, make a context <code>C</code> to "get the exam points out" of the expression we give you.   Your context <code>C</code> <em>cannot</em> contain any integer literals <code>0,1,-1,2,..</code> or any integer operations <code>+/-</code>.  Concretely, for each expression <code>e</code> below make a <code>C</code> such that <code>C[e] ==> n</code> where <code>n</code> is the number of points you will get on that sub-question.  Note any number greater than <code>4</code> we will coerce to <code>4</code> in the grading (we will also give partial credit for close answers). 
+
+ <ol type="a">
+<li> <code>(Fun g -> g 0 1 2)</code><br> <strong>Answer:</strong> <code>* (Fun x -> fun y -> Fun z -> z)</code>
+<li> <code>(Fun q -> q (Fun z -> z (Fun w -> z w) 3))</code><br>
+<strong>Answer:</strong> <code>* (Fun x -> x)(Fun y -> y)</code>
+<li> <code>(Fun p -> p  (Fun d -> d 2 1) (Fun x -> Fun y -> x - y))</code><br>
+<strong>Answer:</strong> <code>* (Fun g -> Fun f -> Let k = g (Fun x -> Fun y -> f y x) In f (f (f (g f) k) k) k)</code>
+<li> <code>(Fun q -> q (Fun notthis -> Fun x -> If x = 0 Then 4 Else notthis notthis notthis (x - 1)) 0)</code><br>
+<strong>Answer:</strong> <code>* (Fun x -> x)(Fun x -> x) 0</code>
+</ol>
+
+<p>
+<li> (8 points)
+Imagine writing a function <code>YC</code> that behaves very much like the <code>Y</code>-combinator -- it accepts a function of the form "<code>Fun this -> ...</code>" and gives it the ability to recurse -- except that the result should is the value as well as the number of times the function recursed.  Assume that the argument to <code>YC</code> cannot be changed; any value passed to <code>YC</code> should also be valid to pass to the <code>Y</code>-combinator.  For instance, we would expect
+<pre>YC (Fun this -> Fun n -> If n = 0 Then 0 Else n + this (n - 1)) 3</pre>
+to recurse three times and return both <code>6</code> and <code>3</code> in some form, indicating the result was <code>6</code> and the number of recursions was <code>3</code>.
+
+    <ol type="a">
+<li> Assume that we are writing <code>YC</code> in <strong>FbP</strong> -- <strong>Fb</strong> with pairs -- and that the return value of the recursive function is always a pair, so it would be <code>(6,3)</code> for this example.  Is it possible to write <code>YC</code> in <strong>FbP</strong>?  If so, show <code>YC</code>.  If not, informally explain why no such <code>YC</code> can be written.<br>
+<strong>Answer:</strong> (Note that this question is harder than we thought it was when we wrote it).  <code>YC</code> cannot be written.  A short explanation that would get you full credit is the recursive call <code>n + this (n-1)</code> means the <code>this (n-1)</code> must return an integer and not a pair, but the spec for <code>YC</code> required a pair to be returned.
+<li> Assume that we are writing <code>YC</code> in <strong>FbRE</strong> -- <strong>Fb</strong> with records and record extension.  Record extension allows records to be concatenated using the <code>+</code> operator; for instance, <code>{x=5;y=2} + {y=3;z=4}</code> computes to  <code>{x=5;y=3;z=4}</code>.  (We take fields from the rightmost record first.)  Is it possible to write <code>YC</code> in <strong>FbRE</strong>?  If so, show <code>YC</code>.  If not, explain why no such <code>YC</code> can be written.<br>
+<strong>Answer:</strong> The same problem with pairs also arises here.
+</ol>
+
+<p>
+<li>(12 points)
+    In <strong>FbV</strong> we used a <code>Match</code> similar to Caml's to destruct variants.  Recall for example that
+    <pre>Let thing = `fuzzy(0) In Match thing With `rocky y -> y-1 | `fuzzy x -> x + 1</pre>
+would compute to <code>1</code>.   This <code>Match</code> expression is somewhat complex to evaluate in that there are variable blindings for the <code>x/y</code> needed in the above, and there can be arbitrarily many cases.  All we really need is a general way to destruct variants.  Here is a simpler proposal for syntax to replace <code>Match</code> with in <strong>FbV</strong>, defined by example.
+    <pre>Let thing = `fuzzy(0) In If thing Has `rocky Then Fun y -> y-1 Else
+If thing Has `fuzzy Then Fun x -> x + 1 Else 0 1</pre>
+This one example should illustrate how the proposed <code>If e Has l Then e Else e</code> syntax should work: the third parameter is assumed to evaluate to a function which gets applied if the match succeeds; if it fails the <code>Else</code> clause is executed.  There is no implicit failure if there is no case that matches like the <strong>FbV</strong> (and Caml) match has, so in the encoding we have the (somewhat ugly) hack of "<code>0 1</code>" to cause the computation to wipe out if no matches apply.
+    <ol type ="a">
+<li>Write an operational semantics rule for <code>IfHas</code> which is fully general, i.e. all gramatically legal programs are properly executed.<br>
+<strong>Answer:</strong>
+    <pre>
+    If Has:
+    e1 => l v1    e2 => v2    v2 v1 => v
+    ------------------------------------
+    If e1 Has l Then e2 Else e3 => v
+
+    If Has Not:
+    e1 => v'    e3 => v    v' is not l v'' for any v''
+    --------------------------------------------------------------
+    If e1 Has l Then e2 Else e3 => v
+    </pre>
+    
+<li>Show how <em>any</em> <strong>FbV</strong> <code>Match</code> expression can be expressed using <code>IfHas</code> - generalize the above example to a full encoding working on any <code>Match</code> example.<br>
+<strong>Answer:</strong>
+<pre>Match e0 With l1 x1 -> e1 | ... | ln xn -> en</pre> can be encoded as
+    <pre>
+    If e0 Has l1 Then Fun x1 -> e1 ... Else If e0 Has ln then Fun xn -> en Else 0 1</pre>
+<li>Can the opposite direction encoding also be performed (<code>IfHas</code> encoded using <strong>FbV</strong>'s <code>Match</code>)?  Either give that encoding or argue why it cannot be done.<br>
+<strong>Answer:</strong> <code>Match</code> is always going to get stuck if fed a label not in the listed clauses, but we can just fall through with <strong>If Has</strong>: <pre>If `a 1 Has `b Then 1 Else 2</pre> for example will return <code>2</code> and not get stuck.
+
+</ol>
+
+
+
+<p> 
+<li> (9 points) This question concerns typechecking.
+    <ol type ="a">
+    <li> Give a <strong>TFb</strong> expression which is not typeable but still computes to the value <code>5</code>.  Argue informally why there is no type derivation possible.<br>
+<strong>Answer:</strong>
+<pre>If 0 = 0 Then 5 Else 0 1</pre> - the <code>Else</code> clause is clearly not typable so the program will not typecheck, but it is dead code and the program will run fine.
+<li> Give a <strong>TFbR</strong> expression (this is <strong>TFb</strong> with records, a sublanguage of the <strong>TFbSRX</strong> that you implemented a typechecker for) which is not typeable, but <em>is</em> typeable in <strong>STFbR</strong>.<br>
+<strong>Answer:</strong>
+<pre>(Fun r : {w : Int} -> r.w) {w = 5; q = 6}</pre>
+<li> Show how you can write a recursive function <code>summate</code> such that <code>summate(n) = 1 + ...  + n</code> in <strong>TFbSRX</strong>, <em>without</em> using the <code>Let Rec</code> syntax.  Recall the <code>Y</code> combinator is not typeable in <strong>TFbSRX</strong> so that won't work either.<br>
+<strong>Answer:</strong>
+The trick here is to use state.  We will use Let in our answer, it expands via the usual encoding.
+    <pre>Let summateCell : (Int -> Int) Ref = Ref (Fun x: Int -> x) In
+    (summateCell := Fun n -> If n = 0 Then 0 else n + (!summateCell) (n-1));
+    !summateCell</pre>
+</ol>
+    
+<p>
+<li>(6 points)
+    Consider the following <strong>Fb</strong> expression:
+
+<pre>    (Fun b ->
+        (If b Then (Fun x -> Fun y -> x And y) Else (Fun x -> Fun y -> x + y))
+        (If b Then True Else 0)
+        (If b Then True Else 0)
+    ) True
+</pre>
+ <ol type="a">
+<li>Will this expression evaluate to a value?<br>
+<strong>Answer:</strong> Yes, it computes to <code>True</code>.
+
+<li> Will this expression typecheck in <strong>EFb</strong>?  Why or why not?  Base your justification on the principles of how the <strong>EFb</strong> type inference system works.<br>
+<strong>Answer:</strong>
+No.  The <code>If b Then True Else 0</code> subexpression typing rule will generate constraints of the form <code>{alpha = Bool, alpha = Int}</code> for <code>alpha</code> being the output result type of the <code>If</code>, and its easy to see that will lead to <code>Bool = Int</code>, a contradiction.
+</ol>
+
+<p>
+<li> (10 points)
+Communication in <strong>AFbV</strong> is one-to-one. But, there are many situations where an actor needs to <em>broadcast</em> a message to a group of actors.  In general consider a group of actors that may need to broadcast messages to each other -- if each actor holds a list of all other actors in the group it can send individual messages to all actors in the list to achieve the effect of a broadcast.
+
+<p>
+For this question you are to write a general version of this idea in <strong>FbV</strong>.  Your broadcast protocol should allow new actors to join an existing group, and for actors to drop out of a group.  All group members must be updated to reflect these changes in group membership.  You can assume that there is only one message form, <code>`notifyall(e)</code>, that needs to be broadcast. For ease of coding, you can assume that <strong>AFbV</strong> has been extended to include syntax for lists, pairs, sequences and <code>Let .. In</code>.
+
+<p>
+Hint: create a <em>broadcaster</em> actor which is responsible for both managing members of the group and helping the other actors broadcast to each other.  You can assume it is managing a single group only.
+
+    <br>
+<strong>Answer:</strong>
+    The <code>localstate</code> should be used to hold the list of actors the broadcaster is going to broadcast. 
+<pre>Let map = Y (Fun this -> Fun f -> Fun l ->
+                        Match l With [] -> [] | hd :: tl -> (f hd) :: (this f tl))
+    In Let broadcaster = Fun myaddr -> Y ( Fun this -> Fun localdata -> Fun msg ->
+    Match msg With
+      `notifyall(m) -> (map localdata (Fun subber -> subber &lt;- `notifyall m)); this(localdata)
+      `subscribe(a) -> this(a :: localdata)
+      `dropout(a) -> Let newlocaldata = Y (Fun this -> Fun ld ->
+                        Match ld With [] -> [] | hd :: tl -> If hd = a Then tl Else hd :: (this tl)) (localdata)
+                     In this newlocaldata
+    In broadcaster
+    </pre>
+    
+</ol> 
+
+
+<p>&nbsp;<p>
+
+
+</BODY> </html>
+
+
+<!--
+
+QQQp>
+QQQli>(12 points) In big, highly stateful systems such as databases or distributed systems, handling errors and recovering gracefully can be a nightmare. Transactions are often used as a mechanism to ensure that the system ends up in a known consistent state at the end of a series of operations.  For this question we want to develop a
+  stateful language with transactions -- its syntax is QQQstrong>FbSQQQ/strong> with two additional pieces of syntax,
+  QQQcode>Transact eQQQ/code> and QQQcode>RollbackQQQ/code>.  QQQcode>Transact eQQQ/code> evaluates to the result of QQQcode>eQQQ/code> if the evaluation is "successful". However, if  during the evaluation an expression QQQcode>RollbackQQQ/code> is evaluated, the transaction is considered a failure; in this case the the state is rolled back to the state at the beginning of the QQQcode>TransactQQQ/code>ion, and the result of the transaction expression is instead simply QQQcode>0QQQ/code> (in general an exception should be raised but we are being simplistic here).  We will call this new language QQQstrong>FbSTrQQQ/strong>.  QQQp>
+
+For this question you are to write the operational semantics rules for QQQstrong>FbSTrQQQ/strong>.  Since there are many rules you only need
+  to give the rules for QQQcode>+QQQ/code>, assignment QQQcode>:=QQQ/code>, QQQcode>Transact eQQQ/code>,
+  and QQQcode>RollbackQQQ/code>.  
+QQQp>
+Here are a few examples of evaluations (only showing the initial and
+  final values, not the full state).
+QQQpre>!(Transact (Let x = Ref 5 In x)) (* returns 5, no rollback so Transact is a no-op *)
+Let x = Ref 5 In (Transact (x := 3; Rollback + 1); !x (* returns 5, state rolled back; + 1 also discarded *)
+Let x = Ref 5 In Rollback (* ill-formed and do whatever you want, should not roll back if not in a transaction *)
+Let x = Ref 5 In (Transact(x := 3; Transact(x := 6; Rollback); !x) (* returns 3, inner transaction aborted but not outer one *)   QQQ/pre>
+
+This is a hard question so you get some hints: the base language is the the QQQstrong>FbSQQQ/strong> operational
+  semantics. Use the ideas from QQQstrong>FbXQQQ/strong> for QQQcode>RollbackQQQ/code> since it is aborting the current transaction.  Keep a stack of rollback states around for each nested transaction to roll back to if needed.
+
+-->
+
+<!-- Describe how exceptions can be encoded in Fb -->
