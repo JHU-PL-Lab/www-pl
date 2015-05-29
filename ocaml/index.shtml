@@ -82,6 +82,8 @@ Here is additional supplementary information
 <dl>
   <dt><a href="http://ocaml.org">ocaml.org</a>
   <dd>This is a new website intended for people serious about developing software in OCaml.  The <a href="http://ocaml.org/learn/tutorials/">tutorials</a> there are particularly good.
+  <dt><a href="https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1">OCaml Youtube Tutorial</a>
+  <dd>If you like watching videos to learn things here is a complete collection for OCaml.
   <dt><a
       href="https://realworldocaml.org/v1/en/html/index.html">Real World OCaml</a> by Jason Hickey, Anil Madhavapeddy, and Yaron Minsky
   <dd>A relatively new OCaml book available online.
