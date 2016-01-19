@@ -18,24 +18,17 @@ class</a>. We pretty much just run through these as the lecture.  For the separa
 </ul>
 
 <h3>Our ML Dialect</h3> We are going to use <a
-href="http://caml.inria.fr/">OCaml</a>, version 4.01.0.  Earlier/later versions will work perfectly fine for your own coding, but the binary distibutions of the FbDK are very picky on which version they are run under; we will supply binaries for other versions if people are having problems getting 4.01.0 running.
+href="http://caml.inria.fr/">OCaml</a>, version 4.02.1.  Earlier/later versions will work perfectly fine for your own coding, but the binary distibutions of the FbDK are very picky on which version they are run under; we will supply binaries for other versions if people are having problems getting 4.02.1 running.
 <p>
-OCaml is not
-completely compatible with the most standard dialect of ML, SML, but
-is nonetheless similar.  It includes classes and objects, something
-not found in SML.  We will often call OCaml just "Caml", you can view
-the two as synonyms.<p>
 
-<h3>Installing OCaml 4.01.0 on Your Machine</h3>
-<p>
-OCaml is <em>free</em> and you should install it on your computer.
+<h3>Installing OCaml 4.02.1 on Your Machine</h3>
+For all systems we recommend you install and use the <a href="https://opam.ocaml.org">OPAM packaging system</a> for OCaml.  OPAM is a flexible system which also allows you to install any version of Ocaml you want once you have OPAM installed.
 <ul>
-  <li> For OCaml on Windows we recommend going to <a href="http://protz.github.io/ocaml-installer/">OCaml on Windows</a> and installing the exe referenced there, <a href="http://gallium.inria.fr/~protzenk/caml-installer/ocaml-4.01.0-i686-mingw64-installer3.exe">ocaml-4.01.0-i686-mingw64-installer3.exe</a>
-  <li> For OCaml on Mac we recommend using the installer <a href="http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0-intel.dmg">http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01.0-intel.dmg</a>
-  <li> For Linux (also works on Mac) we recommend you use OPAM, a highly flexible OCaml package manager.  Start <a href="http://ocaml.org/docs/install.html">at OCaml.org's install page</a> for instructions.  The key steps are 1) install the <code>opam</code> binary via e.g. running the shell script  <a href="https://opam.ocaml.org/doc/Install.html#Binaryinstaller">opam_installer.sh</a>, 2) run command <code>opam switch 4.01.0</code> to build OCaml version 4.01.0; and 3) add the line <code>eval `opam config env`</code> to your <code>.profile/</code><code>.bashrc</code> shell init file to point your shell to the <code>ocaml</code> binary that <code>opam</code> installed at <code>~/.opam/4.01.0/bin/ocaml</code>.  Note that the Debian/Fedora/etc install tools cannot be counted on for version 4.01.0.  
+  <li> For OCaml on Windows we recommend going to <a href="http://protz.github.io/ocaml-installer/">OCaml on Windows</a> and installing the exe referenced there which will get you an OPAM installation.  Once you get OPAM installed, execute <code>opam switch 4.02.1</code> to get you to the official course version.
+  <li> For Linux or Mac see <a href="http://ocaml.org/docs/install.html">OCaml.org's install page</a> for instructions.  The key steps are 1) install the <code>opam</code> binary via e.g. running the shell script  <a href="https://opam.ocaml.org/doc/Install.html#Binaryinstaller">opam_installer.sh</a>, 2) run command <code>opam switch 4.02.1</code> to build OCaml version 4.02.1; and 3) add the line <code>eval `opam config env`</code> to your <code>.profile/</code><code>.bashrc</code> shell init file to point your shell to the <code>ocaml</code> binary that <code>opam</code> installed at <code>~/.opam/4.02.1/bin/ocaml</code>.
 </ul>
 <p>
-OCaml is available  on all department Linux machines via the shell
+OCaml 4.02.1 should be available  on all department Linux machines via the shell
 command  <kbd>ocaml</kbd>. <p>
 
 <h3>OCaml development environments</h3>
@@ -43,14 +36,14 @@ command  <kbd>ocaml</kbd>. <p>
 We <em>strongly</em> recommend you run OCaml from something besides the
 shell directly. 
 <dl>
-  <dt><a href="http://www.eclipse.org">Eclipse</a> <a href="http://www.algo-prog.info/ocaide/"><strong>OCaIDE</strong></a>
-  <dd>
-This is an Eclipse plugin for OCaml; it is the "official recommended method" and is what will be used in lecture. See <a href =
-ocaide.shtml>information on using OCaIDE</a> for more information.
   <dt><strong>Emacs</strong>
-  <dd>See <a href =
+  <dd>Today this is probably what most OCaml programmers are using.  See <a href =
 emacs.shtml>information on running OCaml 
 inside Emacs</a> to get going.  
+  <dt><a href="http://www.eclipse.org">Eclipse</a> <a href="http://www.algo-prog.info/ocaide/"><strong>OCaIDE</strong></a>
+  <dd>
+This is a simple Eclipse plugin for OCaml; it is what will be used in lecture. See <a href =
+ocaide.shtml>information on using OCaIDE</a> for more information.
   <dt><a href="https://atom.io">Atom</a>
   <dd>This new text editor has a caml syntax highlighting mode. Install Atom and search for the ocaml packages within Atom.  OCamltoplevel is also a package to run an ocaml toplevel within Atom, but it is in a very early stage of development, is hard to install, and may not work for you.
   <dt><strong>vim <a
@@ -60,11 +53,22 @@ inside Emacs</a> to get going.
     above two modes are significantly better, all this mode offers is
       automatic indentation and keyword highlighting. 
 </dl>
+
+<h4>Better feedback from emacs or vim with Merlin</h3>
+
+<ul>
+  <li>Merlin is a static analysis tool which you can install which will give you many of the features of a modern IDE inside of Emacs or vim: find a definition from a use, display types, etc.
+  <li>See <a href="https://opam.ocaml.org/blog/turn-your-editor-into-an-ocaml-ide/">OPAM Merlin page</a> for installation instructions.
+    <li>It is a bit bleeding edge still.  If you are getting an error on startup with emacs, you may need to pull the merlin version from github: execute  <code>opam pin add merlin https://github.com/the-lambda-church/merlin.git</code>
+    </ul>
+
 <h3>OCaml Information on the Web</h3>
 Here is the key information
 <dl>
+  <dt><a href="http://ocaml.org">ocaml.org</a>
+  <dd>This is now the home of OCaml for finding downloads, documentation, etc.  The <a href="http://ocaml.org/learn/tutorials/">tutorials</a> are also very good.
   <dt><a href="http://caml.inria.fr/">The INRIA OCaml Homepage</a>
-  <dd>The home of OCaml and where you can find downloads and core library documentation.
+  <dd>The old home of OCaml where you can find core library documentation.
   <dt><a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
       manual</a> (download your local copy from the links at the top).
   <dd><a
@@ -80,8 +84,6 @@ Here is the key information
 </dl>
 Here is additional supplementary information
 <dl>
-  <dt><a href="http://ocaml.org">ocaml.org</a>
-  <dd>This is a new website intended for people serious about developing software in OCaml.  The <a href="http://ocaml.org/learn/tutorials/">tutorials</a> there are particularly good.
   <dt><a href="https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1">OCaml Youtube Tutorial</a>
   <dd>If you like watching videos to learn things here is a complete collection for OCaml.
   <dt><a
