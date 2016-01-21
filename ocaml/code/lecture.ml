@@ -158,10 +158,11 @@ let s = getSecond (2, "hi");;
 let s = getSecond mypair;;
 
 (* warning - non-exhaustive pattern matching; avoid this *)
-let getHead l = 
+(* let getHead l = 
   match l with
     head :: tail -> head
 ;;
+ *)
 
 let getHead l = 
   match l with

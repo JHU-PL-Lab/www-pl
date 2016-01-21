@@ -24,13 +24,15 @@ has all the information on emacs.
 </dl>
 
 <h3>Learning Emacs</h3>
-If you are not familiar with emacs,  <a href="http://www.gnu.org/software/emacs/manual/">Here is the manual</a>.  A good <a
+<p>
+  If you are not familiar with emacs,  <a href="http://www.gnu.org/software/emacs/manual/">Here is the manual</a>.  A good <a
 href="http://jeremy.zawodny.com/emacs/">emacs tutorial
 webpage</a>.
 <p>
 
-<h3>Using emacs with OCaml: Tuareg mode</h3>
-You will need Tuareg mode, the ocaml mode addition to emacs, to effectively edit OCaml
+<h3>Using emacs with OCaml: Tuareg mode and Merlin mode</h3>
+<p>
+  You will need Tuareg mode, the ocaml mode addition to emacs, to effectively edit OCaml
 programs.  Here are two different ways to install it.<p>
 
 <ul>
@@ -39,6 +41,7 @@ programs.  Here are two different ways to install it.<p>
 
 </ul>
 <h3>Using Tuareg Mode</h3>
+<p>
 In emacs, every file that ends in <kbd>.ml</kbd> will automatically
 load Tuareg mode.
 
@@ -52,7 +55,15 @@ C-c C-s		show the shell window; will automatically start an ocaml shell if not r
 C-c `		go to exact error location in the source</pre>
 
 When emacs asks for the <code>Ocaml toplevel to run</code>, you hopefully can just hit return and OCaml will start.  If it does not, you may need to enter the full path to the <code>ocaml</code> binary on your computer.    Use Unix shell command <code>which ocaml</code> to find that full path on Linux/Mac.  Once you have that full path you can add the line <pre>(defvar tuareg-interactive-program "/Users/scott/.opam/4.02.1/bin/ocaml")</pre> (assuming <code>/Users/scott/.opam/4.02.1/bin/ocaml</code> is what <code>which ocaml</code> reported) to your <code>~/.emacs</code> file and you won't need to type it each time you launch a new toplevel.
-
+<h4>Merlin mode</h4>
+<p>
+Merlin mode is useful because it can also display types of expressions and take you to a definition of a variable from its use.  See <a href="https://opam.ocaml.org/blog/turn-your-editor-into-an-ocaml-ide/">here</a> for more information on Merlin and how to install it.  With Merlin installed,  useful keys available include
+<pre>
+C-c C-l         from a variable use jump to its definition.
+C-c &           merlin-pop-stack (go back to where you were before above)
+C-c C-t         display the type of the enclosing expression.
+</pre>
+  
 </div>
 
 

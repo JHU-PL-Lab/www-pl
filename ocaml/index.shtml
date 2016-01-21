@@ -54,7 +54,7 @@ ocaide.shtml>information on using OCaIDE</a> for more information.
       automatic indentation and keyword highlighting. 
 </dl>
 
-<h4>Better feedback from emacs or vim with Merlin</h3>
+<h4>Better feedback from emacs or vim with Merlin</h4>
 
 <ul>
   <li>Merlin is a static analysis tool which you can install which will give you many of the features of a modern IDE inside of Emacs or vim: find a definition from a use, display types, etc.
@@ -62,6 +62,13 @@ ocaide.shtml>information on using OCaIDE</a> for more information.
     <li>It is a bit bleeding edge still.  If you are getting an error on startup with emacs, you may need to pull the merlin version from github: execute  <code>opam pin add merlin https://github.com/the-lambda-church/merlin.git</code>
     </ul>
 
+<h4><code>utop</code>: A better top-loop than <code>ocaml</code></h4>
+<p>
+ <ul>
+   <li>There is a newer top loop which if you have OPAM working you can install easily: just type <code>opam install utop</code>.  
+     <li>With utop you can scroll up and down your OCaml input history, do simple editing on previous inputs, etc.
+     <li>See the <a href="https://github.com/diml/utop">utop README</a> for more information on what it can do for you.  
+     </ul>
 <h3>OCaml Information on the Web</h3>
 Here is the key information
 <dl>
