@@ -263,6 +263,14 @@ let rec transpose xss = ();; (* ANSWER *)
 (* Section 3 : The Matrix                                                                             *)
 (* -------------------------------------------------------------------------------------------------- *)
 
+(* In this section, we will be representing matricies as lists of lists of
+   elements; if you need to remind yourself of some of the concepts in this
+   section, the Wikipedia page for on matrix multiplication is a good
+   reference.
+   
+   https://en.wikipedia.org/wiki/Matrix_multiplication
+*)
+
 (*
   3a. Write a function that produces the identity matrix of a given size.
 
@@ -280,7 +288,7 @@ let rec identity_matrix n = ();; (* ANSWER *)
 
 (*
   3b. Generalize the above function to take as arguments what it should use for
-      the zero and the one.
+      the matrix zero and one.
 
       [5 Points]
 *)
@@ -347,7 +355,7 @@ let rec g_matrix_multiply plus times xss yss = ();; (* ANSWER *)
 
 
 (* -------------------------------------------------------------------------------------------------- *)
-(* Section 4 : Sudoku Verifier                                                                       *)
+(* Section 4 : Sudoku Verifier                                                                        *)
 (* -------------------------------------------------------------------------------------------------- *)
 
 (*
