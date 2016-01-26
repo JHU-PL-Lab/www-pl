@@ -1,0 +1,58 @@
+<!--#include virtual="/pl/header.html" -->
+
+</div>
+
+<div id="content">
+
+
+<h2>Homework-1: OCaml Programming</h2>
+<h4>Due: Mon Feb 1</h4>
+<p>
+
+You are to write several small programs in Caml.  <a href="hw1.ml">Use
+the this template file</a> which contains the questions and spots
+for your answers.  All you need to do is to write the missing function
+bodies and verify the tests work. Do not use any mutation (ref,
+arrays, etc) in your answers; since we have not taught these features
+yet anyway, you should be fine.<p>
+
+<h3>Resources to help you</h3>
+<p>Here is a reminder of some resources at your disposal.
+<ul>
+  <li>Consult the <a href="../ocaml/code/lecture.ml">code examples run in
+class</a>.
+  <li>For more Caml examples etc, read and
+copy/paste the code defined in the <a
+href="http://caml.inria.fr/pub/docs/manual-ocaml-4.02-1/coreexamples.html">Caml
+manual Part I Chapter 1</a>.
+  <li>If you are looking for how some standard library function is expressed in Caml, like not equal, etc, consult the <a
+      href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Caml Pervasives</a> which are the predefined functions available in Caml.
+  <li>Use either  <a
+href="../ocaml/ocaide.shtml">OCaIDE</a> in Eclipse or the <a
+href="../ocaml/emacs.shtml">emacs caml mode</a> to easily edit and debug Caml code.
+  <li>You are strongly encouraged to work with other people on the assignment. You just need to list the names of people you worked with. However remember
+  that you should submit your own write up of the answers. Copying or emailing of solutions is not allowed. For the full collaboration policy see
+  <a href="../information.shtml">here</a>.
+  <li>Come to the PL Collab Labs, in Malone 107, to get help from Prof, TAs, and your peers.  Lab hours are on the <a href="../contact.shtml">contact us page</a>.
+  <li>There is also <a href="https://piazza.com/jhu/spring2016/600426/home">Piazza</a> for online help and
+      question clarification.
+</ul><p>
+
+<h3>Submission Method</h3>
+<p>We will be using Blackboard to submit
+assignments.  You are automatically enrolled in the Blackboard page for
+the course via the registrar.  <p>
+
+You can log in to Blackboard via <a
+    href="http://blackboard.jhu.edu">blackboard.jhu.edu</a> using your JHED ID
+    and password.  After logging in you will see a list of courses,
+    hopefully including PL, which you select.  If PL is not
+    listed, it means you are not enrolled as far as the registrar is
+    concerned.  The assignment submission process involves uploading
+    the files, and it should be fairly self-explanatory.
+
+
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
