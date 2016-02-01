@@ -1,9 +1,12 @@
 (*  OCaml Lecture I  *)
 
-3 + 4;; (* use ;; to end input.  Notice how  types are INFERRED *)
+(* To start with we will use the top loop as a simple calculator. *)
+
+3 + 4;; (* use ;; to end input.  Notice how  types are inferred in output *)
 let x = 3 + 4;; (* x forever more is 7 *)
 x + 5;;
-let y = 5 in x + y;; (* y is local when let .. in .. is used *)
+let y = 5 in x + y;; (* this make y a local variable: 
+                        think "{ int y; return(x+y); }" *)
 (* y + 6 ;; *) (* errors because y was only defined locally in previous line *)
 
 (* Boolean operations *)
@@ -16,27 +19,28 @@ true || false;;
 1;;
 1.;; 
 4 * 5;;
-(* 4.0 * 1.5;; *) (* error - '*' operator is only for integers *)
+(* 4.0 * 1.5;; *) (* error -- '*' operator is only for integers *)
 4.0 *. 1.5;;      (* works -- '*.' is for floats *)
 
 (* Lists are easy to create and manipulate *)
 [1; 2; 3];;
 [1; 1+1; 1+1+1];;
 ["a"; "b"; "c"];;
-(* [1; "a"];; *) (* error - all elements must have same type - HOMOGENEOUS *)
+(* [1; "a"];; *) (* error - All elements must have same type - HOMOGENEOUS *)
 [];; (* empty list *)
 
 (* Operations on lists.  Lists are represented as BINARY TREES with left child a leaf. *)
-0 :: [1; 2; 3];; (* 'Consing' an element to the front of a list - fast *)
+0 :: [1; 2; 3];; (* :: is 'consing' an element to the front - fast *)
+0 :: (1 :: (2 :: (3 :: [])));; (* long-hand version of the above *)
 [1; 2; 3] @ [4; 5];; (* appending lists - slower *)
 let z = [2; 4; 6];;
 let y = 0 :: z;;
-z;; (* NOTICE: did not mutate list z by putting 0 on front, its still [2; 4; 6] *)
+z;; (* Observe z itself did not change, its still [2; 4; 6] -- immutable *)
 
-(* everything in caml returns values (i.e. is an 'expression') - no commands *)
+(* everything in OCaml returns values (i.e. is an 'expression') - no commands *)
 if (x = 3) then (5 + 35) else 6;;
 (if (x = 3) then 5 else 6) * 2;;
-(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error:  two branches of if must have SAME type *)
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error:  two branches of if must have same type *)
 
 
 (* ====================================================================== *)
@@ -49,7 +53,7 @@ if (x = 3) then (5 + 35) else 6;;
 (2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
 let tuple = (2, "hi");;
 
-(* Functions *)
+(* Defining and using functions *)
 
 let squared x = x * x;; (* declare a function: "squared" is its name, "x" is its one parameter.  return implicit.  *)
 squared 4;; (* call a function -- separate arguments with S P A C E S *)
@@ -58,7 +62,7 @@ squared 4;; (* call a function -- separate arguments with S P A C E S *)
  * - no return statement; value of the whole body-expression is what gets 
  *   returned
  * - type is printed as domain -> range
- * - "officially", Caml functions take only one argument - ! 
+ * - "officially", OCaml functions take only one argument - ! 
  *      multiple arguments can be encoded by some tricks (later)
 *)
 
@@ -71,13 +75,14 @@ let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (u
 
 fib 10;;
 
-(* anonymous functions: define a function as an expression *)
-(* similar to lambdas in Python, Java, etc - all are based on the lambda calculus *)
+(* Anonymous functions: define a function as an expression *)
 
-let funny_add1 = (function x -> x + 1);; (* "x" is argument here -- can do one-argument functions only *)
+(* Similar to lambdas in Python, Java, etc - all are based on the lambda calculus *)
+
+let funny_add1 = (function x -> x + 1);; (* "x" is (sole) argument here --  one-argument functions only *)
 funny_add1 3;;
-((function x -> x + 1) 4) + 7;; (*  an "->" function is an expression and can be used anywhere *)
-
+((function x -> x + 1) 4) + 7;; (*  a "->" function is an expression and can be used anywhere *)
+((fun x -> x + 1) 4) + 7;; (*  shorthand notation *)
 (* 
  * functions can be passed to and returned from functions --> HIGHER-ORDER functions
  *)
@@ -94,15 +99,11 @@ add3 20;;
  * Observe 'int -> int -> int' is parenthesized as 'int -> (int -> int)' -- RIGHT associativity
  *)
 
-(*** Pattern matching: switch or case on steroids ***)
+  (*** Pattern matching: switch or case on steroids ***)
+  (* Not such a common language feature; Haskell and Scala have it *)
 
 
 (* Basic pattern match with numbers *)
-
-"Hawaii " ^ (match 5 with
-	  0 -> "Zero"
-	| 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
-	| _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
 
 let mixemup n =
 	match n with
@@ -112,32 +113,23 @@ let mixemup n =
 
 mixemup 3;; (* matches last case and x is bound to the value 3 *)
 
-(* List matching *)
+"Hawaii " ^ (match 5 with
+	  0 -> "Zero"
+	| 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
+	| _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
 
-let dum = [3;5;9];;  (* RECALL: this list notation is shorthand for 3 :: ( 5 :: (9 :: [])) *)
 
-match dum with
-	[] -> []
-| hd :: tl -> tl (* observe how the '::' lets us break lists into first element and rest of list -- all lists can be broken like this *)
-;;
+(* List pattern matching *)
 
-let getTail l = 
-  match l with
-    [] -> []
-  | head :: tail -> tail 
-;;
-getTail [3;5;9] ;;
-
-(* first successful match is taken *)
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
 	x :: (y :: z) -> "first"
-| x :: y -> "second"
-| _ -> "third";;
+      | x :: y -> "second"
+      | _ -> "third";;
 
 match ["hi"] with (* ["hi"] is "hi" :: [] *)
 	x :: y :: z -> "first"
-| x :: y -> "second"
-| _ -> "third";;
+      | x :: y -> "second"
+      | _ -> "third";;
 
 (* tuple pattern matching *)
 let tuple = (2, "hi", 1.2);;
@@ -164,26 +156,33 @@ let s = getSecond mypair;;
 ;;
  *)
 
+(* getHead [];; *)  (* OCaml warned before that this case is not covered: gives uncaught runtime exception *)
+
+(* Error-free version *)
+
 let getHead l = 
   match l with
 	| [] -> 5
   |  head :: tail -> head
 ;;
 
-(* getHead [];; *)  (* Caml warned before that this case is not covered: gives uncaught runtime exception *)
 
+(* Patterns in function definitions *)
 
-(* patterns in function definitions *)
+(* Long way *)
+
 let cadd p = match p with (x, y) -> x + y;;
 
-let cadd (x, y) = x + y;; (* same result as the above - match on the argument directly (only works for 1-case matches) *)
+(* Shorthand *)
+  
+let cadd (x, y) = x + y;; (* same result as the above *)
 
 (* This 'cadd' takes only a SINGLE argument - a tuple - more like how C etc functions are called *)
 cadd (1, 2);;
 
 (* compare above add to this earlier one above, recalling: *)
 let add x y = x + y;;
-add 1 2;; (* notice different calling convention -- two ways to write the same function in Caml *)
+add 1 2;; (* notice different calling convention -- two ways to write the same function in OCaml *)
 
 let add = (+);; (* aside: this syntax is how you can give any built-in infix operator a name as a function *)
 
@@ -223,7 +222,7 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
 (* Immutable declarations *)
 (*
- * All variable declarations in Caml are IMMUTABLE -- value will never change
+ * All variable declarations in OCaml are IMMUTABLE -- value will never change
  * helps in reasoning about programs, we know the variable's value is fixed
  *)
 (let y = 3 in 
@@ -268,6 +267,8 @@ g (-5);; (* we didn't re-submit g, so the version above refers to now-shadowed f
 let g x = f (f x);; (* need to resubmit (identical) g code since it depends on f *)
 g (-6);; (* now it works as expected *)
 
+(* Mutually recursive functions *)
+
 (* warm up to the next function - write a (useless) copy function on lists *)
 
 let rec copy l = match l with 
@@ -279,7 +280,7 @@ let result = copy [1;2;3;4;5;6;7;8;9;10]
 (* copy is useless because immutable data can be freely shared - no need to copy, ever! *)
 												
 (* Refine copy to flip back and forth between copying and not *)
-												
+											
 let rec 
      copyodd l = match l with 
               [] -> []
@@ -519,7 +520,7 @@ let ip = ((2,3):intpair) in fst ip;; (* can also explicitly tag data with its ty
 (* ******************************************************************* *)
 
 (* An old PL Homework 1  - lets work through some of it to get experience  
-   with writing simple functional Caml programs *)
+   with writing simple functional OCaml programs *)
 
 (* 
    1. Write a function 'compose_funs' which takes a list of functions 
@@ -901,7 +902,7 @@ function x -> x.num;; (* this is why there is only one version of num allowed - 
 
 function (x : ratio) -> x.num;;
 
-(* Caml programmers often use tuples instead of records since the record name
+(* OCaml programmers often use tuples instead of records since the record name
  * issue is not handled satisfactorily *)
 
 (* 
@@ -964,7 +965,7 @@ type mtree = MLeaf | MNode of int * mtree ref * mtree ref
  *)
 
 let x = ref 4;;
-let f () = !x;; (* This is syntax for a 0-argument function in Caml - it only takes () as argument *)
+let f () = !x;; (* This is syntax for a 0-argument function in OCaml - it only takes () as argument *)
 
 x := 234;;
 f();;
@@ -997,7 +998,7 @@ done;;
  * Arrays 
  *   - fairly self-explanatory
  *   - have to be initialized before using
- *   - in general there is no such thing as "uninitialized" in Caml.
+ *   - in general there is no such thing as "uninitialized" in OCaml.
  *)
 
 let arrhi = Array.make 100 "";; (* size and initial value are the params here *)
@@ -1046,7 +1047,7 @@ g ();;
 
 (* OCaml Lecture V  *)
 
-(* Caml Modules - structures and functors *)
+(* OCaml Modules - structures and functors *)
 
 (* Modules in programming languages
    - a module is a larger level of program abstraction: functional units or library. 
@@ -1065,7 +1066,7 @@ Some principles of modules:
   -  Modules may support separate compilation: not all code is needed to compile
        Java: mostly but not completely supported (need all .class files on CLASSPATH)
        C/C++: yes (.h file is all that is needed for imports)
-       Caml: yes in ocamlc mode (.mli interface file of modules used is all that is needed)
+       OCaml: yes in ocamlc mode (.mli interface file of modules used is all that is needed)
 
 
  The C/C++ "module" system
@@ -1091,7 +1092,7 @@ Some principles of modules:
 *)
 
 (* 
-   Caml module definitions are called "structures" (struct keyword) 
+   OCaml module definitions are called "structures" (struct keyword) 
     - collections of related definitions (functions, types, other structures, 
                                           exceptions, values, ...) given a name
     - The types of structs are called signatures (the sig keyword)
@@ -1218,9 +1219,9 @@ end
 
 let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 
-(* Separate Compilation with Caml
+(* Separate Compilation with OCaml
 
-    We can program Caml in a cc / javac like way - no top-loop
+    We can program OCaml in a cc / javac like way - no top-loop
     Each module is in a separate file
     Syntax of module **body** is identical
     No header "module XX = struct .. end" 
@@ -1254,7 +1255,7 @@ module Main: sig (* contents of main.mli *) end
 			   - think of it as the ability to "plug in" a code module
 			 In object-oriented languages, object polymorphism gives you much of this ability
 			   - the "Animal" variable can have a Dog, Cat, Fish, etc plugged in to it
-		   But, Caml has no object polymorphism and something is needed to support this
+		   But, OCaml has no object polymorphism and something is needed to support this
        General functors are found only in a few languages
 *)
 

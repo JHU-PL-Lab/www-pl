@@ -8,8 +8,8 @@ href="book/dist">Book</a>, which is an extended version of the lecture
 notes.  The course will cover almost the whole book from beginning to
 end, but leaving out Chapter 8.  The book doesn't contain an
 introduction to OCaml; we will be doing running examples in class as
-the lecture.  See the <a href="ocaml">OCaml page</a> for material on
-leaning OCaml.
+the lecture, from <a href="ocaml/code/lecture.ml">lecture.ml</a>.  See the <a href="ocaml">OCaml page</a> for material on
+learning OCaml.
 Some of the later lecture topics are also not in the book, but the lecture
 notes are found on the <a href="dateline.shtml">dateline</a>.<p>
 
@@ -19,7 +19,7 @@ notes are found on the <a href="dateline.shtml">dateline</a>.<p>
 <p>
 We will be using Piazza for online discussions.
 You will need to register for The PL Piazza Page <a href="http://piazza.com/jhu/spring2016/600426/home">(link here)</a> so you can receive course
-announcements and discuss the material with other students.
+announcements and discuss the material with other students.  If you were on the roster in ISIS on the first day of classes, you were added automatically.
 
 <h3> Assignments</h3> All assignments are linked from the  <a
 href="dateline.shtml">dateline</a>.<p>
