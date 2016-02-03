@@ -208,10 +208,10 @@ Exception: Invalid_argument "".
         The following code should return true no matter what you pass it:
 
             (fun n xs ->
-                if List.length xs mod n == 0
+                if List.length xs mod n = 0
                 then let cs = chunk n xs in
                      dimensions cs ;
-                     List.flatten cs == xs
+                     List.flatten cs = xs
                 else true)
 
       [8 Points]
@@ -240,9 +240,9 @@ let rec chunk n xs = ();; (* ANSWER *)
             (fun xs ->
                 let ts = transpose xs in
                 let (r,c) = dimensions xs in
-                if r != 0 && c != 0
-                then (dimensions ts == (c,r)) &&
-                     (transpose ts == xs)
+                if r <> 0 && c <> 0
+                then (dimensions ts = (c,r)) &&
+                     (transpose ts = xs)
                 else true)
 
       [8 Points]
