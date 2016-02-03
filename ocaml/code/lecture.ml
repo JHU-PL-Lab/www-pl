@@ -106,28 +106,27 @@ add3 20;;
 (* Basic pattern match with numbers *)
 
 let mixemup n =
-	match n with
-		0 -> 4
-	| 5 -> 0
-	| x -> x + 1;; (* default case giving a name to the matched number, x *)
+    match n with
+          0 -> 4
+    | 5 -> 0
+    | y -> y + 1;; (* default case giving a name to the matched number, x *)
 
 mixemup 3;; (* matches last case and x is bound to the value 3 *)
 
 "Hawaii " ^ (match 5 with
-	  0 -> "Zero"
-	| 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
-	| _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
-
+      0 -> "Zero"
+    | 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
+    | _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
 
 (* List pattern matching *)
 
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
-	x :: (y :: z) -> "first"
+    x :: (y :: z) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
 
 match ["hi"] with (* ["hi"] is "hi" :: [] *)
-	x :: y :: z -> "first"
+    x :: y :: z -> "first"
       | x :: y -> "second"
       | _ -> "third";;
 
@@ -162,7 +161,7 @@ let s = getSecond mypair;;
 
 let getHead l = 
   match l with
-	| [] -> 5
+    | [] -> 5
   |  head :: tail -> head
 ;;
 
@@ -187,7 +186,7 @@ add 1 2;; (* notice different calling convention -- two ways to write the same f
 let add = (+);; (* aside: this syntax is how you can give any built-in infix operator a name as a function *)
 
 (* using patterns in recursive functions: a function to reverse a list
-  	 note this does not mutate the list, it makes a new list that reverses original
+       note this does not mutate the list, it makes a new list that reverses original
    
    We also want to study this function to show how its correctness is
    justified by an induction argument
@@ -230,9 +229,9 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
     ( let f y = x + y in
       ( let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
         (f (y - 1)) + x 
-			)
-		)
-	)(* x is STILL 5 in the function body - thats what x was when f defined *)
+            )
+        )
+    )(* x is STILL 5 in the function body - thats what x was when f defined *)
 )
 ;;
 
@@ -278,9 +277,9 @@ let rec copy l = match l with
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 
 (* copy is useless because immutable data can be freely shared - no need to copy, ever! *)
-												
+                                                
 (* Refine copy to flip back and forth between copying and not *)
-											
+                                            
 let rec 
      copyodd l = match l with 
               [] -> []
@@ -298,9 +297,9 @@ copyeven [1;2;3;4;5;6;7;8;9;10];;
 
 (* Using let .. in to hide functions *)
 (* Here is a version that hides the skip function -- make both internal and export one *)
-						
+                        
 let copyoddonly ll =
-	( let rec 
+    ( let rec 
      copyoddlocal l = match l with 
               [] -> []
             | hd :: tl ->  hd::(copyevenlocal tl)
@@ -308,13 +307,13 @@ let copyoddonly ll =
      copyevenlocal l = match l with 
               [] -> []
             | x :: xs -> copyoddlocal xs
-		
+        
   in 
    copyoddlocal ll
-	);;
-	
+    );;
+    
 copyoddonly [1;2;3;4;5;6;7;8;9;10];;
-						  
+                          
 (* 
  * Higher Order Functions - 
  *          functions that either:
@@ -375,9 +374,6 @@ map timesten [1;2;3;34;56;90];;
 (* Composition function g o f - takes in any 2 functions and returns their composition
  *)
 let compose g f = (fun x -> g (f x));;
-let compose g f x =  g (f x);;
-let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
-(* All three of the above definitions are different notation for the same function *)
 
 let plus3 x = x+3;;
 let times2 x = x*2;;
@@ -385,8 +381,14 @@ let times2plus3 = compose plus3 times2;;
 times2plus3 10;;
 compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent but with anonymous functions *)
 
+(* Other equivalent ways to define compose *)
+
+let compose g f x =  g (f x);;
+let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
+
+
 (*
-  Parametric and object polymorphism
+  Parametric polymorphism
 *)
 
 let id = fun x -> x;;
@@ -397,14 +399,15 @@ id 3;;
 (* SAME id applied to bool returns a bool *)
 id true;;
 (* conclusion: the type of id ('a -> 'a) is PARAMETRIC, i.e. the return type is 
-   parameterized by the type of the argument.  These are called "generics" in Java.
-	
-	 We saw several parametric functions above: *)
+   parameterized by the type of the argument.  Same as Java's generics.
+    
+We saw several parametric functions above: *)
 
 copyodd;;    (* observe type is 'a list -> 'a list *)
 map;;     (* type is ('a -> 'b) -> 'a list -> 'b list *)
 compose;; (* type is ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b *)
 
+(* ************************************************** *)
 
 (*
  * Self-study topic: in fact, only 'let'-defined functions are polymorphic
@@ -431,7 +434,7 @@ match id (true) with
 (* The below will error - variable mono_id is not defined by let so it can't be polymorphic
 
 (function mono_id -> 
-	match mono_id(true) with 
+    match mono_id(true) with 
                 true -> mono_id(3) 
               | false -> mono_id(4)) (fun x -> x);;
 *)
@@ -440,9 +443,11 @@ match id (true) with
 
 (function mono_id -> mono_id 4) id;; (* mono_id is solely of type int -> int, thats OK *)
 
+(* ************************************************** *)
 
+  
 (* One topic left in higher-order functions ...
-   Currying - by logician Haskell Curry
+   Currying - idea due to logician Haskell Curry
 *)
 
 (* First lets recall how functions allow incremental arguments to be passed *)
@@ -450,7 +455,7 @@ let addC x y = x + y;;
 addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
 let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
 
-(* an identical way to define addC, clarifying what the above means: *)
+(* an equivalent way to define addC, clarifying what the above means: *)
 let addC = function x -> (function y -> x + y);;
 (* yet another identical way .. *)
 let addC x = function y -> x + y;;
@@ -459,7 +464,7 @@ let addC x = function y -> x + y;;
 
 (* Also recall the related  non-Curry'ing version: use a pair of arguments instead *)
 let addNC p =
-	match p with (x,y) -> x+y;;
+    match p with (x,y) -> x+y;;
 
 (* recall this equivalent abbreviation *)
 let addNC (x, y) = x + y;;
@@ -470,7 +475,9 @@ addNC (3, 4);;
 (* addNC 3;; *) (* error, need all or no arguments supplied *)
 
 (*
- * Fact: these two approaches to a 2-argument function are isomorphic.
+ * Fact: these two approaches to a 2-argument function are isomorphic:
+ *
+ * 'a * 'b -> 'c === 'a -> 'b -> 'c
  *
  * We now define two cool higher-order functions: 
  *
@@ -497,12 +504,24 @@ let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together sho
 
 (* End Currying topic *)
 
-(* Misc minor OCaml *)
+(* Misc OCaml *)
 
+(* See http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html 
+   for various functions available in the OCaml top-level.
+
+   See http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html for modules of extra
+     functions for lists, strings, integers, as well as sets, trees, etc structures *)
+  
 (* print_x for atomic types 'x', again no overloading in meaning here *)
-print_string ("hi\n");;
+  print_string ("hi\n");;
+
+(* raise a failure exception (more on exceptions later) *)
+
+raise (failwith "BOOM!");;    
 
 (* you CAN also declare types, anywhere in fact *)
+(* Put parens around any such declaration or it won't parse *)
+
 let add (x: float) (y: float) = x +. y;;
 let add (x: int) (y: int) = (((x:int) + y) : int);;
 
@@ -514,7 +533,6 @@ let f (p : intpair) = match p with
 (2,3);; (* ocaml doesn't call this an intpair by default *)
 f (2, 3);; (* can pass it to the function expecting an intpair due to type defn *)
 ((2,3):intpair);; (* can also explicitly tag data with its type *)
-let ip = ((2,3):intpair) in fst ip;; (* can also explicitly tag data with its type *)
 
 
 (* ******************************************************************* *)
@@ -555,7 +573,7 @@ let rec compose_funs lf x =
 (* tests *)
 
 let composeexample = compose_funs [(function x -> x+1); (function x -> x-1);
-				 (function x -> x*3); (function x -> x-1)];;
+                 (function x -> x*3); (function x -> x-1)];;
  
 composeexample 5;; (* should return 14 *)
 
@@ -585,7 +603,7 @@ let toUpperChar c =
   if c_code >= 97 && c_code <= 122 then
     Char.chr (c_code - 32) 
   else c;;
-	
+    
 
 let rec toUpperCase l =
   match l with
@@ -614,7 +632,7 @@ let toUpperCase = List.map toUpperChar ;;
    Note: indices start with 0 for the head of the list, 1 for the next element
          and so on (similar to arrays).
  *)
-			     
+                 
 exception Failure;; (* declares an exception; just write "raise Failure" *)
                     (* to raise it *)
 
@@ -622,7 +640,7 @@ let rec nth l n =
   match l with
     [] -> raise Failure
   | x :: xs -> 
-      if n = 0 then	
+      if n = 0 then    
         x
       else
         nth xs (n - 1)
@@ -647,16 +665,16 @@ nth [1;2;3] 3;; (* should raise exception *)
  *)
 
 let rec partition p l =
-	match l with [] -> ([],[])
-		| hd :: tl -> let (posl,negl) = partition p tl in
-										if (p hd) then (hd :: posl,negl)
-															else (posl,hd::negl)
+    match l with [] -> ([],[])
+        | hd :: tl -> let (posl,negl) = partition p tl in
+                                        if (p hd) then (hd :: posl,negl)
+                                                            else (posl,hd::negl)
 
 
 (* test *)
 let isPositive n = n > 0;;
 partition isPositive [1; -1; 2; -2; 3; -3];; (* should return             *)
-					     (*	([1; 2;	3], [-1; -2; -3]) *)
+                         (*    ([1; 2;    3], [-1; -2; -3]) *)
 
 
 (* 
@@ -678,9 +696,9 @@ let rec diff l1 l2 =
     [] -> []
   | x :: xs -> 
       if contains x l2 then
-	diff xs l2
+    diff xs l2
       else
-	x :: diff xs l2
+    x :: diff xs l2
 ;;
 
 
@@ -722,13 +740,14 @@ type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or", same as
 
 Fixed 5;;
 Floating 4.0;;
-(* note constructors look like functions but they are not -- you always need to give arg *)
-(* define constructors! *)
 
-let pullout ( x : mynumber ) = 
-	match x with 
-	| Fixed n -> n              (* variants fit very well into pattern matching syntax *)
-	| Floating z -> int_of_float z;;
+(* note constructors look like functions but they are not -- you always need to give arg *)
+
+
+let pullout x = 
+    match x with 
+    | Fixed n -> n              (* variants fit very well into pattern matching syntax *)
+    | Floating z -> int_of_float z;;
 
 pullout (Fixed 5);;
 
@@ -747,7 +766,7 @@ add_num (Fixed 123) (Floating 3.14159);;
 (*
  * Enum types 
  *     - special case of variant types, 
- *       where all alternatives are constants:
+ *       where all alternatives are constants
  *)
 
 type sign = Positive | Negative | Zero;;
@@ -777,26 +796,27 @@ INode(4,ILeaf,INode(2,INode(18,ILeaf,ILeaf),ILeaf));;
 type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 
 (* Observe how above type takes a (prefix) argument, 'a -- "btree" is a type function *)
-(* 'a list is a built-in example, a list of 'a 's *)
 
 (* example trees *)
 
 let whack = Node("whack!",Leaf, Leaf);;
 let bt = Node("fiddly ",
-	        Node("backer ",
-		       Leaf,
-		       Node("crack ",
-			      Leaf,
-			      Leaf)),
-	        whack);;
+            Node("backer ",
+               Leaf,
+               Node("crack ",
+                  Leaf,
+                  Leaf)),
+            whack);;
 
 let bt2 = Node("fiddly ",
-	        Node("backer ",
-		       Leaf,
-		       Node("cracw ",
-			      Leaf,
-			      Leaf)),
-	        whack);;
+            Node("backer ",
+               Leaf,
+               Node("crack ",
+                  Leaf,
+                  Leaf)),
+            whack);;
+
+(* type error, must have uniform data: Node("fiddly",Node(0,Leaf,Leaf),Leaf);;  *)  
 
 (* Lists could have been built with a recursive type declaration *)
 
@@ -805,17 +825,16 @@ type 'a mylist = MtList | ColonColon of 'a * 'a mylist;;
 let mylisteg = ColonColon(3,ColonColon(5,ColonColon(7,MtList)));; (* isomorphic to [3;5;7] *)
 
 let rec double_list_elts ml = 
-	match ml with
-	| MtList -> MtList (* vs [] -> [] *)
-	| ColonColon(mh,mt) -> ColonColon(mh * 2,double_list_elts mt);; (* vs mh :: mt -> .. *)
+  match ml with
+    | MtList -> MtList (* vs [] -> [] *)
+    | ColonColon(mh,mt) -> ColonColon(mh * 2,double_list_elts mt);; (* vs mh :: mt -> .. *)
 
 double_list_elts mylisteg;;
 
 (*
- * Functions on binary trees are similar to functions on lists: use recursion!
+ * Functions on binary trees are similar to functions on lists: use recursion
  *
  *)
-
 
 let rec add_gobble bintree =
    match bintree with
@@ -826,17 +845,16 @@ let rec add_gobble bintree =
 
 let gobtree = add_gobble bt;;
 
-
 let rec lookup x bintree =
    match bintree with
      Leaf -> false
    | Node(y, left, right) ->
        if x = y then 
-	 true 
+          true 
        else if x < y then 
-	 lookup x left 
+          lookup x left 
        else 
-	 lookup x right
+          lookup x right
 ;;
 
 lookup "whack!" bt;;
@@ -847,18 +865,16 @@ let rec insert x bintree =
      Leaf -> Node(x, Leaf, Leaf)
    | Node(y, left, right) ->
        if x <= y then 
-	 Node(y, insert x left, right)
+         Node(y, insert x left, right)
        else 
-	 Node(y, left, insert x right)
+         Node(y, left, insert x right)
 ;;
 
 let goobt = insert "goober " bt;;
-bt;; (* remember that OCaml data structures are by default immutable! *)
+bt;; (* OCaml data structures are immutable! *)
 let gooobt = insert "slacker " goobt;;
 
-
 (* END variants *)
-
 
 (* 
  * Record Declarations 
@@ -879,19 +895,19 @@ q.num;;
 q.denom;;
 
 let rattoint r =
-	match r with 
+ match r with 
    {num = n; denom = d} -> n / d;;
 
 let rattoint {num = n; denom = d}  =
-	 n / d;;
+   n / d;;
 
 let rattoint r  =
-	 r.num / r.denom;;
+   r.num / r.denom;;
 
 rattoint q;;
 
-let add_ratio r1 r2 = {num   = r1.num * r2.denom + r2.num * r1.denom;
-		       denom = r1.denom * r2.denom};;
+let add_ratio r1 r2 = {num   = r1.num * r2.denom + r2.num * r1.denom; denom = r1.denom * r2.denom};;
+
 add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
 (* Annoying shadowing issue: there is one global namespace of record labels - yuck! *)
@@ -946,7 +962,7 @@ type mutable_point = { mutable x: float; mutable y: float };;
 let translate p dx dy = 
                 p.x <- (p.x +. dx); (* observe use of ";" here to sequence effects *)
                 p.y <- (p.y +. dy)  (* ";" is useless without side effects (think about it) *)
-								;;
+                                ;;
 let mypoint = { x = 0.0; y = 0.0 };;
 translate mypoint 1.0 2.0;;
 mypoint;;
@@ -1035,7 +1051,7 @@ let g () =
     f () 
   with 
       Foo -> ()
-		| Goo s ->
+        | Goo s ->
       (print_string("exception raised: ");
        print_string(s);print_string("\n"))
 ;;
@@ -1098,36 +1114,36 @@ Some principles of modules:
     - The types of structs are called signatures (the sig keyword)
           - they are the interfaces for structures, and are something like Java interfaces
           - not all the items in the structure need to be in the signature: implicitly hides the missing things
-					- structure contents can be regular values, functions, **types**, exceptions
+                    - structure contents can be regular values, functions, **types**, exceptions
  *)
 
 module FSet =
 struct
-	exception NotFound (* any top-level definition can be included in a module *)
-	
-	type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-	
-	let emptyset : 'a set = []
-	
-	let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
-	
-	let rec remove x (s: 'a set) =
-		match s with
-			[] -> raise NotFound
-		| hd :: tl ->
-				if hd = x then
-					(tl: 'a set)
-				else
-					hd :: remove x tl
-	
-	let rec contains x (s: 'a set) =
-		match s with
-			[] -> false
-		| hd :: tl ->
-				if x = hd then
-					true
-				else
-					contains x tl
+    exception NotFound (* any top-level definition can be included in a module *)
+    
+    type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+    
+    let emptyset : 'a set = []
+    
+    let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
+    
+    let rec remove x (s: 'a set) =
+        match s with
+            [] -> raise NotFound
+    | hd :: tl ->
+                if hd = x then
+                    (tl: 'a set)
+                else
+                    hd :: remove x tl
+    
+    let rec contains x (s: 'a set) =
+        match s with
+            [] -> false
+        | hd :: tl ->
+                if x = hd then
+                    true
+                else
+                    contains x tl
 end
 ;;
 
@@ -1194,26 +1210,26 @@ module HFSet :
     val contains: 'a -> 'a set -> bool    
   end =
 struct
-	exception NotFound
-	type 'a set = 'a list
-	let emptyset : 'a set = []
-	let rec add x (s: 'a set) = ((x :: s) : ('a set))
-	let rec remove x (s: 'a set) =
-		match s with
-			[] -> raise NotFound
-		| hd :: tl ->
-				if hd = x then
-					(tl: 'a set)
-				else
-					hd :: remove x tl
-	let rec contains x (s: 'a set) =
-		match s with
-			[] -> false
-		| hd :: tl ->
-				if x = hd then
-					true
-				else
-					contains x tl
+    exception NotFound
+    type 'a set = 'a list
+    let emptyset : 'a set = []
+    let rec add x (s: 'a set) = ((x :: s) : ('a set))
+    let rec remove x (s: 'a set) =
+        match s with
+            [] -> raise NotFound
+        | hd :: tl ->
+                if hd = x then
+                    (tl: 'a set)
+                else
+                    hd :: remove x tl
+    let rec contains x (s: 'a set) =
+        match s with
+            [] -> false
+        | hd :: tl ->
+                if x = hd then
+                    true
+                else
+                    contains x tl
 end
 ;;
 
@@ -1252,18 +1268,18 @@ module Main: sig (* contents of main.mli *) end
    Functors
        A "function" from structures to structures
        Allows a module to be parameterized and so instantiated in multiple ways
-			   - think of it as the ability to "plug in" a code module
-			 In object-oriented languages, object polymorphism gives you much of this ability
-			   - the "Animal" variable can have a Dog, Cat, Fish, etc plugged in to it
-		   But, OCaml has no object polymorphism and something is needed to support this
+               - think of it as the ability to "plug in" a code module
+             In object-oriented languages, object polymorphism gives you much of this ability
+               - the "Animal" variable can have a Dog, Cat, Fish, etc plugged in to it
+           But, OCaml has no object polymorphism and something is needed to support this
        General functors are found only in a few languages
 *)
 
 
 type comparison = Less | Equal | Greater
   
-	(* here is a kind of struct that we can take as a parameter; in Java we would just use an interface Comparable *)
-	
+    (* here is a kind of struct that we can take as a parameter; in Java we would just use an interface Comparable *)
+    
 module type ORDERED_TYPE =
   sig
     type t
@@ -1306,12 +1322,12 @@ module OrderedInt =
     type t = int
     let compare x y = 
       if x = y then 
-	Equal 
+    Equal 
       else 
-	if x < y then 
-	  Less 
-	else 
-	  Greater
+    if x < y then 
+      Less 
+    else 
+      Greater
   end;;
 
 (* Here is how we feed it in, instantiating the functor to give a structure *)
@@ -1326,15 +1342,15 @@ OrderedIntSet.contains 3 myOrderedIntSet;;
 module OrderedString =
   struct
     type t = string
-	  
+      
     let compare x y = 
       if x = y then 
-	Equal 
+    Equal 
       else 
-	if x < y then 
-	  Less 
-	else 
-	  Greater
+    if x < y then 
+      Less 
+    else 
+      Greater
   end;;
 
 module OrderedStringSet = FSetFunctor(OrderedString);; (* a DIFFERENT instantiation of same *)

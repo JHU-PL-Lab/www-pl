@@ -87,7 +87,7 @@ Here is the key information
       Part IV for libraries (the <a
       href="http://caml.inria.fr/pub/docs/manual-ocaml-4.01/core.html">core
       library</a> docs are particularly useful for standard string,
-      etc functions built into ocaml).
+      etc functions built into ocaml), and the <a href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Pervasives module</a> includes functions etc available at all times in the top-level.
 </dl>
 Here is additional supplementary information
 <dl>
