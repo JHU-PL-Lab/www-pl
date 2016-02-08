@@ -379,12 +379,12 @@ let plus3 x = x+3;;
 let times2 x = x*2;;
 let times2plus3 = compose plus3 times2;;
 times2plus3 10;;
-compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent but with anonymous functions *)
+let t2p3 = compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent but with anonymous functions *)
 
 (* Other equivalent ways to define compose *)
 
-let compose g f x =  g (f x);;
-let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
+let compose2 g f x =  g (f x);;
+let compose3 = (fun g -> (fun f -> (fun x -> g(f x))));;
 
 
 (*
@@ -517,7 +517,7 @@ let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together sho
 
 (* raise a failure exception (more on exceptions later) *)
 
-raise (failwith "BOOM!");;    
+(failwith "BOOM!") +3 ;;    
 
 (* you CAN also declare types, anywhere in fact *)
 (* Put parens around any such declaration or it won't parse *)
@@ -872,7 +872,8 @@ let rec insert x bintree =
 
 let goobt = insert "goober " bt;;
 bt;; (* OCaml data structures are immutable! *)
-let gooobt = insert "slacker " goobt;;
+let gooobt =
+  insert "slacker " goobt;;
 
 (* END variants *)
 
@@ -992,8 +993,8 @@ f ();;
 (* Yes, we can even write a while loop ! *)
 let x = ref 1;;
 while !x < 10 do 
- (print_int !x; 
- print_string "\n"); 
+ print_int !x; 
+ print_string "\n"; 
  x := !x + 1
 done;;
 
@@ -1028,7 +1029,7 @@ arr;;
 
 exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
 
-let f () = raise Foo;; (* note no need to declare "raises Foo" in functions type as in Java *)
+let f () = raise Foo;; (* note no need to "raises Foo" in functions type as in Java *)
 f ();;
 
 exception Bar;;
@@ -1261,7 +1262,8 @@ module Main: sig (* contents of main.mli *) end
            = struct (* contents of main.ml *) end;;
 
 (* See http://pl.cs.jhu.edu/pl/ocaml/code/sep.zip for the example we cover in lecture.
-   see the ocaml manual Chapter 8 for the full documentation *)
+   We will follow http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt in particular.
+   See the ocaml manual Chapter 8 for the full documentation *)
 
 
 (* 

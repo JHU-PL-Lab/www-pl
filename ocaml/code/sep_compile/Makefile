@@ -1,7 +1,7 @@
 # Sample Eclipse OCaIDE Makefile for a small Caml project
 #
 #Builder to use:
-OCAMLC= /usr/local/bin/ocamlc.opt
+OCAMLC= ocamlc
 #Is it native?
 OPT= no
 #Generate type information?
