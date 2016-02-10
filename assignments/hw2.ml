@@ -166,7 +166,8 @@ let triangles = (* ANSWER *) ;;
       this function will not terminate. Ignore this issue.
 *)
 
-let rec filter_map_sequence fn s : ('a -> 'b option) -> 'a sequence -> 'b sequence =
+let rec filter_map_sequence : ('a -> 'b option) -> 'a sequence -> 'b sequence =
+    fun f s ->
     (* ANSWER *) ;;
 
 (*
