@@ -1183,9 +1183,9 @@ FSet.remove;;  (* This is still fine, remember we are not mutating FSet when mak
 (* Now lets do some useful hiding.  Hiding types is possible and allows "black box" data structures 
    - can be good software engineering practice to enforce hiding of internals *)
 
-module type  HIDDENSET = 
+module type HIDDENSET = 
   sig
-    type 'a set  (* hide the type 'a list here by not giving 'a set definition in signature *)
+    type 'a set (* hide the type 'a list here by not giving 'a set definition in signature *)
     val emptyset : 'a set
     val add: 'a -> 'a set -> 'a set
     val remove : 'a -> 'a set -> 'a set
@@ -1262,7 +1262,7 @@ module Main: sig (* contents of main.mli *) end
            = struct (* contents of main.ml *) end;;
 
 (* See http://pl.cs.jhu.edu/pl/ocaml/code/sep.zip for the example we cover in lecture.
-   We will follow http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt  in particular.
+   We will follow http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt in particular.
    See the ocaml manual Chapter 8 for the full documentation *)
 
 

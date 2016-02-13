@@ -268,7 +268,7 @@ val q4 : int GHeap.heap = <abstr>
 
 
 open GHeap;;
-  
+
 (* Write the following functions for your heap; you should not need to add them to your interface. *)
 
 (* This function takes a list of elements and inserts each of them into the heap *)
