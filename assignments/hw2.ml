@@ -178,21 +178,18 @@ let rec filter_map_sequence : ('a -> 'b option) -> 'a sequence -> 'b sequence =
 let rec map_sequence fn s = (* ANSWER *) ;;
 
 (*
-# list_of_sequence(map_sequence (fun x -> x * 2) (ap 0 10 2)) ;;
-- : int list = [0; 4; 8; 12; 16; 20]
-# list_of_sequence(map_sequence Char.chr (ap 65 90 1)) ;;
-- : char list =
-['A'; 'B'; 'C'; 'D'; 'E'; 'F'; 'G'; 'H'; 'I'; 'J'; 'K'; 'L'; 'M'; 'N'; 'O';
- 'P'; 'Q'; 'R'; 'S'; 'T'; 'U'; 'V'; 'W'; 'X'; 'Y'; 'Z']
+# list_of_sequence(map_sequence (fun x -> x + 3) (gp 2 10 2)) ;;
+- : int list = [5; 7; 11]
 *)
 
 let rec filter_sequence fn s = (* ANSWER *) ;;
 
 (*
-# list_of_sequence(filter_sequence (fun x -> x mod 3 = 0) (ap 0 12 2)) ;;
-- : int list = [0; 6; 12]
-# list_of_sequence(cut_sequence 5 (filter_sequence (fun x -> x mod 5 = 0) fib)) ;;
-- : int list = [0; 5; 55; 610; 6765]
+# list_of_sequence(filter_sequence (fun x -> x mod 3 = 2) (gp 2 12 2)) ;;
+- : int list = [2; 8]
+# list_of_sequence(cut_sequence 4 (filter_sequence (fun x -> x mod 5 = 0)
+triangles)) ;;
+- : int list = [0; 10; 15; 45]
 *)
 
 (* -------------------------------------------------------------------------------------------------- *)
