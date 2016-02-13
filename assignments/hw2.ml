@@ -252,7 +252,7 @@ val q1 : '_a GHeap.heap = <abstr>
 val q2 : int GHeap.heap = <abstr>
 # GHeap.find_min q2 ;;
 - : (int * int GHeap.heap) option = Some (1, <abstr>)
-# let q3 = GHeap.insert 2 q1 ;;
+# let q3 = GHeap.insert 2 q2 ;;
 val q3 : int GHeap.heap = <abstr>
 # let Some (x, q4) = GHeap.find_min q3 ;;
 Warning 8: this pattern-matching is not exhaustive.

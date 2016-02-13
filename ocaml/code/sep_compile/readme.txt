@@ -89,7 +89,7 @@ The top loop can also load and run compiled files: from ocaml enter
   typed into the top loop.
  
 Note that the "#" above need to be typed, they are not the OCaml prompt.  
-So, its the #load directive, not load.
+So, its the #load directive, not load     .
 
 ----------------------------------------------------------------------
 
