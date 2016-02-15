@@ -14,6 +14,18 @@
   In this assignment, you are permitted to complete the listed tasks using any
   of the OCaml modules/functions.  However you are still required to avoid the use of
   mutation unless explicitly specified in the question.
+
+  For any part of the assignment, you may use List, String, Set (though I
+  discourage it), Map, and any other data structure which does not rely on
+  mutation and is not already a heap data structure.
+  
+  Since they rely on mutation, you may not use Array (or related modules),
+  Hashtbl, Buffer, or refs except for the last question.
+  
+  For the heap question, you may not use a builtin heap (I don't actually believe
+  the OCaml stdlib has one, but if you manage to find one, don't use it).
+  
+  For the stream question, you may not use Stream.
 *)
 
 
