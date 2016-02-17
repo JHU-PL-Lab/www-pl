@@ -370,6 +370,8 @@ let rec div_poly p1 p2 = (* ANSWER *) ;;
 - : (int list * int list) = ([1;1], [0])
 # div_poly [3;3;4;4] [0;0;4] ;;
 - : (int list * int list) = ([1;1], [3;3])
+# div_poly [1;2;3] [1;3;4] ;;
+- : (int list * int list) = ([0], [1;2;3])
 *)
 
 (*
