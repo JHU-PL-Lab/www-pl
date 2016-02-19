@@ -10,8 +10,7 @@
   <ol>
     <li>
       Write an interpreter for F&#x266d; as defined in the book. You need to
-      implement all features <strong>except</strong> for <code>Let Rec</code>,
-      which is for extra credit only.
+      implement all features <strong>except</strong> for <code>Let Rec</code>.
     <li>
       Answer the problems in <a href="hw3.ml">hw3.ml</a>.
   </ol>
