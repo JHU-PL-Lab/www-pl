@@ -32,7 +32,7 @@
   1a. The operational semantics for Fb provide a set of proof rules which are
   used by the interpreter to perform evaluation. In this problem, you will build
   a proof by hand. Write an operational semantics proof which demonstrates that
-  the Fb expression "(Fun f -> Fun y -> y f) (Fun z -> If z Then 1 Else 0) True"
+  the Fb expression "(Fun f -> Fun y -> y f) True (Fun z -> If z Then 1 Else 0)"
   evaluates to 1.
 
   Your proof should follow the Fb operational semantics rules correctly and not
