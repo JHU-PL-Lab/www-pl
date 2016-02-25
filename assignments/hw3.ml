@@ -161,10 +161,10 @@ val church2 : Fbast.expr =
   Function (Ident "f",
    Function (Ident "x",
     Appl (Var (Ident "f"), Appl (Var (Ident "f"), Var (Ident "x")))))
-# ppeval (Appl(fbUnchurch,church2));;
+# ppeval (Appl(fbUnChurch,church2));;
 ==> 2
 - : unit = ()
-# ppeval (Appl(fbUnchurch,Appl(fbChurch,Int(12))));;
+# ppeval (Appl(fbUnChurch,Appl(fbChurch,Int(12))));;
 ==> 12
 - : unit = ()
 # ppeval (Appl(Appl(Appl(fbChurch,Int(4)),(parse "Function n -> n + n")),Int(3)));;
@@ -184,10 +184,10 @@ let fbChurchMul = parse "" ;; (* ANSWER *)
 (*
 # let church2 = parse "Function f -> Function x -> f (f x)" ;;
 # let church3 = parse "Function f -> Function x -> f (f (f x))" ;;
-# ppeval (Appl(fbUnchurch, (Appl(Appl(fbChurchAdd, church3), church2))));;
+# ppeval (Appl(fbUnChurch, (Appl(Appl(fbChurchAdd, church3), church2))));;
 ==> 5
 - : unit = ()a
-# ppeval (Appl(fbUnchurch, (Appl(Appl(fbChurchMult, church3), church2))));;
+# ppeval (Appl(fbUnChurch, (Appl(Appl(fbChurchMul, church3), church2))));;
 ==> 6
 - : unit = ()
 *)
