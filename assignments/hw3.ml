@@ -206,8 +206,8 @@ let fbChurchMul = parse "" ;; (* ANSWER *)
       write the predecessor function.
 
       0  -->  Fun s -> Fun z -> z
-      1  -->  Fun s -> Fun z -> s 1  --> Fun s -> Fun z -> s (Fun s -> Fun z -> z)
-      2  -->  Fun s -> Fun z -> s 2  -->
+      1  -->  Fun s -> Fun z -> s 0  --> Fun s -> Fun z -> s (Fun s -> Fun z -> z)
+      2  -->  Fun s -> Fun z -> s 1  -->
                    Fun s -> Fun z -> s (Fun s -> Fun z -> s (Fun s -> Fun z -> z))
 *)
 
