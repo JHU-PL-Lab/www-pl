@@ -161,10 +161,10 @@ val church2 : Fbast.expr =
   Function (Ident "f",
    Function (Ident "x",
     Appl (Var (Ident "f"), Appl (Var (Ident "f"), Var (Ident "x")))))
-# ppeval (Appl(fbUnchurch,church2));;
+# ppeval (Appl(fbUnChurch,church2));;
 ==> 2
 - : unit = ()
-# ppeval (Appl(fbUnchurch,Appl(fbChurch,Int(12))));;
+# ppeval (Appl(fbUnChurch,Appl(fbChurch,Int(12))));;
 ==> 12
 - : unit = ()
 # ppeval (Appl(Appl(Appl(fbChurch,Int(4)),(parse "Function n -> n + n")),Int(3)));;
@@ -184,10 +184,10 @@ let fbChurchMul = parse "" ;; (* ANSWER *)
 (*
 # let church2 = parse "Function f -> Function x -> f (f x)" ;;
 # let church3 = parse "Function f -> Function x -> f (f (f x))" ;;
-# ppeval (Appl(fbUnchurch, (Appl(Appl(fbChurchAdd, church3), church2))));;
+# ppeval (Appl(fbUnChurch, (Appl(Appl(fbChurchAdd, church3), church2))));;
 ==> 5
 - : unit = ()a
-# ppeval (Appl(fbUnchurch, (Appl(Appl(fbChurchMult, church3), church2))));;
+# ppeval (Appl(fbUnChurch, (Appl(Appl(fbChurchMul, church3), church2))));;
 ==> 6
 - : unit = ()
 *)
@@ -206,8 +206,8 @@ let fbChurchMul = parse "" ;; (* ANSWER *)
       write the predecessor function.
 
       0  -->  Fun s -> Fun z -> z
-      1  -->  Fun s -> Fun z -> s 1  --> Fun s -> Fun z -> s (Fun s -> Fun z -> z)
-      2  -->  Fun s -> Fun z -> s 2  -->
+      1  -->  Fun s -> Fun z -> s 0  --> Fun s -> Fun z -> s (Fun s -> Fun z -> z)
+      2  -->  Fun s -> Fun z -> s 1  -->
                    Fun s -> Fun z -> s (Fun s -> Fun z -> s (Fun s -> Fun z -> z))
 *)
 
@@ -240,9 +240,41 @@ let fbScottPred = parse "" ;; (* ANSWER *)
       convert between *OCaml* lists and encoded Fb lists.
 *)
 
-(* Produce an Fb encoded list given an OCaml list. The elements of the OCaml
-   list are Fb values *)
+(* Produce an expression that evaluates to an Fb encoded list given an OCaml
+   list. The elements of the OCaml list are Fb expressions, but your list
+   should contain only values.
+   
+   Note: there are two primary ways to do this:
+       1. Have your OCaml code evaluate the expressions before putting them in
+          the Fb AST (or string which you will parse to an AST).
+       2. Leave the expressions as expressions in the Fb code, relying on the
+          interpreter to evaluate them; if you do this, make sure they do get
+          evaluated.
+
+   Running `eval (fbList [parse "1", parse "1 + True"])` should result in an Fb
+   runtime error. If it does not, you are not evaluating the expressions.
+
+   If you are taking the first approach, you should produce Fb code which will
+   have a runtime error in this case.
+*)
 let fbList ocaml_list_of_Fb_expressions = parse "" ;; (* ANSWER *)
 
-(* Produce an OCaml list of Fb values given an Fb encoded list. *)
+(* Produce an OCaml list of Fb values given an an expression which evaluates to
+   an Fb encoded list, possibly containing expressions. You will need to call
+   `eval` in this function.
+   
+   Throw an exception if you encounter an Fb error, or if the Fb expression
+   does not evalute to an Fb list.
+
+   `fun x -> let y = fbUnList x in map eval y = y` should be true for any input
+   unless an exception is thrown.
+
+   Again, there are two primary ways to do this:
+       1. Have OCaml evaluate the expression and pull it apart, evaluating the
+          components as necessary.
+       2. Write an Fb function which takes a list and evaluates each element of
+          it, constructing a new list of values; then use eval once to call
+          this function on your input before using OCaml to pull apart your Fb
+          encoded list, secure in the knowledge that its elements are values.
+*)
 let fbUnList encoded_Fb_list = parse "" ;; (* ANSWER *)
