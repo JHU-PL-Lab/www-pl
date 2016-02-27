@@ -186,7 +186,7 @@ let fbChurchMul = parse "" ;; (* ANSWER *)
 # let church3 = parse "Function f -> Function x -> f (f (f x))" ;;
 # ppeval (Appl(fbUnChurch, (Appl(Appl(fbChurchAdd, church3), church2))));;
 ==> 5
-- : unit = ()a
+- : unit = ()
 # ppeval (Appl(fbUnChurch, (Appl(Appl(fbChurchMul, church3), church2))));;
 ==> 6
 - : unit = ()
