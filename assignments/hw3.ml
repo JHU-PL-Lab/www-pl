@@ -118,13 +118,13 @@ let fbCond = parse "" ;; (* ANSWER *)
 
 (*
 # ppeval (Appl(parse
-  "Fun fblt -> fblt 3 (Fun a -> 1) (Fun b -> 0) (Fun c -> c + 1)"
-  , fblt)) ;;
+  "Fun fbCond -> fbCond 3 (Fun a -> 1) (Fun b -> 0) (Fun c -> c + 1)"
+  , fbCond)) ;;
 ==> 4
 - : unit = ()
 # ppeval (Appl(parse
-  "Fun fblt -> fblt 0 (Fun a -> 1) (Fun b -> 0) (Fun c -> c + 1)"
-  , fblt)) ;;
+  "Fun fbCond -> fbCond 0 (Fun a -> 1) (Fun b -> 0) (Fun c -> c + 1)"
+  , fbCond)) ;;
 ==> 0
 - : unit = ()
 *)
@@ -186,7 +186,7 @@ let fbChurchMul = parse "" ;; (* ANSWER *)
 # let church3 = parse "Function f -> Function x -> f (f (f x))" ;;
 # ppeval (Appl(fbUnChurch, (Appl(Appl(fbChurchAdd, church3), church2))));;
 ==> 5
-- : unit = ()a
+- : unit = ()
 # ppeval (Appl(fbUnChurch, (Appl(Appl(fbChurchMul, church3), church2))));;
 ==> 6
 - : unit = ()
