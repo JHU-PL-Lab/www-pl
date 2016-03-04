@@ -251,7 +251,7 @@ let fbScottPred = parse "" ;; (* ANSWER *)
           interpreter to evaluate them; if you do this, make sure they do get
           evaluated.
 
-   Running `eval (fbList [parse "1", parse "1 + True"])` should result in an Fb
+   Running `eval (fbList [parse "1"; parse "1 + True"])` should result in an Fb
    runtime error. If it does not, you are not evaluating the expressions.
 
    If you are taking the first approach, you should produce Fb code which will
