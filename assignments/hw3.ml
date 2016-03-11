@@ -175,10 +175,10 @@ val church2 : Fbast.expr =
 (* For these two functions, you are not allowed to call fbUnChurch, do the math,
    and then fbChurch the result *)
 
-(* Write a function to add two church encoded values *)
+(* Write a function to add two Church encoded values *)
 let fbChurchAdd = parse "" ;; (* ANSWER *)
 
-(* Write a function to multiply two church encoded values *)
+(* Write a function to multiply two Church encoded values *)
 let fbChurchMul = parse "" ;; (* ANSWER *)
 
 (*
@@ -220,15 +220,15 @@ let fbScott = parse "" ;; (* ANSWER *)
 (* For these three functions, you are not allowed to call fbUnScott, do the math,
    and then fbScott the result *)
 
-(* Write a function to add two church encoded values *)
+(* Write a function to add two Scott encoded values *)
 let fbScottAdd = parse "" ;; (* ANSWER *)
 
-(* Write a function to multiply two church encoded values *)
+(* Write a function to multiply two Scott encoded values *)
 let fbScottMul = parse "" ;; (* ANSWER *)
 
 (* Write the predecessor function. *)
 
-let fbPred = parse "Fun x -> If x = 0 Then 0 Else x - 1"
+let fbPred = parse "Fun x -> If x = 0 Then 0 Else x - 1" ;;
 
 (* The Church encoding of predecessor is hard; the Scott encoding is relatively
    straightforward. *)
@@ -259,7 +259,7 @@ let fbScottPred = parse "" ;; (* ANSWER *)
 *)
 let fbList ocaml_list_of_Fb_expressions = parse "" ;; (* ANSWER *)
 
-(* Produce an OCaml list of Fb values given an an expression which evaluates to
+(* Produce an OCaml list of Fb values given an expression which evaluates to
    an Fb encoded list, possibly containing expressions. You will need to call
    `eval` in this function.
    
