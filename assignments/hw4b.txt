@@ -1,0 +1,14 @@
+opsem for records - FbR
+
+opsem for (functional) record extension? (to encode javascript objects??)
+
+variant-based objects
+
+information hiding in objects
+
+dynamic dispatch - random replacing of super with this.  effect of ob1.doit ob2 args
+
+encode prototypes - ob.prototype.blah
+
+opsem for something with state (e.g. while loop)
+
