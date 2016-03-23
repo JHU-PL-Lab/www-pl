@@ -105,7 +105,7 @@ it is the same behavior as it was.
 Example:
      Let addPulse = Fun aClass -> (* fill in your code here *) In
      Let pulsedPointClass = addPulse pointClass In
-        Let ppOb = pulsedPoint {} In
+        Let ppOb = pulsedPointClass {} In
           ppOb.magnitude ppOb {} (* should return 0 in spite of x,y being (4,3) *)
 
 And, the code should produce the same answer for colorPointClass as well.
