@@ -59,7 +59,7 @@ semantics rules.  The book contains a sketch of an interpreter for FbR, but we w
 operational semantics rules, not an interpreter.
 
 2b. Consider a new language FbxR - Fb with extensible Records. Extensible records are like
-normal FbR, but they can also be FUNCTIONALLY extended - you can define a new record with
+normal FbR, but they can also be FU   NCTIONALLY extended - you can define a new record with
 one extra field.  Other than the new extension operator, records work just like in FbR.
 
 Example:
