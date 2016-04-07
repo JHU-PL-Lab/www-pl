@@ -132,9 +132,9 @@ List of discussants   :
    5. (Fun x -> x x)(Fun x -> x x) =~ (Fun x -> x x x)(Fun x -> x x x) 
 
 
-   b. As 1a. but for FbS. Think carefully about what stateful side effects could do.
+   b. As 3a. but for FbS. Think carefully about what stateful side effects could do.
 
-   c. As 1b. but for FbX.  Think carefully about what exception side effects could do.
+   c. As 3b. but for FbX.  Think carefully about what exception side effects could do.
 
    [35 points]
 
