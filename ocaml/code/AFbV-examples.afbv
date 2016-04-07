@@ -1,0 +1,98 @@
+(* Idealized actor countdown code
+
+Let Rec countDown = 
+ Fun msg -> Match msg With
+    `count(n) -> (If n = 0 Then 0 Else (me <- (`count (n-1))));
+                  Become(countDown)) 
+In
+Let actor = Create(countDown) In
+actor <- `count 4
+;;
+
+Vague/missing bits in above:
+
+1. "me" - actor needs to be able to know own address to send to itself
+2. Become - to set code for next message receive.  Not AFbV syntax.
+3. Note use of Let Rec for self-referentiality, also not in AFbV.
+4. Example does not show how internal state modeled.
+
+
+Improved version:
+
+Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
+Let countDown = y (Fun this ->
+ Fun msg -> Match msg With
+    `count(n) -> (If n = 0 Then 0 Else (me <- (`count (n-1))));
+                  this))  (* final value is next run's code *)
+In
+Let actor = Create(countDown) In
+actor <- `count 4
+;;
+
+
+-- solves all but 1. & 4. above, we postpone those for now.
+
+*)
+
+(* Full actor examples that run in the interpreter.
+   Use AFbV --debug to see states as they progress *)
+
+(* Counting down example with internal state doing counting *)
+
+Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
+Let actorBeh =
+  Fun me -> y (Fun this -> Fun data -> Fun msg ->
+     Match msg With
+       `count(_) ->
+           (Print data); (* Observe interpreter has Print built in *)
+           (If data = 0 Then 0 Else (me <- (`count (_)))); (* also ";" *)
+           (this (data-1))) In
+Let actor = Create(actorBeh, 4) In
+actor <- `count (000) (* 000 is ignored *)
+;;
+
+
+
+
+(* Counting down example with number as message parameter *)
+
+
+Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
+Let actorBeh = Fun me ->  Fun data -> y (Fun this -> Fun msg ->
+                                    Match msg With
+                                        `count(n) ->
+                                            (Print n);
+                                            (If n = 0 Then 0 Else (me <- (`count (n-1))));
+                                            (this)
+                               ) In
+Let actor = Create(actorBeh, 0) In
+actor <- `count 4
+;;
+
+(* ping pong example involving two actors *)
+
+Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
+Let behPong = Fun me -> y (Fun this -> Fun data -> Fun msg ->
+                                    Match msg With
+                                        `pong(n) ->
+                                            (data <- (`ping (n+1))); (* invariant: data is a1 *)
+                                            this data (* Use the same behavior for the next message received *)
+                               ) In
+Let behPing = Fun me -> Fun dummy -> Fun msg0 ->
+	 (* First message should be `init; create pong actor and get it going *)
+     Match msg0 With
+		    `init(n) -> Let a2 = Create(behPong, me) In (* tell ponger about me when its made *)
+						(a2 <- `pong(n)); (* send pong an n-ball to start the game *)
+							(* Now set behavior for rest of ping/pong game: get a ping, send a pong *)														   
+            (y (Fun this -> Fun msg ->
+               Match msg With `ping(n) ->
+                 (Print (n));
+                 (If n = 0 Then 0 Else (a2 <- (`pong (n-2))));
+                 this 
+            )) In
+Let a1 = Create(behPing, 0) In
+a1 <- `init(4)
+;;
+
+
+
