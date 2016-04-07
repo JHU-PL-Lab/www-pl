@@ -112,11 +112,11 @@ List of discussants   :
     [40 points]
 
 --------------------------------------------------------------------------------------------------
-  Section 4: Operational Equivalence
+  Section 3: Operational Equivalence
 --------------------------------------------------------------------------------------------------
 
 
-4. a. For each of the following Fb expressions, indicate whether operational equivalence
+3. a. For each of the following Fb expressions, indicate whether operational equivalence
    holds. If it does not, show some context that evaluates differently dependent upon
    which of the two expressions you use. (Remember: it only takes one of the infinitely
    many contexts to make the two expressions operationally inequivalent).
