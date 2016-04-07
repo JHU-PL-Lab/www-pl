@@ -61,7 +61,7 @@ List of discussants   :
 
     Some AFbV examples run in class may be found at
 
-    http://pl.cs.jhu.edu/ocaml/code/AFbV-examples.afbv
+    http://pl.cs.jhu.edu/pl/ocaml/code/AFbV-examples.afbv
 
 
     Here is a sketch of the interface your set should obey.
