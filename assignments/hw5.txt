@@ -66,7 +66,7 @@ List of discussants   :
     Here is a sketch of the interface your set should obey.
 
     Let setbeh = (* FILL IN YOUR SET BEHAVIOR HERE *)  In
-    Let s = Create(setbeh,0) In ...
+    Let s = Create(setbeh,[]) In ...
 
     so that 
 
@@ -87,7 +87,7 @@ List of discussants   :
     Let testbcont = Fun m -> (Print (Head m)); (Print (Head (Tail m)));
                              (Print (Head (Tail (Tail m)))); (Fun x -> x) In
     Let testb = Fun me -> Fun d -> Fun m ->  
-       Let s = Create(setbeh, 0) In
+       Let s = Create(setbeh, []) In
          (s <- `add(1)); (s <- `add(2)); (s <- `add(3)); (s <- `asList(me));
          (testbcont)
     In Let testa = Create(testb,0)
