@@ -40,7 +40,7 @@
 
     Details on the above:
     <ul>
-      <li>Optionals are key: if there are no nillable pointers you can't free any data (!)
+      <li>Optionals are often used: you free data by assigning pointers to nil.
       <li>Default optionals are "strong", counts as a reference for reference counting
       <li>Weak references also must be optionals; since they don't count, the object they are pointing to could randomly get freed on them.  System sets them back to nil at that point.
       <li>Unowned are like weak references but are not optionals.  If you try to use them after the data they point to is freed, BOOM!  Programmer contract: use them only when you know that won't happen.
