@@ -19,7 +19,10 @@ Language Specification, SE 8 Edition</a>.<p>
 	    should be a proper type for our point object encoding, but notice how <code>PointType</code> is contravariant, it is in the domain of the magnitude method.  Consider
 	    <pre>ColorPointType = { x : Int; y : Int; c : Color; magnitude: ColorPointType -> Int -> Int; ...}</pre>
  -- for <code>ColorPointType &lt;: PointType</code> to hold, <code>magnitude</code> subtyping would require 
-      <code>ColorPointType -> Int -> Int &lt;: PointType -> Int -> Int</code> which would need <code>PointType &lt;: ColorPointType</code> by function subtyping, which is <strong>false!</strong>
+            <code>ColorPointType -> Int -> Int &lt;: PointType -> Int -> Int</code> which would need <code>PointType &lt;: ColorPointType</code> by function subtyping, which is <strong>false!</strong>
+        <li> Its false for a good reason:
+          <pre>Let p1 : Point = aPoint In let p2 : Point = aColorPoint In p2.magnitude p1 {}</pre>
+          would result in an attempt to look up p1's color, a runtime error.  Note we are abusing our encoding here, the encoding itself is OK.
 	<li>Solution: pre-package the <code>self</code> into objects when created so they won't show up in object types.
 	<li>This issue is why there is no subtyping on classes in Java: static method dispatch is ... static.</ul>
 </ul>
@@ -83,6 +86,7 @@ Let point = (pointClass.new) pointClass {} In
 <ul>
   <li>Subtype relationships in Java are <em>nominal</em>: they must be declared via extends/implements aclass/aninterface, except for primitive type subtyping;<br>
 -- even if a class clearly implements all the methods of an interface, if the interface is not specified in the header there is no subtyping possible.
+    <li>Running example: <code>Interface Iterable&lt;T&gt;</code> - if you have an <code>Iterable&lt;Integer&gt; thing</code> you can <code>thing.foreach(...)</code> it but only if thing is a class implementing that interface.
   <li>In <strong>STFb</strong> subtyping only
       depended on the structure of the underlying records.
       <strong>STFb</strong> subtyping is thus <em>purely
@@ -147,7 +151,8 @@ To get around this weakness, Java includes <em>bounded subtyping</em>
   <ul>
     <li>You can also write things like <code>&lt;T extends Comparable&lt;T&gt;&gt; void test(List&lt;T&gt; t) </code>
   <li>the "<code>T extends Comparable&lt;T&gt;&gt;</code>" means <code>T</code> can be
-      any type which extends <code>Comparable&lt;T&gt;&gt;</code> -- in other words, <code>T &lt;: Comparable&lt;T&gt;&gt;</code> in our subtyping terminology.
+    any type which extends <code>Comparable&lt;T&gt;&gt;</code> -- in other words, <code>T &lt;: Comparable&lt;T&gt;&gt;</code> in our subtyping terminology.
+    <br> -- And, in English this means <code>T</code> can be compared with itself.
   <li>This adds more flexibility, <code>T</code> need not be any type,
   but from a restricted range of types which gives added flexibility later.
   <li>In terms of type theory this is the theory of <em>bounded polymorphism</em>: there are subtype bounds on the parametric types.  Its a <em>very</em> natural combination of polymorphism and subtyping.

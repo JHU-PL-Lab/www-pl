@@ -31,6 +31,23 @@ Pluses and minuses of explicit memory
   will always be a need for some explicit memory
 </ul>
 In this course we pretty much stuck to the implicit memory view throughout because it is becoming more and  more prevalent in code, but explicit memory will never be irrelevant.
+
+
+<h3><a href="https://en.wikipedia.org/wiki/Smart_pointer">Smart pointers in C++11</a></h3>
+<ul>
+  <li>The reference counting approach of Swift is being back-ported to C++
+  <li>Swift strong reference == C++11's <code>std::shared_ptr</code>
+  <li>Swift weak or unowned reference == C++ <code>std::weak_ptr</code>.
+</ul>
+Additionally C++ has a notion of ownership type in the Rust vein
+<ul>
+  <li> <code>std::unique_ptr</code> pointers should have no aliases: the one pointer "owns" the data.
+  <li>Since the contract is no aliases, when the (one) pointer is nulled, can free the memory.
+  <li>You can <code>std::move</code> a shared pointer, transferring ownership to new spot.  Pass a move'd pointer if you are giving the callee ownership (e.g. if its a class constructor and the new class gets to own the data).
+  <li>Unique pointers can't be directly assigned to other pointers or passed as parameters - would violate contract.
+</ul>
+
+
 <h3>Multiple Inheritance - good and bad</h3>
 <ul>
   <li>Multiple inheritance is great: it amounts to being able to define fields and method bodies on your interfaces

@@ -1,0 +1,52 @@
+
+<!--#include virtual="/pl/header.html" -->
+
+</div>
+
+<div id="content"> <h2>Swift</h2>
+<p>  Swift is best understood by its diff compared to Java etc, it has little in the way of truly novel features.
+  <p>Here are some highlights from the <a href="https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/GuidedTour.html#//apple_ref/doc/uid/TP40014097-CH2-XID_10">tour</a>:
+<ul>
+  <li> Use <code>let</code> for immutable (final) and <code>var</code> for mutable variables.
+  <li>Fancier switch/case including pattern matching
+  <li>Other ML-isms besides <code>let</code>: tuples, lists, full higher-order functions.
+<li>Classes use a method <code>init</code> which is invoked after object creation (taken from Smalltalk).
+  <li><code>property</code> is a more general notion of field - either an actual value or a way to get/set a virtual one.
+  <li>Like C++ it has both classes and structs.
+  <li>Swift <code>protocol</code>'s are like Java interfaces; they can work on both classes and structs.
+  <li><code>extension</code> lets you extend an existing type.  This is one of the more novel features.
+  <li>Generics are similar to Java's but you can tack on additional constraints.
+</ul>
+
+<h4>Optionals</h4>
+<p> This is one of the more novel features; it is important in how it relates to their memory allocation/deallocation model.   See <a href="https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/TheBasics.html#//apple_ref/doc/uid/TP40014097-CH5-ID309">Language Guide, The Basics (go to Optionals on this page)</a>
+<ul>
+  <li>It is like the Some/None option type in OCaml: either a wrapped value (Some) or nothing (None).
+  <li>Write OCaml's <code>int option</code> type in Swift as <code>?Int</code>
+  <li><code>nil</code> is the Swift version of <code>None</code>.
+  <li>Key feature: if you want to use <code>nil</code>, you will need to use optional types.  No random nils!
+  <li>To get the goodies if they are there, pattern match on <code>Some(x)</code> in OCaml; use <code>myvar!</code> in Swift.
+  <li>Swift also can infer the <code>!</code> in some cases.
+ </ul>
+
+<h4>Automated Reference Counting</h4>
+  <p> Swift does not use garbage collection, it uses reference counting.  See <a href="https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/AutomaticReferenceCounting.html#//apple_ref/doc/uid/TP40014097-CH20-ID48">language guide</a>.
+    <ul>
+      <li>Each object has a count of how many pointers there are to it.
+      <li>When that count goes to zero the object is freed.
+      <li>It works great until you have cyclic stores: two dead objects pointing only to each other will both have non-0 count.
+      <li>Swift uses weak and unowned references to solve this problem: they "don't count" into the reference count.
+        </ul>
+
+    Details on the above:
+    <ul>
+      <li>Optionals are key: if there are no nillable pointers you can't free any data (!)
+      <li>Default optionals are "strong", counts as a reference for reference counting
+      <li>Weak references also must be optionals; since they don't count, the object they are pointing to could randomly get freed on them.  System sets them back to nil at that point.
+      <li>Unowned are like weak references but are not optionals.  If you try to use them after the data they point to is freed, BOOM!  Programmer contract: use them only when you know that won't happen.
+        <li>Comment: Swift tried to completely bury the whole null pointer exception but they left a reference to it via unowned.
+    </ul>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->

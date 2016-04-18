@@ -432,7 +432,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;<a href="lectures/cppstudy.shtml">Study of C++</a></div>
+            <div align="left" class="body">&nbsp;<a href="lectures/cppstudy.shtml">C++</a>; <a href="lectures/swift.shtml">Swift</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -450,7 +450,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
           </td>
           <td width="30%"> 
             <div align="left" class="body">&nbsp;<a
-          href="lectures/dynamic-lang-study.shtml">Study of dynamic languages</a>;<br>&nbsp; <a href="lectures/implementation.shtml">Implementation Issues</a></div>
+          href="lectures/dynamic-lang-study.shtml">Dynamic languages</a>;  <a href="lectures/implementation.shtml">Implementation</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a href="assignments/hw6.shtml">Homework 6</a></div>
@@ -467,7 +467,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Implementation continued; <br>&nbsp;<a href="lectures/haskellstudy.shtml">Study of Haskell</a></div>
+            <div align="left" class="body"><a href="lectures/haskellstudy.shtml">Haskell</a>; Rust</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
