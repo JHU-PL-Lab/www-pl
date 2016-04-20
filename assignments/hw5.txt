@@ -33,7 +33,7 @@ List of discussants   :
     the presence of subtyping.
 
  c. Give a type derivation in STFbR showing how the following program typechecks:
-    Let getradius = (Fun p : {r:Int} -> p.r) In
+    Let getradius : {r:Int} -> Int = (Fun p : {r:Int} -> p.r) In
       getradius {r = 4; t = 180} + getradius {r = 5; t = 120; g=128}
 
     [25 Points]

@@ -49,42 +49,39 @@ Common properties
 </ul>
 
 <h3>The Different Schools of Dynamically-typed Languages</h3>
-The non-OO school
+The two historical giants
 <ul>
-  <li>Lisp, the original dynamically-typed language, and the related Scheme which is "<code>(add1 Lisp)</code>"
-  <li><a
-      href="http://en.wikipedia.org/wiki/Scripting_programming_language">Unix scripting
-      languages</a>, e.g. sh, csh, bash, awk, tcl, etc. 
-  <li>early Perl (pre-5)
-</ul>
-
-The "classic" dynamic OO languages
-<ul>
-  <li>Smalltalk
-      aka squeak
-  <li>CLOS, the Common Lisp Object System
+  <li>Lisp, the original dynamically-typed language, and its direct descendant Scheme
+  <li>Smalltalk and its direct descendant Squeak: Lisp philosophy but with objects added
 </ul>
 
 
-The "modern" school
+The scripting tree: dynamically-typed but descended from job control languages (JCL's) and not Lisp/Smalltalk
 <ul>
-  <li>Perl 5+
+  <li>Unix scripting: <a
+      href="http://en.wikipedia.org/wiki/Scripting_programming_language">sh, csh, bash, awk, tcl, etc</a>
+  <li> "Scripting language" today means any dynamically-typed language that may be used to glue together different runtimes/languages/frameworks
+      <li>Other examples include Perl, JavaScript (at least initially - notice the influence in its name), ActionScript, Emacs Lisp, etc.
+
+</ul>
+
+Modern dynamically-typed / scripting languages: part Lisp/Smalltalk, part JCL/scripting ancestry:
+<ul>
   <li><a href="http://docs.python.org/tut/">Python</a>
-  <li><a
-      href="http://www.ruby-doc.org/docs/ProgrammingRuby/">Ruby</a>
-  <li>Javascript
+  <li><a href="http://www.ruby-doc.org/docs/ProgrammingRuby/">Ruby</a>
+  <li><a href="https://en.wikipedia.org/wiki/JavaScript">JavaScript</a>
 </ul>
 <h3>Dynamically typed languages and our <strong>Fb</strong>
 series</h3>
 <ul>
-  <li>Our <strong>FbSRXVOB</strong> mash contains the core features of
+  <li>A <strong>FbSRXVOB</strong> mash contains the core features of
       a dynamically typed language.
   <li>We did not cover how run-time type errors lead to exceptions but
       its simple: add a bunch of runtime type error handling rules including
        <table border='0' cellpadding='0' cellspacing='15'>   <tr> <td><strong>(<span 
-class="cmtt-10">- </span>Mismatch Bool Left)</strong></td> <td> <table border='0' cellpadding='0' cellspacing='0'> <tr><td align='center'>&nbsp;<span 
+class="cmtt-10">- </span>Mismatch Left)</strong></td> <td> <table border='0' cellpadding='0' cellspacing='0'> <tr><td align='center'>&nbsp;<span 
 class="cmmi-10">e</span>&nbsp;==&gt;&nbsp;<span 
-class="cmtt-10">True</span></td></tr> <tr><td><hr noshade size='1'></td></tr> <tr><td align='center'><span 
+class="cmtt-10">v for v not an integer</span></td></tr> <tr><td><hr noshade size='1'></td></tr> <tr><td align='center'><span 
 class="cmmi-10">e</span> <span 
 class="cmtt-10">-</span> <span 
 class="cmmi-10">e</span><span 
@@ -98,12 +95,12 @@ etc.
 We will now look at some crosscutting aspects of these languages.
 
 <h3>Data Structures</h3>
+Many of them have a "mother of all data structures" approach
 <ul>
-  <li>Lisp: Everything is a List (including your source code!  Great for metaprogramming)
-  <li>Smalltalk: Everything is an Object
-  <li><a href="https://docs.python.org/3.4/tutorial/datastructures.html#tuples-and-sequences">Python</a>: Dictionaries, Objects (which are dictionaries with sugar on top); Lists (which are mutable so also serve as arrays), Sets, Tuples (immutable lists)
-  <li>Ruby: Objects
-  <li>Javascript: Objects (Use objects as dictionaries as well)
+  <li>Lisp: Everything is a List (including your source code! ("homoiconicity") -- great for metaprogramming)
+  <li>Smalltalk, Ruby: Everything is an Object (more below)
+  <li>JavaScript: dictionary-object (the two are unified unlike Python)
+  <li>Python doesn't really have this; everything is an "object", but not in a strong sense like Ruby/Smalltalk (objects were not initially in Python and it shows).
 </ul>
 
       <h3>Inheritance</h3>
@@ -118,6 +115,7 @@ We will now look at some crosscutting aspects of these languages.
       the hierarchy (modules cannot have supermodules) there is no
       dreaded diamond property -- you can only build three of the four
       edges of the diamond.
+    <li>JavaScript: via prototypes, discussed below.
 </ul>
 
 
@@ -128,49 +126,42 @@ We will now look at some crosscutting aspects of these languages.
 
  <li>Lisp/Scheme: <code>(lambda (x) ... )</code>
      <ul>
-       <li> Lisp was the first language with implemented  higher-order functions
-       <li>But, they didn't quite get it right, they used <em>dynamic binding</em> for nonlocal variables which is bone-headed.
+       <li> Lisp was the first language that implemented  higher-order functions; McCarthy was inspired by lambda-calculus
+       <li>But, they didn't quite get it right, they used <em>dynamic binding</em> for nonlocal variables which is often bone-headed.
+         <pre>
+           Let x = 1 In
+             Let f = Fun _ -> x In
+               Let x = 2 In
+                 f 0</pre>
+         <li> returns 1 in OCaml Fb etc etc due to closures, returns 2 in Lisp.
+         <li>Most recent value on call stack picked in dynamic binding.
      </ul>
   <li>Smalltalk: <a
       href="http://en.wikipedia.org/wiki/Smalltalk#Code_blocks">code
       blocks</a> subsume higher-order functions.
   <li>Ruby: has blocks which are similar to Smalltalk's.
-  <li>Python: <a href="http://docs.python.org/3.4/tutorial/controlflow.html#lambda-forms">lambda-forms</a> (but, <a href="http://stackoverflow.com/questions/141642/what-limitations-have-closures-in-python-compared-to-language-x-closures">Pre-3 Python's lambdas don't let you write to nonlocal variables</a>, and you can only put expressions, not commands, in the body)
+  <li>Python: <a href="http://docs.python.org/3.4/tutorial/controlflow.html#lambda-forms">lambda-forms</a> <code>lambda x: x + 1</code> <br>(<strong>but</strong>, <a href="http://stackoverflow.com/questions/141642/what-limitations-have-closures-in-python-compared-to-language-x-closures">Pre-3 Python's lambdas don't let you write to nonlocal variables</a>, and you can only put expressions, not commands, in the body)
 </ul>
 
-<h3>Flexibility of the notion of object</h3>
+<h3>Flexible Notions of object</h3>
 <h4>Smalltalk</h4>
       <ul>
-	<li>Everything is an object in Smalltalk: Even <a href="http://en.wikipedia.org/wiki/Smalltalk#Control_structures">if-then-else</a> and <code>+</code> are expressed via messaging syntax e.g. <code>if: ... then: .. else: ...</code> is an <code>if:then:else:</code> message
-	<li>Global variables are a systemwide dictionary object
-	    (a HashMap).
-	    <pre>     Smalltalk at: #f put: (Foo new) </pre>
-	    adds a new Foo named <code>#f</code> to the globals which
-	    is a dictionary affiliated  with object <code>Smalltalk</code>.
-	<li>Classes themselves are nothing but atoms in this
-	    dictionary -- <code>#Foo</code> in the above case is in
-	    <code>Smalltalk</code>.
-	<li>Classes are fully objects - they can be passed around as data
-	<li>Methods are not first-class in Smalltalk however, they cannot be pulled out of their object.
-	<li>Objects are not extensible dynamically so they are weaker than dictionaries.
+	<li>Everything is an object in Smalltalk, including Classes.
+        <li>Even <a href="http://en.wikipedia.org/wiki/Smalltalk#Control_structures">if-then-else</a> and <code>+</code> are expressed via messaging syntax e.g. <code>if: ... then: .. else: ...</code> is an <code>if:then:else:</code> message
       </ul>  
 
 <h4>Ruby</h4>
       <ul>
-	<li>Classes are objects in Ruby. For example the
-	    <code>inherited</code> method 
-	    of the class is run when a new subclass is <em>defined</em>.
-	<li><code>NilClass</code> is also a class, as in Smalltalk (where it is <code>Nil</code>) 
-	<li>There is also a global dictionary in Ruby that contains the defined classes, <code>Objects.constants</code>
-	<li>Methods are first-class in Ruby: <a href="http://ruby-doc.org/docs/ProgrammingRuby/html/ref_c_method.html">Example</a>.
-	<li>Can add methods to existing objects - <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ref_c_object.html#Object.extend">documentation</a>
+	<li>Classes are objects in Ruby.
+	<li>More flexible than Smalltalk, can add methods to existing objects a la JavaScript.
       </ul>
+
 <h4><a name="python_objects"></a><a href="https://docs.python.org/3.4/tutorial/classes.html#class-definition-syntax">Python</a></h4>
       <ul>
-	<li>Objects are extensions of dictionaries in Python.
-	<li>Python objects are thus related to our <strong>FbSR</strong> objects in that a record is a restricted dictionary: 
+	<li>Objects are implemented as extensions of Dictionary data type in Python: Python initially had no objects.
+	<li>Python objects are related to our <strong>FbSR</strong> objects in since a record is a (restricted) dictionary: 
 	    <ul>
-	      <li><code>self</code> needs to be an explicit parameter on each method, 
+	      <li><code>self</code> needs to be an explicit parameter on each Python method, 
 	      <li>classes just make dictionaries;
 	    </ul>
       <li>Unlike <strong>FbSR</strong>, self-passing upon method invocation is sugared to be implicit: <code>ob.foo()</code> is all that is needed.
@@ -189,11 +180,12 @@ Let ob = ((obsClass.new) obsClass) In (* object creation -- need to pass class t
     (ob.class.foo) ob {}  (* message sending starting from ob only, not its class *)
 	  </pre>
 	  - the last line shows how the sugar <code>ob.foo()</code> can work, the runtime needs to know which class has the methods.
-	<li>Classes have only one constructor; write a class method that is a factory if you want to pass an argument.
-	<li>Methods are first-class:  <a
-      href="https://docs.python.org/3.4/tutorial/classes.html#method-objects">Example</a>.  In the <strong>FbSR</strong> encoding we can get this behavior by <br>
-<code>Let rippedOut = ob.class.foo ob In ... rippedOut() ... (* rip out method, now its just a function *) </code>
-	<li>Python dictionaries can be dynamically extended -- <a href="http://docs.python.org/3.4/tutorial/classes.html#instance-objects">example</a>.  Our <strong>FbSR</strong> records could also do this if we had a record extension operator.
+      </ul>
+      <h4>JavaScript</h4>
+      <ul>
+        <li>JavaScript has no classes per se (its <a href="https://en.wikipedia.org/wiki/Prototype-based_programming">prototype-based</a> following Self), so objects need to be very flexible
+        <li>Objects are just dictionaries with self-awareness hard-wired in<br>-- keys are method names, values are code, <code>this</code> is yourself.
+          <li>We will review these nice examples: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain">JavaScript objects in a nutshell</a>
       </ul>
 
 <h4>Implementing Object Dispatch</h4>
@@ -210,35 +202,9 @@ Let ob = ((obsClass.new) obsClass) In (* object creation -- need to pass class t
       <ul>
 	<li>"Reflection" means given some object at runtime, can you poke around to find its class, methods, etc. 
 	<li>  Reflection is easy to do in a dynamically-typed language because the program data structure is always around explicitly at runtime<br>
- (Reflection is also possible in Java, but its much more clunky to use due to the type system in the way).
-	<li> Run-time metaprogramming with <code>eval</code> -- we discussed this with metaprogramming in the C++ lecture.
+ <li>Reflection is also possible in Java, but its much more clunky to use due to the type system in the way
+	<li> Run-time metaprogramming with <code>eval</code> -- we discussed this with metaprogramming in the <a href="cppstudy.shtml">C++ lecture.</a>
       </ul>
-
-Smalltalk
-      <ul>
-	<li>Can turn a string into a method name to
-      invoke.  
-	<li>Objects can also <code>become</code> a completely new behavior.
-      </ul>
-Ruby
-      <ul>
-	<li> Can turn string into method to invoke -  <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/html/ospace.html#S3">documentation</a>
-      </ul>
-Python
-      <ul>
-	<li>Can change the class of an object at runtime.
-	    Related to <code>become</code> of Smalltalk
-      </ul>
-
-
-<h3>Overloading and shortcut syntax</h3>
-<ul>
-  <li>Smalltalk: no
-  <li>Python: no overloading but has variable-argument functions, implicit values for missing arguments, multiple syntactic conventions for invoking functions.
-  <li>Ruby: operators like <code>+</code> can be overloaded since <code>+</code> is "just" a method name.  Methods can't be overloaded.  Similar variable-argument etc niceties of Python.
-</ul>
-
-None of these languages has a general pattern matching on data structures (not just strings) like OCaml does; Python 3 adds some.<p>
 
 </div>
 
