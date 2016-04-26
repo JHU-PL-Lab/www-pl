@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>PL Final 2015</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Princples of Programming Languages
+<br> Spring 2015
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.  You can write on both
+sides.  No printer output is allowed, it must all  be hand-written.<p>
+
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+
+  <li>(10 points)  Consider the <strong>Fb</strong> extension <strong>FbP</strong>, <strong>Fb</strong> with pairs.  The pairs we have in mind are in spirit the same as OCaml pairs, for example <code>(2,true) : int * bool</code>, etc.
+     <ol type="a">
+ <li> (2) Define a BNF grammar of <strong>FbP</strong> by extending the <strong>Fb</strong> grammar to include pairs (no need to write out the existing <strong>Fb</strong> grammar, only the additions).  You can pick your own syntax since its your language, but we suggest you use OCaml's <code>(1,2)</code> notation for pairs, and rather than OCaml pattern matching to take pairs apart, to instead simply define built-in operators <code>Fst e</code> / <code>Snd e</code> to project out the components, for example computing as <code>Fst (4,True) ==> 4</code>.  Don't forget to define the <strong>FbP</strong> values.
+       <li> (4) Write complete operational semantics rules for your chosen <strong>FbP</strong> grammar, as an extension to the <strong>Fb</strong> operational semantics (as with the grammar definition, you don't need to repeat the rules already in <strong>Fb</strong>).
+       <li> (4) A <em>lazy</em> pair is a pair where the components are not evaluated until they are needed (i.e. projected via <code>Fst/Snd</code>).  For example, if <code>div</code> was some diverging program, with lazy pairs we have <code>Snd (div,0) ==> 0</code>: even though <code>div</code> diverges, the first part of the pair is never needed so it is never evaluated.  This does not follow the OCaml (or <strong>FbP</strong>) meaning of pairs, which is eager; it follows Haskell's notion of pairs.  Write out the operational semantics of <strong>FbLP</strong>, <strong>Fb</strong> with lazy instead of eager pairs.</ol> 
+<p>
+
+
+ <li>(20 points) This question continues the previous <strong>FbP</strong> question into the realm of language encodings.  (Recall a <em>language encoding</em> is a mapping of any expression in one language to the other language such that the runtime meaning is preserved.  We show how pairs could be encoded in <strong>Fb</strong> in lecture, for example.)
+     <ol>
+       <li> (4) As a warm-up, define an encoding of <strong>FbP</strong>'s pairing operations into <strong>FbR</strong> which uses records to encode pairs.  
+       <li> (4) Pairs can also be encoded directly in <strong>Fb</strong> as we covered in class and in the book.  Write out an encoding of <strong>FbP</strong> in <strong>Fb</strong>, the one in the book is fine for example.  (Don't forget to encode both pairing <em>and</em> projection in this and the previous question.)
+       <li> (4) <strong>FbP</strong> has a natural notion of operational equivalence following <strong>Fb</strong>'s notion.   An obvious property that should hold there is  <code>Fst (4,True) ~= 4</code>, no contexts can distinguish these expressions.  For this question, show this is a derived property in the in the <strong>Fb</strong> encoding of pairs: expand out your encoding from part b. and use basic laws of pure <strong>Fb</strong> operational equivalence roughly as presented in the book to step-by-step derive the above operational equivalence.
+       <li> (4) One subtle problem with encodings is they introduce spurious equivalences.  Give an example of two programs not operationally equivalent in <strong>FbP</strong> but which are operationally equivalent when encoded into <strong>Fb</strong>.
+       <li> (4) We encoded objects in terms of state and records in lecture.  Consider an encoding of objects in terms of state and <em>pairs</em> instead of records (a hypothetical "<strong>FbSP</strong>" language).  Would that work, or not?  Justify your answer.
+     
+
+     </ol>
+
+     <p>
+
+ <li> (6 points) This question is a continuation of the <strong>FbP</strong> question into the realm of typing.
+     <ol type="a">
+       <li>  (3) Define a <strong>TFbP</strong> extension to the <strong>TFb</strong> language and type system showing how your <strong>FbP</strong> pair syntax can also be typechecked.
+       <li> (3) Now consider typechecking the lazy pairs of part 1c above; will the new type rules be the same as the <strong>TFbP</strong> rules given in your answer to part a., or will they differ?  If they differ give the differences.
+     </ol>
+     <p>
+
+ <li>(12 points) Joey is a seriously spacey PL student.  In his PL homework he coded
+     all his recursive functions incorrectly -- for example for the
+     summate function he wrote
+     <pre>
+     Y (Function arg -> Function this ->
+           If arg = 0 Then 0 Else arg + this (arg - 1)) 5
+</pre>
+     reversing <code>arg</code> and <code>this</code> in the parameter list.
+     <ol type="a">
+       <li> Give a modified definition of <code>Y</code>, <code>joeY</code>, which would work for Joey's program above, i.e.
+	   
+       <pre>
+     joeY (Function arg -> Function this ->
+           If arg = 0 Then 0 Else arg + this (arg - 1))) 5   ==> 15
+</pre>
+            <li> Now, write a <em>combinator</em> (i.e., <strong>Fb</strong> expression)
+     <code>joeyFix</code> which we can
+     put between Joey's bad code and the normal <code>Y</code> to fix his
+     argument out-of-order problem so the normal <code>Y</code> will again work:
+       <pre>
+     Y ( joeyFix (Function arg -> Function this ->
+           If arg = 0 Then 0 Else arg + this (arg - 1))) 5    ==> 15
+</pre>
+       <li> On some of the other examples Joey got mixed up with the object encodng and forgot that he didn't need to
+     pass <code>this</code> to itself and he wrote a recursive
+     function like
+      <pre>
+     Y (Function this -> Function arg ->
+           If arg = 0 Then 0 Else arg + this this (arg - 1)) 5
+</pre>
+ (passing <code>this</code> to <code>this</code>). Write a <code>joeYY</code>
+     version of <code>Y</code> which would work around this bug so that
+         <pre>
+     joeYY (Function this -> Function arg ->
+           If arg = 0 Then 0 Else arg + this this (arg - 1))) 5     ==> 15
+</pre>
+now works.   
+     </ol>  
+<p>
+
+
+
+<p>
+ <li> (12 points)  For this question you are to define  <strong>FbA</strong>, <strong>Fb</strong> with arrays. <strong>FbA</strong> Array syntax follows OCaml's:
+  <pre>Let arr = Make(100,0)  (* Make is a built-in operation that here makes a new 100-element array with initial values all 0 *)
+     In (arr.(0) &lt;- 55); (* <- takes an array, a position, and a new value and changes that position to have the new value *)
+     arr.(0) +  arr.(3) (* fetch notation; returns 55 *)
+     </pre>
+     As can be seen from the example, arrays can be dynamically allocated, one slot can be changed, and the value in a slot can be read.  Those are the only operations you need to support.  Hint: arrays are very similar to references, so use a similar <code>&lt;e,S&gt; ==> &lt;v,S'&gt;</code> relation.
+      <ol type="a">
+  <li>Define the format for your store <code>S</code>, and possibly define some notation for operations on the store.
+  <li>Write the operational semantics for the three array operations above using the store you defined in part a.
+      </ol>
+
+<p>
+
+  <li>(8 points) This question concerns subtyping. 
+      <ol type="a">
+	<li>  Is the empty record, <code>{}</code> in <strong>STFbR</strong> when thought of as a set using types-as-sets intuition the <em>maximal</em> set of record expressions, or the <em>minimal</em> set?  Justify your answer.
+
+	<li>For each of the following types give a subtype and a supertype that is not the type itself.  In some cases one (or both) might not exist, so N/A is a legitimate answer.
+
+
+<p>
+<table width="50%" border="0" cellspacing="0" cellpadding="0">
+
+  <tr><td width="5%"><div align="left">1.</div></td>
+    <td width="50%"><div align="left"><code>{ b : Int } -> Bool</code></div></td></tr>
+
+  <tr><td width="5%"><div align="left">2.</div></td>
+    <td width="50%"><div align="left"><code>{} -> Int</code></div></td></tr>
+
+  <tr><td width="5%"><div align="left">3.</div></td>
+    <td width="50%"><div align="left"><code>(({} -> Int) -> Bool) -> Int</code></div></td></tr>
+
+  <tr><td width="5%"><div align="left">4.</div></td>
+    <td width="50%"><div align="left"><code>((({} -> Int) -> Bool) -> Int) -> {}</code></div></td></tr>
+
+</table>
+</ol>
+
+</ol>
+
+
+    </body> </html>
