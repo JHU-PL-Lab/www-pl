@@ -1,0 +1,572 @@
+# -*- org-hide-emphasis-markers: t; -*-
+* Haskell
+* Claim
+Haskell made two interesting design decisions; much of the rest followed from there.
+* 
+- Laziness
+- Type classes
+* 
+Other interesting things that we won't talk much about today include:
+
+- Higher rank polymorphism
+- Higher kinded polymorphic types
+- Kind polymorphism
+* Evaluation order
+- Call-by-value (not lazy)
+- Call-by-name (laziness w/o memoization)
+- Call-by-need (laziness w/ memoization)
+* 
+Haskell uses call-by-need
+* Digression: Why be lazy at all?
+One perspective: Not for its own sake but to keep us honest
+
+Programming with untracked/unrestricted side effects:
+- call-by-value :: tricky
+- call-by-name  :: really tricky
+- call-by-need  :: downright horrifying
+
+* 
+Making Haskell call-by-need forces the language implementors to stay away from the temptation of adding /just one/ side-effect here and there.
+
+Functions that break this rule have long, scary names like:
+
+- =unsafeCoerce=
+- =unsafePerformIO=
+- (mostly jokingly) =accursedUnutterablePerformIO=
+* How it works (simplified)
+- Data is boxed and tagged
+  + In WHNF (i.e. evaluated)
+  + Not in WHNF: a thunk (unevaluated)
+- When a thunk gets evaluated, the pointer gets replaced by a pointer to the result
+  + Mutation!
+  + Untracked side-effect!
+  + (but careful to only affect time and space)
+* Downsides 
+- Space leaks
+- Unintentional recursion
+- Lazy IO
+- Debugging
+* Space leaks
+- Accidental caching:
+  #+BEGIN_SRC haskell
+  let xs = [1..1000000::Integer]
+  in  sum xs * product xs
+  #+END_SRC
+- Too many thunks:
+  #+BEGIN_SRC haskell
+  foldl (+) 0 [1..1000000::Integer]
+  #+END_SRC
+- See: https://wiki.haskell.org/Memory_leak
+* Accidental recursion
+- Not really a result of laziness
+- Can cause infinite loops
+* Lazy IO
+- Actually bad untracked side effect
+- Arguably a design flaw
+* Upsides (pervasive laziness)
+- Being insufficiently lazy defeats the purpose
+  + Recent post on the matter (not in Haskell):
+    http://raganwald.com/2016/04/15/laziness-is-a-virtue
+- Define bindings without worrying about execution order
+  #+BEGIN_SRC haskell
+  f x = case x of
+    SomePattern -> fastComputation
+    SomeOtherPattern -> wellNamedComputation
+  where wellNamedComputation = someExpensiveComputation
+  #+END_SRC
+  (no performance penalty)
+* Upsides (pervasive laziness)
+- Leave holes in code without affecting execution
+  #+BEGIN_SRC haskell
+  f = error "will not crash unless f is used"
+  g = 1
+  #+END_SRC
+- Short-circuiting evaluation so natural you don't even think about it
+  #+BEGIN_SRC haskell
+  f x = when (x < 0) (error "x < 0") ...
+  #+END_SRC
+  (contrast with OCaml)
+* Upsides (pervasive laziness)
+- Algorithmic composition
+  #+BEGIN_SRC haskell
+  select a xs = take a (sort xs)
+  #+END_SRC
+  will run in better than O(n log(n))
+* Type Classes
+What are type classes?
+* Type Classes (what problem do they solve)
+Overloading (but in a particularly appealing way)
+* Type Classes (what /are/ they)
+Mathematical functions from type to value
+
+Implemented as records of (usually) functions
+* Type Classes (examples)
+May have default implementations (even cyclic defaults)
+#+BEGIN_SRC haskell
+class Eq a where
+  (==) :: a -> a -> Bool
+  x == y = not (x /= y)
+
+  (/=) :: a -> a -> Bool
+  x /= y = not (x == y)
+  {-# MINIMAL (==) | (/=) #-}
+#+END_SRC
+(the "minimal" pragma tells the compiler when to warn)
+* Type Classes (examples)
+May depend on other classes
+#+BEGIN_SRC haskell
+class Eq a => Ord a where
+  compare :: a -> a -> Ordering
+  compare x y = if x == y then EQ else if x <= y then LT else GT
+
+  (<=) :: a -> a -> Bool
+  x <= y = compare x y /= Gt
+
+  (>=) :: a -> a -> Bool
+  x >= y = y <= x
+
+  {-# MINIMAL (<=) | compare #-}
+#+END_SRC
+* Type Classes (examples)
+May rely on other instances
+#+BEGIN_SRC haskell
+instance Ord a => Ord (Maybe a) where
+  compare Nothing  Nothing  = EQ
+  compare Nothing  (Just _) = LT
+  compare (Just x) Nothing  = GT
+  compare (Just x) (Just y) = compare x y
+#+END_SRC
+* Type Classes (examples)
+~deriving~ mechanism to eliminate boilerplate
+#+BEGIN_SRC haskell
+data Maybe a = ...
+  deriving Ord
+#+END_SRC
+* Type Classes (coherence)
+- Mathematical functions have a single output
+- Therefore type class instances are /unique/
+- *Uniqueness guarantees coherence of composition*
+  + Don't care /which/ instance of ~Ord~ was in scope
+    * when the class was defined
+    * when the instance was defined
+    * when the instance was used
+- Some other "type class" systems lack coherence
+  + Scala
+  + OCaml (when "modular implicits" land)
+- Related to the diamond problem
+* Simple Type Classes in Practice
+- I always derive these
+  + ~Eq~
+  + ~Ord~
+  + ~Show~
+
+#+BEGIN_SRC haskell
+"asdf" == "asdf" -- exactly what you'd expect
+(λ x -> x) == (λ x -> x) -- compile time type error
+#+END_SRC
+
+- Also important
+  + ~Num~
+  + ~Integral~
+  + ~Floating~
+  + ...
+* Higher-Kinded Type Classes
+For example
+#+BEGIN_SRC haskell
+class Mappable f where
+  map :: (a -> b) -> f a -> f b
+#+END_SRC
+- ~f~ is the type of the thing you can map over
+- But ~f~ is really a type /function/
+- It needs a parameter (the element type)
+* HKTCs in Practice
+#+BEGIN_SRC haskell
+class Functor f where
+  fmap :: (a -> b) -> f a -> f b
+
+instance Functor [] where
+  fmap = map
+
+instance Functor Maybe where
+  fmap f Nothing = Nothing
+  fmap f (Just x) = Just (f x)
+#+END_SRC
+A really generic pattern: map over a container
+But even more than that.
+* 
+#+BEGIN_SRC haskell
+instance Functor ((->) e) where
+-- A function is a functor over its return type
+  fmap f g = λx -> f (g x)
+#+END_SRC
+* 
+#+BEGIN_SRC haskell
+class (Functor f) => Applicative f where
+  pure :: a -> f a
+  (<*>) :: f (a -> b) -> f a -> f b
+#+END_SRC
+- ~<*>~ can be pronounced "ap" or "apply".
+- takes
+  + functions in a "container"
+  + values in a "container"
+- produces
+  + the result of function application, still in the "container"
+- ~pure~ lets you put /any/ value in the "container"
+- Blurs the line between container and control-flow
+* 
+#+BEGIN_SRC haskell
+instance Applicative Maybe where
+  pure = Just
+
+  Nothing <*> _     = Nothing
+  _ <*> Nothing     = Nothing
+  (Just f) (Just x) = Just (f x)
+#+END_SRC
+* 
+This makes it possible to represent computations that can fail
+* 
+#+BEGIN_SRC haskell
+lookupAdd1 :: (Eq a) => a -> [(a,Int)] -> Maybe Int
+lookupAdd1 k alist = pure (λ x -> x + 1) <*> lookup k alist
+#+END_SRC
+* 
+#+BEGIN_SRC haskell
+lookupAndCall :: (Eq a, Eq b)
+              => a -> b -> [(a, c -> d)] -> [(b, c)] -> Maybe d
+lookupAndCall kf kx fs xs = lookup kf lf <*> lookup kx lx
+#+END_SRC
+#+BEGIN_SRC haskell
+lookupAndCall :: (Eq a, Eq b)
+              => a -> b -> (a -> Maybe (c -> d)) -> (b -> Maybe c)
+              -> Maybe d
+lookupAndCall kf kx lf lx = lf kf <*> lx kx
+#+END_SRC
+* 
+#+BEGIN_SRC haskell
+lookupAndCall :: (Eq a, Eq b, Applicative f)
+              => a -> b -> (a -> f (c -> d)) -> (b -> f c) -> f d
+lookupAndCall kf kx lf lx = lf kf <*> lx kx
+
+data LookupError = FunctionNotFound | ArgumentNotFound
+  deriving (Eq, Ord, Show)
+
+maybeToEither mx e = case mx of
+  Just x  -> Right x
+  Nothing -> Left e
+
+lookupFunction k xs = maybeToEither (lookup k xs) FunctionNotFound
+lookupArgument k xs = maybeToEither (lookup k xs) ArgumentNotFound
+
+listLookupAndCall kf kx fs xs =
+  lookupAndCall kf kx lookupFunction lookupArgument
+#+END_SRC
+* 
+#+BEGIN_SRC haskell
+data Validation e a = Error e | Result a
+  deriving (Eq, Ord, Show)
+
+instance Functor (Validation e) where
+  fmap f v = case v of
+    Error e  -> Error e
+    Result x -> Result (f x)
+
+-- Needs the -XFlexibleInstances flag to compile
+instance Applicative (Validation [e]) where
+  pure = Result
+  ff <*> fx = case (ff, fx) of
+    (Result f, Result x) -> Result (f x)
+    (Result _, Error e ) -> Error e
+    (Error e , Result _) -> Error e
+    (Error e1, Error e2) -> Error (e1 ++ e2)
+
+eitherToValidation e = case e of
+  Left e  -> Error [e]
+  Right x -> Result x
+
+listLookupAndCallAccumulatingErrors kf kx fs xs =
+  lookupAndCall kf kx (\x -> eitherToValidation (lookupFunction x))
+                      (\x -> eitherToValidation (lookupArgument x))
+#+END_SRC
+* 
+#+BEGIN_SRC haskell
+class (Applicative m) => Monad m where
+  (>>=) :: m a -> (a -> m b) -> m b
+
+  return :: m a
+  return = pure
+#+END_SRC
+
+- ~(>>=)~ can be thought of as ~andThen~.
+- Allows branching on the result of a computation
+* 
+#+BEGIN_SRC haskell
+dynamicLookup :: (Eq a, Eq b, Monad m)
+              => a -> b -> (a -> m Bool) -> (b -> Bool -> m c) -> m c
+dynamicLookup k1 k2 f1 f2 = f1 k1 >>= f2 k2
+
+switchLookup b k xs ys = if b then lookup k xs else lookup k ys
+
+noName k1 k2 xs ys zs =
+  dynamicLookup k1 k2 (\k -> lookup k xs)
+                      (\b k -> switchLookup b k ys zs)
+#+END_SRC
+* IO
+Happens to be a monad
+#+BEGIN_SRC haskell
+writeLine :: String -> IO ()
+readLine :: IO String -- Note, no unit argument
+
+echoOnce = readLine >>= writeLine
+
+loop :: IO a -> IO b
+loop m = m >>= (\_ -> loop m)
+#+END_SRC
+* Monads (general control-flow patterns)
+#+BEGIN_SRC haskell
+loop :: (Monad m) => m a -> m b
+loop m = m >>= (\_ -> loop m)
+
+forever :: (Monad m) => m a -> m b
+forever m = m >>= (\_ -> loop m)
+
+when :: (Monad m) => Bool -> m () -> m ()
+when b mx = if b then mx else pure ()
+
+whenM :: (Monad m) => m Bool -> m () -> m ()
+whenM mb mx = mb >>= \b -> when b mx
+
+doWhile :: (Monad m) => m Bool -> m ()
+doWhile mb = whenM mb (doWhile mb)
+#+END_SRC
+* Questions?
+* Rust
+- *Safe* systems language
+- A lot like Haskell
+  + type classes (called "traits")
+  + parametric polymorphism
+  + first-class functions
+  + algebraic data types
+  + pattern matching
+  + http://science.raphael.poss.name/rust-for-functional-programmers.html
+- But also
+  + references (like pointers)
+  + objects
+  + method call syntax
+* Goals
+- safety
+- efficiency (zero-cost abstractions)
+- convenience
+* Safety
+- memory safety ::
+  memory is not touched after it's deallocated
+- data race safety ::
+  writes/reads are deterministic
+* Solution (to both)
+- Ownership
+- Borrowing (for convenience)
+- Lifetimes
+
+See: http://blog.rust-lang.org/2015/04/10/Fearless-Concurrency.html
+* Ownership
+- A function /owns/ values
+  + it defines, or
+  + receives as parameters (passed by value)
+- The owner of a value may do anything to it
+- Calling a function, then, gives up the value
+- So does (usually) assigning a value
+- When a value is given up, it goes out of scope
+* Ownership (example)
+#+BEGIN_SRC rust
+let v = vec![1, 2, 3];
+
+let v2 = v;
+
+println!("v[0] is: {}", v[0]);
+#+END_SRC
+
+#+BEGIN_SRC rust
+fn take(x:Vec<i32>) { ... }
+let v = vec![1, 2, 3];
+
+take(v);
+
+println!("v[0] is: {}", v[0]);
+#+END_SRC
+
+In both cases, in the ~println~ call, using ~v~ is an error.
+* Borrowing
+- A function can accept arguments
+  + by-value
+  + by-reference
+- by-value transfers ownership
+- by-reference /borrows/
+- In any scope
+  + a value has at most 1 mutable reference, xor
+  + a value has any number of immutable references
+* Borrowing (example)
+#+BEGIN_SRC rust
+fn foo(v1: &Vec<i32>, v2: &Vec<i32>) -> i32 {
+    42
+}
+
+let v1 = vec![1, 2, 3];
+let v2 = vec![1, 2, 3];
+
+let answer = foo(&v1, &v2);
+
+// we can use v1 and v2 here!
+#+END_SRC
+* Borrowing (example)
+#+BEGIN_SRC rust
+let mut x = 5;
+{
+    let y = &mut x;
+    *y += 1;
+}
+println!("{}", x);
+#+END_SRC
+Prints 6
+* Borrowing (example)
+#+BEGIN_SRC rust
+let mut x = 5;
+let y = &mut x;
+*y += 1;
+println!("{}", x);
+#+END_SRC
+Compiler error
+* Lifetimes
+- Every value has a (statically known) /lifetime/
+- Usually, this can be inferred
+- Three cases that the programmer needs to be concerned with
+  + functions with multiple inputs and at least one output
+  + structs with references
+  + static
+* Lifetimes (functions)
+#+BEGIN_SRC rust
+fn foo(t:&i32, s:&i32) -> &i32 {s}
+
+let x = 5; let y = 6;
+foo(&x, &y);
+#+END_SRC
+Error: missing lifetime specifier, but
+#+BEGIN_SRC rust
+fn foo(s:&i32) -> &i32 {s}
+
+let x = 5; let y = 6;
+foo(&x);
+#+END_SRC
+Works fine
+* Lifetimes (structs)
+#+BEGIN_SRC rust
+struct Foo { x: &i32 }
+#+END_SRC
+Error: missing lifetime specifier, but
+#+BEGIN_SRC rust
+struct Foo { x: i32 }
+#+END_SRC
+Works fine
+* Lifetimes (static)
+~﻿'static~ is a distinguished lifetime for values that are built into the binary.
+* Efficiency
+"Don't pay for what you don't use"
+
+See: http://blog.rust-lang.org/2015/05/11/traits.html
+* Efficiency
+- static dispatch by default
+- no properties:
+  https://www.reddit.com/r/rust/comments/2uvfic/why_doesnt_rust_have_properties/cocmunq
+- Specialization of generics
+- No (required) runtime
+  therefore, no GC
+* Deterministic finalization
+- No manual free
+- Memory freed and destructor called when value leaves owner's scope
+  Note: in reverse order of initialization
+- Particularly useful for resources like file handles
+- Similar to C++'s RAII
+- See: http://blog.skylight.io/rust-means-never-having-to-close-a-socket/
+* Deterministic finalization (example) 
+#+BEGIN_SRC rust :results output :output plain
+struct HasDrop {x:i32}
+
+impl Drop for HasDrop {
+    fn drop(&mut self) {
+        println!("Dropping {}!", self.x);
+    }
+}
+
+fn takes(x:HasDrop) {}
+fn borrows(x:&HasDrop) {}
+
+fn main() {
+    let x = HasDrop{x:1};
+    let x = HasDrop{x:2};
+    {
+      let x = HasDrop{x:3};
+      let x = HasDrop{x:4};
+    }
+    let x = HasDrop{x:5};
+    takes(x);
+    let x = HasDrop{x:6};
+    borrows(&x);
+    let x = HasDrop{x:7};
+}
+#+END_SRC
+#+RESULTS:
+: Dropping 4!
+: Dropping 3!
+: Dropping 5!
+: Dropping 7!
+: Dropping 6!
+: Dropping 2!
+: Dropping 1!
+* Convenience
+- (✓) Borrowing
+- (✓) Deterministic Finalization
+- ( ) Relaxing Restrictions
+- ( ) Method Call Syntax
+- ( ) Macros
+- ( ) Unsafe
+* Relaxing Restrictions
+- ~Rc<T>~
+  + Allows multiple "owners"
+  + Ref-counted
+    * Requires extra space
+    * Requires mutation
+    * Can leak if cycles exist
+- ~Arc<T>~
+  + Atomic version of the above
+  + Used for multi-threaded code
+- ~*const T~ and ~*mut T~
+  + Raw pointers
+  + Allow aliasing
+  + No nice compiler guarantees
+  + Deref is "unsafe"
+- ~Cell<T>~
+  + Allows "mutation" from multiple sources
+  + Even through immutable references
+* Method Call Syntax
+- You can define a function in such a way that it's called like a method
+- ~.~ implicitly dereferences if necessary
+* Macros
+- Macros end in '!'
+  + e.g. ~println!~
+- Hygienic (i.e. no variable capture/shadowing)
+- Can be used to make code both safer and more efficient
+  + e.g. ~println!~
+- Many useful macros defined
+* Unsafe
+- Sometimes you need to break out of the safety bubble
+- A block can be labeled ~unsafe~
+* Unsafe (examples)
+- Dereferencing raw pointers
+- Violating "read XOR write" reference scope
+- ~mem::transmute<T, U>~ (~unsafeCoerce~ in Haskell)
+* Unsafe (non-examples)
+- Deadlock
+- Leak memory
+- Fail to run destructor
+- Crash
+- Integer overflow
+* Questions?
+* Thank you!

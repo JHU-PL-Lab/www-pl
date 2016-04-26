@@ -467,7 +467,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body"><a href="lectures/haskellstudy.shtml">Haskell</a>; Rust</div>
+            <div align="left" class="body"><a href="lectures/haskellstudy.shtml">Haskell</a>; <a href="language-presentation.org">Rust</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
