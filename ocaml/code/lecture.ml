@@ -32,8 +32,8 @@ true || false;;
 (* Operations on lists.  Lists are represented as BINARY TREES with left child a leaf. *)
 0 :: [1; 2; 3];; (* :: is 'consing' an element to the front - fast *)
 0 :: (1 :: (2 :: (3 :: [])));; (* long-hand version of the above *)
-[1; 2; 3] @ [4; 5];; (* appending lists - slower *)
 let z = [2; 4; 6];;
+[1; 2; 3] @ [4; 5];; (* appending lists - slower *)
 let y = 0 :: z;;
 z;; (* Observe z itself did not change, its still [2; 4; 6] -- immutable *)
 
