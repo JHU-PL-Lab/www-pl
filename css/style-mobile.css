@@ -30,7 +30,35 @@
 			width: 70%;
 		}
 
-/* Lists */
+			table.date {
+		    width: 100%;
+	    	    font-size: 5pt;
+		    border-collapse: collapse;
+		}
+
+		
+			table.date tbody tr {
+				border-bottom: solid 1px #82b440;
+			}
+
+			table.date td {
+			    padding: 0.5em 1em 0.5em 1em;
+			/*    border: 1px solid black; */
+			}
+
+			table.date th {
+				font-weight: 700;
+				padding: 0.5em 1em 0.5em 1em;
+				text-align: left;
+				/* border: 1px solid black;*/
+			}
+
+			table.date thead {
+				background: #555555;
+				color: #fff;
+			}
+
+			/* Lists */
 
 	ul.icons li a {
 		font-size: 1.6em;

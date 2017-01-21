@@ -419,7 +419,7 @@
 /* Tables */
 
 	table {
-		width: 100%;
+	    width: 100%;
 	}
 
 		table.default {
@@ -449,9 +449,11 @@
 
 		table.date {
 		    width: 100%;
+	    	    font-size: 1em;
 		    border-collapse: collapse;
 		}
 
+		
 			table.date tbody tr {
 				border-bottom: solid 1px #82b440;
 			}
