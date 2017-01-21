@@ -1,12 +1,17 @@
-<!--#include virtual="/pl/header.html" -->
+<!--#include virtual="/pl/header.html" -->	 
 
-</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
 
-<div id="content">
-
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
 <h2>Emacs</h2>
-The <a href="http://www.gnu.org/software/emacs/">Emacs homepage</a>
-has all the information on emacs.
+</header>
+
+<p>The <a href="http://www.gnu.org/software/emacs/">Emacs homepage</a>
+  has all the information on emacs.</p>
 <h3>Getting emacs</h3>
 <dl>
   <dt><strong>Windows</strong>
@@ -35,7 +40,7 @@ webpage</a>.
   You will need Tuareg mode, the ocaml mode addition to emacs, to effectively edit OCaml
 programs.  Here are two different ways to install it.<p>
 
-<ul>
+<ul class="bull">
   <li>Use the <a href="https://marmalade-repo.org">Marmelade</a> emacs package manager to install Tuareg mode: configure Marmelade as described on the aforelinked page, and execute <code>package-list-packages</code> to get the full list, scroll down to Tuareg and hit the install button.
   <li>Or, go to the <a href="http://www.emacswiki.org/emacs/TuaregMode">Tuareg Mode</a> page, download the files and follow the instructions.  Note you need to put the files in the indicated <code>~/.elisp/</code> directory and edit your <code>~/.emacs</code> file as indicated there, or it will not work. 
 
@@ -63,11 +68,14 @@ C-c C-l         from a variable use jump to its definition.
 C-c &           merlin-pop-stack (go back to where you were before above)
 C-c C-t         display the type of the enclosing expression.
 </pre>
-  
+
+
+
+
+</section>
+</div>
 </div>
 
 
-<!--#include virtual="/pl/footer.html" -->
-
-
+<!--#include virtual="/pl/footer.html" -->	 
 

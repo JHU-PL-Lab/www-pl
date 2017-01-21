@@ -1,0 +1,44 @@
+<!--#include virtual="header.html" -->
+
+<p id="slogan">600.426&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Prof. <a href="contact.shtml">Scott F. Smith</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Monday/Wednesday 1:30-2:45, Shaffer 202<br><br>
+
+</div>
+
+<div id="content">
+
+
+<h2>Course Summary</h2>
+
+<ul>
+  <li>This course is a study of the deeper <em>principles</em> behind programming
+language designs, and not of particular programming languages.
+
+  <li> We focus on fundamental language <em>features</em> such as data structures, functions, objects, types and concurrency, and how they interact with each other to achieve the desired expressiveness.
+
+  <li>We study features through the implementation of interpreters and through
+<em>operational semantics</em> and <em>type systems</em>, mathematical approaches to program meaning.
+
+  <li>The OCaml dialect of the ML programming language will be used.  OCaml
+has features including type inference, and higher-order functions that make it worthy of study in its own right.
+
+</ul>
+</p>   <p>
+
+
+<img src="images/water.jpg"  alt=" image"  />
+<p>
+
+<p class="readmore"><a href="information.shtml">More
+information on how the course will run</a> &raquo;</p>
+
+<p class="box"><strong>Prerequisites:</strong> 
+This course is mathematical in nature and so is recommended for
+upper-level undergraduate students with strong mathematics skills, or
+for graduate students.  It is not recommended for sophomores.
+</p>
+
+</div>
+
+<!--#include virtual="footer.html" -->

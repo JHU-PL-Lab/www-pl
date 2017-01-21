@@ -1,0 +1,49 @@
+<!--#include virtual="header.html" -->
+
+</div>
+
+<div id="content"> <h2>Contact Information</h2>
+
+<p>
+
+
+<br><strong>For quickest response, post to Piazza</strong>.
+For private issues, email the professor and/or TA directly.
+<p>
+
+
+<strong>Professor</strong>&nbsp; Scott Smith<br/>
+<strong>email</strong>&nbsp; <a href="mailto:scott@cs.jhu.edu">scott@cs.jhu.edu</a><br>
+<strong>phone</strong>&nbsp; 410-516-5299 <br>
+<strong>office</strong>&nbsp; Malone 219 <br>
+<strong>collab lab day</strong> &nbsp; Friday<br/>
+<p/>
+&nbsp;<br/>
+
+<strong>Head Teaching Assistant</strong> Alex Rozenshteyn<br/>
+<strong>email</strong>&nbsp;rpglover64+pl2016 --at-- gmail.com<br/>
+<strong>collab lab day</strong> &nbsp; Thursday<br/>
+&nbsp;<br/>
+
+<strong>Course Assistant</strong> Hari Menon<br/>
+<strong>email</strong>&nbsp;hmenon --at-- cs.jhu.edu<br/>
+<strong>collab lab day</strong> &nbsp; Tuesday<br/>
+&nbsp;<br/>
+
+<strong>Course Assistant</strong>TBA<br/>
+<strong>email</strong>&nbsp;TBA -at- gmail.com
+<br/>
+<strong>collab lab days</strong> &nbsp; T &amp; Th<br/>
+&nbsp;<br/>
+
+<h2>The Collab Lab Hours (Preliminary at this point)</h2>
+<p>
+All office hours are collab lab hours, which will occur in the CS undergrad lab, Malone 120(?).
+<p>
+The Collab Lab will run Tu 4:30-6:00PM, 
+Thu 4:30-6:00PM, and Fri 1:30-2:45.
+</p>
+
+</div>
+
+<!--#include virtual="footer.html" -->

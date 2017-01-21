@@ -1,11 +1,26 @@
-<!--#include virtual="header.html" -->
+<!--#include virtual="/pl/header.html" -->	 
 
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>TITLE</h2>
+</header>
+
+
+	INSERT
+
+	
+</section>
+</div>
 </div>
 
-<div id="content">
+
+<!--#include virtual="/pl/footer.html" -->	 
 
 
-</div>
 
 
-<!--#include virtual="footer.html" -->

@@ -1,12 +1,16 @@
-<!--#include virtual="/pl/header.html" -->
+<!--#include virtual="/pl/header.html" -->	 
 
-</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
 
-<div id="content">
-
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
 <h2>OCaIDE</h2>
+</header>
 
-OcaIDE is an Eclipse plugin for OCaml development.  It provides batch
+<p>OcaIDE is an Eclipse plugin for OCaml development.  It provides batch
 compilation support, assistance with type information, an integrated OCaml
 toploop, and even a debugger.  <em>(note, I could not get the debugger to
 work; please let me know if the debugger works for you)</em>.  The <a
@@ -179,14 +183,13 @@ The FbDK uses ocamlc to develop standalone applications and different setup inst
     location to load the files.
     </li>
 </ul>
+
+	
+</section>
+</div>
 </div>
 
 
-
-
-
-
-<!--#include virtual="/pl/footer.html" -->
-
+<!--#include virtual="/pl/footer.html" -->	 
 
 
