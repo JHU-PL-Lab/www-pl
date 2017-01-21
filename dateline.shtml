@@ -11,7 +11,7 @@
               <h2>Dateline</h2>
             </header>
 <p>
-  Lecture material is under the links; lectures with no such link will be based on the <a href="book/dist">book</a>.  Homework assignments are under the links; the links will be dead until the homework is put up.</p>
+  Lecture material is under the links; lectures with no such link will be based on the <a href="book/dist">book</a>.  Assignment assignments are under the links; the links will be dead until the homework is put up.</p>
 
 <p>
 <table class="date" width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#CCCCCC">
@@ -81,7 +81,7 @@
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
-href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
+href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -117,10 +117,10 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
-	  href="assignments/hw2.shtml">Homework 2 (OCaml)</a></div>
+	  href="assignments/assignment2.shtml">Assignment 2 (OCaml)</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 1</div>
+            <div align="center" class="body">Assignment 1</div>
           </td>
         </tr>
         <tr> 
@@ -169,10 +169,10 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
-        href="assignments/hw3.shtml">Homework 3 (Fb, Opsem)</a></div>
+        href="assignments/assignment3.shtml">Assignment 3 (Fb, Opsem)</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 2</div>
+            <div align="center" class="body">Assignment 2</div>
           </td>
         </tr>
         <tr> 
@@ -237,10 +237,10 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="left" class="body">&nbsp;State</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/hw4.shtml">Homework 4A</a></div>
+            <div align="center" class="body"><a href="assignments/assignment4.shtml">Assignment 4A</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 3</div>
+            <div align="center" class="body">Assignment 3</div>
           </td>
         </tr>
 	
@@ -275,7 +275,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 4A (Fri 11th)</div>
+            <div align="center" class="body">Assignment 4A (Fri 11th)</div>
           </td>
 
 		  <tr> 
@@ -300,7 +300,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="left" class="body">&nbsp;Types I: TFb</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/hw4.shtml">Homework 4B</a></div>
+            <div align="center" class="body"><a href="assignments/assignment4.shtml">Assignment 4B</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -356,7 +356,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body"><a href="assignments/midterm.shtml">Take-Home Midterm</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 4B</div>
+            <div align="center" class="body">Assignment 4B</div>
           </td>
         </tr>
         <tr> 
@@ -388,7 +388,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
           </td>	<!-- added this to get weeks back in synch. -->
           <td width="22%"> 
             <div align="center" class="body"><a
-          href="assignments/hw5.shtml">Homework 5</a></div>
+          href="assignments/assignment5.shtml">Assignment 5</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">Midterm</div>
@@ -457,10 +457,10 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
           href="lectures/dynamic-lang-study.shtml">Dynamic languages</a>;  <a href="lectures/implementation.shtml">Implementation</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/hw6.shtml">Homework 6</a></div>
+            <div align="center" class="body"><a href="assignments/assignment6.shtml">Assignment 6</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 5</div>
+            <div align="center" class="body">Assignment 5</div>
           </td>
         </tr>
         <tr> 
@@ -494,7 +494,7 @@ href="assignments/hw1.shtml">Homework 1 (OCaml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Homework 6 (Fri 29th)</div>
+            <div align="center" class="body">Assignment 6 (Fri 29th)</div>
           </td>
         </tr>
 	<tr> 
