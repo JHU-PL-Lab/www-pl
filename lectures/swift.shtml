@@ -1,9 +1,16 @@
-
-<!--#include virtual="/pl/header.html" -->
-
+<!--#include virtual="/pl/header.html" -->	 
 </div>
 
-<div id="content"> <h2>Swift</h2>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>Swift</h2>
+</header>
+
 <p>  Swift is best understood by its diff compared to Java etc, it has little in the way of truly novel features.
   <p>Here are some highlights from the <a href="https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/GuidedTour.html#//apple_ref/doc/uid/TP40014097-CH2-XID_10">tour</a>:
 <ul>
@@ -46,7 +53,12 @@
       <li>Unowned are like weak references but are not optionals.  If you try to use them after the data they point to is freed, BOOM!  Programmer contract: use them only when you know that won't happen.
         <li>Comment: Swift tried to completely bury the whole null pointer exception but they left a reference to it via unowned.
     </ul>
+	
+</section>
+</div>
 </div>
 
 
-<!--#include virtual="/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->	 
+
+

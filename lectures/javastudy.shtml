@@ -1,9 +1,17 @@
-
-<!--#include virtual="/pl/header.html" -->
-
+<!--#include virtual="/pl/header.html" -->	 
 </div>
 
-<div id="content"> <h2>Study of Java</h2>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>Study of Java</h2>
+</header>
+
+
 Our reference here  is  the <a
 href="http://docs.oracle.com/javase/specs/jls/se8/html/index.html">Java
 Language Specification, SE 8 Edition</a>.<p>
@@ -245,7 +253,14 @@ The book chapter on concurrency reviews the Java concurrency model.
 </ul>
 
 
+
+	
+</section>
+</div>
 </div>
 
 
-<!--#include virtual="/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->	 
+
+
+

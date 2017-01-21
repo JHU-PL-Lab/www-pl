@@ -1,8 +1,15 @@
-<!--#include virtual="/pl/header.html" -->
-
+<!--#include virtual="/pl/header.html" -->	 
 </div>
 
-<div id="content"> <h2>Study of C++</h2>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>Study of C++</h2>
+</header>
 
 <h3>Explicit Memory Model</h3>
 Both C and C++ have an explicit memory model which exposes the pointer
@@ -166,10 +173,13 @@ There are three dimensions of overloading:
   <li> C++-11 has some support for garbage collected implementations; programmers need to pick this option and live in a restricted programming model for it to work.
   <li>C++-14 has <a href="http://en.wikipedia.org/wiki/C++14#Generic_lambdas">generic lambdas</a> (in the template spirit however).
 </ul>
+
+	
+</section>
+</div>
 </div>
 
 
-
-<!--#include virtual="/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->	 
 
 

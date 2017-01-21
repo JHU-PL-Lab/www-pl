@@ -1,4 +1,16 @@
-<!--#include virtual="homeheader.html" -->
+<!--#include virtual="/pl/header.html" -->
+
+         <!-- Banner -->
+            <div id="banner">
+               <section class="container">
+                  <h2>Principles of Programming Languages</h2>
+                  <span>600.426  &emsp;&emsp;  Spring 2017   &emsp;&emsp; Prof. Scott Smith</span>
+               </section>
+            </div>
+
+         </div>
+      
+
 
       <!-- Section One -->
          <div class="wrapper style2">
@@ -21,4 +33,4 @@
             </section>
          </div>
 
-<!--#include virtual="footer.html" -->	 
+<!--#include virtual="/pl/footer.html" -->	 

@@ -1,8 +1,16 @@
-<!--#include virtual="/pl/header.html" -->
-
+<!--#include virtual="/pl/header.html" -->	 
 </div>
 
-<div id="content"> <h2>The 50,000 foot view of PLs: history and features</h2>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>The 50,000 foot view of PLs</h2>
+</header>
+
 
 <p>
 At this point in the course we have covered some of the most key features of modern languages. In this lecture we step back a bit to look at features, and patch up a few holes of features we did not get a chance to cover well earlier.<p>
@@ -155,9 +163,11 @@ Early languages had little or no runtime codebase; more modern languages can hav
 If e ==I/O==> v and T(e) = p (the result of compilation is p), then p ==I/O==> p' (the compiled program has the same I/O behavior when it is run).
 </ul>      
 
+
+	
+</section>
+</div>
 </div>
 
 
-<!--#include virtual="/pl/footer.html" -->
-
-
+<!--#include virtual="/pl/footer.html" -->	 

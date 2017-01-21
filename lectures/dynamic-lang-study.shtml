@@ -1,8 +1,16 @@
-<!--#include virtual="/pl/header.html" -->
-
+<!--#include virtual="/pl/header.html" -->	 
 </div>
 
-<div id="content"> <h2>Study of Dynamically Typed Languages</h2>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>Study of Dynamically Typed Languages</h2>
+</header>
+
 
 <!-- Need to redo these notes to focus less on obscure features not used and more on actual used features.  Also lambda in Pyton is not allowed to work on non-expressions -->
 <h3>Dynamic Typing</h3>
@@ -206,7 +214,13 @@ Let ob = ((obsClass.new) obsClass) In (* object creation -- need to pass class t
 	<li> Run-time metaprogramming with <code>eval</code> -- we discussed this with metaprogramming in the <a href="cppstudy.shtml">C++ lecture.</a>
       </ul>
 
+      
+
+
+	
+</section>
+</div>
 </div>
 
 
-<!--#include virtual="/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->	 

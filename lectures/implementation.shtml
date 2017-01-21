@@ -1,8 +1,17 @@
-<!--#include virtual="/pl/header.html" -->
-
+<!--#include virtual="/pl/header.html" -->	 
 </div>
 
-<div id="content"> <h2>Implementation Issues</h2>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>Implementation Issues</h2>
+</header>
+
+
 
 Here we briefly survey some key issues in programming language implementation.
 
@@ -538,10 +547,11 @@ do this since .class files could be modified)
 
 
 
-
+	
+</section>
+</div>
 </div>
 
 
+<!--#include virtual="/pl/footer.html" -->	 
 
-
-<!--#include virtual="/pl/footer.html" -->

@@ -1,12 +1,16 @@
-<!--#include virtual="/pl/header.html" -->
-
+<!--#include virtual="/pl/header.html" -->	 
 </div>
 
-<div id="content">
+<!-- Main -->
+<div id="main" class="wrapper style4">
 
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>Exam Study Guide</h2>
+</header>
 
-<h2>Programming Languages Final Exam Study Guide
-</h2>
 <p>
 
 Here are some old finals to study from: 
@@ -17,8 +21,12 @@ Here are some old finals to study from:
 <a href="final-14.html">2014</a>,
 <a href="final-15.html">2015</a>.
 
-
+	
+</section>
+</div>
 </div>
 
 
-<!--#include virtual="/pl/footer.html" -->
+<!--#include virtual="/pl/footer.html" -->	 
+
+

@@ -47,6 +47,10 @@
 		font-style: italic;
 	}
 
+	code {
+	    font-family: monospace;
+	}
+
 	pre {
 	    display: block;
 	    font-family: monospace;
@@ -280,6 +284,16 @@
 
 		ul.default li {
 		    padding: 0.40em 0em;
+		}
+
+	ul.menu {
+		margin: 0;
+		padding: 0;
+		list-style: none;
+	}
+
+		ul.menu li {
+		    padding: 0.40em 1em;
 		}
 
 	ul.icons {
