@@ -43,6 +43,12 @@
 	    background: url(/pl/images/external.png) center right no-repeat;
 	    padding-right: 13px;
 	}
+	
+	a[href^="https://"] {
+	    background: url(/pl/images/external.png) center right no-repeat;
+	    padding-right: 13px;
+	}
+	
 	strong, b {
 		font-weight: 700;
 	}
