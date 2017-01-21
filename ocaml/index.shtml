@@ -15,11 +15,8 @@
 
 <h3>OCaml Lecture Information</h3>
 <ul>
-  <li>The <a href="code/lecture.ml">examples of OCaml that were run in
-class</a>. We pretty much just run through these as the lecture.  For the separate compilation topic we cover <a href="code/sep.zip">this example (zipped)</a>
-  <li>The <a href="../lectures/caml-intro.html">PL OCaml Lecture
-      Notes</a> - these are some older notes of mine with more
-      explanations.
+  <li>The <a href="code/lecture.ml">lecture.ml</a>, the file we work through interactively in class.</li>
+  <li>For the separate compilation topic we cover <a href="code/sep.zip">this example (zipped)</a></li>
 
 </ul>
 
@@ -97,15 +94,19 @@ ocaide.shtml>information on using OCaIDE</a> for more information.
 </dl>
 <h4>Additional supplementary information</h4>
 <dl>
-  <dt><a href="https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1">OCaml Youtube Tutorial</a>
-  <dd>If you like watching videos to learn things here is a complete collection for OCaml.
-  <dt><a
-      href="https://realworldocaml.org/v1/en/html/index.html">Real World OCaml</a> by Jason Hickey, Anil Madhavapeddy, and Yaron Minsky
-  <dd>A relatively new OCaml book available online.
-  <dt><a href="http://ocaml.org/learn/books.html">Books</a>
-  <dd>Still more books, from the ocaml.org page.
-  <dt><a href="http://www.seas.upenn.edu/~cis341/current/programming_style.shtml">UPenn OCaml Style Guide</a>
-  <dd>A good guide to proper formatting and other style concerns for OCaml.
+  <dt><a href="https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1">OCaml Youtube Tutorial</a></dt>
+    <dd>If you like watching videos to learn things here is a complete collection for OCaml.</dd>
+<dt><a href="../lectures/caml-intro.html">PL OCaml Lecture
+    Notes</a></dt> 
+  <dd>These are some older notes with more
+    explanations than the lecture.ml file.</dd>
+    <dt><a
+	   href="https://realworldocaml.org/v1/en/html/index.html">Real World OCaml</a> by Jason Hickey, Anil Madhavapeddy, and Yaron Minsky</dt>
+  <dd>A relatively new OCaml book available online.</dd>
+  <dt><a href="http://ocaml.org/learn/books.html">Books</a></dt>
+  <dd>Still more books, from the ocaml.org page.</dd>
+  <dt><a href="http://www.seas.upenn.edu/~cis341/current/programming_style.shtml">UPenn OCaml Style Guide</a></dt>
+  <dd>A good guide to proper formatting and other style concerns for OCaml.</dd>
 </dl>
 
 
