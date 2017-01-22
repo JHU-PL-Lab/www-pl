@@ -176,7 +176,10 @@ let summate =
 
 let summatetest = Appl(summate, Int 7);;
 
-let almosty = parse "Function body -> body body";;
+let almosty = parse "Function body -> 
+    (Function fun ->  Function arg -> fun fun arg)
+      (Function this -> Function arg ->
+        body this arg)";;
 
 
 let summate = Appl(almosty, parse "(Function this -> Function arg ->
@@ -186,7 +189,7 @@ let summatetest = Appl(summate, Int 7);;
 
 
 let combY = parse "Function body -> 
-    (Function fun -> fun fun)
+    (Function fun -> Function arg -> fun fun arg)
       (Function this -> Function arg -> body (this this) arg)";;
 
 let summate = Appl(combY, parse "Function this -> Function arg ->
