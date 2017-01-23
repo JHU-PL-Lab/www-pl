@@ -19,8 +19,8 @@
   <dd>Precompiled binaries are found <a
       href="http://ftp.gnu.org/gnu/windows/emacs/">here</a>. <a href="http://www.gnu.org/software/emacs/windows/ntemacs.html">Here is a
       FAQ on Windows and emacs.</a>  Note that Windows does not always work so well with emacs.
-  <dt><strong>Macintosh OS X</strong>
-  <dd>OS X
+  <dt><strong>MacOS</strong>
+  <dd>MacOS
       comes with emacs, but that version supports terminal use only
       and so you want a better version.  A prebuilt binary of full
       emacs is found <a
