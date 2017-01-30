@@ -15,7 +15,7 @@
 
 <h3>OCaml Lecture Information</h3>
 <ul>
-  <li>The <a href="code/lecture.ml">lecture.ml</a>, the file we work through interactively in class.</li>
+  <li><a href="code/lecture.ml">lecture.ml</a>, the file we work through interactively in class.</li>
   <li>For the separate compilation topic we cover <a href="code/sep.zip">this example (zipped)</a></li>
 
 </ul>
@@ -28,10 +28,10 @@ href="http://caml.inria.fr/">OCaml</a>, version 4.04.0.  Earlier/later versions 
 For all systems we recommend you install and use the <a href="https://opam.ocaml.org">OPAM packaging system</a> for OCaml.  OPAM is a flexible system which also allows you to install any version of Ocaml you want once you have OPAM installed.
 <ul>
   <li> For Linux or Mac see <a href="http://ocaml.org/docs/install.html">OCaml.org's install page</a> for instructions.  The key steps are 1) install the <code>opam</code> binary via e.g. running the shell script  <a href="https://opam.ocaml.org/doc/Install.html#Binaryinstaller">opam_installer.sh</a>, 2) run command <code>opam switch 4.04.0</code> to build OCaml version 4.04.0; and 3) add the line <code>eval `opam config env`</code> to your <code>.profile/</code><code>.bashrc</code> shell init file to point your shell to the <code>ocaml</code> binary that <code>opam</code> installed at <code>~/.opam/4.04.0/bin/ocaml</code>.
-  <li> Few OCaml developers use Windows so the toolchain is pretty bad unfortunately.
+  <li> Few OCaml developers use Windows so the toolchain is not so good in straight Windows.
     <ul>
-      <li>If you have a Linux VM on your Windows box you may want to use it to get a Linux install of OCaml.</li>
-      <li>You could also try the new MSFT <a href="https://msdn.microsoft.com/en-us/commandline/wsl/about">Bash on Windows</a> mode which once you have set up will also allow you to follow the Linux install instructions above to get opam. Windows 10 only for this unfortunately.</li>
+      <li>If you are running Windows 10 we recommend the new MSFT <a href="https://msdn.microsoft.com/en-us/commandline/wsl/about">Bash on Windows</a> mode which once you have set up will allow you to follow the Linux Ubuntu install instructions to get opam. Windows 10 only for this unfortunately.</li>
+      <li>If you have a Linux VM on your Windows box you can use it to set up a Linux install of OCaml.</li>
       <li>If neither of the above two options will work, we recommend grabbing this <a href="http://gallium.inria.fr/~protzenk/caml-installer/ocaml-4.02.3-x86_64-mingw64-installer4-opam.exe">exe</a>  which will get you an OPAM installation set to version 4.02.3.  the <code>opam switch</code> directive (as well as other OPAM commands) do not reliably work under Windows.  This is not ideal as it is not the latest version. </li>
 	</ul>
 </ul>
@@ -67,7 +67,7 @@ ocaide.shtml>information on using OCaIDE</a> for more information.
 <ul>
   <li>Merlin is a static analysis tool which you can install which will give you many of the features of a modern IDE inside of Emacs or vim: find a definition from a use, display types, etc.
   <li>See <a href="https://opam.ocaml.org/blog/turn-your-editor-into-an-ocaml-ide/">OPAM Merlin page</a> for installation instructions.
-    <li>It is a bit bleeding edge still.  If you are getting an error on startup with emacs, you may need to pull the merlin version from github: execute  <code>opam pin add merlin https://github.com/the-lambda-church/merlin.git</code>
+    <li>If you are getting an error on startup with emacs, you may need to pull the merlin version from github: execute  <code>opam pin add merlin https://github.com/the-lambda-church/merlin.git</code>
     </ul>
 
 <h4><code>utop</code>: A better top-loop</h4>

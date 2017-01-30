@@ -2,11 +2,11 @@
 
 (* To start with we will use the top loop as a simple calculator. *)
 
-3 + 4;; (* use ;; to end input.  Notice how  types are inferred in output *)
-let x = 3 + 4;; (* x forever more is 7 *)
+3;; (* use ;; to end input. *)
+3 + 4;; (*   Notice how  types are *inferred* in output *)
+let x = 3 + 4;; (* x forever more is 7 - no mutation by default in OCaml! *)
 x + 5;;
-let y = 5 in x + y;; (* this make y a local variable: 
-                        think "{ int y; return(x+y); }" *)
+let y = 5 in x + y;; (* this make y a local variable: think { int y; return(x+y); }  *)
 (* y + 6 ;; *) (* errors because y was only defined locally in previous line *)
 
 (* Boolean operations *)

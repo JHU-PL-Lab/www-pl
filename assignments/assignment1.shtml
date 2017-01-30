@@ -8,7 +8,7 @@
 <div id="content" class="container">
 <section>
 <header class="major">
-<h2>Assignment 1: OCaml programming basics</h2>
+<h2>Assignment 1: OCaml programming basics (DRAFT)</h2>
 </header>
 
 
@@ -53,7 +53,7 @@ href="http://caml.inria.fr/pub/docs/manual-ocaml-4.04/coreexamples.html">Caml
   <li>After all HWs are turned in we will show you the hidden tests and how you did on them, but not until then.</li>
   <li>You can submit the HW as many times as you want up to the deadline.  Any submissions after the deadline will fall under the late submission policy.</li>
   <li>This is a new system and it is surely going to be buggy.  Please submit your HW early and often to Gradescope, don't just wait until 10 minutes before the deadline, and report any problems/bugs to the instructors on Piazza.</li>
-  <li>Please don't try to "game" the auto-grading system or hack it.  Your grade will be 0 on the assignment if gaming is detected, and any hacking will be considered a serious ethics violation requiring a mandatory hearing before the Ethics Board.
+  <li>Please don't try to "game" the auto-grading system or hack it.  Your grade will be 0 on the assignment if gaming is detected, and any hacking will be considered a serious ethics violation.
     </ul>
 	
 </section>
