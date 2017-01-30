@@ -53,6 +53,7 @@ href="http://caml.inria.fr/pub/docs/manual-ocaml-4.04/coreexamples.html">Caml
   <li>After all HWs are turned in we will show you the hidden tests and how you did on them, but not until then.</li>
   <li>You can submit the HW as many times as you want up to the deadline.  Any submissions after the deadline will fall under the late submission policy.</li>
   <li>This is a new system and it is surely going to be buggy.  Please submit your HW early and often to Gradescope, don't just wait until 10 minutes before the deadline, and report any problems/bugs to the instructors on Piazza.</li>
+  <li>Note that if one of your functions being tested has compile errors or is of the incorrect type for some of the test inputs, <em>those tests won't appear at all in the output</em>.  The system will still continue running the remaining tests.  If your program loops forever you may lose out on all the remaining points, so comment out any such infinite looper if there are questions after it that you want graded.</li>
   <li>Please don't try to "game" the auto-grading system or hack it.  Your grade will be 0 on the assignment if gaming is detected, and any hacking will be considered a serious ethics violation.
     </ul>
 	
