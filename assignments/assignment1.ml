@@ -10,7 +10,7 @@ course academic integrity policy.  TA/CA/Prof need not be listed.
 
 Fill in the function definitions below replacing the 
 
-  failwith "Not Implemented" 
+  failwith "Not Implemented"
 
 with your code.  Feel free to add "rec" to any function listed to make
 it recursive. In some cases, you may find it helpful to define
@@ -33,7 +33,7 @@ that the value of each position in the new list is equal to the sum of all value
 up to that position in the old list.
 *)
 
-let listsum lst = failwith "Not Implemented";; (* ANSWER *)
+let listsum lst = failwith "Not Implemented";;
 
 (*
 # listsum [1;1;1];;
@@ -63,7 +63,7 @@ in Problem 1a could be recreated by writing
 	acclist lst 0 (fun x -> fun y -> x + y) 
 *)
 
-let acclist lst base f = failwith "Not Implemented";;;; (* ANSWER *)
+let acclist lst base f = failwith "Not Implemented";;
 
 (*
 # let prod x y = x * y;;
@@ -85,7 +85,7 @@ The first element is left in place while all remaining identical elements are
 discarded.
 *)
 
-let listuniq lst = failwith "Not Implemented";;;; (* ANSWER *)
+let listuniq lst = failwith "Not Implemented";;
 
 (*
 # listuniq [1;2;3;1;2;3];;
@@ -119,7 +119,7 @@ Write a function which accepts a list as input and returns the number of null
 elements in that list.
 *)
 
-let nullcount lst = failwith "Not Implemented";;;; (* ANSWER *)
+let nullcount lst = failwith "Not Implemented";;
 
 (*
 # nullcount [];;
@@ -140,7 +140,7 @@ Write a function which takes a list of nullable values and gives back a list of
 non-nullable values; values in the original list which were null are skipped.
 *)
 
-let nullfilter lst = failwith "Not Implemented";;;; (* ANSWER *)
+let nullfilter lst = failwith "Not Implemented";;
 
 (*
 # nullfilter [];;
@@ -168,7 +168,8 @@ LessThan if a < b.
 *)
 
 type comparison = LessThan | EqualTo | GreaterThan;;
-let merge lst1 lst2 cmp = failwith "Not Implemented";;;; (* ANSWER *)
+
+let merge lst1 lst2 cmp = failwith "Not Implemented";;
 
 (*
 # let intcmp x y =
@@ -199,7 +200,7 @@ odd length, you are permitted to have one list be one element larger than the
 other list.)
 *)
 
-let splitlist lst = failwith "Not Implemented";;;; (* ANSWER *)
+let splitlist lst = failwith "Not Implemented";;
 
 (*
 # splitlist [1;2;3;4;5;6];;
@@ -220,7 +221,7 @@ Using the merge and splitlist functions you defined in the previous two
 problems, write a function which performs a merge sort.
 *)
 
-let mergesort lst cmp = failwith "Not Implemented";;;; (* ANSWER *)
+let mergesort lst cmp = failwith "Not Implemented";;
 
 (*
 # mergesort [4;1;3;2;9;4;5] intcmp;;
@@ -256,7 +257,7 @@ in the list must all have distict second elements - [ (1, 0) ; (2, 1) ; (3, 3) ;
     Write a function to check if a polynomial is valid.
  *)
   
-let rec is_valid_polynomial poly = failwith "Not Implemented";; (* ANSWER *)
+let rec is_valid_polynomial poly = failwith "Not Implemented";;
 
 (*
 # is_valid_polynomial [ (5, 3) ; (2, 1) ; (1, 0) ] 
@@ -273,7 +274,7 @@ of the integer type.
 
 *)
 
-let rec add_polynomials poly_1 poly_2 = failwith "Not Implemented";; (* ANSWER *)
+let rec add_polynomials poly_1 poly_2 = failwith "Not Implemented";;
 
 (*
 # add_polynomials [ (5, 3) ; (2, 1) ; (1, 0) ] [ (5, 2) ; (2, 3) ; (5, 0) ]
@@ -288,7 +289,7 @@ let rec add_polynomials poly_1 poly_2 = failwith "Not Implemented";; (* ANSWER *
 	     
 *)
 
-let rec multiply_polynomials poly_1 poly_2 = failwith "Not Implemented";; (* ANSWER *)  
+let rec multiply_polynomials poly_1 poly_2 = failwith "Not Implemented";;  
            
 (*
 # multiply_polynomials [(3, 4) ; (-2, 2) ; (3, 0)] [(2, 3) ; (1, 2) ; (-2, 0)] ;;
@@ -327,7 +328,7 @@ exception using invalid_arg.
 
  *)
 
-let rec generalized_scalar_product prod_fn sum_fn v1 v2 = failwith "Not Implemented";; (* ANSWER *)
+let rec generalized_scalar_product prod_fn sum_fn v1 v2 = failwith "Not Implemented";;
 
 (*
 let rec sum_int lst = match lst with [] -> 0 | h::t -> h + (sum_int t);;
@@ -357,7 +358,7 @@ If the two matrices cannot be multiplied (due to dimension mismatches), raise an
 			
 *)
 
-let rec generalized_matrix_multiplication prod_fn sum_fn matrix_1 matrix_2 = failwith "Not Implemented" ;; (* ANSWER *)
+let rec generalized_matrix_multiplication prod_fn sum_fn matrix_1 matrix_2 = failwith "Not Implemented" ;;
   
 (*
 # let rec sum_int lst = match lst with [] -> 0 | h::t -> h + (sum_int t);;
