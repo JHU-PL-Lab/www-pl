@@ -342,7 +342,7 @@ generalized_scalar_product ( *. ) sum_float [1.0 ; 2.0 ;3.0 ] [4.0;5.0;6.0] ;;
 
 
 (* 
-  4c. [10 points]
+  4b. [10 points]
 
 Similar to the Vector representation above, a matrix can be represented as a
 list of lists with each list representing a row of the matrix. (Clearly each of
