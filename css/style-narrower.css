@@ -39,11 +39,11 @@
 
 	.wrapper.style2 {
 		background: #f2f2f2;
-		text-align: center;
+		text-align: left;
 	}
 
 		.wrapper.style2 .major {
-			text-align: center !important;
+			text-align: left !important;
 		}
 
 			.wrapper.style2 .major h2 {
