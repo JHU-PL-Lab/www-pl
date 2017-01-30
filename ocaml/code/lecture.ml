@@ -3,25 +3,26 @@
 (* To start with we will use the top loop as a simple calculator. *)
 
 3;; (* use ;; to end input. *)
-3 + 4;; (*   Notice how  types are *inferred* in output *)
+3 + 4;; (* notice how  types are *inferred* in output *)
 let x = 3 + 4;; (* x forever more is 7 - no mutation by default in OCaml! *)
 x + 5;;
-let y = 5 in x + y;; (* this make y a local variable: think { int y; return(x+y); }  *)
-(* y + 6 ;; *) (* errors because y was only defined locally in previous line *)
+let y = 5 in x + y;; (* this makes y a local variable: think C's { int y; return(x+y); }  *)
+(* y + 6 ;; *) (* errors because y was only defined *locally* in previous line *)
 
 (* Boolean operations *)
 true && false;;
 true || false;;
-1 = 2;; (* = not == for comparison *)
-1 <> 2;;
+1 = 2;; (* = not == for equality comparison *)
+1 <> 2;;  (* <> not != for not equal *)
 
-(* Int/Float non-overloading *)
+(* int and float cannot be mixed without being explicit *)
 1;;
 1.;; 
 4 * 5;;
 (* 4.0 * 1.5;; *) (* error -- '*' operator is only for integers *)
 4.0 *. 1.5;;      (* works -- '*.' is for floats *)
-
+(float 4) *. 1.5;; (* use an explicit caast when you want to mix *)
+  
 (* Lists are easy to create and manipulate *)
 [1; 2; 3];;
 [1; 1+1; 1+1+1];;
@@ -35,7 +36,7 @@ true || false;;
 let z = [2; 4; 6];;
 [1; 2; 3] @ [4; 5];; (* appending lists - slower *)
 let y = 0 :: z;;
-z;; (* Observe z itself did not change, its still [2; 4; 6] -- immutable *)
+z;; (* Observe z itself did not change, its still [2; 4; 6] -- lists are always immutable *)
 
 (* everything in OCaml returns values (i.e. is an 'expression') - no commands *)
 if (x = 3) then (5 + 35) else 6;;
