@@ -82,10 +82,7 @@ fib 10;;
 let funny_add1 = (function x -> x + 1);; (* "x" is (sole) argument here --  one-argument functions only *)
 funny_add1 3;;
 ((function x -> x + 1) 4) + 7;; (*  a "->" function is an expression and can be used anywhere *)
-((fun x -> x + 1) 4) + 7;; (*  shorthand notation *)
-(* 
- * functions can be passed to and returned from functions --> HIGHER-ORDER functions
- *)
+((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off ction *)
 
 (* multiple arguments - just leave spaces between multiple arguments in definition and use *)
 let add x y = x + y;;
@@ -95,15 +92,19 @@ let add3 = add 3;; (* don't need to give all arguments at once!  Type of add is 
 add3 4;;
 add3 20;;
 
-(*
- * Observe 'int -> int -> int' is parenthesized as 'int -> (int -> int)' -- RIGHT associativity
- *)
+(* Conclusion: add is a function taking an integer, and returning a FUNCTION which takes ints to ints. 
+   So, add is a HIGHER-ORDER FUNCTION: 
+       it either takes a function as an argument, or returns a function as result. *)  
 
-  (*** Pattern matching: switch or case on steroids ***)
-  (* Not such a common language feature; Haskell and Scala have it *)
+(* Observe 'int -> int -> int' is parenthesized as 'int -> (int -> int)' -- unusual RIGHT associativity *)
 
+(* ******************************************************************** *)
 
-(* Basic pattern match with numbers *)
+(* Pattern matching: switch or case on steroids *)
+
+(* A very cool and useful but not so common language feature; Haskell and Scala also have it *)
+
+(* Basic pattern match with numbers, looks like switch more or less: *)
 
 let mixemup n =
     match n with
@@ -118,7 +119,7 @@ mixemup 3;; (* matches last case and x is bound to the value 3 *)
     | 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
     | _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
 
-(* List pattern matching *)
+(* List pattern matching - now things get interesting! *)
 
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
     x :: (y :: z) -> "first"
@@ -126,7 +127,7 @@ match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
       | _ -> "third";;
 
 match ["hi"] with (* ["hi"] is "hi" :: [] *)
-    x :: y :: z -> "first"
+    x :: (y :: z) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
 
@@ -157,33 +158,34 @@ let s = getSecond mypair;;
 
 (* getHead [];; *)  (* OCaml warned before that this case is not covered: gives uncaught runtime exception *)
 
-(* Error-free version *)
+(* an error-free version *)
 
 let getHead l = 
   match l with
-    | [] -> 5
+    | [] -> failwith "you dodo"
   |  head :: tail -> head
 ;;
 
-
 (* Patterns in function definitions *)
-
-(* Long way *)
 
 let cadd p = match p with (x, y) -> x + y;;
 
-(* Shorthand *)
+(* Shorthand for the above (only works because there is only one pattern clause - special *)
   
-let cadd (x, y) = x + y;; (* same result as the above *)
+let cadd (x, y) = x + y;; (* same result *)
 
 (* This 'cadd' takes only a SINGLE argument - a tuple - more like how C etc functions are called *)
 cadd (1, 2);;
 
 (* compare above add to this earlier one above, recalling: *)
 let add x y = x + y;;
-add 1 2;; (* notice different calling convention -- two ways to write the same function in OCaml *)
+add 1 2;; (* notice different calling convention compared to cadd *)
 
-let add = (+);; (* aside: this syntax is how you can give any built-in infix operator a name as a function *)
+(* The difference between cadd and add can be observed in their types.
+     cadd : int * int -> int  -- C/Java etc style functions
+      add : int -> int -> int -- the default OCaml style  *)
+  
+let add = (+);; (* this syntax is how you can give any built-in infix operator a name as a function *)
 
 (* using patterns in recursive functions: a function to reverse a list
        note this does not mutate the list, it makes a new list that reverses original
@@ -313,7 +315,11 @@ let copyoddonly ll =
     );;
     
 copyoddonly [1;2;3;4;5;6;7;8;9;10];;
-                          
+
+(* ******************************************************************** *)
+
+
+  
 (* 
  * Higher Order Functions - 
  *          functions that either:
@@ -407,7 +413,9 @@ copyodd;;    (* observe type is 'a list -> 'a list *)
 map;;     (* type is ('a -> 'b) -> 'a list -> 'b list *)
 compose;; (* type is ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b *)
 
-(* ************************************************** *)
+(* ******************************************************************** *)
+
+
 
 (*
  * Self-study topic: in fact, only 'let'-defined functions are polymorphic
@@ -443,7 +451,8 @@ match id (true) with
 
 (function mono_id -> mono_id 4) id;; (* mono_id is solely of type int -> int, thats OK *)
 
-(* ************************************************** *)
+(* ******************************************************************** *)
+
 
   
 (* One topic left in higher-order functions ...
