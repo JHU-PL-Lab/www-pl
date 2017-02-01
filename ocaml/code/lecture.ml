@@ -43,7 +43,6 @@ if (x = 3) then (5 + 35) else 6;;
 (if (x = 3) then 5 else 6) * 2;;
 (* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error:  two branches of if must have same type *)
 
-
 (* ====================================================================== *)
 
 (*  OCaml Lecture II  *)
