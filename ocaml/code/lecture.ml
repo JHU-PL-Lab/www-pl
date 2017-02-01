@@ -71,7 +71,7 @@ let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (u
   if n <= 2 then
     1 
   else
-    fib (n - 1) + fib (n - 2);;
+    fib(n - 1) + fib (n - 2);;
 
 fib 10;;
 
@@ -108,7 +108,7 @@ add3 20;;
 
 let mixemup n =
     match n with
-          0 -> 4
+    | 0 -> 4
     | 5 -> 0
     | y -> y + 1;; (* default case giving a name to the matched number, x *)
 
@@ -122,11 +122,21 @@ mixemup 3;; (* matches last case and x is bound to the value 3 *)
 (* List pattern matching - now things get interesting! *)
 
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
-    x :: (y :: z) -> "first"
+    a :: (b :: c) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
 
-match ["hi"] with (* ["hi"] is "hi" :: [] *)
+match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
+      | x :: y -> x
+      | a :: (b :: c) -> b
+      | _ -> '0';;
+
+match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
+      | x :: y -> y
+      | _ -> ['0'];;
+
+
+  match ["hi"] with (* ["hi"] is "hi" :: [] *)
     x :: (y :: z) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
