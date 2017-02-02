@@ -196,8 +196,7 @@ Write a function which will split an input list in half.  The result should be
 a tuple of two lists; half of the elements should be in the first list and half
 should be in the second list.  It does not matter which elements go to which
 list as long as each list is about the same size.  (For an input of a list of
-odd length, you are permitted to have one list be one element larger than the
-other list.)
+odd length, make the first list one element larger than the other list.)
 *)
 
 let splitlist lst = failwith "Not Implemented";;
@@ -354,7 +353,7 @@ the case with vectors. So to maintain generality we once again hide the multipli
 addition operations behind the two functions (prod_fn and sum_fn).
  
 If the two matrices cannot be multiplied (due to dimension mismatches), raise an exception 
-(using invalid_args)
+(using the built-in invalid_arg function).
 			
 *)
 
