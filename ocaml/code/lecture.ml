@@ -275,7 +275,7 @@ match NotNull(4) with
 (let y = 3 in 
   ( let x = 5 in
     ( let f y = x + y in
-      ( let x = 7 in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
+      ( let x = y in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
         (f (y - 1)) + x 
             )
         )
@@ -287,7 +287,7 @@ match NotNull(4) with
 let y = 3;;
 let x = 5;;
 let f y = x + y;;
-let x = 7;; (* as in previous example, this is a nested definition, not assignment! *)
+let x = y;; (* as in previous example, this is a nested definition, not assignment! *)
 f (y-1) + x;;
 
 
@@ -699,7 +699,7 @@ let rec nth l n =
       if n = 0 then    
         x
       else
-        nth xs (n - 1)
+        nth xs (n - 1) (* eureka *)
 ;;
 
 

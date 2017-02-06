@@ -48,7 +48,7 @@ let listsum lst = failwith "Not Implemented";;
 
 
 (*
-Problem 1b. [10 points]
+Problem 1b. [5 points]
 
 One of the most powerful features of OCaml is the "higher-order function": the
 ability to treat functions as first-class citizens (just like objects in Java
@@ -155,7 +155,7 @@ let nullfilter lst = failwith "Not Implemented";;
 
 
 (*
-Problem 2c. [10 points]
+Problem 2c. [5 points]
 
 Write a function which merges two sorted lists in order.  Assume that your
 input lists are already sorted; the output list should likewise be sorted.
