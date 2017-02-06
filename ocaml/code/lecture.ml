@@ -131,13 +131,13 @@ match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
       | a :: (b :: c) -> b
       | _ -> '0';;
 
-match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
+match ['h';'o';'p';' ';'h';'o';'p'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
       | x :: y -> y
       | _ -> ['0'];;
 
 
   match ["hi"] with (* ["hi"] is "hi" :: [] *)
-    x :: (y :: z) -> "first"
+      | x :: (y :: z) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
 
@@ -152,6 +152,9 @@ match tuple with
 let mypair = (2.2, 3.3);;
 let (f, s) = mypair in f +. s;;  (* same behavior as "match mypair with (f,s) -> f +. s" *)
 
+match mypair with (f,s) -> f +. s;;
+
+  
 let getSecond t = 
   match t with
     (f, s) -> s
@@ -159,6 +162,10 @@ let getSecond t =
 let s = getSecond (2, "hi");;
 let s = getSecond mypair;;
 
+let getSec t = 
+  match t with
+    (f, s) -> (s :: [],4)
+;;  
 (* warning - non-exhaustive pattern matching; avoid this *)
 (* let getHead l = 
   match l with
@@ -231,6 +238,35 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
 (*  OCaml Lecture III  *)
 
+
+(* Brief tour of simple variant types for assignment 1 *)
+
+(* Variant types are like unions in C, and generalize enums of Java.
+   Unlike types up to now you need to declare them. *)
+
+type comparison = LessThan | EqualTo | GreaterThan;;
+
+let intcmp x y =
+	if x < y then LessThan else
+		if x > y then GreaterThan else EqualTo;;  
+
+(* Of course we will pattern match to take the data apart *)
+  
+match intcmp 4 5 with
+  | LessThan -> "less!"
+  | EqualTo -> "equal!"
+  | GreaterThan -> "greater!";;
+
+(* Variants can also wrap arguments: they are more like C unions than Java enums *)
+  
+type 'a nullable = Null | NotNull of 'a;;
+
+match NotNull(4) with
+  | Null -> "null!"
+  | NotNull(n) -> (string_of_int n)^" is not null!"
+;;
+    
+  
 (* Immutable declarations *)
 (*
  * All variable declarations in OCaml are IMMUTABLE -- value will never change
@@ -257,10 +293,6 @@ f (y-1) + x;;
 
 (*
  * Function definitions are similar, you can't mutate an existing definition.
- * HINT: When interactively editing a group of functions that call each other, 
- *       re-submit ALL the functions to the top loop when you change any ONE 
- *       of them.  Otherwise you can have some functions using a now-shadowed version.
- *       One advantage of using ocamlc compiler is you will not have this problem.
  *)
 
 let f x = x + 1;;
@@ -277,6 +309,11 @@ g (-5);; (* we didn't re-submit g, so the version above refers to now-shadowed f
 
 let g x = f (f x);; (* need to resubmit (identical) g code since it depends on f *)
 g (-6);; (* now it works as expected *)
+  
+(* MORAL: When interactively editing a group of functions that call each other, 
+ *        re-submit ALL the functions to the top loop when you change any ONE 
+ *        of them.  Otherwise you can have some functions using a now-shadowed version.
+ *)
 
 (* Mutually recursive functions *)
 
@@ -288,7 +325,7 @@ let rec copy l = match l with
 
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 
-(* copy is useless because immutable data can be freely shared - no need to copy, ever! *)
+(* copy is useless because immutable data can't be mutated so never a need to copy, ever! *)
                                                 
 (* Refine copy to flip back and forth between copying and not *)
                                             
@@ -368,22 +405,22 @@ appendgobblelist ["have";"a";"good";"day"];;
  * So lets pull out the "times ten" / "add gobble" as a function parameter!
  * this is in fact a classic example, the map function *)
 
-let rec map f l =
+let rec map f l =  (* Notice we are taking a function f as ARGUMENT here *)
   match l with 
     []    -> []
   | hd::tl -> (f hd) :: map f tl;;
 
-map (function x -> x * 10) [3;2;50];;
+map (fun x -> x * 10) [3;2;50];;
 let middle = List.map (function s -> s^"gobble");;  (* here we use the built-in List.map which is the same as the one we defined *)
 middle ["have";"a";"good";"day"];;
 
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;  (* two-argument via a pair.  Note "fun" can be used as shorthand for "function" *)
 
-map (fun x -> fun y -> x + y) [1;2;4] ;; (* mind blower *)
+let flist = map (fun x -> fun y -> x + y) [1;2;4] ;; (* lists of functions! *)
 
 (* This also shows why these "anonymous" functions are useful. *)
 
-(* an equivalent way to do the same thing - give function a name first: *)
+(* named and anonymous functions are (still) identical in usage *)
 let timesten x = x * 10;;
 map timesten [1;2;3;34;56;90];;
 
@@ -1297,7 +1334,7 @@ module Main: sig (* contents of main.mli *) end
 *)
 
 
-type comparison = Less | Equal | Greater
+(* have this type above: type comparison = LessThan | EqualTo | GreaterThan *)
   
     (* here is a kind of struct that we can take as a parameter; in Java we would just use an interface Comparable *)
     
@@ -1322,18 +1359,18 @@ module FSetFunctor =
         [] -> [x]
       | hd::tl ->
           match Elt.compare x hd with
-            Equal   -> s        
-          | Less    -> x :: s   
-          | Greater -> hd :: add x tl
+            EqualTo   -> s        
+          | LessThan    -> x :: s   
+          | GreaterThan -> hd :: add x tl
 
     let rec contains x s =
       match s with
         [] -> false
       | hd::tl ->
           match Elt.compare x hd with
-            Equal   -> true     
-          | Less    -> false    
-          | Greater -> contains x tl
+            EqualTo   -> true     
+          | LessThan    -> false    
+          | GreaterThan -> contains x tl
   end;;
 
 (* Here is a concrete ordering we can feed in, one over ints *)
@@ -1343,12 +1380,12 @@ module OrderedInt =
     type t = int
     let compare x y = 
       if x = y then 
-    Equal 
+    EqualTo 
       else 
     if x < y then 
-      Less 
+      LessThan 
     else 
-      Greater
+      GreaterThan
   end;;
 
 (* Here is how we feed it in, instantiating the functor to give a structure *)
@@ -1366,12 +1403,12 @@ module OrderedString =
       
     let compare x y = 
       if x = y then 
-    Equal 
+    EqualTo 
       else 
     if x < y then 
-      Less 
+      LessThan 
     else 
-      Greater
+      GreaterThan
   end;;
 
 module OrderedStringSet = FSetFunctor(OrderedString);; (* a DIFFERENT instantiation of same *)

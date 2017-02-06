@@ -195,8 +195,7 @@ Problem 2d. [10 points]
 Write a function which will split an input list in half.  The result should be
 a tuple of two lists; half of the elements should be in the first list and half
 should be in the second list.  It does not matter which elements go to which
-list as long as each list is about the same size.  (For an input of a list of
-odd length, make the first list one element larger than the other list.)
+list as long as each list is at most one bigger or smaller than the other.
 *)
 
 let splitlist lst = failwith "Not Implemented";;
