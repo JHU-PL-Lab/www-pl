@@ -779,7 +779,7 @@ diff [1;2]   [1;2;3];; (* should return [] *)
 (* 
  * Variant Type Declaration 
  *    - related to union types in C or enums in Java: "this OR that OR theother"
- *    - BUT like list/tuple they are immutable data structures
+ *    - BUT like OCamls lists/tuples they are immutable data structures
  *    - each case of the union is identified by a name called 'Constructor'
  *      which serves for both
  *           - Constructing values of the variant type
@@ -818,7 +818,6 @@ let add_num n1 n2 =
 
 add_num (Fixed 123) (Floating 3.14159);;
 
-
 (*
  * Enum types 
  *     - special case of variant types, 
@@ -827,7 +826,7 @@ add_num (Fixed 123) (Floating 3.14159);;
 
 type sign = Positive | Negative | Zero;;
 
-let sign_int n = if n > 0 then Positive else Negative;;
+let sign_int n = if n > 0 then Positive else if n = 0 then Zero else Negative;;
 sign_int (-6);;
 
 (* Multiple data items in a construct?  Use the pre-existing product type! *)
@@ -839,11 +838,14 @@ let com = Nonzero(3.2,11.2);;
 (* 
  * Recursive data structures - a key use of variant types 
  *
+ *  - Functional programming is fantastic for computing over tree-structured data
+ *     -- (and conversely NOT as good at dealing with graphs: hard to recurse on)
  *  - recursive types can refer to themselves in their own definition
+ *  - similar in spirit to how C structs can be recursive (but, no pointer needed here)
  * 
  * e.g. binary trees with integers in nodes and empty leaves:
 *)
-type itree = ILeaf | INode of int * itree * itree;; 
+type itree = ILeaf | INode of int * itree * itree;;  (* type refers to itself! *)
 
 INode(4,ILeaf,INode(2,INode(18,ILeaf,ILeaf),ILeaf));;
 
@@ -874,11 +876,11 @@ let bt2 = Node("fiddly ",
 
 (* type error, must have uniform data: Node("fiddly",Node(0,Leaf,Leaf),Leaf);;  *)  
 
-(* Lists could have been built with a recursive type declaration *)
+(* OCaml's lists could have been defined with a recursive type declaration *)
 
 type 'a mylist = MtList | ColonColon of 'a * 'a mylist;;
 
-let mylisteg = ColonColon(3,ColonColon(5,ColonColon(7,MtList)));; (* isomorphic to [3;5;7] *)
+let mylisteg = ColonColon(3,ColonColon(5,ColonColon(7,MtList)));; (* [3;5;7] *)
 
 let rec double_list_elts ml = 
   match ml with
@@ -916,6 +918,8 @@ let rec lookup x bintree =
 lookup "whack!" bt;;
 lookup "flack" bt;;
 
+(* Recall we are still all functional: tree insert is functional insert, return the new tree *)
+
 let rec insert x bintree =
    match bintree with
      Leaf -> Node(x, Leaf, Leaf)
@@ -927,7 +931,7 @@ let rec insert x bintree =
 ;;
 
 let goobt = insert "goober " bt;;
-bt;; (* OCaml data structures are immutable! *)
+bt;; (* Yes, OCaml data structures are by default immutable! *)
 let gooobt =
   insert "slacker " goobt;;
 
@@ -940,7 +944,7 @@ let gooobt =
  *   - types are declared just like variants.
  *   - can be used in pattern matches as well.
  *   - again the fields are immutable by default
- *   - not used super often, most data is a variant with tupled multiple arguments
+ *   - not used as often as structs of C, most data is a variant with tupled multiple arguments
  *)
 
 (* record to represent rational numbers *)
@@ -951,13 +955,16 @@ let q = {num = 53; denom = 6};;
 q.num;;
 q.denom;;
 
+(* pattern matching works of course *)
 let rattoint r =
  match r with 
    {num = n; denom = d} -> n / d;;
 
+(* only one pattern matched so can again inline pattern as parameter *)
 let rattoint {num = n; denom = d}  =
    n / d;;
 
+(* equivalently can use dot projections *)
 let rattoint r  =
    r.num / r.denom;;
 
@@ -967,16 +974,24 @@ let add_ratio r1 r2 = {num   = r1.num * r2.denom + r2.num * r1.denom; denom = r1
 
 add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
-(* Annoying shadowing issue: there is one global namespace of record labels - yuck! *)
-type scale = {num: int; coeff: float};; (* shadowing ratio's label num *)
-(* q.num;; *) (* error: no longer can access q's num label since scale now owns "num" ARGH *)
-q.denom;; (* this is still OK, label not overdefined *)
-function x -> x.num;; (* this is why there is only one version of num allowed - inference *)
+(* Somewhat annoying shadowing issue: there is one global namespace of record labels *)
 
+type newratio = {num: int; coeff: float};; (* shadowing ratio's label num *)
+
+function x -> x.num;; (* requires x to be a newratio -- inference HAS to give one type. *)
+
+(* one solution: declare type *)
+  
 function (x : ratio) -> x.num;;
+
+(* another solution: pattern match on record *)
+
+function {num = n; denom = d} -> d;;    
 
 (* OCaml programmers often use tuples instead of records since the record name
  * issue is not handled satisfactorily *)
+
+(* ********************************************************************** *)
 
 (* 
  * State 
@@ -990,17 +1005,21 @@ function (x : ratio) -> x.num;;
  *                           but what it points to can.
  *   - items are immutable unless their mutability is explicitly declared
  *   
- *   - DON'T use state unless its really needed (you can't use it in HW1)
+ *   - DON'T use state unless its really needed (you can't use it in HW1 or most of HW2)
  *)
 
 (* References *)
 
 let x = ref 4;;    (* always have to declare initial value when creating a reference *)
+
+(* Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell. 
+   The CONTENTS of that fixed call can change, but not x. *)
+  
 (* x + 1;; *) (* a type error ! *)
 
 !x + 1;; (* need !x to get out the value; something like *x in C *)
-x := 6;; (* assignment - x must be a ref cell *)
-!x + 1;; (* Mutation happens *)
+x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
+!x + 1;; (* Mutation ! *)
 
 (* 'a ref is really implemented by a mutable record with one field, contents: 
      'a ref abbreviates the type { mutable contents: 'a }
@@ -1013,7 +1032,7 @@ x.contents <- 7;;  (* same effect as previous line: update contents field *)
 !x + 1;;
 x.contents + 1;; (* same effect as previous line *)
 
-(* declaring your own mutable record *)
+(* declaring your own mutable record: put "mutable" qualifier on field *)
 
 type mutable_point = { mutable x: float; mutable y: float };;
 let translate p dx dy = 
@@ -1024,7 +1043,7 @@ let mypoint = { x = 0.0; y = 0.0 };;
 translate mypoint 1.0 2.0;;
 mypoint;;
 
-
+(* observe: mypoint itself is immutable but it has two spots in it where we can mutate *)
 
 (* tree with mutable nodes *)
 
@@ -1047,14 +1066,15 @@ let x = ref 6;; (* shadowing previous x definition, NOT an assignment to x !! *)
 f ();;
 
 (* Yes, we can even write a while loop ! *)
-let x = ref 1;;
-while !x < 10 do 
- print_int !x; 
- print_string "\n"; 
- x := !x + 1
-done;;
+let x = ref 1 in 
+    while !x < 10 do 
+      print_int !x; 
+      print_string "\n"; 
+      x := !x + 1
+    done;;
 
-
+(* Fact: while loops are useless without mutation: either never loop or infinitely loop *)
+  
 (*
  * Why is immutability good?
  *    - programmer can depend on the fact that something will never be mutated 
@@ -1063,8 +1083,7 @@ done;;
  * ML still lets you express mutation, but its extra so you only use it when 
  *   its really needed
  *
- * Haskell has a pure core which doesn't allow mutation to enter at all
- * Don't use mutation on any HW problem unless there is an explicit OK to do so.
+ * Haskell has an even stronger separation of mutation, its all strictly "on top".
  *)
 
 (* 
@@ -1076,7 +1095,7 @@ done;;
 
 let arrhi = Array.make 100 "";; (* size and initial value are the params here *)
 let arr = [| 4; 3; 2 |];; (* another way to make an array *)
-arr.(0);; (* access (oddly enough) *)
+arr.(0);; (* access (unfortunately we already used [] for lists in the syntax) *)
 arr.(0) <- 55;; (* update *)
 arr;;
 
@@ -1090,14 +1109,14 @@ f ();;
 
 exception Bar;;
 
-let g _ = 
+let g _ =  (* note that unlike Java there is no "raises" in the type of g *)
   (try 
     f () 
   with 
     Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
 g ();;
 
-(* exceptions that pass up an argument *)
+(* exceptions that pass up an argument - syntax is sort of like a variant *)
 exception Goo of string;;
 
 let f _ = raise (Goo "keyboard on fire");;
@@ -1114,6 +1133,11 @@ let g () =
 ;;
 g ();;
 
+(* There are a few built-in exceptions we are already using *)
+
+failwith "Oops";; (* Generic code failure - exception is named Failure *)
+invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
+    
 (* END Exceptions *)
 
 (* ====================================================================== *)
