@@ -1153,18 +1153,10 @@ invalid_arg "This function works on non-empty lists only";; (* Invalid_argument 
 Some principles of modules:
 
   -  Modules have names they can be referenced by.
-  -  A module itself contains declarations of functions, classes,  types, etc.
+  -  A module contains code declarations: functions, classes,  types, etc.
   -  The module has an interface in which it 
       * imports some things (e.g. other modules) from the outside and  
-      * exports some things it has declared for outsiders to use; hides other things
-  -  Module names may also be around at run-time (or not; depends on the language)
-      this helps minimize name clashes across modules: com.bozo.UI.Wank is different from com.bozo.DB.Wank
-
-  -  Modules may support separate compilation: not all code is needed to compile
-       Java: mostly but not completely supported (need all .class files on CLASSPATH)
-       C/C++: yes (.h file is all that is needed for imports)
-       OCaml: yes in ocamlc mode (.mli interface file of modules used is all that is needed)
-
+      * exports some things it has declared for outsiders to use; **hides** other things (key feature)
 
  The C/C++ "module" system
    - Informal use of files and filesystem directories as modules 
@@ -1180,22 +1172,18 @@ Some principles of modules:
   - A cleaner version of the C/C++ spirit of module
   - Directory is explicitly a package; allows for nested packages
   - Implicit .h file in the public decls on classes/methods
+  - public/private/etc for information hiding
   - Separate namespace for each package avoids name clashes
   - Have to have at least the .class files of the imports around to compile
-  - Hard to read off publics - what is being exported from code  (JavaDoc helps this)
-
- Conclusion:  Java's modules are better than C/C++'s
 
 *)
 
+(* OCaml Modules *)  
+  
 (* 
-   OCaml module definitions are called "structures" (struct keyword) 
+   OCaml module definitions are called **structures** (via the struct keyword) 
     - collections of related definitions (functions, types, other structures, 
                                           exceptions, values, ...) given a name
-    - The types of structs are called signatures (the sig keyword)
-          - they are the interfaces for structures, and are something like Java interfaces
-          - not all the items in the structure need to be in the signature: implicitly hides the missing things
-                    - structure contents can be regular values, functions, **types**, exceptions
  *)
 
 module FSet =
@@ -1228,20 +1216,28 @@ struct
 end
 ;;
 
-(* observe what is printed in the top loop when the above is entered: a module *signature* is inferred *)
+(* observe what is printed in the top loop when the above is entered: a module *signature* is inferred 
+
+    - The types of structs are called signatures
+          - they are the interfaces for structures, something like Java interfaces
+          - signatures can be used to hide some things from outside users
+
+*)
 
 (* Using modules: its something like Java packages, qualify the name *)
 
-let mySet = FSet.add 5 [];;
+let mySet = FSet.add 5 [];;  (* notice the return type here: int FSet.set -- includes module name *)
 let myNextSet = FSet.add 22 mySet;;
 FSet.contains 5 mySet;;
 FSet.remove 5 myNextSet;;
 
-open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shadow some names *)
+open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shadow existing names *)
 
 add "a" ["b"];;
 contains "a" ["a"; "b"];;
 
+(* ********************************************************************** *)
+(* OCaml's module signatures and using them for information hiding *)
 
 module type GROWINGSET = (* define a module type (signature) with no remove; not very useful *)
   sig
@@ -1253,10 +1249,10 @@ module type GROWINGSET = (* define a module type (signature) with no remove; not
   end
 ;;
 
-module GrowingSet = (FSet: GROWINGSET);; (* put a signature on a structure -- force it to have that sig *)
+module GrowingSet = (FSet: GROWINGSET);; (* constrain a structure to have that signature *)
 GrowingSet.add "a" ["b"];;
 
-(* GrowingSet.remove;; *) (* Error: remove not in signature! *)
+(* GrowingSet.remove;; *) (* Error: remove in struct but not in signature! *)
 
 FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making GrowingSet *)
 
@@ -1280,7 +1276,7 @@ module HiddenSet = (FSet: HIDDENSET);;
 let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 HiddenSet.contains 5 hs;;
 
-(* Can declare signature along with module *)
+(* Also can declare signature along with module *)
 
 module HFSet : 
   sig
@@ -1316,23 +1312,32 @@ end
 
 let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 
+(* ********************************************************************** *)
+  
 (* Separate Compilation with OCaml
 
-    We can program OCaml in a cc / javac like way - no top-loop
-    Each module is in a separate file
-    Syntax of module **body** is identical
-    No header "module XX = struct .. end" 
-    Name of module is capped name of file: fSet.ml defines module FSet 
-    File fSet.mli holds the signature of module FSet
+    - We can program OCaml in a cc / javac like way - use ocamlc instead of ocaml.
+    - Key invariant: each OCaml module is a separate .ml file
+    - Syntax of module **body** is identical
+    - No header "module XX = struct .. end" is included in .ml module file
+    - Name of module is capped name of file: fSet.ml defines module FSet 
+    - File fSet.mli holds the signature of module FSet
        if there is no file set.mli thats OK; you have nothing hidden
-    main program that starts running is body of main.ml structure
-    Use ocamlc to compile to an executable (or ocamlopt for native code)
-    Also need to compile the .mli files! (unlike .h files)
+    - Use ocamlc to compile and link to an executable: very similar to C/C++
+    - main program that starts running is any non-values defined in the module(s)
+    - Also need to compile the .mli files! (unlike .h files)
 
 Here is how the ocamlc compiler makes object files
 
-      .ml --ocamlc--> .cmo
-      .mli --ocamlc--> .cmi
+      .ml --ocamlc -c --> .cmo
+      .mli --ocamlc -c --> .cmi
+
+Then to make the binary
+
+      .cmo's --ocamlc -o mybinary --> mybinary
+
+You need any dependent .cmi's for modules you refer to before you can ocamlc -c them.
+
 *)
 
 module FSett: sig (* contents of file fSett.mli *) end
@@ -1345,6 +1350,23 @@ module Main: sig (* contents of main.mli *) end
    We will follow http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt in particular.
    See the ocaml manual Chapter 8 for the full documentation *)
 
+(* ********************************************************************** *)
+
+(* Loading object file modules into the top loop *)
+
+(* It is possible to mix ocamlc and ocaml for debugging: load .cmo files into top loop. *)
+
+(* for the following to work need to first #cd to sep_compile/.  My computer's version:
+#cd "/Users/scott/pl/ocaml/code/sep_compile";;
+ *)
+  
+#load "fSet.cmo"
+;;
+FSet.emptyset;;
+  
+  
+
+(* ********************************************************************** *)  
 
 (* 
    Functors
@@ -1373,7 +1395,7 @@ module type ORDERED_TYPE =
 module FSetFunctor =
   functor (Elt: ORDERED_TYPE) ->
   struct
-    type element = Elt.t
+    type element = Elt.t (* import the type of elements from the structure *)
     type set = element list
     
     let empty = []
