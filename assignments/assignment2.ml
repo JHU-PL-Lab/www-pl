@@ -252,7 +252,7 @@ let string_of_json jsn = failwith "Not Implemented";;
 
 (*
 
-# string_of_json Assoc([]);;
+# string_of_json(Assoc[]);;
 - : string "{}"
 
 # let person = Assoc([
@@ -349,11 +349,11 @@ let deep_lookup jsn s = failwith "Not Implemented";;
     ("favorite-colors", List([
         Assoc([
             ("name", String("red"));
-            ("rgb", List([255; 0; 0]))
+            ("rgb", List([Int(255); Int(0); Int(0)]))
         ]);
         Assoc([
             ("name", String("blue"));
-            ("rgb", List([0; 0; 255]))
+            ("rgb", List([Int(0); Int(0); Int(255)]))
         ])
     ]));
     ("rating", Float(4.5))
@@ -367,7 +367,7 @@ val person : json = ...
 - : json = String("John")
 
 # deep_lookup person "rgb" ;;
-- : json = List([255; 0; 0])
+- : json = List([Int(255); Int(0); Int(0)])
 
 # deep_lookup person "state" ;;
 Exception: Invalid_argument "key not found".
@@ -408,11 +408,11 @@ let json_filter jsn filter = failwith "Not Implemented";;
     ("favorite-colors", List([
         Assoc([
             ("name", String("red"));
-            ("rgb", List([255; 0; 0]))
+            ("rgb", List([Int(255); Int(0); Int(0)]))
         ]);
         Assoc([
             ("name", String("blue"));
-            ("rgb", List([0; 0; 255]))
+            ("rgb", List([Int(0); Int(0); Int(255)]))
         ])
     ]));
     ("rating", Float(4.5))
@@ -431,10 +431,10 @@ val person : json = ...
     ]));
     ("favorite-colors", List([
         Assoc([
-            ("rgb", List([255; 0; 0]))
+            ("rgb", List([Int(255); Int(0); Int(0)]))
         ]);
         Assoc([
-            ("rgb", List([0; 0; 255]))
+            ("rgb", List([Int(0); Int(0); Int(255)]))
         ])
     ]));
     ("rating", Float(4.5))
