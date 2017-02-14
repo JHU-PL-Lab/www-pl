@@ -27,15 +27,17 @@ modules are mutating so you are not allowed to use them. *)
 
 (*
 
-For the next several problems, you will be asked to produce an expression which
-has a given type.  It does not matter what expression you provide as long as it
-has that type; there may be numerous (or even infinite) answers for each
-question.  Your answer may *not* produce a compiler warning.  You are *not*
-permitted to use explicit type annotations using ":" (such as "fun x:'a -> x").
+For this problem, you must produce an expression which has a given type.  It
+does not matter what expression you provide as long as it has that type; there
+may be numerous (or even infinite) answers for each question.  Your answer may
+*not* produce a compiler warning.  You are *not* permitted to use explicit type
+annotations using ":" (such as "fun x:'a -> x").  Also please do not use any
+libraries for this question such as List.map etc. You *may* use mutable state to
+define x3.
 
 [20 Points]
 
-*)
+ *)
 
 let x1 = failwith "Not Implemented" ;;
 
