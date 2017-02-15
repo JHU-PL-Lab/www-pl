@@ -311,7 +311,7 @@ val person : json = ...
 # lookup person "name" ;;
 Exception: Invalid_argument "key not found".
 
-# lookup String("Lambda") "id" ;;
+# lookup (String "Lambda") "id" ;;
 Exception: Invalid_argument "Assoc not top level".
 
 *)
@@ -372,7 +372,7 @@ val person : json = ...
 # deep_lookup person "state" ;;
 Exception: Invalid_argument "key not found".
 
-# deep_lookup String("Lambda") "id" ;;
+# deep_lookup (String "Lambda") "id" ;;
 Exception: Invalid_argument "Assoc or List not top level".
 
 *)
@@ -440,7 +440,7 @@ val person : json = ...
     ("rating", Float(4.5))
 ])
 
-# json_filter Int(10) (fun x -> true) ;;
+# json_filter (Int 10) (fun x -> true) ;;
 - : json = Int(10)
 
 *)
