@@ -141,12 +141,12 @@ One case where side-effects are particularly useful is in accumulating log
 information. In pure functional programming each function would need to pass
 and return the log in case it updated it, which is very cumbersome.
 
-For this question you are to implement a very simple log data structure. You
-can make a log, add entries to the log, flush the log, and dump the current
-contents. You get to come up with your own type for the log; feel free to add
-any type declarations to your file.
+For this question you are to implement a very simple log data structure. You can
+make a log, add entries to the log, and dump the current contents. You get to
+come up with your own type for the log; feel free to add any type declarations
+to your file.
 
-*)
+ *)
 
 (* 3a. [5 points]
 
