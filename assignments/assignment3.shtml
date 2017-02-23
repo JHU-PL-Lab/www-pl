@@ -17,7 +17,7 @@
   <ol>
     <li>
       Write an interpreter for F&#x266d; as defined in the book. You need to
-      implement all features <strong>except</strong> for <code>Let Rec</code>.</li>
+      implement all features <strong>except</strong> for <code>Let Rec</code>  (if you implement <code>Let Rec</code> you can get 5 points extra credit).</li>
     <li>Write some F&#x266d; programs by filling in the template in <a href="assignment3.ml">assignment3.ml</a>.</li>
     <li>Answer the written questions below.
   </ol>
