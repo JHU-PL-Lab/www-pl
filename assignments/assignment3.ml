@@ -58,7 +58,7 @@ let fblt = "(0 1)" ;;
 
 
 (*
-Problem 1b. [5 points]
+Problem 2b. [5 points]
 
 Fb also fails to provide any operations over integers more complex than addition
 and subtraction.  Below, define the following operations: multiplication,
@@ -69,7 +69,8 @@ division and modulus functions should diverge when the divisor is zero.
 
 let fbMultiply = "(0 1)";;
 let fbDivide = "(0 1)";;
-
+let fbMod = "(0 1)";;
+  
 (*
 #  rep "("^fbMultiply^") 3 5";;
 ==> 15
