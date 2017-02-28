@@ -39,31 +39,31 @@ define x3.
 
  *)
 
-let x1 = failwith "Not Implemented" ;;
+let x1 () = failwith "Not Implemented" ;;
 
  (* val x1 : 'a -> 'a * 'a = ... *)
 
-let x2 = failwith "Not Implemented" ;;
+let x2 () = failwith "Not Implemented" ;;
 
  (* val x2 : 'a -> 'b -> 'a = ... *)
 
-let x3 = failwith "Not Implemented" ;;
+let x3 () = failwith "Not Implemented" ;;
 
  (* val x3 : unit -> int list ref = ... *)
 
-let x4 = failwith "Not Implemented" ;;
+let x4 () = failwith "Not Implemented" ;;
 
  (* val x4 : (int -> 'a -> 'b) -> 'a list -> 'b list = ... *)
 
-let x5 = failwith "Not Implemented" ;;
+let x5 () = failwith "Not Implemented" ;;
 
  (* val x5 : ('a -> 'b) list -> 'a list -> 'b list = ... *)
 
-let x6 = failwith "Not Implemented" ;;
+let x6 () = failwith "Not Implemented" ;;
 
 (* val x6 : 'a list -> 'b list -> ('a -> 'b -> 'c) -> 'c = ... *)
 
-let x7 = failwith "Not Implemented" ;;
+let x7 () = failwith "Not Implemented" ;;
 
 (* val x7 : 'a -> 'b option *)
 
