@@ -31,17 +31,21 @@ open Fbast;;
 open Fbinterp;;
 (* for typechecker: open Fbtype;; *)
 
-(* function parse parses FbST concrete syntax you enter as a string *)
-
+(* parse parses Fb concrete syntax you enter as a string *)
+  
 let parse s = 
     let lexbuf = Lexing.from_string (s^";;") in
   	Fbparser.main Fblexer.token lexbuf;;
 
-(* Function pp is a top-loop pretty printer using FBDK's pretty printer *)
+(* unparse is the reverse of parsing: expr to string *)
+  
+let unparse e = Fbpp.pretty_print e;;
+    
+(* pp is a top-loop pretty printer *)
 
-let pp e = print_string (Fbpp.pretty_print e);;
+let pp e = print_string (unparse e);;
 
-(* ppeval evals then pretty prints the result *)
+(* ppeval evaluates an expr and then pretty prints the result *)
 
 let ppeval x = print_string "==> ";pp (eval x);;
 
@@ -49,7 +53,10 @@ let ppeval x = print_string "==> ";pp (eval x);;
 
 let rep s = ppeval (parse s);;
 
-
+(* res is like rep but just returns the string result - no printing it out. *)  
+  
+let res s = unparse (eval (parse s));;
+  
 (* Examples. *)
 
 let s1 = 
