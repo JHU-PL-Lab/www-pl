@@ -48,10 +48,10 @@ negatives
 let fblt = "(0 1)" ;;
 
 (*
-# rep "("^fblt^") 2 3" ;; (*!! convert all other tests below to pure string form - simpler !!*)
+# rep ("("^fblt^") 2 3") ;; (*!! convert all other tests below to pure string form - simpler !!*)
 ==> True
 - : unit = ()
-# rep "("^fblt^") (0-3) (0-4)" ;;
+# rep ("("^fblt^") (0-3) (0-4)") ;;
 ==> False
 - : unit = ()
 *)
@@ -72,37 +72,37 @@ let fbDivide = "(0 1)";;
 let fbMod = "(0 1)";;
   
 (*
-#  rep "("^fbMultiply^") 3 5";;
+#  rep ("("^fbMultiply^") 3 5");;
 ==> 15
 - : unit = ()
-#  rep "("^fbMultiply^") 0 2";;
+#  rep ("("^fbMultiply^") 0 2");;
 ==> 0
 - : unit = ()
-# rep "("^fbMultiply^") (0-3) 5";;
+# rep ("("^fbMultiply^") (0-3) 5");;
 ==> -15
 - : unit = ()
-# rep "("^fbMultiply^") (0-2) (0-4)";;
+# rep ("("^fbMultiply^") (0-2) (0-4)");;
 ==> 8
 - : unit = ()
-# rep "("^fbMultiply^") 12 7";;
+# rep ("("^fbMultiply^") 12 7");;
 ==> 84
 - : unit = ()
-#  rep "("^fbDivide^") 12 4";;
+#  rep ("("^fbDivide^") 12 4");;
 ==> 3
 - : unit = ()
-#  rep "("^fbDivide^") (0-8) 2";;
+#  rep ("("^fbDivide^") (0-8) 2");;
 ==> -4
 - : unit = ()
-#  rep "("^fbDivide^") 7 3";;
+#  rep ("("^fbDivide^") 7 3");;
 ==> 2
 - : unit = ()
-#  rep "("^fbMod^") 12 4";;
+#  rep ("("^fbMod^") 12 4");;
 ==> 0
 - : unit = ()
-#  rep "("^fbMod^") 7 3";;
+#  rep ("("^fbMod^") 7 3");;
 ==> 1
 - : unit = ()
-#  rep "("^fbMod^") 64 5";;
+#  rep ("("^fbMod^") 64 5");;
 ==> 4
 - : unit = ()
 *)
