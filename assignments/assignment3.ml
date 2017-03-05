@@ -162,7 +162,7 @@ examples, this is another way to build up Fb programs -- in AST-land and not str
 # let dictCreate keyList valList = List.fold_left2 (
     fun res -> fun k -> fun v -> Appl(Appl(Appl(parse fbDictAdd, res), k), v)
   ) empty keyList valList ;;
-# let dict_c = eval ((parse dictCreate) [Int 4; Int 3; Int 2; Int 1; Int 0] [Int 404; Int 303; Int 202; Int 101; Int 0] ) ;;
+# let dict_c = eval (dictCreate [Int 4; Int 3; Int 2; Int 1; Int 0] [Int 404; Int 303; Int 202; Int 101; Int 0] ) ;;
 # ppeval ( Appl(Appl(parse fbDictGet, dict_c), Int 0) ) ;;
 ==> 0
 - : unit = ()
