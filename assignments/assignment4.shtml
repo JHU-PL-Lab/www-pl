@@ -107,8 +107,7 @@ Let point = Function msg ->
 
 <ul>
   <li>We will be using <a href="https://gradescope.com">Gradescope</a> again.</li>
-  <li>Since this is a written assignment you will be uploading a pdf etc file.</li>
-  <li>Submit the first part of the assignment under "Assignment 4A" in Gradescope, and the second part under "Assignment 4B".</li>
+  <li>There will be three separate submissions in Gradescope for this assignment: "Assignment 4A" for the first all-written part, "Assignment 4B code" for problem 1 on 4B and "Assignment 4B written" for the written part of 4B.</li>
     </ul>
 	
 </section>
