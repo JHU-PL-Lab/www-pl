@@ -61,7 +61,7 @@ Part B Due: Weds April 5th</h4>
   Taking your <strong>FbVPL</strong> interpreter from the previous question, write out a version of the <code>Point</code> class example in the book.  The analogous
   record-based version is in sections 5.1.4, but that version has state and we don't here, so follow Section 5.1.1 and make the fields immutable in your encoding; also include the <tt>iszero</tt> method of the 5.1.1 encoding so there is more than one method. Lastly, just make <tt>magnitude</tt> square and add the point coordinates (i.e. x^2 + y^2), no need to implement square root.  Use the code template in <a href="assignment4.ml">assignment4.ml</a> - this template also gives a hint on how your object should work as it shows how a message send can be achieved.
    
-<li>Make a message sending macro <tt>send</tt> which will allow us to avoid the explicit self-passing.  See the template file.
+<li>Make a message sending macro <tt>send</tt> which will allow us to avoid the explicit self-passing we did for the previous question.  See the template file.
        </ol>
   <li>The <strong>FbOB</strong> to <strong>FbSR</strong>
      translation showed how objects can be encoded in terms of state
@@ -81,7 +81,7 @@ Part B Due: Weds April 5th</h4>
 
 <ul>
   <li>We will be using <a href="https://gradescope.com">Gradescope</a> again.</li>
-  <li>There will be three separate submissions in Gradescope for this assignment: "Assignment 4A" for the first all-written part, "Assignment 4B code" for problem 1 and 2 on 4B (upload ONLY the files fbextinterp.ml and assignment4.ml) and "Assignment 4B written" for the written part of 4B.</li>
+  <li>There will be three separate submissions in Gradescope for this assignment: "Assignment 4A written" for the first all-written part, "Assignment 4B code" for problem 1 and 2 on 4B (upload ONLY the files <tt>fbextinterp.ml</tt> and <tt>assignment4.ml</tt>) and "Assignment 4B written" for the written part of 4B.</li>
     </ul>
 	
 </section>
