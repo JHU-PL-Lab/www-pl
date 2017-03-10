@@ -1,0 +1,119 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+  <h2>Assigment 4: Operational semantics</h2>
+</header>
+
+<h4>Part A Due: Friday March 11th<br>
+Part B Due: Weds April 5th</h4>
+<p>
+  <h3>Part A</h3>
+
+<ol>
+
+   <li>Make direct operational semantics rules for the following
+  <strong>Fb</strong> extensions.  Note that you can use as few or as
+  many rules as you need.  What you <em>must</em> do is write a rule
+  that actually does the "work" of the construct; don't just translate
+  it into some other <strong>Fb</strong> syntax that will do the work.
+  <br>
+<ol class="a">
+  <li><code>Freeze(e)</code> and <code>Thaw(e)</code> (we had just defined these as macros in class; write out operational semantics rules)</li>
+  
+  <li><code>Flip</code> (a coin flip primitive -- can return either  <code>True</code> or <code>False</code>)</li>
+<li><code>Triage e Negative e' Zero e'' Positive e'''</code>
+  (<code>e</code> must be a number; run <code>e'</code> if negative,
+  <code>e''</code> if zero, and <code>e'''</code> if positive - like
+  <code>If</code> but a three-way conditional on a number).</li>
+</ol>
+     <li>Repeat question 1 of part A, but for <strong>FbS</strong> in place of <strong>Fb</strong>.</li>
+  <li> Write a <strong>FbS</strong> program which creates a 3-cycle in
+  memory: cell 1 points to cell 2 ... points to cell 5 which points
+  back to cell 1.  Sketch the  operational semantics execution to show
+    that the final store indeed has the  indicated 3-cycle in it.</li>
+  
+    
+   <li> Let us consider a dynamically-typed language, <strong>DFbX</strong> which is an extension of <strong>FbX</strong> that <tt>Raise</tt>'s exception <tt>#rtte</tt> ("run-time type error") whenever there is a run-time type error.  For example, program <tt>3 + True</tt> will return <strong>DFbX</strong> value <tt>Raise #rtte(0)</tt>.  Since an exception is being raised, such exceptions can be handled within the language and execution can continue.  In the Fb interpreter any such run-time type error would cause the Fb program to abort.  (The argument <tt>0</tt> to the exception is just a dummy, it should be a more detailed error code describing how we tried to add a boolean, but we will simplify and just use a dummy here.)  Some clarifying points:
+     <ul>
+  <li>Make sure to preserve left-to-right evaluation on <tt>+</tt> etc, so for example if <tt>d</tt> is a program that computes forever then <tt>d + True</tt> should compute forever, it should not raise a rtte.
+  <li>Try to catch all the bad cases, so an interpreter written from the spec would never raise an OCaml run-time type exception since they were already caught from within the language.  You can make rule schemas to cover a bnch of cases in one rule, any way its not ambiguous what you are specifying is fine.
+  </ul>
+</ol>
+
+  <h3>Part B (DRAFT: not done yet)</h3>
+  
+  <ol>
+    <li>Implement an interpreter for the variant language <strong>FbVPL</strong> which is <strong>FbV</strong> plus <strong>FbP</strong> plus OCaml-style <tt>Let</tt> as a built-in (not as a macro).  Additionally, change the <tt>And</tt> and <tt>Or</tt> constructs so that they short-circuit: implement what you needed to specify in assignment 3 part 3 problem 3.
+      <p>In order to get you going we have written a scanner/parser/pretty printer for  <strong>FbVPL</strong> which can be downloaded <a href="FbExt-assn4.zip">here</a>.  This zipfile is a directory FbExt; replace FbDK/src/FbExt with this directory and write the interpreter code for <strong>FbVPL</strong> in the file fbextinterp.ml.  This FbExt directory is where extensions to Fb can be written such as this; it is very similar to the Fb directory and files, but replacing fb with fbext in the file (and module) names.  <tt>make</tt> will also build this interpreter, and the <tt>fbexttoploop.ml</tt> should also work.
+	<p>You will need to use your Fb interpreter code for the basic Fb features.  If you lost points for buggy code there, we will be very helpful in getting your basic Fb stuff working now.  In any case the tests will primarily be on the new features and not on the functions etc.
+
+  <li>The <strong>FbOB</strong> to <strong>FbSR</strong>
+     translation showed how objects can be encoded in terms of state
+     (and records).  Show that the opposite holds, namely that
+     <strong>FbSR</strong> can be translated into
+     <strong>FbOB</strong> by encoding state and records in terms of
+     objects.  In your translation, show how 
+     <code>Ref</code>, <code> := </code>, and <code> !</code> are
+     translated, as well as records and record field selection.  You can write your
+     translation in either abstract or concrete syntax, as either
+    math. or a Caml program. See the
+    lecture notes for the <strong>FbOB</strong> syntax.
+     <li> It
+       turns out that objects can also be encoded using variants.
+       <ol class="a">
+	 <li>
+  Taking the languge <strong>FbSV</strong>, <strong>Fb</strong> with
+  state and variants, please write out the <code>Point</code> and
+  <code>ColorPoint</code> class examples in the book.  The analogous
+  record-based versions are in sections 5.1.4
+  (<code>Point</code>) and 5.1.5
+  (<code>ColorPoint</code>) - have your classes work just as well as
+  these two.  Create a few points and colored points
+  and send them a few messages to show how it is expected to interact
+  with your new classes.<br>
+Hint: here is a start at the simple object like the point of 5.1.1:
+<pre>
+Let point = Function msg -> 
+ Match msg With
+       `x(dumy) -> 4
+     | `y(dumy)  -> 3;
+     | `magnitude(dumy) -> Function this ->
+          ...
+     | `iszero(dumy) ->  Function this ->
+          ...
+} In 
+...</pre>
+
+   
+<li>One cool feature of this encoding is you can pass object
+  messages around as data, allowing dynamic selection of which message
+  to use before a particular object target has been selected:
+      <pre>Let msg = If ... Then `magnitude(0) Else `iszero(0)</pre>
+      Show how if a programmer had written code like the above you
+  would then send the "message package" <code>msg</code> to some
+      object for which your encoding had been used.
+       </ol>
+</ol>
+
+
+<h3>Submission and Grading</h3>
+
+<ul>
+  <li>We will be using <a href="https://gradescope.com">Gradescope</a> again.</li>
+  <li>Since this is a written assignment you will be uploading a pdf etc file.</li>
+  <li>Submit the first part of the assignment under "Assignment 4A" in Gradescope, and the second part under "Assignment 4B".</li>
+    </ul>
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
