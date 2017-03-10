@@ -59,27 +59,13 @@ Part B Due: Weds April 5th</h4>
        <ol class="a">
 	 <li>
   Taking your <strong>FbVPL</strong>, <strong>Fb</strong> with
-  state and variants, please write out the <code>Point</code> and
+  state and variants, please write out versions of <code>Point</code> and
   <code>ColorPoint</code> class examples in the book.  The analogous
   record-based versions are in sections 5.1.4
   (<code>Point</code>) and 5.1.5
-  (<code>ColorPoint</code>) - have your classes work just as well as
-  these two.  Create a few points and colored points
+  (<code>ColorPoint</code>) - these versions use state which we don't have, so follow Section 5.1.1 and make the fields immutable in your encoding; also include the <tt>iszero</tt> method of the 5.1.1 encoding so there is more than one method.  Create a point and a colored point
   and send them a few messages to show how it is expected to interact
-  with your new classes.<br>
-Hint: here is a start at the simple object like the point of 5.1.1:
-<pre>
-Let point = Function msg -> 
- Match msg With
-       `x(dumy) -> 4
-     | `y(dumy)  -> 3;
-     | `magnitude(dumy) -> Function this ->
-          ...
-     | `iszero(dumy) ->  Function this ->
-          ...
-} In 
-...</pre>
-
+  with your new classes.
    
 <li>One cool feature of this encoding is you can pass object
   messages around as data, allowing dynamic selection of which message
