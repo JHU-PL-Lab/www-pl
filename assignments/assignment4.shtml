@@ -29,7 +29,7 @@ Part B Due: Weds April 5th</h4>
   
   <li><code>Flip</code> (a coin flip primitive -- can return either  <code>True</code> or <code>False</code>)</li>
 <li><code>Triage e Negative e' Zero e'' Positive e'''</code>
-  (<code>e</code> must be a number; run <code>e'</code> if negative,
+  (<code>e</code> must evaluate to a number; run <code>e'</code> if negative,
   <code>e''</code> if zero, and <code>e'''</code> if positive - like
   <code>If</code> but a three-way conditional on a number).</li>
 </ol>
