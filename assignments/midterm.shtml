@@ -36,10 +36,9 @@
 </ol>
 
      <li> [17 Points] Consider the language <strong>FbC</strong>, <strong>Fb</strong> extended with a simple global stateful
-       integer counter.  The counter can go <code>Up</code>, and <code>Down</code>, and you can check if the counter has
-       been <code>Zeroed</code>.  The initial counter value when the program starts is always zero.  Along
-       with<code> Up/Down</code> moving the counter, they return <code>True</code> if the counter just was set to zero and
-       <code>False</code> otherwise.  For example (we use the macro encodings of <code>Let</code> and ";" here):<br>
+       integer counter.  The counter can go <code>Up</code>, and <code>Down</code> (including into negative numbers), and you can check if the counter has
+       been <code>Zeroed</code>.  The initial counter value when the program starts is always zero.  <code>Up/Down</code> move the counter, and additionally return a value: <code>True</code> if the counter just was set to zero and
+       <code>False</code> if not.  For example (we use the macro encodings of <code>Let</code> and ";" here):<br>
 
        <code>Up   ==>   False</code> (* the counter is now 1 so we return False *)<br>
        <code> Up; Up; Down; Down   ==>   True</code> (* the last Down returns True because it zeroed the counter *)<br>
@@ -61,7 +60,7 @@
     </ol>
     <li> [8 Points] Show why the following two expressions cannot typecheck in <strong>TFb</strong> (i.e. no
    derivation tree could ever be built; there are lots of possibilities out there,
-   infinitely many, so you need to show none of them will work).  Make sure to build the actual tree, not just 
+   infinitely many, so you need to show none of them will work).  Make sure to build a tree structure schema to show how it won't work, don't just explain in English.
 <ol type="i">
   <li>If True Then 0 Else False</li>
   <li>(Function x:(Int -> Int) -> x x)</li>
