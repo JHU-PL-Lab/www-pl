@@ -22,7 +22,7 @@
 	  and <code>
 	    isodd
 	  </code>
-	  in <strong>Fb</strong> without using <code>Let Rec</code>.  You can use Y combinator, self-passing, or a variation on one of these, whatever gets the job done.
+	  in <strong>Fb</strong> without using <code>Let Rec</code>.  You can use Y combinator, self-passing, or a variation on one of these, whatever gets the job done.  Your functions need only work on non-negative numbers.
 	<li>Use your idea in a. to make general sugar for mutual recursion.  OCaml supports  the <code>and</code> syntax
 	  <pre>
 	    let rec f x = ...
