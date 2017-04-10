@@ -72,7 +72,7 @@
 <ol type="a">
   <li>Give a function type with only <em>one</em> subtype, other
       than itself.
-  <li>The function subtyping rule is "contravariant" -- it states that if <code>t2 &lt;: t1</code> and <code>t1' &lt;: t2'</code>, then <code>t1 -> t1' &lt;: t2 -> t2'</code>.  Observe how it is  <code>t2 &lt;: t1</code>, flipping the relation on the function domain.  Suppose we had instead used the incorrect rule where things were not flipped (the language Eiffel in fact did this, and paid the consequences): if <code>t1 &lt;: t2</code> and <code>t1' &lt;: t2'</code>, then <code>t1 -> t1' &lt;: t2 -> t2'</code>.  Show this incorrect rule is unsound by finding a program which will typecheck in STFb with this new rule, but will obviously have a run-time error.
+  <li>The function subtyping rule is "contravariant" -- it states that if <code>t2 &lt;: t1</code> and <code>t1' &lt;: t2'</code>, then <code>t1 -> t1' &lt;: t2 -> t2'</code>.  Observe how it is  <code>t2 &lt;: t1</code>, flipping the relation on the function domain.  Suppose we had instead used the incorrect rule where things were not flipped (the language Eiffel in fact did this, and paid the consequences): if <code>t1 &lt;: t2</code> and <code>t1' &lt;: t2'</code>, then <code>t1 -> t1' &lt;: t2 -> t2'</code>.  Show this incorrect rule is unsound by finding a program which will typecheck in <strong>STFbR</strong> with this new rule, but will obviously have a run-time error.
 </ol>
 
  
