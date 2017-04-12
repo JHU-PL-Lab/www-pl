@@ -3,13 +3,13 @@
 
 (* Start: Idealized actor countdown code - won't run in AFbV though
 
-Let Rec countDown = 
+Let Rec countDown = (* define a behavior via a function *)
  Fun msg -> Match msg With  (* actors use variant-based object notion: case on message type *)
     `count(n) -> (If n = 0 Then 0 Else (me <- (`count (n-1))));
                   Become(countDown)) 
 In (* the following code kicks off the initial actor universe *)
-Let actor = Create(countDown) In
-actor <- `count 4
+Let actor = Create(countDown) In (* install a behavior in a new "living" actor *)
+actor <- `count 4                (* send this new actor a message *)   
 ;;
 
 Vague/missing bits in above:
@@ -46,7 +46,7 @@ Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
      1. first parameter passed to me is my own address -- me
      2. second parameter is initial constructor data -- data
      3. third parameter is going to be the message to process -- msg
-     4. function should return code to receive next message -- this here
+     4. function should return code to receive next message -- "this" here
      
 *)
 Let countDown = Fun me ->  Fun data -> y (Fun this -> Fun msg ->
@@ -63,7 +63,6 @@ actor <- `count 4
 
 (* to help understand what "this" is doing as return, note it is 100% equivalent to returning
      (Fun msg -> this msg) -- return a function to process the next message. *)
-
 
 
 (* Here is an example without any recursion to show the protocol better *)
