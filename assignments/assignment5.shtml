@@ -8,7 +8,7 @@
 <div id="content" class="container">
 <section>
 <header class="major">
-  <h2>Assigment 5: Type Systems</h2>
+  <h2>Assigment 5: Types</h2>
 </header>
 
 <p>
@@ -103,14 +103,14 @@ Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
 <h3>Part II</h3>
 <ol>
     
-        In this part, you will be answering some auxiliary questions about typing.  Your submission for this part should be a text file or a PDF containing your answers.
+        In this part, you will be answering some auxiliary questions about typing.
     
     <li>
         <b>(15 points)</b>
         
         Given two types <code>&tau;<sub>1</sub></code> and <code>&tau;<sub>2</sub></code>, write an OCaml function to determine whether <code>&tau;<sub>1</sub></code> is a subtype of <code>&tau;<sub>2</sub></code>.
 
-        The types are given in terms of the abstract syntax tree defined below and correspond to the relevant types in <strong>STFbR</strong>.  Put all the code in a file  <a href="stfbrsubtype.ml"><tt>stfbrsubtype.ml</tt></a>, folllow the above link for an initial template.
+        The types are given in terms of the abstract syntax tree defined below and correspond to the relevant types in <strong>STFbR</strong>.  Put all the code in a file  <a href="stfbrsubtype.ml"><tt>stfbrsubtype.ml</tt></a>, follow the above link for an initial template.
         
 
     </li>
