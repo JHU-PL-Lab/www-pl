@@ -16,7 +16,7 @@
 </p>
 
 <h3>Part I</h3>
-<b>(70 points)</b>
+<b>(80 points)</b>
 <p>
     The FbDK has been designed to be extensible with typechecking. It is just turned off by default. For Part-I of the homework, 
     use the FbDK to implement the type inference algorithm for <strong>EFb</strong> in OCaml. Your implementation is expected to handle all of <strong>EFb</strong> with the exception of <tt>Let Rec</tt>.
@@ -75,7 +75,7 @@ Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
     </li>
     <li>
         
-            The <code>E</code> is a set of pairs (the type equations &tau; = &tau;'); built-in Caml types such as <code>Set</code> or <code>Map</code> may prove useful in your implementation of this data structure.  You can use any of the built-in libraries but the auto-grader cannot install any extra packages to run your type checker.
+            The <code>E</code> is a set of pairs (the type equations &tau; = &tau;'); built-in Caml types such as <code>Set</code> or <code>Map</code> may prove useful in your implementation of  this data structure.  You can use any of the built-in libraries but the auto-grader cannot install any extra packages to run your type checker.
         
     </li>
     <li>
@@ -102,28 +102,23 @@ Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
 
 <h3>Part II</h3>
 <ol>
+        <b>(20 points)</b>
     
-        In this part, you will be answering some auxiliary questions about typing.
-    
-    <li>
-        <b>(15 points)</b>
-        
-        Given two types <code>&tau;<sub>1</sub></code> and <code>&tau;<sub>2</sub></code>, write an OCaml function to determine whether <code>&tau;<sub>1</sub></code> is a subtype of <code>&tau;<sub>2</sub></code>.
+        In this part, you will be answering a question about typing.
+<p>    
 
-        The types are given in terms of the abstract syntax tree defined below and correspond to the relevant types in <strong>STFbR</strong>.  Put all the code in a file  <a href="stfbrsubtype.ml"><tt>stfbrsubtype.ml</tt></a>, follow the above link for an initial template.
-        
-
-    </li>
-    <li>
-        <b>(15 points)</b>
-        
-        In a previous assignment we extended Fb with variants pairs and let to make <strong>FbVPL</strong>. Here we will extend the variants component of that language (only) with types: <strong>TFbV</strong>. In this question you are just making a type system, the mathematical specification for the type checker.  Variant types are added to <strong>TFb</strong>'s types; they will be slightly different than OCaml syntax, they will be e.g. <pre>`good(Int) | `bad(Bool)</pre>
+           In a previous assignment we extended Fb with variants pairs and let to make <strong>FbVPL</strong>. Here we will extend the variants component of that language (only) with types: <strong>TFbV</strong>. In this question you are just making a type system, the mathematical specification for the type checker.  Variant types are added to <strong>TFb</strong>'s types; they will be slightly different than OCaml syntax, they will be e.g. <pre>`good(Int) | `bad(Bool)</pre>
 
 	We also need to add some type labels to facilitate type checking, modifying slightly the <strong>TFbV</strong> syntax:
 replace <code>`n(e)</code> with <code>`n(e):&tau;</code> - all variant data is tagged with a variant type (we don't have the <tt>type</tt> declarations of OCaml so we need to manually do this; this type also needs to include all potential variants since we have no subtyping here.).  For example: <pre>`good(0): `good(Int) | `bad(Bool)</pre>
         
         
-            Your task is to write the new type rules beyond those already present in <strong>TFb</strong> to make a full type system for <strong>TFbV</strong>.  Note you don't need to implement anything for this question.
+          <ol class="a">
+	    <li>Your task is to write the new type rules beyond those already present in <strong>TFb</strong> to make a full type system for <strong>TFbV</strong>.  Note you don't need to implement anything for this question.
+	    <li>Show your rules work by proving the simple program
+	      <pre>Match (`good(0): `good(Int) | `bad(Bool)) With `good(_) -> 0 | `bad(_) -> 1</pre> typechecks: construct the type tree for it.</li>
+	    <li>Describe why the same program but with the <tt>`bad</tt> case removed fails to typecheck in your rules (yes, it should fail even though that case is not invoked).
+	      </ol>
         
     </li>
 </ol>
@@ -133,7 +128,7 @@ replace <code>`n(e)</code> with <code>`n(e):&tau;</code> - all variant data is t
 
 <ul>
   <li>We will be using <a href="https://gradescope.com">Gradescope</a> again.</li>
-  <li>There will be three separate submissions in Gradescope for this assignment: "Assignment 5 typechecker" for part I (which will be auto-graded;  upload ONLY the file <tt>fbtype.ml</tt>), "Assignment 5 subtyping" for Part II question 1 (upload ONLY a file <tt>stfbrsubtype.ml</tt>), and  "Assignment 5 written" for the written questions. <em>In your written question submission please include your name and list of collaborators if any.</em></li>
+  <li>There will be two separate submissions in Gradescope for this assignment: "Assignment 5 typechecker" for part I (which will be auto-graded;  upload ONLY the file <tt>fbtype.ml</tt>), and  "Assignment 5 written" for the written question. <em>In your written question submission please include your name and list of collaborators if any.</em></li>
     </ul>
 	
 </section>
