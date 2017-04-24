@@ -16,7 +16,6 @@ Our reference here  is  the <a
 href="http://docs.oracle.com/javase/specs/jls/se8/html/index.html">Java
 Language Specification, SE 8 Edition</a>.<p>
 <ul>
-  <li>We are not going to write operational semantics for Java but we covered many of the "hard" design ideas behind Java already.
   <li>The book contains three languages which collectively cover the core of Java: <strong>FbOB</strong> (objects), <strong>STFb</strong> (subtyping), and <strong>PEFb</strong> (the P, polymorphism/generics part, not the inference part). 
   <li>An Fb family language corresponding to core Java would be "<strong>PSTFbOB</strong>"
   <li>We did not cover this but most of the aspects would not be surprising to you; a few gaps include
@@ -31,70 +30,61 @@ Language Specification, SE 8 Edition</a>.<p>
         <li> Its false for a good reason:
           <pre>Let p1 : Point = aPoint In let p2 : Point = aColorPoint In p2.magnitude p1 {}</pre>
           would result in an attempt to look up p1's color, a runtime error.  Note we are abusing our encoding here, the encoding itself is OK.
-	<li>Solution: pre-package the <code>self</code> into objects when created so they won't show up in object types.
-	<li>This issue is why there is no subtyping on classes in Java: static method dispatch is ... static.</ul>
+	<li>Solution: pre-package the <code>self</code> into objects when created so self need not be passed in at each message send and it won't show up in object types.
+	  <pre>
+Let point = .. point object as in book... In
+  Let prePackagedPoint = {
+    x = point.x ;
+    y = point.y ;
+    magnitude = point.magnitude point; 
+    isZero = point.isZero point; 
+  };
+In prePackagedPoint.magnitude () (* no self passing needed on object use (and its gone from the type) *) </pre>
+	  -- with this encoding the subtyping above holds since the object type arguments have been removed
+	</ul>
 </ul>
 
 <h3>Classes and inheritance</h3>
 We can encode in <strong>STFbOB</strong> nearly all of the features of basic java class declarations and inheritance.
 <ul>
-  <li>Information hiding is possible in Java via <code>private/protected</code> fields; information hiding in <strong>STFbOB</strong> is accomplished by subsumption -- use subsumption after every <code>new</code> of an object to hide the private/protected bits.
+  <li>Information hiding is possible in Java via <code>private/protected</code> fields; information hiding in <strong>STFbOB</strong> is accomplished by subsumption -- use subsumption after every <code>new</code> of an object to hide the private/protected bits.  Informal idea:
+    <pre>
+      |-  ob : PointWithEverythingPublic     PointWithEverythingPublic <: PointHidingFields
+      --------------------------------------------------------------------------------------
+      |- ob : PointHidingFields </pre>
   <li>Static fields are easily encoded, think of the class as itself being an object.
   <li>Java classes can have multiple constructors, this is possible in an encoding by making other constructors besides <code>new</code> in the class-object of the previous point.
-  <li>Java has countless subtle features to make programming easier that make the specification very complex however:
-<ul>
-  <li>Java by default inserts <code>super();</code> in front of the
-  constructor if  another constructor is not invoked.
-  <li>There is a default constructor w/ body just <code>super();</code> if none is declared.
-  <li>etc etc etc
 </ul>
 
 </ul>
 
 An example of encoding static fields and multiple constructors in <strong>FbSR</strong> taken from the book:
 <pre>
+(* Make a "class object" - an object with some factory methods for building points *)
 Let pointClass = {
-
-  newWithXY = Function thisClass ->
+  (* constructor method on the "class object": *)
+  newWithXY = Function thisClass -> 
     Function newx -> 
     Function newy -> {
-
     x = Ref newx;
     y = Ref newy;
     magnitude = Function this -> Function _ ->
       sqrt ((!(this.x)) + (!(this.y)))
   };
-
   new = Function thisClass -> Function _ -> 
     (thisClass.newWithXY) thisClass (thisClass.xdefault) 
                             (thisClass.ydefault);
-
   xdefault = 0;
   ydefault = 0
 } In
+  Let point = (pointClass.new) pointClass {} In
+    (point.magnitude) point {}    </pre>
 
-Let point = (pointClass.new) pointClass {} In
-(point.magnitude) point {}
-
-    </pre>
-<h4>Information Hiding Contrast: Java public/private/package protected/protected vs Caml module</h4>
-
-<ul>
-  <li>Caml allows arbitrary multiple views of the same module
-      (different things seen by different code given the same module)
-  <li>Java has 
-      fixed forms of multiple view: subclasses may see more
-      (protected) and within vs without a package may see more
-      (package protected)
-  <li>Caml is more flexible, but Java is much simpler.
-</ul>
-
-
-<h3>Nominal Subtyping</h3>
+<h3>Java's Nominal Subtyping</h3>
 <ul>
   <li>Subtype relationships in Java are <em>nominal</em>: they must be declared via extends/implements aclass/aninterface, except for primitive type subtyping;<br>
 -- even if a class clearly implements all the methods of an interface, if the interface is not specified in the header there is no subtyping possible.
-    <li>Running example: <code>Interface Iterable&lt;T&gt;</code> - if you have an <code>Iterable&lt;Integer&gt; thing</code> you can <code>thing.foreach(...)</code> it but only if thing is a class implementing that interface.
+  <li>Running example: <code>Interface Iterable&lt;T&gt;</code> - if you have an <code>Iterable&lt;Integer&gt; thing</code> you can <code>thing.foreach(...)</code> it <b>but only if</b> <tt>thing</tt> is a class implementing that interface.
   <li>In <strong>STFb</strong> subtyping only
       depended on the structure of the underlying records.
       <strong>STFb</strong> subtyping is thus <em>purely
@@ -121,17 +111,17 @@ The <strong>PEFb</strong> language includes both type inference and polymorphism
  Here are some
       comparisons with the <strong>PEFb</strong> or Caml-style parametric types that we  studied:
 <ul>
-  <li>Caml/<strong>PEFb</strong> infers generic types <code>'a</code> automatically; in Java, you must
-      declare them as <code>&lt;T&gt;</code>.
+  <li>Caml/<strong>PEFb</strong> <em>infers</em> generic types <code>'a</code> automatically; in Java, you must
+    <em>declare</em> them as <code>&lt;T&gt;</code>.
   <li>Caml variables of type <code>'a</code> you can <em>never</em> under the hood to see what structure is there; in Java you can typecast a <code>&lt;T&gt;</code> to learn about the structure.
   <li>Java generics also have <em>bounded subtyping</em>, a feature not found in Caml due to the combination of polymorphism and subtyping.
 </ul>
 <h4>Bounded subtyping</h4>
+    <p>
+      Observe that with generics you cannot  have <code>List&lt;String>
+      &lt;: List&lt;Object></code> kinds of things even though <code>String &lt;:Object</code> holds - !
+
 <ul>
-  <li>Recall with generics you cannot  have <code>List&lt;String>
-      &lt;: List&lt;Object></code> kinds of things (see <a
-      href="http://download.oracle.com/javase/tutorial/extra/generics/subtype.html">here</a>
-      for description) even though <code>String &lt;:Object</code> holds.
   <li>The root of this  in subtpying theory is that
       <code>String/Object</code> may occur both positively and
       negatively  in <code>List</code>'s signature, so it needs to be
@@ -171,13 +161,12 @@ To get around this weakness, Java includes <em>bounded subtyping</em>
 
 
 <h3><a href="http://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
-The take-home message here is brief:
+Java's notion of method overloading (also called ad hoc polymorphism) is simply described
 <ul>
   <li> Java method overloading can be
   viewed as concatenating all of the argument types onto the method
   name. 
   <li>So it is really just a form of syntactic sugar. 
-  <li>We will briefly look at the examples in the above spec.
 </ul>
 
 <h3>Immutable Data</h3>
@@ -187,7 +176,7 @@ One  of the key lessons of Caml is the importance of immutable data: its not cha
   <li>Caml analogy: a <code>let</code>-defined variable.
   <li>Like Caml, immutability is only shallow - the field could
       contain <em>components</em> that mutate.
-  <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior.
+  <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior and can confuse Java programmers when their final thing starts mutating on them.
   <li>One advantage of Java is lack of need for OCaml's "<code>!</code>" for accessing mutable data - gets real annoying real fast.
 </ul>
 
@@ -201,7 +190,7 @@ Java 8 has Lambdas!
    <li>Java 8 higher-order functions can "pun" as any interface with only one method in it.<br>
 -- the function is taken to be the body of that single method, no need to write the method name when declaring the function then.
    <li>There is also some (limited) type inference for Lambda parameters.
-   <li>Lets put some spice in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a> that we will go through.
+   <li>Lets put some spice in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a> that we will go through.  For that example here is the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a> and <a href="big-bang-doc/papers/sas-17/">BiFunction</a> type.
        </ul>
  Terminology aside: <em>closure</em>
  <ul>
@@ -228,7 +217,21 @@ val f : int -> int = &lt;fun&gt;
    <li>Closures are more difficult to deal with in C++11's lambdas due to its lower-level memory model - see <a href="cppstudy.shtml#lambdas">the C++ notes</a>.
    <li>The PL book Section 8.1 describes <em>closure conversion</em>, a method to "implement" closures in <strong>FbSR</strong> itself by modifying functions to explicitly record the information.
  </ul>
+
  
+ <h3>Type Inference</h3>
+
+<p>
+<ul>
+  <li>Java follows the "declaring types is good for code reading" philosophy - types generally need to be declared.</li>
+  <li>But, in some cases it can get burdensome to declare types as there are too many of them</li>
+  <li>So, Java 7/8 has introduced some limited type inference, and more could be coming in Java 9</li>
+  <li>In particular for Lambdas the parameter types need not be declared in many cases - it was in Currying example above.</li>
+</ul>
+
+
+</p>
+  
 <h3>Concurrency</h3>
 The book chapter on concurrency reviews the Java concurrency model.
 
@@ -237,9 +240,6 @@ The book chapter on concurrency reviews the Java concurrency model.
   <li>Java variant types analogue? <br>
 -- used to not exist but now there are enums
       at least; "use subtyping and dynamic dispatch instead"
-  <li>Type Inference -- types are declared in Java; avoids all the
-      glitches in the OCaml design to support inference but requires
-      more programmer typing.
   <li>Java Exceptions -- very similar to Caml or <strong>TFbX</strong> but Caml has no <code>throws</code> declarations in the types: less apparent what is being thrown.
 </ul>
 
