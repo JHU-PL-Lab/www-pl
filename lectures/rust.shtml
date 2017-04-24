@@ -46,7 +46,7 @@ How: <em>ownership</em> of data
 <li>Similarly, assignment often means giving up access to the value</li>
 </ul>
 
-We will consult the <a href="https://doc.rust-lang.org/book/ownership.html">documentation on ownership</a> for examples.
+We will consult the <a href="https://doc.rust-lang.org/book/ownership.html">documentation on ownership</a> for details.
 
 
 <h4>Borrowing</h4>
@@ -58,23 +58,18 @@ OK at this point Rust sounds nearly-useless given this rigidity.  But there are 
 <li>by-reference <em>borrows</em> ownership</li>
 </ul>
 
-We will consult the <a href="https://doc.rust-lang.org/book/references-and-borrowing.html">documentation on borrowing</a> for examples.
+We will consult the <a href="https://doc.rust-lang.org/book/references-and-borrowing.html">documentation on borrowing</a> for details.
 
 <h4>Lifetimes</h4>
 
 <ul>
-<li>Every value has a (statically known) <em>lifetime</em></li>
-<li>Usually, this can be inferred</li>
-<li>Three cases that the programmer needs to be concerned with
-<ul>
-<li>functions with multiple inputs and at least one output</li>
-<li>structs with references</li>
-<li>static aka global variables -- special case where variable lives forever</li>
-</ul>
+<li>Every value has a (statically known) <em>lifetime</em>, written <tt>'a</tt></li>
+<li>Usually, this can be inferred, but can declare if inference is not working</li>
+<li>They are used to track borrowing and make sure references will not be dangling
 </li>
 </ul>
 
-Again we will consult the <a href="https://doc.rust-lang.org/book/lifetimes.html">documentation on lifetimes</a> for examples.
+Again we will consult the <a href="https://doc.rust-lang.org/book/lifetimes.html">documentation on lifetimes</a> for details.
 
 <h4>Efficiency</h4>
 Why all the pain compared to Java, python, etc?  Efficiency is the gain!
