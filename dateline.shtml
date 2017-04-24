@@ -436,7 +436,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;<a href="lectures/cppstudy.shtml">C++</a>; <a href="lectures/rust.shtml">Rust</a></div>
+            <div align="left" class="body">&nbsp;<a href="lectures/rust.shtml">Rust</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -471,7 +471,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body"><a href="lectures/language-presentation.org">Haskell</a>; <a href="lectures/language-presentation.org">Rust</a></div>
+            <div align="left" class="body"><a href="lectures/language-presentation.org">Haskell</a>; <a href="lectures/cppstudy.shtml">C++</a> </div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
