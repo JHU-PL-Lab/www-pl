@@ -114,7 +114,7 @@ replace <code>`n(e)</code> with <code>`n(e):&tau;</code> - all variant data is t
         
         
           <ol class="a">
-	    <li>Your task is to write the new type rules beyond those already present in <strong>TFb</strong> to make a full type system for <strong>TFbV</strong>.  Note you don't need to implement anything for this question.  Please make your rule be strict -- OCaml will sometimes give a warning if there is a case missing, you should just error then.  There should be no run-time exceptions (due to a Match not having a matching clause) for a program correctly typed with your rule.
+	    <li>Your task is to write the new type rules beyond those already present in <strong>TFb</strong> to make a full type system for <strong>TFbV</strong>.  Note you don't need to implement anything for this question.  Please make your rule be strict -- OCaml will sometimes give a warning if there is a case missing, you should not allow those programs to typecheck in your rule. (To model the warning we would need to include a warning flag in our type system.)
 	    <li>Show your rules work by proving the simple program
 	      <pre>Match (`good(0): `good(Int) | `bad(Bool)) With `good(_) -> 0 | `bad(_) -> 1</pre> typechecks: construct the type tree for it.</li>
 	    <li>Describe why the same program but with the <tt>`bad</tt> case removed fails to typecheck in your rules (yes, it should fail even though that case is not invoked).
