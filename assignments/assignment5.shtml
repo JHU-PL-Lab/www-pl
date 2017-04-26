@@ -110,11 +110,11 @@ Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
            In a previous assignment we extended Fb with variants pairs and let to make <strong>FbVPL</strong>. Here we will extend the variants component of that language (only) with types: <strong>TFbV</strong>. In this question you are just making a type system, the mathematical specification for the type checker.  Variant types are added to <strong>TFb</strong>'s types; they will be slightly different than OCaml syntax, they will be e.g. <pre>`good(Int) | `bad(Bool)</pre>
 
 	We also need to add some type labels to facilitate type checking, modifying slightly the <strong>TFbV</strong> syntax:
-replace <code>`n(e)</code> with <code>`n(e):&tau;</code> - all variant data is tagged with a variant type (we don't have the <tt>type</tt> declarations of OCaml so we need to manually do this; this type also needs to include all potential variants since we have no subtyping here.).  For example: <pre>`good(0): `good(Int) | `bad(Bool)</pre>
+replace <code>`n(e)</code> with <code>`n(e):&tau;</code> - all variant data is tagged with a variant type (we don't have the <tt>type</tt> declarations of OCaml so we need to manually do this; this type also needs to include all potential variants since we have no subtyping here.).  For example: <code>`good(0): `good(Int) | `bad(Bool)</code>.
         
         
           <ol class="a">
-	    <li>Your task is to write the new type rules beyond those already present in <strong>TFb</strong> to make a full type system for <strong>TFbV</strong>.  Note you don't need to implement anything for this question.
+	    <li>Your task is to write the new type rules beyond those already present in <strong>TFb</strong> to make a full type system for <strong>TFbV</strong>.  Note you don't need to implement anything for this question.  Please make your rule be strict -- OCaml will sometimes give a warning if there is a case missing, you should just error then.  There should be no run-time exceptions (due to a Match not having a matching clause) for a program correctly typed with your rule.
 	    <li>Show your rules work by proving the simple program
 	      <pre>Match (`good(0): `good(Int) | `bad(Bool)) With `good(_) -> 0 | `bad(_) -> 1</pre> typechecks: construct the type tree for it.</li>
 	    <li>Describe why the same program but with the <tt>`bad</tt> case removed fails to typecheck in your rules (yes, it should fail even though that case is not invoked).
