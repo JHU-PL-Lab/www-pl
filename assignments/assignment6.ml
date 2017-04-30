@@ -20,12 +20,11 @@ let expr = "
     Let tick1 = Create(tick, 0) In
     Let tick2 = Create(tick, 0) In
     Let sumtick1 = Create(sumtick, (tick1,tick2)) In
-    Let sumtick2 = Create(sumtick, (tick1,tick2)) In
     (sumtick1 <- `sumtick 0);
-    (sumtick2 <- `sumtick 0);  (sumtick2 <- `sumtick 0)";;
+    (sumtick1 <- `sumtick 0)";;
  *)
   
-(* should print three different sums, one for each sumtick call above:
+(* should print two different sums, one for each sumtick call above:
 
 rep expr ;; *)  
 

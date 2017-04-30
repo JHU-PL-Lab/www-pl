@@ -17,19 +17,19 @@
      [50 Points]
      In order to get the feel of actor programming you are going to write a simple messaging scenario in AFbV, the actors extension to Fb that we covered in lecture and which is in the FbDK.  Here is the basic idea.
      <ul>
-       <li>Your main program is to create four actors, <tt>tick1</tt>, <tt>tick2</tt>, and <tt>sumtick1</tt> and <tt>sumtick2</tt>.</li>
+       <li>Your main program is to create three actors, <tt>tick1</tt>, <tt>tick2</tt>, and <tt>sumtick1</tt>.</li>
        <li>Each <tt>tick</tt> actor is initialized with a counter of <tt>0</tt>, and each time they receive a <tt>`tick(a)</tt> message, they increment their internal counter and send <tt>a &lt;- `countis(n)</tt> for <tt>n</tt> the current count.  The <tt>a</tt> here is called the <em>customer</em> in actor terminology, you have to explicitly pass the actor that will get the result.
-       <li>Each <tt>sumtick</tt> actor knows about the two tick actors; when a <tt>sumtick</tt> actor gets a message <tt>`sumtick(v)</tt> for any value <tt>v</tt> it will send <tt>`tick</tt> messages to each of the two tick actors, sum up the two answers and then print out the sum.</li>
-       <li>The hard part about the <tt>sumtick</tt> design is it needs to receive two replies, the behavior needs to change to deal with that.
+       <li>The <tt>sumtick1</tt> actor knows about the two tick actors; when a <tt>sumtick1</tt> actor gets a message <tt>`sumtick(v)</tt> for any value <tt>v</tt> it will send <tt>`tick</tt> messages to each of the two tick actors, sum up the two answers and then print out the sum.</li>
+       <li>The hard part about the <tt>sumtick</tt> design is it needs to receive two replies, the behavior needs to change to deal with that.  Think of <tt>sumtick</tt> as a 3-state machine: waiting for the initial <tt>`sumtick</tt> message, waiting for first <tt>`tick</tt> count reply, and waiting for second <tt>`tick</tt> count reply.
      </ul>
      Here are some details.
      <ul>
        <li>The file <a href="../ocaml/code/AFbV-examples.afbv">AFbV-examples.afbv</a> contains several examples worked in class. These are designed to be fed into the AFbV interpreter directly.</li>
-       <li>You will use the template file <a href="assignment6.ml">assignment6.ml</a> for your answers.  <em>all you should do is fill in the tick and sumtick definitions, don't add anything else.</em></li>
-       <li>The commented-out expression in that file is the test harness you should use for your application; it should print out three different sums.
+       <li>You will use the template file <a href="assignment6.ml">assignment6.ml</a> for your answers.  <em>All you should do is fill in the tick and sumtick definitions, don't add anything else.</em></li>
+       <li>The commented-out expression in that file is the test harness you should use for your application; it should print out two different sums.  The automated test will be based on that harness so make sure that one exactly as written works.
 	 </ul>
 
-  <li>[20 points] For this question we will explore the operational semantics of the above Actor system.  Suppose <tt>expr</tt> was exactly as in <tt>assignment6.ml</tt> but with the last line of messagings removed for simplicity.  Then the run of <tt>rep expr</tt> would first step to something like
+  <li>[20 points] For this question we will explore the operational semantics of the above Actor system.  Suppose <tt>expr</tt> was exactly as in <tt>assignment6.ml</tt>.  Then the run of <tt>rep expr</tt> would first step to something like
   <pre>
     G = { &lt;a_tick1, ...>, &lt;a_tick2, ...>, &lt;a_sumtick1, ...> &lt;a_sumtick2, ...>} U { (sumtick1 &lt- `sumtick 0)}
   </pre>
@@ -61,7 +61,7 @@
 
 <ul>
   <li>We will be using <a href="https://gradescope.com">Gradescope</a> again.</li>
-  <li>There will be two separate submissions in Gradescope for this assignment: "Assignment 6 code" for part I (which will be auto-graded;  upload ONLY the file <tt>assignment6.ml</tt>), and  "Assignment 6 written" for the written questions. <em>In your written question submission please include your name and list of collaborators if any.</em></li>
+  <li>There will be two separate submissions in Gradescope for this assignment: "Assignment 6 code" for part I (which will be auto-graded;  upload ONLY the file <tt>assignment6.ml</tt> which should only be defining two strings), and  "Assignment 6 written" for the written questions. <em>In your written question submission please include your name and list of collaborators if any.</em></li>
     </ul>
 	
 </section>
