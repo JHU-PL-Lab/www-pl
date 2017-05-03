@@ -1,0 +1,110 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>The Y combinator in terms of ~=</h2>
+</header>
+
+We can use our notion of operational equivalence to understand better how the Y-combinator "runs:".  Its hard to understand how Y works by running it with <code>eval</code> as it does a lot of gratuitous substitutions and the parentheses and large expressions can turn teachers into blathering idiots.  <em>But</em> we have a general notion of equivalence on programs, <em>operational equivalence</em>, and we know equivalent programs will have the same observable runtime result.  So, lets just look at whats equivalent to a program defined via <code>Y</code>.
+
+<p>By Definition 2.20 (beta-equivalence) we know that we can "inline" a function call and get an equivalent program:
+
+<pre>((Function x -> e) v) ∼= (e[v/x])</pre>
+
+Let us use these and other equivalences to show how the Y-combinator works.
+
+Here is a Y combinator:
+
+<pre>
+  Y =def= (Fun f ->(Fun t1 -> f (Fun n1 -> (t1 t1) n1))(Fun t2 -> f (Fun n2 -> (t2 t2) n2)))
+</pre>  
+And let a simple recursive function template to feed to it be:
+<pre>
+  summ =def=  (Fun this -> Fun n -> If n = 0 Then 0 Else n + this (n - 1))
+</pre>
+
+So let us consider <code>(Y summ) 2</code>.  Expanding <code>Y</code>'s definition, we have
+
+<pre>
+ (Fun f ->(Fun t1 -> f (Fun n1 -> (t1 t1) n1)(Fun t2 -> f (Fun n2 -> (t2 t2) n2))) summ) 2
+</pre>
+By Definition 2.20 principle above (and by 2.19, congruence, which lets us substitute = for =), we can inline the <code>f</code> parameter <code>summ</code> -- the above is operationally equivalent to
+<pre>
+  (Fun t1 -> summ (Fun n1 -> (t1 t1) n1)(Fun t2 -> summ (Fun n2 -> (t2 t2) n2))) 2
+</pre>
+This is what the <code>f</code> parameter does - it lets us feed in what template to use.
+
+Now the function call on the left we can inline as well: let us abbreviate <pre>partY =def= (Fun t2 -> summ (Fun n2 -> (t2 t2) n2))</pre> and we get the equivalent
+<pre>
+  (Fun t1 -> summ (Fun n1 -> summ (t1 t1) n1) partY) 2
+</pre>
+Now, here observe that partY is a value so we can also inline it for parameter <code>t1</code> to give the equivalent
+<pre>
+  (summ (Fun n1 -> summ (partY partY) n1)) 2
+</pre>
+Here we can finally see some of the magic of the Y combinator -- the template <code>summ</code> is going to get fed <code>Fun n1 -> summ (partY partY) n1</code>, which is a summate function that is being passed a self-reference to itself!  Let us abbreviate
+<pre>recsumm =def= Fun n1 -> summ (partY partY) n1</pre> and apply 2.20 to inline the call to <code>summ</code>, passing in <code>recsumm</code> for its paremeter <code>this</code> and <code>2</code> for <code>n</code>:
+<pre>
+If 2 = 0 Then 0 Else 2 + recsumm (2 - 1)
+</pre>
+Now this obviously simplifies by 2.24 and 2.23 type laws to the equivalent 
+<pre>
+2 + recsumm (2 - 1)
+</pre>
+Now, we are finally going to do a <code>recsumm</code> call and hope it does what its supposed to.  <code>2 - 1 ~= 1</code> and then since <code>1</code> is a value we can apply beta reduction again, inlining the <code>n1</code> parameter of <code>recsumm</code> to give:
+<pre>
+2 + summ (partY partY) 1
+</pre>
+Now, what we <em>can't</em> do here is inline <code>(partY partY)</code> as <code>summ</code>'s parameter, because its not a value and the beta rule only works on values.  Instead, we can simplify it.  First lets just expand the definition for the right occurrence of <code>summ</code>:
+<pre>
+2 + summ ((Fun t2 -> summ (Fun n2 -> (t2 t2) n2)) partY) 1
+</pre>
+Now we can apply beta:
+<pre>
+2 + summ (summ (Fun n2 -> (partY partY) n2))) 1
+</pre>
+The argument to the inner <code>summ</code> is in fact just a renamed version of <code>recsumm</code>, and since renaming bound variables preserves equivalence we can just abbreviate that to be <code>recsumm</code>:
+<pre>
+2 + summ (summ recsumm) 1
+</pre>
+Now, the first argument to the outer <code>summ</code> is not a value, but its close -- expand the second definition of <code>summ</code> in the above:
+<pre>
+2 + summ ( (Fun this -> Fun n -> If n = 0 Then 0 Else n + this (n - 1)) recsumm) 1
+</pre>
+and we can inline its <code>this</code> argument:
+<pre>
+2 + summ (Fun n -> If n = 0 Then 0 Else n + recsumm (n - 1)) 1
+</pre>
+Now it looks like we have a successful game here: go back and look at where we were when <code>n</code> was <code>2</code>, it was the same syntax pattern.  Let us fire off a couple more equivalent expressions to verify all is working:
+<pre>
+2 + If 1 = 0 Then 0 Else 1 + (Fun n' -> If n' = 0 Then 0 Else n' + recsumm (n' - 1)) (1 - 1)
+</pre>
+<pre>
+2 + 1 + (Fun n' -> If n' = 0 Then 0 Else n' + recsumm (n' - 1)) (0)
+</pre>
+<pre>
+2 + 1 + If 0 = 0 Then 0 Else 0 + recsumm (0 - 1)
+</pre>
+<pre>
+2 + 1 + 0
+</pre>
+<pre>
+3
+</pre>
+Tah-dah!
+
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->	 
+
+
+

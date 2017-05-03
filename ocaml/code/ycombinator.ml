@@ -129,7 +129,7 @@ rep ("("^ysumm^") 2") ;;
    -- hack to stop execution after each recursion but to let us re-start it. *)
 
 let yY = "(Fun f ->
-          (Fun x -> f (Fun a -> (x x) a))(Fun y -> f (Fun b -> (y y) b)))";;
+          (Fun x -> f (Fun a -> (x x) a))(Fun s -> f (Fun b -> (s s) b)))";;
 
 let slonosumm =  "(Fun this -> Fun n -> Fun stopper -> If n = 0 Then 0 Else this (n - 1))";;
   
@@ -140,3 +140,6 @@ let applynumandunstop = res ("("^withfun^") 2 999");;
 let unstoptheabove = res ("("^applynumandunstop^") 999");;
 
 let unstoptheabove' = res ("("^unstoptheabove^") 999");;
+
+
+  
