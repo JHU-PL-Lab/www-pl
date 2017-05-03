@@ -24,7 +24,7 @@ let expr = "
     (sumtick1 <- `sumtick 0)";;
  *)
   
-(* should print two different sums, one for each sumtick call above:
+  (* should print two different sums, one for each sumtick call above:
 
 rep expr ;; *)  
 
