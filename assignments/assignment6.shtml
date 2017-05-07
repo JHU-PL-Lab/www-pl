@@ -31,7 +31,7 @@
 
   <li>[20 points] For this question we will explore the operational semantics of the above Actor system.  Suppose <tt>expr</tt> was exactly as in <tt>assignment6.ml</tt>.  Then the run of <tt>rep expr</tt> would first step to something like
   <pre>
-    G = { &lt;a_tick1, ...>, &lt;a_tick2, ...>, &lt;a_sumtick1, ...> &lt;a_sumtick2, ...>} U { [a_sumtick1 &lt- `sumtick 0]}
+    G = { &lt;a_tick1, ...>, &lt;a_tick2, ...>, &lt;a_sumtick1, ...> } U { [a_sumtick1 &lt- `sumtick 0]}
   </pre>
   by the global rule in section 7.2.5 of the book.
   <ol class="a">
