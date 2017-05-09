@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>PL Final 2016</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Princples of Programming Languages
+<br> Spring 2016
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.  You can write on both
+sides.  No printer output is allowed, it must all  be hand-written.<p>
+
+    In all questions below where you need to write <strong>Fb</strong> code, you can freely use <code>Let</code> and pairing/projection sugar without defining it.
+
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+
+  <li> (6 points) Consider For <strong>Fb</strong> We have notions of equal expressions, operationally equivalent expressions, operational semantics, etc.   For each of the following pairs of expressions, give which of the three relations holds on the pair.
+    <ol type="a">
+<li> 1    ==> / = / ~=    1
+<li> Fun x -> x    ==> / = / ~=    Fun y -> y
+<li> Fun x -> x + 1 + 1    ==> / = / ~=    Fun x -> x + 2
+<li> (Fun x -> x + 1) 1    ==> / = / ~=    1 + 1
+<li> (x + 1)[1/x]    ==> / = / ~=    1 + 1
+<li>  (x + 1)[1/x]    ==> / = / ~=    2
+    </ol>
+
+    <p> <!- ------------------------------------------------------------------------- ->
+      
+  <li> (16 points) Consider adding real numbers to <strong>Fb</strong>, giving <strong>FbRe</strong>.  We are not going to be concerned with how precise they are etc, similarly with how we treated integers.  New expressions include constants such as 3.24 etc.  Operators <code>
+      +/-/=
+    </code> are overloaded to also work on reals.
+
+    <ol type="a">
+      <li>Give operational semantics rules for these new constants and three new operators.
+      <li>The typed language analogue is <strong>TFbRe</strong>.  Assuming it is <strong>TFb</strong> with a new type <strong>Real</strong>, give the type rules for these three operators and new constants.
+	<p>OK, now we come to the harder part of this question.  OCaml did not overload + on its floats, it made a special operator <code>+.</code>; but, it did overload =.  OCaml chose this design due to issues in type inference for overloaded + (but not for overloaded =). 
+	  <li>Consider type inference over reals and  <strong>EFbRe</strong>.  Show here how type inference rules and the closure process could be extended to deal with constants and = on reals.
+	  <li>Now consider overloaded +: argue why it would be difficult to include an (overloaded) + in  <strong>EFbRe</strong>.  Hint: you probably want to propose a straw-man inference rule and/or closure and argue how it is problematic.
+	        </ol>
+    <p> <!- ------------------------------------------------------------------------- ->
+      
+  <li>(8 points)  This question concerns subtyping in
+    <strong>STFbR</strong>.
+<ol type="a">
+  <li>Give a function type with only <em>one</em> subtype other
+      than itself.
+  <li> Suppose we had a subtyping rule that allowed records of records to be subtypes of the merged record, e.g. it supported subtyping such as
+    <pre>
+      {r1: { a : Int}; r2: {b : Int}} <: {a : Int; b : Int}
+					 </pre>
+    Unfortunately, such a rule would be unsound.  Show this by giving an <strong>STFbR</strong> program which would typecheck if subtypings like the above were added to the existing language, yet it would exhibit a run-time type error.
+</ol>
+
+
+    <p> <!- ------------------------------------------------------------------------- ->
+      
+  <li>(6 points) Prove that operational equivalence for <strong>Fb</strong> is a congruence: if <code>e1 ~= e2</code>, then <code>C[e1] ~= C[e2]</code> for any <code>C</code>.  Hint: the proof is very short working directly from the definition of operational equivalence.  Note you cannot reference the book Lemma for this.
+
+    <p> <!- ------------------------------------------------------------------------- ->
+    
+   <li> (14? points) Lets play every PL student's favorite game, "pull out the points": for each of the expressions below, make a context <code>C</code> to "get the exam points out" of the expression we give you.   Your context <code>C</code> <em>cannot</em> contain any integer literals <code>0,1,-1,2,..</code> or any integer operations <code>+/-</code>.  Concretely, for each expression <code>e</code> below make a <code>C</code> such that <code>C[e] ==> n</code> where <code>n</code> is the number of points you will get on that sub-question.  Note any number greater than <code>4</code> we will coerce to <code>4</code> in the grading (we will also give partial credit for close answers).
+
+ <ol type="a">
+   <li> <code>(Fun g -> g (Fun x -> x 3))</code>
+   <li> <code>(Fun q -> q True (Fun r -> r (Fun s -> s 0 3)))</code>
+   <li> <code>Fun f -> ( f (Fun x -> x 0 (0 - 1)) (Fun x -> Fun y -> x - y) )</code>
+   <li> <code>(Fun d -> d (Fun f -> Fun x -> If x = 0 Then 0 Else f f (x + 1)) 1)</code>
+</ol>
+
+    <p> <!- ------------------------------------------------------------------------- ->
+
+      <li>(10 points)  This question concerns mutual recursion.
+      <ol type="a">
+	<li>Write mutually recursive functions <code>
+	    iseven
+	  </code>
+	  and <code>
+	    isodd
+	  </code>
+	  in <strong>Fb</strong> without using <strong>Let Rec</strong>.  You can use Y combinator, self-passing, or a variation on one of these, whatever gets the job done.
+	<li>Use your idea in a. to make general sugar for mutual recursion.  Caml supports  <code>and</code> syntax
+	  <pre>
+	    let rec f x = ...
+	    and     g y = ... 
+	    in            ... </pre>
+	  to allow mutually recursive functions
+  to be defined.  Write an <strong>Fb</strong> macro to support this,
+  just for the case of two mutually recursive functions of one
+  argument:
+      <pre>Let Rec f x = e And g y = e' In e'' =def= (fill in)</pre>
+</ol>
+
+ 
+      <li> (8 points) Consider language <strong>FbL</strong>, <strong>Fb</strong> with logging.  Additional expression <code>
+	  Log("logging this",e)
+	</code> will dump the log string plus the value of <code>e</code> in a log.  Logging is a side effect like state and actors; propose a side-effecting operational semantics for <strong>FbL</strong>, and write the operational semantics rules for <code>+</code> and <code>Log</code> expressions (the other rules will be similar).
+</ol>
+
+
+    </body> </html>
