@@ -38,12 +38,7 @@ webpage</a>.
 
 <h3>Using emacs with OCaml: Tuareg mode and Merlin mode</h3>
 <p>
-  You will need Tuareg mode, the ocaml mode addition to emacs, to effectively edit OCaml
-programs.  Here are two different ways to install it.<p>
-
-<ul class="bull">
-  <li>Use the <a href="https://marmalade-repo.org">Marmelade</a> emacs package manager to install Tuareg mode: configure Marmelade as described on the aforelinked page, and execute <code>package-list-packages</code> to get the full list, scroll down to Tuareg and hit the install button.
-  <li>Or, go to the <a href="http://www.emacswiki.org/emacs/TuaregMode">Tuareg Mode</a> page, download the files and follow the instructions.  Note you need to put the files in the indicated <code>~/.elisp/</code> directory and edit your <code>~/.emacs</code> file as indicated there, or it will not work. 
+Tuareg mode performs syntax highlighting and runs an OCaml shell within emacs, and Merlin mode adds more advanced OCaml-specific editing commands.  To install them, type into a terminal <tt>opam install user-setup tuareg</tt> if they are not already installed, and then type <tt>opam user-setup install</tt> which will patch your emacs startup files - restart emacs and Tuareg and Merlin should work.
 
 </ul>
 <h3>Using Tuareg Mode</h3>
@@ -60,7 +55,7 @@ C-c C-r		evaluate the whole selected region
 C-c C-s		show the shell window; will automatically start an ocaml shell if not running
 C-c `		go to exact error location in the source</pre>
 
-When emacs asks for the <code>Ocaml toplevel to run</code>, you hopefully can just hit return and OCaml will start.  If it does not, you may need to enter the full path to the <code>ocaml</code> binary on your computer.    Use Unix shell command <code>which ocaml</code> to find that full path on Linux/Mac.  Once you have that full path you can add the line <pre>(defvar tuareg-interactive-program "/Users/scott/.opam/4.04.0/bin/ocaml")</pre> (assuming <code>/Users/scott/.opam/4.04.0/bin/ocaml</code> is what <code>which ocaml</code> reported) to your <code>~/.emacs</code> file and you won't need to type it each time you launch a new toplevel.
+
 <h4>Merlin mode</h4>
 <p>
 Merlin mode is useful because it can also display types of expressions and take you to a definition of a variable from its use.  See <a href="https://opam.ocaml.org/blog/turn-your-editor-into-an-ocaml-ide/">here</a> for more information on Merlin and how to install it.  With Merlin installed,  useful keys available include
