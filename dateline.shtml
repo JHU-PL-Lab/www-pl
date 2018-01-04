@@ -11,7 +11,7 @@
               <h2>Dateline</h2>
             </header>
 <p>
-  Lecture material is under the links; lectures with no such link will be based on the <a href="book/dist">book</a>.  Assignments are under the links; the links will be dead until the assignment is put up.</p>
+  Lecture material is under the links; lectures with no such link will be based on the <a href="book">book</a>.  Assignments are under the links; the links will be dead until the assignment is put up.</p>
 
 <p>
 <table class="date" width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#CCCCCC">
@@ -34,7 +34,7 @@
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Jan 30</div>
+            <div align="center" class="body">Jan 29</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -52,7 +52,7 @@
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Feb 1</div>
+            <div align="center" class="body">Jan 31</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -71,7 +71,7 @@
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Feb 6</div>
+            <div align="center" class="body">Feb 5</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -89,7 +89,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Feb 8</div>
+            <div align="center" class="body">Feb 7</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -107,7 +107,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Feb 13</div>
+            <div align="center" class="body">Feb 12</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -125,7 +125,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Feb 15</div>
+            <div align="center" class="body">Feb 14</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -142,7 +142,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Feb 20</div>
+            <div align="center" class="body">Feb 19</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -159,7 +159,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Feb 22</div>
+            <div align="center" class="body">Feb 21</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -177,7 +177,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Feb 27</div>
+            <div align="center" class="body">Feb 26</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -194,7 +194,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Mar 1</div>
+            <div align="center" class="body">Feb 28</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -211,7 +211,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Mar 6</div>
+            <div align="center" class="body">Mar 5</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -228,7 +228,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Mar 8</div>
+            <div align="center" class="body">Mar 7</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -246,7 +246,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
 	
        <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Mar 13</div>
+            <div align="center" class="body">Mar 12</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -263,7 +263,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Mar 15</div>
+            <div align="center" class="body">Mar 14</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -275,12 +275,12 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 4A (Fri 17th)</div>
+            <div align="center" class="body">Assignment 4A (Fri 16th)</div>
           </td>
 
 		  <tr> 
           <td width="8%" height="2"> 
-            <div align="center" class="body">Mar 20-24</div>
+            <div align="center" class="body">Mar 19-23</div>
           </td>
           <td width="8%" height="2"> 
             <div align="center" class="body">&nbsp;</div>
@@ -291,7 +291,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
 
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Mar 27</div>
+            <div align="center" class="body">Mar 26</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -308,7 +308,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Mar 29</div>
+            <div align="center" class="body">Mar 28</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -326,7 +326,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 3</div>
+            <div align="center" class="body">Apr 2</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -343,7 +343,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 5</div>
+            <div align="center" class="body">Apr 4</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -361,7 +361,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 10</div>
+            <div align="center" class="body">Apr 9</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -378,7 +378,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 12</div>
+            <div align="center" class="body">Apr 11</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -396,7 +396,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 17</div>
+            <div align="center" class="body">Apr 16</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -413,7 +413,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 19</div>
+            <div align="center" class="body">Apr 18</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -447,7 +447,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 26</div>
+            <div align="center" class="body">Apr 25</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -465,7 +465,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">May 1</div>
+            <div align="center" class="body">Apr 30</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -482,7 +482,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">May 3</div>
+            <div align="center" class="body">May 2</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
@@ -494,12 +494,12 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 6 (Fri 5th)</div>
+            <div align="center" class="body">Assignment 6 (Fri 4th)</div>
           </td>
         </tr>
 	<tr> 
           <td width="8%"> 
-            <div align="center" class="body">May 9,
+            <div align="center" class="body">May 8,
         5:00-5:50PM</div>
           </td>
           <td width="8%"> 
@@ -507,7 +507,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
           </td>
           <td width="30%"> 
             <div align="left" class="body">&nbsp;<strong>Final Review,
-Shaffer 202</strong></div>
+Shaffer 303</strong> (verify!!)</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
@@ -519,15 +519,15 @@ Shaffer 202</strong></div>
         </tr>
 	<tr> 
           <td width="8%"> 
-            <div align="center" class="body">May 11,
-        9-noon</div>
+            <div align="center" class="body">May 10,
+        9-noon (verify!!)</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Thu</div>
           </td>
           <td width="30%"> 
             <div align="left" class="body">&nbsp;<strong>Final Exam,
-Shaffer 202</strong></div>
+Shaffer 303<</strong></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
