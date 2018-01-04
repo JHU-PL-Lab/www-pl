@@ -28,52 +28,48 @@ We have provided you with the FbDK to make your job easier.
 <ul>
   <li>
     The FbDK distribution is
-    <a href="http://pl.cs.jhu.edu/pl/book/dist/">here</a> in both source and
-    binary form. The FbDK is described in detail in Appendix A of
-    <a href="http://pl.cs.jhu.edu/pl/book/dist/book/book.pdf">the book</a>.
+    <a href="http://pl.cs.jhu.edu/pl/book/_dist">here</a>.
   </li>
   <li>
-    The FbDK source distribution includes code and scripts to build a standalone
+    The FbDK source includes code and scripts to build a standalone
     F&#x266d; interpreter, a F&#x266d; top loop in analogy to
     the <code>ocaml</code> top loop. It includes a parser and pretty printer.
     All you need to do is write an <code>eval</code> function in the
-    file <a href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/source/fbdk-1.23/src/Fb/fbinterp.ml"><code>.../src/Fb/fbinterp.ml</code></a>.
+    file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk-1.3.0/src/Fb/fbinterp.ml"><code>.../fbdk/src/Fb/fbinterp.ml</code></a>.
   </li>
+  <li>The <code>README.md</code> file in <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk-1.3.0/"><code>.../fbdk/</code></a>
+describes how to compile and run the interpreter, and how to run the "solution" binaries we also include with the distribution.    </li> 
   <li>
     The distribution
-    file <a href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/source/fbdk-1.23/src/Fb/fbast.ml"><code>.../src/Fb/fbast.ml</code></a>
-    is a variant that defines the grammar to be used for F&#x266d;.
+    file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk-1.3.0/src/Fb/fbast.ml"><code>.../fbdk/src/Fb/fbast.ml</code></a>
+    is a variant type that defines the grammar to be used for F&#x266d;.
   </li>
   <li>
     The FbDK also contains a complete BOOL interpreter for the little boolean
     language in the
-    subdir <a href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/source/fbdk-1.23/src/BOOL/"><code>.../src/BOOL/</code></a>.
+    subdirectory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk-1.3.0/src/BOOL/"><code>.../fbdk/src/BOOL/</code></a>.
     The complete source for the BOOL evaluator is also given.
   </li>
   <li>
-    The <a href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/binaries/">FbDK
-    binary distribution</a> includes bytecodes for a correct F&#x266d;
+    The FbDK distribution also includes binaries in <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk-1.3.0/binaries/"><code>.../fbdk/binaries/</code></a> which include bytecodes for a correct F&#x266d;
     interpreter <code>fb.byte</code> - executed as <code>ocamlrun fb.byte</code>
     - that you can test your interpreter against.
   </li>
   <li>
     You may find it handy to debug your interpreter with help of the
     interactive <code>ocaml</code> top loop. Once you have <code>make</code>'d
-    all the files, run <code>ocaml</code> from the <code>src/Fb/</code>
-    directory and <code>#use "fbdktoploop.ml";;</code> which loads
-    the <a href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/source/fbdk-1.23/src/Fb/fbdktoploop.ml"><code>.../src/Fb/fbdktoploop.ml</code></a>
-    file -- this will load the F&#x266d; interpreter structures. Look at the
-    source of this file for the functions it contains. (NOTE: You may need to
-    add a <code>#cd [your Fb directory here] ;;</code> at the top of the file to
-    make it load correctly. Check the comments in the file for details). Note
-    you can also use <code>fbdktoploop.ml</code> with the binaries by using
-    the <code>.cmo</code> files in the subdirectory <code>cmo/</code> of the
-    binary distribution.
+    all the files, launch <code>ocaml</code> from the <code>fbdk/</code>
+    directory and <code>#use "debugscript/fb.ml";;</code> which loads
+    the <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk-1.3.0/debugscript/fb.ml"><code>...fbdk/debugscript/fb.ml</code></a>
+    file -- this will load your F&#x266d; interpreter binary modules. Look at the
+    source of this file for the functions it contains.  Note
+    you can also use <code>fb.ml</code> with the binaries by using
+    the <code>.cmo</code> files in the binary distribution.
   </li>
   <li>
     The F&#x266d;DK distribution also contains the source of all F&#x266d; code
     examples in the
-    book, <a href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/source/fbdk-1.23/src/Fb/fbexamples.ml"><code>.../src/Fb/fbexamples.ml</code></a>
+    book, <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk-1.3.0/debugscript/fb_examples.ml"><code>...fbdk/debugscript/fb_examples.ml</code></a>
   </li>
 </ul>
 
@@ -101,10 +97,6 @@ We have provided you with the FbDK to make your job easier.
     substitution, etc. </li>
   <li>
     Declare and raise appropriate exceptions.
-  </li>
-  <li>
-    The file <a href="http://pl.cs.jhu.edu/pl/book/dist/FbDK/downloads/source/fbdk-1.23/src/Fb/fbexamples.ml">.../src/Fb/fbexamples.ml</a>
-    in the distribution includes many F&#x266d; examples.
   </li>
   <li>
     You will probably want to write at least three functions:
