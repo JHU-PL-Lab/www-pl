@@ -37,7 +37,7 @@ We now require that you use the <a href="https://opam.ocaml.org">OPAM packaging 
   <li> The OCaml toolchain is not good in straight Windows.
     <ul>
       <li>If you are running Windows 10, try the new MSFT <a href="https://msdn.microsoft.com/en-us/commandline/wsl/about">Bash on Windows</a> mode which once you have set up will allow you to follow the Linux Ubuntu install instructions to get opam. Windows 10 only for this unfortunately and it may have some incompatibilities.</li>
-      <li>Otherwise, you will need to set up a Linux VM on your Windows box you can use it to set up a Linux install of OCaml.  There are many good tutorials on that, <a href="https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098">here is one of them</a>.  Once your virtual Linux box is set up, you can follow the Linux install instructions.</li>
+      <li>Otherwise, you will need to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, <a href="https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098">here is one of them</a>.  Once your virtual Linux box is set up, you can follow the Linux install instructions.</li>
 	</ul>
 </ul>
 <p>
