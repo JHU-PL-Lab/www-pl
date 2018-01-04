@@ -17,12 +17,12 @@ true || false;;
 
 (* int and float cannot be mixed without being explicit *)
 1;;
-1.;; 
+1.;;
 4 * 5;;
 (* 4.0 * 1.5;; *) (* error -- '*' operator is only for integers *)
 4.0 *. 1.5;;      (* works -- '*.' is for floats *)
 (float 4) *. 1.5;; (* use an explicit caast when you want to mix *)
-  
+
 (* Lists are easy to create and manipulate *)
 [1; 2; 3];;
 [1; 1+1; 1+1+1];;
@@ -59,17 +59,17 @@ let squared x = x * x;; (* declare a function: "squared" is its name, "x" is its
 squared 4;; (* call a function -- separate arguments with S P A C E S *)
 
 (*
- * - no return statement; value of the whole body-expression is what gets 
+ * - no return statement; value of the whole body-expression is what gets
  *   returned
  * - type is printed as domain -> range
- * - "officially", OCaml functions take only one argument - ! 
+ * - "officially", OCaml functions take only one argument - !
  *      multiple arguments can be encoded by some tricks (later)
 *)
 
 (* fibonacci series - 1 1 2 3 5 8 13 ... *)
 let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (ugh) *)
   if n <= 2 then
-    1 
+    1
   else
     fib(n - 1) + fib (n - 2);;
 
@@ -92,9 +92,9 @@ let add3 = add 3;; (* don't need to give all arguments at once!  Type of add is 
 add3 4;;
 add3 20;;
 
-(* Conclusion: add is a function taking an integer, and returning a FUNCTION which takes ints to ints. 
-   So, add is a HIGHER-ORDER FUNCTION: 
-       it either takes a function as an argument, or returns a function as result. *)  
+(* Conclusion: add is a function taking an integer, and returning a FUNCTION which takes ints to ints.
+   So, add is a HIGHER-ORDER FUNCTION:
+       it either takes a function as an argument, or returns a function as result. *)
 
 (* Observe 'int -> int -> int' is parenthesized as 'int -> (int -> int)' -- unusual RIGHT associativity *)
 
@@ -154,20 +154,20 @@ let (f, s) = mypair in f +. s;;  (* same behavior as "match mypair with (f,s) ->
 
 match mypair with (f,s) -> f +. s;;
 
-  
-let getSecond t = 
+
+let getSecond t =
   match t with
     (f, s) -> s
 ;;
 let s = getSecond (2, "hi");;
 let s = getSecond mypair;;
 
-let getSec t = 
+let getSec t =
   match t with
     (f, s) -> (s :: [],4)
-;;  
+;;
 (* warning - non-exhaustive pattern matching; avoid this *)
-(* let getHead l = 
+(* let getHead l =
   match l with
     head :: tail -> head
 ;;
@@ -177,7 +177,7 @@ let getSec t =
 
 (* an error-free version *)
 
-let getHead l = 
+let getHead l =
   match l with
     | [] -> failwith "you dodo"
   |  head :: tail -> head
@@ -188,7 +188,7 @@ let getHead l =
 let cadd p = match p with (x, y) -> x + y;;
 
 (* Shorthand for the above (only works because there is only one pattern clause - special *)
-  
+
 let cadd (x, y) = x + y;; (* same result *)
 
 (* This 'cadd' takes only a SINGLE argument - a tuple - more like how C etc functions are called *)
@@ -201,18 +201,18 @@ add 1 2;; (* notice different calling convention compared to cadd *)
 (* The difference between cadd and add can be observed in their types.
      cadd : int * int -> int  -- C/Java etc style functions
       add : int -> int -> int -- the default OCaml style  *)
-  
+
 let add = (+);; (* this syntax is how you can give any built-in infix operator a name as a function *)
 
 (* using patterns in recursive functions: a function to reverse a list
        note this does not mutate the list, it makes a new list that reverses original
-   
+
    We also want to study this function to show how its correctness is
    justified by an induction argument
 
 *)
 
-let rec rev l = 
+let rec rev l =
   match l with
     [] -> []
   | x :: xs -> rev xs @ [x]
@@ -230,7 +230,7 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
  * Proof: by induction on the length of the list, say l.
  * Case  l = []: obviously [] is correct
  * Case l is x :: xs for some x and xs:  we assume by INDUCTION that "rev xs" reverses the tail;
- * then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED. 
+ * then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED.
  *)
 
 
@@ -248,35 +248,35 @@ type comparison = LessThan | EqualTo | GreaterThan;;
 
 let intcmp x y =
 	if x < y then LessThan else
-		if x > y then GreaterThan else EqualTo;;  
+		if x > y then GreaterThan else EqualTo;;
 
 (* Of course we will pattern match to take the data apart *)
-  
+
 match intcmp 4 5 with
   | LessThan -> "less!"
   | EqualTo -> "equal!"
   | GreaterThan -> "greater!";;
 
 (* Variants can also wrap arguments: they are more like C unions than Java enums *)
-  
+
 type 'a nullable = Null | NotNull of 'a;;
 
 match NotNull(4) with
   | Null -> "null!"
   | NotNull(n) -> (string_of_int n)^" is not null!"
 ;;
-    
-  
+
+
 (* Immutable declarations *)
 (*
  * All variable declarations in OCaml are IMMUTABLE -- value will never change
  * helps in reasoning about programs, we know the variable's value is fixed
  *)
-(let y = 3 in 
+(let y = 3 in
   ( let x = 5 in
     ( let f y = x + y in
       ( let x = y in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
-        (f (y - 1)) + x 
+        (f (y - 1)) + x
             )
         )
     )(* x is STILL 5 in the function body - thats what x was when f defined *)
@@ -303,15 +303,15 @@ let shad = f;; (* make a new name for f *)
 
 (* lets "change" f, say we made an error in its definition above *)
 
-let f x = if x <= 0 then 0 else x + 1;; 
+let f x = if x <= 0 then 0 else x + 1;;
 
 g (-5);; (* we didn't re-submit g, so the version above refers to now-shadowed f - !! *)
 
 let g x = f (f x);; (* need to resubmit (identical) g code since it depends on f *)
 g (-6);; (* now it works as expected *)
-  
-(* MORAL: When interactively editing a group of functions that call each other, 
- *        re-submit ALL the functions to the top loop when you change any ONE 
+
+(* MORAL: When interactively editing a group of functions that call each other,
+ *        re-submit ALL the functions to the top loop when you change any ONE
  *        of them.  Otherwise you can have some functions using a now-shadowed version.
  *)
 
@@ -319,56 +319,56 @@ g (-6);; (* now it works as expected *)
 
 (* warm up to the next function - write a (useless) copy function on lists *)
 
-let rec copy l = match l with 
+let rec copy l = match l with
               [] -> []
             | hd :: tl ->  hd::(copy tl)
 
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 
 (* copy is useless because immutable data can't be mutated so never a need to copy, ever! *)
-                                                
+
 (* Refine copy to flip back and forth between copying and not *)
-                                            
-let rec 
-     copyodd l = match l with 
+
+let rec
+     copyodd l = match l with
               [] -> []
             | hd :: tl ->  hd::(copyeven tl)
 and  (* mutually recursive functions must be defined together via the "and" keywd *)
-     copyeven l = match l with 
+     copyeven l = match l with
               [] -> []
             | x :: xs -> copyodd xs;;
 
 copyodd [1;2;3;4;5;6;7;8;9;10];;
 copyeven [1;2;3;4;5;6;7;8;9;10];;
 
-(* Understand the above by giving clear specifications 
+(* Understand the above by giving clear specifications
    Spec: take returns only the ODD elements of a list, skip returns only the EVEN ones *)
 
 (* Using let .. in to hide functions *)
 (* Here is a version that hides the skip function -- make both internal and export one *)
-                        
+
 let copyoddonly ll =
-    ( let rec 
-     copyoddlocal l = match l with 
+    ( let rec
+     copyoddlocal l = match l with
               [] -> []
             | hd :: tl ->  hd::(copyevenlocal tl)
   and
-     copyevenlocal l = match l with 
+     copyevenlocal l = match l with
               [] -> []
             | x :: xs -> copyoddlocal xs
-        
-  in 
+
+  in
    copyoddlocal ll
     );;
-    
+
 copyoddonly [1;2;3;4;5;6;7;8;9;10];;
 
 (* ******************************************************************** *)
 
 
-  
-(* 
- * Higher Order Functions - 
+
+(*
+ * Higher Order Functions -
  *          functions that either:
  *                        take other functions as arguments
  *                     or return functions as results
@@ -385,7 +385,7 @@ copyoddonly [1;2;3;4;5;6;7;8;9;10];;
 (* Example: multiply each element of a list by ten *)
 
 let rec timestenlist l =
-  match l with 
+  match l with
     []    -> []
   | hd::tl -> (hd * 10) :: timestenlist tl;;
 
@@ -394,7 +394,7 @@ timestenlist [3;2;50];;
 (* Example: append gobble to a list of words *)
 
 let rec appendgobblelist l =
-  match l with 
+  match l with
     []    -> []
   | hd::tl -> (hd ^"gobble") :: appendgobblelist tl;;
 
@@ -406,7 +406,7 @@ appendgobblelist ["have";"a";"good";"day"];;
  * this is in fact a classic example, the map function *)
 
 let rec map f l =  (* Notice we are taking a function f as ARGUMENT here *)
-  match l with 
+  match l with
     []    -> []
   | hd::tl -> (f hd) :: map f tl;;
 
@@ -451,9 +451,9 @@ let id x = x;;
 id 3;;
 (* SAME id applied to bool returns a bool *)
 id true;;
-(* conclusion: the type of id ('a -> 'a) is PARAMETRIC, i.e. the return type is 
+(* conclusion: the type of id ('a -> 'a) is PARAMETRIC, i.e. the return type is
    parameterized by the type of the argument.  Same as Java's generics.
-    
+
 We saw several parametric functions above: *)
 
 copyodd;;    (* observe type is 'a list -> 'a list *)
@@ -481,16 +481,16 @@ add1 4;;
 
 let id = function x -> x;;
 
-match id (true) with 
-    true -> id (3) 
+match id (true) with
+    true -> id (3)
   | false -> id(4);;
 
 
 (* The below will error - variable mono_id is not defined by let so it can't be polymorphic
 
-(function mono_id -> 
-    match mono_id(true) with 
-                true -> mono_id(3) 
+(function mono_id ->
+    match mono_id(true) with
+                true -> mono_id(3)
               | false -> mono_id(4)) (fun x -> x);;
 *)
 
@@ -501,7 +501,7 @@ match id (true) with
 (* ******************************************************************** *)
 
 
-  
+
 (* One topic left in higher-order functions ...
    Currying - idea due to logician Haskell Curry
 *)
@@ -535,11 +535,11 @@ addNC (3, 4);;
  *
  * 'a * 'b -> 'c === 'a -> 'b -> 'c
  *
- * We now define two cool higher-order functions: 
+ * We now define two cool higher-order functions:
  *
- * curry   - takes in non-curry'ing 2-arg function and returns a curry'ing version 
+ * curry   - takes in non-curry'ing 2-arg function and returns a curry'ing version
  *
- * uncurry - takes in curry'ing 2-arg function and returns an non-curry'ing version 
+ * uncurry - takes in curry'ing 2-arg function and returns an non-curry'ing version
  * Since we can then go back and forth between the two reps, they are
  *      ***ISOMORPHIC***
  *)
@@ -562,18 +562,18 @@ let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together sho
 
 (* Misc OCaml *)
 
-(* See http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html 
+(* See http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html
    for various functions available in the OCaml top-level.
 
    See http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html for modules of extra
      functions for lists, strings, integers, as well as sets, trees, etc structures *)
-  
+
 (* print_x for atomic types 'x', again no overloading in meaning here *)
   print_string ("hi\n");;
 
 (* raise a failure exception (more on exceptions later) *)
 
-(failwith "BOOM!") +3 ;;    
+(failwith "BOOM!") +3 ;;
 
 (* you CAN also declare types, anywhere in fact *)
 (* Put parens around any such declaration or it won't parse *)
@@ -583,7 +583,7 @@ let add (x: int) (y: int) = (((x:int) + y) : int);;
 
 (* type abbreviations via "type" *)
 type intpair = int * int;;
-let f (p : intpair) = match p with 
+let f (p : intpair) = match p with
                       (l, r) -> l + r
 ;;
 (2,3);; (* ocaml doesn't call this an intpair by default *)
@@ -593,16 +593,16 @@ f (2, 3);; (* can pass it to the function expecting an intpair due to type defn 
 
 (* ******************************************************************* *)
 
-(* An old PL Homework 1  - lets work through some of it to get experience  
+(* An old PL Homework 1  - lets work through some of it to get experience
    with writing simple functional OCaml programs *)
 
-(* 
-   1. Write a function 'compose_funs' which takes a list of functions 
-   [f1; ...; fn] and returns a function representing the composition 
+(*
+   1. Write a function 'compose_funs' which takes a list of functions
+   [f1; ...; fn] and returns a function representing the composition
    fn o .. o f1 of all of these.
  *)
 
-let rec compose_funs lf = 
+let rec compose_funs lf =
   match lf with
     [] -> (function x -> x)
   | f :: fs -> (function x -> (compose_funs fs) (f x))
@@ -610,8 +610,8 @@ let rec compose_funs lf =
 
 (* equivalent alternate version - refactor to hoist out the "function x" *)
 
-let rec compose_funs lf = 
-  function x -> 
+let rec compose_funs lf =
+  function x ->
     (match lf with
       [] -> x
     | f :: fs -> (compose_funs fs) (f x)
@@ -620,7 +620,7 @@ let rec compose_funs lf =
 
 (* Yet another equivalent alternative - hoist x up one more level *)
 
-let rec compose_funs lf x = 
+let rec compose_funs lf x =
     match lf with
       [] -> x
     | f :: fs -> (compose_funs fs) (f x)
@@ -630,20 +630,20 @@ let rec compose_funs lf x =
 
 let composeexample = compose_funs [(function x -> x+1); (function x -> x-1);
                  (function x -> x*3); (function x -> x-1)];;
- 
+
 composeexample 5;; (* should return 14 *)
 
 
 (*
-   2. Write a function 'toUpperCase' which takes a list (l) of characters and 
+   2. Write a function 'toUpperCase' which takes a list (l) of characters and
    returns a list which has the same characters as l, but capitalized (if not
    already).
-   
-   Note: 1. Assume that the capital of characters other than alphabets 
+
+   Note: 1. Assume that the capital of characters other than alphabets
             (A - Z or a - z), are the characters themselves e.g.
 
                 character               corresponding capital character
- 
+
                     a                             A
                     z                             Z
                     A                             A
@@ -657,14 +657,14 @@ composeexample 5;; (* should return 14 *)
 let toUpperChar c =
   let c_code = Char.code c in
   if c_code >= 97 && c_code <= 122 then
-    Char.chr (c_code - 32) 
+    Char.chr (c_code - 32)
   else c;;
-    
+
 
 let rec toUpperCase l =
   match l with
     [] -> []
-  | c :: cs -> toUpperChar c :: toUpperCase cs 
+  | c :: cs -> toUpperChar c :: toUpperCase cs
 ;;
 
 
@@ -684,19 +684,19 @@ let toUpperCase = List.map toUpperChar ;;
    3. Write a function 'nth' which takes a list (l) and index (n) and returns
    the nth element of the list. If n is an invalid index i.e. n is negative or
    l has less then (n + 1) elements raise 'exception Failure' declared below.
-   
+
    Note: indices start with 0 for the head of the list, 1 for the next element
          and so on (similar to arrays).
  *)
-                 
+
 exception Failure;; (* declares an exception; just write "raise Failure" *)
                     (* to raise it *)
 
-let rec nth l n = 
+let rec nth l n =
   match l with
     [] -> raise Failure
-  | x :: xs -> 
-      if n = 0 then    
+  | x :: xs ->
+      if n = 0 then
         x
       else
         nth xs (n - 1) (* eureka *)
@@ -715,9 +715,9 @@ nth [1;2;3] 3;; (* should raise exception *)
    list of all the elements of l that satisfy the predicate p and l2
    is the list of all the elements of l that do NOT satisfy p. The
    order of the elements in the input list (l) should be preserved.
-   
+
    Note: A predicate is any function which returns a boolean.
-         e.g. let isPositive n = (n > 0);; 
+         e.g. let isPositive n = (n > 0);;
  *)
 
 let rec partition p l =
@@ -733,24 +733,24 @@ partition isPositive [1; -1; 2; -2; 3; -3];; (* should return             *)
                          (*    ([1; 2;    3], [-1; -2; -3]) *)
 
 
-(* 
-   5. Write a function 'diff' which takes in two lists l1 and l2 and returns 
+(*
+   5. Write a function 'diff' which takes in two lists l1 and l2 and returns
       a list containing all elements in l1 not in l2.
 
-   Note: You will need to write another function 'contains x l' which checks 
+   Note: You will need to write another function 'contains x l' which checks
          whether an element 'x' is contained in a list 'l' or not.
  *)
 
-let rec contains x l = 
+let rec contains x l =
   match l with
     [] -> false
   | y :: ys -> x = y || contains x ys
 ;;
 
-let rec diff l1 l2 = 
+let rec diff l1 l2 =
   match l1 with
     [] -> []
-  | x :: xs -> 
+  | x :: xs ->
       if contains x l2 then
     diff xs l2
       else
@@ -776,8 +776,8 @@ diff [1;2]   [1;2;3];; (* should return [] *)
 (* Big change from above: we need to declare some types now.  *)
 (* Still more convenient than Java etc: declare a type once globally, infer thereafter *)
 
-(* 
- * Variant Type Declaration 
+(*
+ * Variant Type Declaration
  *    - related to union types in C or enums in Java: "this OR that OR theother"
  *    - BUT like OCamls lists/tuples they are immutable data structures
  *    - each case of the union is identified by a name called 'Constructor'
@@ -788,8 +788,8 @@ diff [1;2]   [1;2;3];; (* should return [] *)
  *      - type declarations needed but once they are in place type inference on them works
  *)
 
-(* 
- * variant type for doing mixed arithmetic (integers and floats) 
+(*
+ * variant type for doing mixed arithmetic (integers and floats)
  *)
 
 type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or", same as match *)
@@ -800,8 +800,8 @@ Floating 4.0;;
 (* note constructors look like functions but they are not -- you always need to give arg *)
 
 
-let pullout x = 
-    match x with 
+let pullout x =
+    match x with
     | Fixed n -> n              (* variants fit very well into pattern matching syntax *)
     | Floating z -> int_of_float z;;
 
@@ -819,8 +819,8 @@ let add_num n1 n2 =
 add_num (Fixed 123) (Floating 3.14159);;
 
 (*
- * Enum types 
- *     - special case of variant types, 
+ * Enum types
+ *     - special case of variant types,
  *       where all alternatives are constants
  *)
 
@@ -835,14 +835,14 @@ type complex = CZero | Nonzero of float * float;;
 
 let com = Nonzero(3.2,11.2);;
 
-(* 
- * Recursive data structures - a key use of variant types 
+(*
+ * Recursive data structures - a key use of variant types
  *
  *  - Functional programming is fantastic for computing over tree-structured data
  *     -- (and conversely NOT as good at dealing with graphs: hard to recurse on)
  *  - recursive types can refer to themselves in their own definition
  *  - similar in spirit to how C structs can be recursive (but, no pointer needed here)
- * 
+ *
  * e.g. binary trees with integers in nodes and empty leaves:
 *)
 type itree = ILeaf | INode of int * itree * itree;;  (* type refers to itself! *)
@@ -874,7 +874,7 @@ let bt2 = Node("fiddly ",
                   Leaf)),
             whack);;
 
-(* type error, must have uniform data: Node("fiddly",Node(0,Leaf,Leaf),Leaf);;  *)  
+(* type error, must have uniform data: Node("fiddly",Node(0,Leaf,Leaf),Leaf);;  *)
 
 (* OCaml's lists could have been defined with a recursive type declaration *)
 
@@ -882,7 +882,7 @@ type 'a mylist = MtList | ColonColon of 'a * 'a mylist;;
 
 let mylisteg = ColonColon(3,ColonColon(5,ColonColon(7,MtList)));; (* [3;5;7] *)
 
-let rec double_list_elts ml = 
+let rec double_list_elts ml =
   match ml with
     | MtList -> MtList (* vs [] -> [] *)
     | ColonColon(mh,mt) -> ColonColon(mh * 2,double_list_elts mt);; (* vs mh :: mt -> .. *)
@@ -907,11 +907,11 @@ let rec lookup x bintree =
    match bintree with
      Leaf -> false
    | Node(y, left, right) ->
-       if x = y then 
-          true 
-       else if x < y then 
-          lookup x left 
-       else 
+       if x = y then
+          true
+       else if x < y then
+          lookup x left
+       else
           lookup x right
 ;;
 
@@ -924,9 +924,9 @@ let rec insert x bintree =
    match bintree with
      Leaf -> Node(x, Leaf, Leaf)
    | Node(y, left, right) ->
-       if x <= y then 
+       if x <= y then
          Node(y, insert x left, right)
-       else 
+       else
          Node(y, left, insert x right)
 ;;
 
@@ -937,8 +937,8 @@ let gooobt =
 
 (* END variants *)
 
-(* 
- * Record Declarations 
+(*
+ * Record Declarations
  *   - like tuples but with labels on fields.
  *   - similar to the structs of C/C++.
  *   - types are declared just like variants.
@@ -957,7 +957,7 @@ q.denom;;
 
 (* pattern matching works of course *)
 let rattoint r =
- match r with 
+ match r with
    {num = n; denom = d} -> n / d;;
 
 (* only one pattern matched so can again inline pattern as parameter *)
@@ -981,30 +981,30 @@ type newratio = {num: int; coeff: float};; (* shadowing ratio's label num *)
 function x -> x.num;; (* requires x to be a newratio -- inference HAS to give one type. *)
 
 (* one solution: declare type *)
-  
+
 function (x : ratio) -> x.num;;
 
 (* another solution: pattern match on record *)
 
-function {num = n; denom = d} -> d;;    
+function {num = n; denom = d} -> d;;
 
 (* OCaml programmers often use tuples instead of records since the record name
  * issue is not handled satisfactorily *)
 
 (* ********************************************************************** *)
 
-(* 
- * State 
+(*
+ * State
  *   - variables in ML are NEVER directly mutable themselves; only (indirectly)
  *     mutable if they hold a
  *      - reference
  *      - mutable record
  *      - array
  *
- *   - Indirect mutability - variable itself can't change, 
+ *   - Indirect mutability - variable itself can't change,
  *                           but what it points to can.
  *   - items are immutable unless their mutability is explicitly declared
- *   
+ *
  *   - DON'T use state unless its really needed (you can't use it in HW1 or most of HW2)
  *)
 
@@ -1012,16 +1012,16 @@ function {num = n; denom = d} -> d;;
 
 let x = ref 4;;    (* always have to declare initial value when creating a reference *)
 
-(* Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell. 
+(* Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.
    The CONTENTS of that fixed call can change, but not x. *)
-  
+
 (* x + 1;; *) (* a type error ! *)
 
 !x + 1;; (* need !x to get out the value; something like *x in C *)
 x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
 !x + 1;; (* Mutation ! *)
 
-(* 'a ref is really implemented by a mutable record with one field, contents: 
+(* 'a ref is really implemented by a mutable record with one field, contents:
      'a ref abbreviates the type { mutable contents: 'a }
              -- the keyword mutable on a record field means it can mutate *)
 
@@ -1035,7 +1035,7 @@ x.contents + 1;; (* same effect as previous line *)
 (* declaring your own mutable record: put "mutable" qualifier on field *)
 
 type mutable_point = { mutable x: float; mutable y: float };;
-let translate p dx dy = 
+let translate p dx dy =
                 p.x <- (p.x +. dx); (* observe use of ";" here to sequence effects *)
                 p.y <- (p.y +. dy)  (* ";" is useless without side effects (think about it) *)
                                 ;;
@@ -1066,28 +1066,28 @@ let x = ref 6;; (* shadowing previous x definition, NOT an assignment to x !! *)
 f ();;
 
 (* Yes, we can even write a while loop ! *)
-let x = ref 1 in 
-    while !x < 10 do 
-      print_int !x; 
-      print_string "\n"; 
+let x = ref 1 in
+    while !x < 10 do
+      print_int !x;
+      print_string "\n";
       x := !x + 1
     done;;
 
 (* Fact: while loops are useless without mutation: either never loop or infinitely loop *)
-  
+
 (*
  * Why is immutability good?
- *    - programmer can depend on the fact that something will never be mutated 
+ *    - programmer can depend on the fact that something will never be mutated
  *        when writing code: permanent like mathematical definitions
- * 
- * ML still lets you express mutation, but its extra so you only use it when 
+ *
+ * ML still lets you express mutation, but its extra so you only use it when
  *   its really needed
  *
  * Haskell has an even stronger separation of mutation, its all strictly "on top".
  *)
 
-(* 
- * Arrays 
+(*
+ * Arrays
  *   - fairly self-explanatory
  *   - have to be initialized before using
  *   - in general there is no such thing as "uninitialized" in OCaml.
@@ -1110,9 +1110,9 @@ f ();;
 exception Bar;;
 
 let g _ =  (* note that unlike Java there is no "raises" in the type of g *)
-  (try 
-    f () 
-  with 
+  (try
+    f ()
+  with
     Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
 g ();;
 
@@ -1122,10 +1122,10 @@ exception Goo of string;;
 let f _ = raise (Goo "keyboard on fire");;
 f ();;
 
-let g () = 
-  try 
-    f () 
-  with 
+let g () =
+  try
+    f ()
+  with
       Foo -> ()
         | Goo s ->
       (print_string("exception raised: ");
@@ -1137,7 +1137,7 @@ g ();;
 
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
-    
+
 (* END Exceptions *)
 
 (* ====================================================================== *)
@@ -1147,26 +1147,26 @@ invalid_arg "This function works on non-empty lists only";; (* Invalid_argument 
 (* OCaml Modules - structures and functors *)
 
 (* Modules in programming languages
-   - a module is a larger level of program abstraction: functional units or library. 
+   - a module is a larger level of program abstraction: functional units or library.
    - e.g. Java package, C/C++ directory w/ header files
-  
+
 Some principles of modules:
 
   -  Modules have names they can be referenced by.
   -  A module contains code declarations: functions, classes,  types, etc.
-  -  The module has an interface in which it 
-      * imports some things (e.g. other modules) from the outside and  
+  -  The module has an interface in which it
+      * imports some things (e.g. other modules) from the outside and
       * exports some things it has declared for outsiders to use; **hides** other things (key feature)
 
  The C/C++ "module" system
-   - Informal use of files and filesystem directories as modules 
+   - Informal use of files and filesystem directories as modules
    - .h file declaring what is externally visible for a module
 
  Problems with C/C++ modules
    - There is a global space of function names, so there can be name clashes
    - There is no strict relation enforced between the .c and .h  files
        * bad programmers can write really ugly code
- 
+
  The Java module system: packages
 
   - A cleaner version of the C/C++ spirit of module
@@ -1178,24 +1178,24 @@ Some principles of modules:
 
 *)
 
-(* OCaml Modules *)  
-  
-(* 
-   OCaml module definitions are called **structures** (via the struct keyword) 
-    - collections of related definitions (functions, types, other structures, 
+(* OCaml Modules *)
+
+(*
+   OCaml module definitions are called **structures** (via the struct keyword)
+    - collections of related definitions (functions, types, other structures,
                                           exceptions, values, ...) given a name
  *)
 
 module FSet =
 struct
     exception NotFound (* any top-level definition can be included in a module *)
-    
+
     type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-    
+
     let emptyset : 'a set = []
-    
+
     let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
-    
+
     let rec remove x (s: 'a set) =
         match s with
             [] -> raise NotFound
@@ -1204,7 +1204,7 @@ struct
                     (tl: 'a set)
                 else
                     hd :: remove x tl
-    
+
     let rec contains x (s: 'a set) =
         match s with
             [] -> false
@@ -1216,7 +1216,7 @@ struct
 end
 ;;
 
-(* observe what is printed in the top loop when the above is entered: a module *signature* is inferred 
+(* observe what is printed in the top loop when the above is entered: a module *signature* is inferred
 
     - The types of structs are called signatures
           - they are the interfaces for structures, something like Java interfaces
@@ -1256,16 +1256,16 @@ GrowingSet.add "a" ["b"];;
 
 FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making GrowingSet *)
 
-(* Now lets do some useful hiding.  Hiding types is possible and allows "black box" data structures 
+(* Now lets do some useful hiding.  Hiding types is possible and allows "black box" data structures
    - can be good software engineering practice to enforce hiding of internals *)
 
-module type HIDDENSET = 
+module type HIDDENSET =
   sig
     type 'a set (* hide the type 'a list here by not giving 'a set definition in signature *)
     val emptyset : 'a set
     val add: 'a -> 'a set -> 'a set
     val remove : 'a -> 'a set -> 'a set
-    val contains: 'a -> 'a set -> bool    
+    val contains: 'a -> 'a set -> bool
   end
 ;;
 
@@ -1278,13 +1278,13 @@ HiddenSet.contains 5 hs;;
 
 (* Also can declare signature along with module *)
 
-module HFSet : 
+module HFSet :
   sig
     type 'a set
     val emptyset : 'a set
     val add: 'a -> 'a set -> 'a set
     val remove : 'a -> 'a set -> 'a set
-    val contains: 'a -> 'a set -> bool    
+    val contains: 'a -> 'a set -> bool
   end =
 struct
     exception NotFound
@@ -1313,14 +1313,14 @@ end
 let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
 
 (* ********************************************************************** *)
-  
+
 (* Separate Compilation with OCaml
 
     - We can program OCaml in a cc / javac like way - use ocamlc instead of ocaml.
     - Key invariant: each OCaml module is a separate .ml file
     - Syntax of module **body** is identical
     - No header "module XX = struct .. end" is included in .ml module file
-    - Name of module is capped name of file: fSet.ml defines module FSet 
+    - Name of module is capped name of file: fSet.ml defines module FSet
     - File fSet.mli holds the signature of module FSet
        if there is no file set.mli thats OK; you have nothing hidden
     - Use ocamlc to compile and link to an executable: very similar to C/C++
@@ -1359,16 +1359,16 @@ module Main: sig (* contents of main.mli *) end
 (* for the following to work need to first #cd to sep_compile/.  My computer's version:
 #cd "/Users/scott/pl/ocaml/code/sep_compile";;
  *)
-  
+
 #load "fSet.cmo"
 ;;
 FSet.emptyset;;
-  
-  
 
-(* ********************************************************************** *)  
 
-(* 
+
+(* ********************************************************************** *)
+
+(*
    Functors
        A "function" from structures to structures
        Allows a module to be parameterized and so instantiated in multiple ways
@@ -1381,9 +1381,9 @@ FSet.emptyset;;
 
 
 (* have this type above: type comparison = LessThan | EqualTo | GreaterThan *)
-  
+
     (* here is a kind of struct that we can take as a parameter; in Java we would just use an interface Comparable *)
-    
+
 module type ORDERED_TYPE =
   sig
     type t
@@ -1397,7 +1397,7 @@ module FSetFunctor =
   struct
     type element = Elt.t (* import the type of elements from the structure *)
     type set = element list
-    
+
     let empty = []
 
     let rec add x s =
@@ -1405,8 +1405,8 @@ module FSetFunctor =
         [] -> [x]
       | hd::tl ->
           match Elt.compare x hd with
-            EqualTo   -> s        
-          | LessThan    -> x :: s   
+            EqualTo   -> s
+          | LessThan    -> x :: s
           | GreaterThan -> hd :: add x tl
 
     let rec contains x s =
@@ -1414,23 +1414,23 @@ module FSetFunctor =
         [] -> false
       | hd::tl ->
           match Elt.compare x hd with
-            EqualTo   -> true     
-          | LessThan    -> false    
+            EqualTo   -> true
+          | LessThan    -> false
           | GreaterThan -> contains x tl
   end;;
 
 (* Here is a concrete ordering we can feed in, one over ints *)
 
-module OrderedInt = 
+module OrderedInt =
   struct
     type t = int
-    let compare x y = 
-      if x = y then 
-    EqualTo 
-      else 
-    if x < y then 
-      LessThan 
-    else 
+    let compare x y =
+      if x = y then
+    EqualTo
+      else
+    if x < y then
+      LessThan
+    else
       GreaterThan
   end;;
 
@@ -1446,14 +1446,14 @@ OrderedIntSet.contains 3 myOrderedIntSet;;
 module OrderedString =
   struct
     type t = string
-      
-    let compare x y = 
-      if x = y then 
-    EqualTo 
-      else 
-    if x < y then 
-      LessThan 
-    else 
+
+    let compare x y =
+      if x = y then
+    EqualTo
+      else
+    if x < y then
+      LessThan
+    else
       GreaterThan
   end;;
 
@@ -1480,4 +1480,3 @@ module AbstractIntSet = AbstractSet(OrderedInt);;
 AbstractIntSet.add 5 AbstractIntSet.empty;;
 
 (* end functors topic *)
-
