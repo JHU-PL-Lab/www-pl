@@ -11,12 +11,12 @@
             <header class="major">
 	      <h3>The Book</h3>
             </header>
-
+<p>The required text for the class is available as a pdf.
     <ul>
       <li><a href="book.pdf">PDF of <em>Principles of Programming Languages</em></a></li>
     </ul>
 
-    <u>Principles of Programming Languages</u> is Copyright &copy; 2002-2016 <a href="mailto:scott@cs.jhu.edu">Scott F. Smith</a> and is released under the
+    <u>Principles of Programming Languages</u> is Copyright &copy; 2002-2018 <a href="mailto:scott@cs.jhu.edu">Scott F. Smith</a> and is released under the
 Creative Commons Attribution-Share Alike 3.0 United States License.  To view a copy of the license, visit <a href="http://creativecommons.org/licenses/by-sa/3.0/us/">this link</a>.
     </p>
 

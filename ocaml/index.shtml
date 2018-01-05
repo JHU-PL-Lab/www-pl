@@ -51,9 +51,10 @@ Once you have the basics installed, run the following command to install additio
 opam install ocamlbuild batteries menhir merlin ocp-indent ounit user-setup tuareg
 </pre>
 
-	      
+For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not installed.
+
 <h3>OCaml development environments</h3>
-<p>You should definitely use one of Atom, Emacs, or Vim since they have OCaml-specific features to make the coding process much smoother.  If you are using a VM under Windows, you should run one of these editors <em>within</em> the VM to take advantage of the OCaml modes.
+<p>You should definitely use one of Atom, Emacs, or Vim since they have OCaml-specific features such as syntax highliting, auto-indent, and lint analysis to make the coding process much smoother.  If you are using a VM under Windows, you should run one of these editors <em>within</em> the VM to take advantage of the OCaml modes.
 
 <dl><dt><a href="https://atom.io"><strong>Atom</strong></a>
     <dd>Atom support for OCaml continues to improve and is almost up to Emacs now.  Install Atom, and then install the <tt>atom</tt> and <tt>apm</tt> shell commands (see the <strong>Atom..Install Shell Commands</strong> menu option on Macs, or type control-command-p and then in the box type command <tt>Window: Install Shell Commands</tt>). With those commands installed, type into a terminal <pre>apm install language-ocaml linter ocaml-indent ocaml-merlin Repl</pre> to install the relevant OCaml packages.   Here is some documentation on the different extensions: <a href="https://atom.io/packages/ocaml-merlin">merlin</a> (syntax highlighting, auto-completion with control-space, etc); <a href="https://atom.io/packages/repl">Repl</a> (run an OCaml top-loop within Atom).   Here are some handy Atom keymaps for common operations these extensions support -- add this to your <tt>.atom/keymap.cson</tt> file:
@@ -67,7 +68,7 @@ opam install ocamlbuild batteries menhir merlin ocp-indent ounit user-setup tuar
 <tt>linter:lint</tt> above is particularly useful if you are using the FbDK, it will refresh the lint data based on the latest compiled version of your code.  In addition, control-space should auto-complete, control-y control-o should start up an OCaml top-loop, and once you have the top loop started you can type control-y control-s to one-key copy/paste selected code into the top loop.
 
   <dt><strong><a href="https://www.gnu.org/software/emacs/">Emacs</strong></a>
-    <dd>Today this is what most practicing OCaml programmers are using, but Atom is getting more popular.  Tuareg mode performs syntax highlighting and runs an OCaml shell within emacs, and Merlin mode adds more advanced OCaml-specific editing commands.  To install them (assuming you have all the packages above installed), type <tt>opam user-setup install</tt> which will patch your emacs startup files - restart emacs and Tuareg and Merlin should work.
+    <dd>Today this is what most practicing OCaml programmers are using, but Atom is getting more popular.  Tuareg mode performs syntax highlighting and runs an OCaml shell within emacs, and Merlin mode adds lint-style analysis such as showing types.  To install them (make sure you first have all the OPAM packages above installed), type <tt>opam user-setup install</tt> which will patch your emacs startup files - restart emacs and Tuareg and Merlin should work.
 <p>
 In emacs, every file that ends in <kbd>.ml</kbd> will automatically
 load Tuareg mode.
@@ -94,49 +95,45 @@ C-c C-t         display the type of the enclosing expression.
     <dd>If you like vim, just type <code>opam user-setup install</code> to set up syntax highlighting, tab completion, displaying types, etc.  See <a href="https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt">here</a> for some dense documentation.
   </dl>
 
+<h3>OCaml with the Book's FbDK</h3>
+<p>
+  See the <a href="../book/_dist/fbdk/">FbDK README</a> for information on how to use the FbDK.
+</p>
 
-<h4><code>utop</code>: A better top-loop</h4>
+<h3><code>utop</code>: A better top-loop</h3>
 <p>
  <ul>
    <li>There is a newer top loop which you can install easily with OPAM: just type <code>opam install utop</code>.  
      <li>With utop you can scroll up and down your OCaml input history, do simple editing on previous inputs, etc.
      <li>See the <a href="https://github.com/diml/utop">utop README</a> for more information on what it can do for you.  
      </ul>
-<h3>OCaml Information on the Web</h3>
+<h3>The OCaml Manual</h3>
 
-<dl>
-  <dt><a href="http://ocaml.org">ocaml.org</a>
-  <dd>This is now the home of OCaml for finding downloads, documentation, etc.  The <a href="http://ocaml.org/learn/tutorials/">tutorials</a> are also very good.
-  <dt><a href="http://caml.inria.fr/">The INRIA OCaml Homepage</a>
-  <dd>The old home of OCaml where you can find core library documentation.
-  <dt><a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
-      manual</a> (download your local copy from the links at the top).
-  <dd><a
+<p>
+  <a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
+      manual</a> (download your local copy from the links at the top).  We only need a subset of the manual, below is the Cliff Notes version of the table of contents.
+  <ul><li>Part I is the tutorial introduction; <a
       href="http://caml.inria.fr/pub/docs/manual-ocaml/coreexamples.html">Part
       I Chapter 1</a> is a brief but readable introduction to the core
       language.  This
-      will be our main reference.  You may occasionally need to look at
-      Part II, the reference manual, Part III for some commands, and
-      Part IV for libraries (the <a
-      href="http://caml.inria.fr/pub/docs/manual-ocaml/core.html">core
-      library</a> docs are particularly useful for standard string,
-      etc functions built into ocaml), and the <a href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Pervasives module</a> includes functions etc available at all times in the top-level.
-</dl>
-<h4>Additional supplementary information</h4>
+      will be our main reference.  The only other chapter in Part I you may need to reference is the <a href="http://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html">module system</a>. </li>
+    <li>Part II is the language reference and you can probably skip it.</li>
+    <li>Part III documents <tt>ocamlc</tt>, the batch compiler, and other command-line tools; we only use it in simple ways but look here if you want to know more. </li>
+    <li>Part IV describes the libraries; you probably only need to reference the first two chapters here.</li>
+<ul>    <li>The <a
+      href="http://caml.inria.fr/pub/docs/manual-ocaml/core.html">Core
+      Library</a> chapter describes standard types and exceptions built into OCaml, and the <a href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Pervasives module</a> referenced there includes all basic int/bool/float/string/etc operations such as <tt>&lt</tt>, <tt>mod</tt>, etc which are always available.</li>
+  <li>The <a href="http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html">Standard Library</a> chapter includes standard data structures such as hashtables and stacks as well as library operations for lists, arrays, strings, printing, etc.
+</ul>
+  </ul>
+<h3>Additional OCaml Information</h3>
 <dl>
+  <dt><a href="http://ocaml.org">ocaml.org</a>
+  <dd>This is the home of OCaml for finding downloads, documentation, etc.  The <a href="http://ocaml.org/learn/tutorials/">tutorials</a> are also very good and there is a page of <a href="http://ocaml.org/learn/books.html">books</a>.
   <dt><a href="https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1">OCaml Youtube Tutorial</a></dt>
     <dd>If you like watching videos to learn things here is a complete collection for OCaml.</dd>
-<dt><a href="../lectures/caml-intro.html">PL OCaml Lecture
-    Notes</a></dt> 
-  <dd>These are some older notes with more
-    explanations than the lecture.ml file.</dd>
-    <dt><a
-	   href="https://realworldocaml.org/v1/en/html/index.html">Real World OCaml</a> by Jason Hickey, Anil Madhavapeddy, and Yaron Minsky</dt>
-  <dd>A relatively new OCaml book available online.</dd>
-  <dt><a href="http://ocaml.org/learn/books.html">Books</a></dt>
-  <dd>Still more books, from the ocaml.org page.</dd>
   <dt><a href="http://www.seas.upenn.edu/~cis341/current/programming_style.shtml">UPenn OCaml Style Guide</a></dt>
-  <dd>A good guide to proper formatting and other style concerns for OCaml.</dd>
+  <dd>A guide to proper formatting and other style concerns for OCaml.</dd>
 </dl>
 
 
