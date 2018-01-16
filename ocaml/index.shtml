@@ -48,7 +48,7 @@ command  <tt>ocaml</tt>.
 Once you have the basics installed, run the following command to install additional necessary packages for the class:
 
 <pre>
-opam install ocamlbuild batteries menhir merlin ocp-indent ounit user-setup tuareg
+opam install ocamlbuild merlin ocp-indent user-setup tuareg
 </pre>
 
 For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not installed.
@@ -57,7 +57,7 @@ For the course we will be implicitly assuming you installed all of these OPAM pa
 <p>You should definitely use one of Atom, Emacs, or Vim since they have OCaml-specific features such as syntax highliting, auto-indent, and lint analysis to make the coding process much smoother.  If you are using a VM under Windows, you should run one of these editors <em>within</em> the VM to take advantage of the OCaml modes.
 
 <dl><dt><a href="https://atom.io"><strong>Atom</strong></a>
-    <dd>Atom support for OCaml continues to improve and is almost up to Emacs now.  Install Atom, and then install the <tt>atom</tt> and <tt>apm</tt> shell commands (see the <strong>Atom..Install Shell Commands</strong> menu option on Macs, or type control-command-p and then in the box type command <tt>Window: Install Shell Commands</tt>). With those commands installed, type into a terminal <pre>apm install language-ocaml linter ocaml-indent ocaml-merlin Repl</pre> to install the relevant OCaml packages.   Here is some documentation on the different extensions: <a href="https://atom.io/packages/ocaml-merlin">merlin</a> (syntax highlighting, auto-completion with control-space, etc); <a href="https://atom.io/packages/repl">Repl</a> (run an OCaml top-loop within Atom).   Here are some handy Atom keymaps for common operations these extensions support -- add this to your <tt>.atom/keymap.cson</tt> file:
+    <dd>Atom support for OCaml continues to improve and is almost up to Emacs now.  Install Atom, read a <a href="https://flight-manual.atom.io">tutorial</a> if you are not so familiar with it, and then install the <tt>atom</tt> and <tt>apm</tt> shell commands (see the <strong>Atom..Install Shell Commands</strong> menu option on Macs, or type control-command-p and then in the box type command <tt>Window: Install Shell Commands</tt>). With those commands installed, type into a terminal <pre>apm install language-ocaml linter ocaml-indent ocaml-merlin Repl</pre> to install the relevant OCaml packages.   Here is some documentation on the different extensions: <a href="https://atom.io/packages/ocaml-merlin">merlin</a> (syntax highlighting, auto-completion with control-space, etc); <a href="https://atom.io/packages/repl">Repl</a> (run an OCaml top-loop within Atom).   Here are some handy Atom keymaps for common operations these extensions support -- add this to your <tt>.atom/keymap.cson</tt> file:
 <pre>
 'atom-text-editor[data-grammar="source ocaml"]':
   'ctrl-shift-t': 'ocaml-merlin:show-type'
