@@ -32,11 +32,11 @@ true || false;;
 
 (* Operations on lists.  Lists are represented as BINARY TREES with left child a leaf. *)
 0 :: [1; 2; 3];; (* :: is 'consing' an element to the front - fast *)
-0 :: (1 :: (2 :: (3 :: [])));; (* long-hand version of the above *)
-let z = [2; 4; 6];;
+0 :: (1 :: (2 :: (3 :: [])));; (* equivalent to the above *)
 [1; 2; 3] @ [4; 5];; (* appending lists - slower *)
+let z = [2; 4; 6];;
 let y = 0 :: z;;
-z;; (* Observe z itself did not change, its still [2; 4; 6] -- lists are always immutable *)
+z;; (* Observe z itself did not change -- lists are IMMUTABLE in OCaml *)
 
 (* everything in OCaml returns values (i.e. is an 'expression') - no commands *)
 if (x = 3) then (5 + 35) else 6;;
