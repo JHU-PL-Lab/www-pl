@@ -52,6 +52,7 @@ if (x = 3) then (5 + 35) else 6;;
 
 (2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
 let tuple = (2, "hi");;
+(1,1.1,'c',"cc");;
 
 (* Defining and using functions *)
 
@@ -71,18 +72,18 @@ let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (u
   if n <= 2 then
     1
   else
-    fib(n - 1) + fib (n - 2);;
+    fib (n - 1) + fib (n - 2);;
 
 fib 10;;
 
 (* Anonymous functions: define a function as an expression *)
 
-(* Similar to lambdas in Python, Java, etc - all are based on the lambda calculus *)
+(* Similar to lambdas in Python, Java, C++, etc - all are based on the lambda calculus *)
 
 let funny_add1 = (function x -> x + 1);; (* "x" is (sole) argument here --  one-argument functions only *)
 funny_add1 3;;
 ((function x -> x + 1) 4) + 7;; (*  a "->" function is an expression and can be used anywhere *)
-((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off ction *)
+((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off the "ction" *)
 
 (* multiple arguments - just leave spaces between multiple arguments in definition and use *)
 let add x y = x + y;;
@@ -101,7 +102,6 @@ add3 20;;
 (* ******************************************************************** *)
 
 (* Pattern matching: switch or case on steroids *)
-
 (* A very cool and useful but not so common language feature; Haskell and Scala also have it *)
 
 (* Basic pattern match with numbers, looks like switch more or less: *)
@@ -122,21 +122,15 @@ mixemup 3;; (* matches last case and x is bound to the value 3 *)
 (* List pattern matching - now things get interesting! *)
 
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
-    a :: (b :: c) -> "first"
+      | a :: (b :: c) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
 
-match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
-      | x :: y -> x
-      | a :: (b :: c) -> b
-      | _ -> '0';;
-
-match ['h';'o';'p';' ';'h';'o';'p'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
+match ['h';'o';'p';' ';'h';'o';'p'] with
       | x :: y -> y
       | _ -> ['0'];;
 
-
-  match ["hi"] with (* ["hi"] is "hi" :: [] *)
+match ["hi"] with (* ["hi"] is "hi" :: [] *)
       | x :: (y :: z) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
@@ -150,10 +144,8 @@ match tuple with
 
 (* let pattern shorthand: a single pattern match to assign multiple values *)
 let mypair = (2.2, 3.3);;
-let (f, s) = mypair in f +. s;;  (* same behavior as "match mypair with (f,s) -> f +. s" *)
-
-match mypair with (f,s) -> f +. s;;
-
+let (f, s) = mypair in f +. s;;
+match mypair with (f,s) -> f +. s;; (* same behavior as above let *)
 
 let getSecond t =
   match t with
@@ -183,7 +175,7 @@ let getHead l =
   |  head :: tail -> head
 ;;
 
-(* Patterns in function definitions *)
+(* Patterns in function definitions - this is the usual usage *)
 
 let cadd p = match p with (x, y) -> x + y;;
 
@@ -219,20 +211,31 @@ let rec rev l =
 ;;
 rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
-(* Trace this: the recursive calls to compute the above are as follows *)
 
-(rev [2;3]) @ [1];;
-(rev[3] @ [2]) @ [1];;
-((rev[]@[3]) @ [2]) @ [1];;
-(([]@[3]) @ [2]) @ [1];;
-
-(* Theorem: rev reverses any list.
+(* The Magic of Induction lets us prove it is correct:
+ *
+ * Theorem: rev reverses any list.
  * Proof: by induction on the length of the list, say l.
- * Case  l = []: obviously [] is correct
- * Case l is x :: xs for some x and xs:  we assume by INDUCTION that "rev xs" reverses the tail;
- * then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED.
+ * Case l = []: obviously rev [] = [] - CHECK!
+ * Case l is non-empty: then, l = x :: xs for some x and xs;
+ *   we assume by INDUCTION that "rev xs" reverses the tail, xs;
+ *   then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED.
  *)
 
+(* Now let us unwrap the "magic"; its really just marching through natural numbers
+ * l = [] : rev [] = [], check!
+ * l = [3] : rev [3] = rev (3 :: []) = (rev []) @ [3] = (using previous line) [3]
+ * l = [2;3] : rev [2;3] = rev (2 :: [3]) = (rev [3]) @ [2] = (again by previous) [3;2]
+ * l = [1;2;3] : rev [1;2;3] = rev (1 :: [2;3]) = (rev [2;3]) @ [1] = (again by previous) [3;2;1]
+*)
+
+(* One more view, an unwrapping of the execution to equivalent code: *)
+
+rev [1;2;3];;
+(rev [2;3]) @ [1];;
+((rev [3]) @ [2]) @ [1];;
+(((rev []) @ [3]) @ [2]) @ [1];;
+(([]@[3]) @ [2]) @ [1];;
 
 (* ====================================================================== *)
 
@@ -1158,18 +1161,18 @@ Some principles of modules:
       * imports some things (e.g. other modules) from the outside and
       * exports some things it has declared for outsiders to use; **hides** other things (key feature)
 
- The C/C++ "module" system
+ The C "module" system
    - Informal use of files and filesystem directories as modules
    - .h file declaring what is externally visible for a module
 
- Problems with C/C++ modules
+ Problems with C modules
    - There is a global space of function names, so there can be name clashes
    - There is no strict relation enforced between the .c and .h  files
        * bad programmers can write really ugly code
 
  The Java module system: packages
 
-  - A cleaner version of the C/C++ spirit of module
+  - A cleaner version of the C spirit of module
   - Directory is explicitly a package; allows for nested packages
   - Implicit .h file in the public decls on classes/methods
   - public/private/etc for information hiding
