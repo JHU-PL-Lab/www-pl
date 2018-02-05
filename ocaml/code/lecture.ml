@@ -244,9 +244,8 @@ rev [1;2;3];;
 
 (*  OCaml Lecture III  *)
 
-
-(* Brief tour of simple variant types for assignment 1 *)
-
+(* We are going to cover variant types later but here are a few
+   simple examples *)
 (* Variant types are like unions in C, and generalize enums of Java.
    Unlike types up to now you need to declare them. *)
 
@@ -420,7 +419,7 @@ map (fun x -> x * 10) [3;2;50];;
 let middle = List.map (function s -> s^"gobble");;  (* here we use the built-in List.map which is the same as the one we defined *)
 middle ["have";"a";"good";"day"];;
 
-map (fun (x,y) -> x + y) [(1,2);(3,4)];;  (* two-argument via a pair.  Note "fun" can be used as shorthand for "function" *)
+map (fun (x,y) -> x + y) [(1,2);(3,4)];;  (* two-argument via a pair.  *)
 
 let flist = map (fun x -> fun y -> x + y) [1;2;4] ;; (* lists of functions! *)
 

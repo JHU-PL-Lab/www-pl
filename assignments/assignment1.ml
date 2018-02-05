@@ -47,7 +47,7 @@ let contains elt l = failwith "Not Implemented";;
 let fromto n1 n2 = failwith "Not Implemented";;
 
 (* fromto 4 10 => [4; 5; 6; 7; 8; 9; 10]
-   fromto 3 -1 => [3; 2; 1; 0; -1] *)
+   fromto 3 (-1) => [3; 2; 1; 0; -1] *)
 
 
 (* Problem 3 ************************************************************************ *)
@@ -60,7 +60,7 @@ let fromto n1 n2 = failwith "Not Implemented";;
 
 let remove_dups l = failwith "Not Implemented";;
 
-(* remove_dups [1; 2; 3; 4; 5] => [1; 3; 4; 5]
+(* remove_dups [1; 2; 3; 4; 5] => [1; 2; 3; 4; 5]
    remove_dups [2; 4; 3; 2; 4] => [2; 4; 3]
    remove_dups ['a'; 'e'; 'e'] => ['a'; 'e']
 *)
@@ -76,7 +76,7 @@ let remove_dups l = failwith "Not Implemented";;
 
 let remove_elts l reml = failwith "Not Implemented";;
 
-(* remove_elts [1; 2; 3; 4; 5] [2; 4] => [1; 3; 4; 5]
+(* remove_elts [1; 2; 3; 4; 5] [2; 4] => [1; 3; 5]
    remove_elts [2; 4; 3; 2; 5] [2; 4; 2] => [3; 5]
    remove_elts ['a'; 'e'] ['c'] => ['a'; 'e']
 
