@@ -324,9 +324,10 @@ g (-6);; (* now it works as expected *)
 
 (* warm up to the next function - write a (useless) copy function on lists *)
 
-let rec copy l = match l with
-              [] -> []
-            | hd :: tl ->  hd::(copy tl)
+let rec copy l =
+  match l with
+  | [] -> []
+  | hd :: tl ->  hd::(copy tl);;
 
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 
@@ -357,16 +358,12 @@ let copyodd ll =
      copyevenlocal l = match l with
     |        [] -> []
     | x :: xs -> copyoddlocal xs
-
   in
    copyoddlocal ll
     );;
-
 copyodd [1;2;3;4;5;6;7;8;9;10];;
 
 (* ******************************************************************** *)
-
-
 
 (*
  * Higher Order Functions -
@@ -420,7 +417,7 @@ middle ["have";"a";"good";"day"];;
 
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 
-let flist = map (fun x -> fun y -> x + y) [1;2;4] ;; (* lists of functions! *)
+let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* lists of functions! *)
 
 (* What can you do with a list of functions?  e.g. compose them *)
 
@@ -459,7 +456,7 @@ let times2 x = x*2;;
 let times2plus3 = compose plus3 times2;;
 times2plus3 10;;
 (* equivalent but with anonymous functions: *)
-compose (function x -> x+3) (function x -> x*2) 10;;
+compose (fun x -> x+3) (fun x -> x*2) 10;;
 
 (* Equivalent notation for compose *)
 
@@ -539,9 +536,9 @@ addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
 let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
 
 (* an equivalent way to define addC, clarifying what the above means: *)
-let addC = function x -> (function y -> x + y);;
+let addC = fun x -> (fun y -> x + y);;
 (* yet another identical way .. *)
-let addC x = function y -> x + y;;
+let addC x = fun y -> x + y;;
 
 (addC 1) 2;; (* same result as above *)
 
@@ -570,8 +567,8 @@ addNC (3, 4);;
  * Since we can then go back and forth between the two reps, they are
  *      ***ISOMORPHIC***
  *)
-let curry fNC = function x -> function y -> fNC (x, y);;
-let uncurry fC = function (x, y) -> fC x y;;
+let curry fNC = fun x -> fun y -> fNC (x, y);;
+let uncurry fC = fun (x, y) -> fC x y;;
 
 let newaddNC = uncurry addC;;
 newaddNC (2,3);;
@@ -710,18 +707,15 @@ let toUpperCase = List.map toUpperChar ;;
 (*
    3. Write a function 'nth' which takes a list (l) and index (n) and returns
    the nth element of the list. If n is an invalid index i.e. n is negative or
-   l has less then (n + 1) elements raise 'exception Failure' declared below.
+   l has less then (n + 1) elements then fail.
 
    Note: indices start with 0 for the head of the list, 1 for the next element
          and so on (similar to arrays).
  *)
 
-exception Failure;; (* declares an exception; just write "raise Failure" *)
-                    (* to raise it *)
-
 let rec nth l n =
   match l with
-    [] -> raise Failure
+  |  [] -> failwith "list too short"
   | x :: xs ->
       if n = 0 then
         x
@@ -748,10 +742,16 @@ nth [1;2;3] 3;; (* should raise exception *)
  *)
 
 let rec partition p l =
-    match l with [] -> ([],[])
-        | hd :: tl -> let (posl,negl) = partition p tl in
-                                        if (p hd) then (hd :: posl,negl)
-                                                            else (posl,hd::negl)
+  match l with
+  |[] -> ([],[])
+  | hd :: tl ->
+    let (posl,negl) = partition p tl in
+    if (p hd)
+    then
+      (hd :: posl,negl)
+    else
+      (posl,hd::negl)
+
 
 
 (* test *)

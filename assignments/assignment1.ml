@@ -131,13 +131,13 @@ let listmax l = failwith "Not Implemented";;
 
 (* Define a function to return the second largest element of a list. Distinct 
    elements should only count once even if they are repeated in the list.  
-   return failwith "list too short" for list input that is too short.
+   return failwith "fewer than two distinct elements" if there are not two distinct elements.
 
 *)
 
 let list2ndmax l = failwith "Not Implemented";;
 
-(* list2ndmax [] => Exception: Failure "list too short"
+(* list2ndmax [] => Exception: Failure "fewer than two distinct elements"
    list2ndmax [1; 2; 3] => 2
    list2ndmax [1; 2; 2] => 1
    list2ndmax [2; 23; 233] => 23
