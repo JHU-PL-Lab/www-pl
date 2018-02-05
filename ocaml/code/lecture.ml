@@ -279,8 +279,8 @@ match NotNull(4) with
  *)
 (let y = 3 in
   ( let x = 5 in
-    ( let f y = x + y in
-      ( let x = y in  (* this is a SHADOWING (re-)definition of x, NOT an assignment *)
+    ( let f z = x + z in
+      ( let x = y in  (* this is a re-definition of x, NOT an assignment *)
         (f (y - 1)) + x
             )
         )
@@ -291,7 +291,7 @@ match NotNull(4) with
 (* top loop is conceptually an open-ended series of lets which never close: compare following with previous *)
 let y = 3;;
 let x = 5;;
-let f y = x + y;;
+let f z = x + z;;
 let x = y;; (* as in previous example, this is a nested definition, not assignment! *)
 f (y-1) + x;;
 
@@ -310,9 +310,9 @@ let shad = f;; (* make a new name for f *)
 
 let f x = if x <= 0 then 0 else x + 1;;
 
-g (-5);; (* we didn't re-submit g, so the version above refers to now-shadowed f - !! *)
+g (-5);; (* g still refers to the initial f - !! *)
 
-let g x = f (f x);; (* need to resubmit (identical) g code since it depends on f *)
+let g x = f (f x);; (* FIX: resubmit (identical) g code *)
 g (-6);; (* now it works as expected *)
 
 (* MORAL: When interactively editing a group of functions that call each other,
@@ -334,39 +334,35 @@ let result = copy [1;2;3;4;5;6;7;8;9;10]
 
 (* Refine copy to flip back and forth between copying and not *)
 
-let rec
-     copyodd l = match l with
-              [] -> []
-            | hd :: tl ->  hd::(copyeven tl)
-and  (* mutually recursive functions must be defined together via the "and" keywd *)
-     copyeven l = match l with
-              [] -> []
-            | x :: xs -> copyodd xs;;
+let rec copyodd l = match l with
+  | [] -> []
+  | hd :: tl ->  hd::(copyeven tl)
+and  (* keyword for mutually recursive functions *)
+  copyeven l = match l with
+  |  [] -> []
+  | x :: xs -> copyodd xs;;
 
 copyodd [1;2;3;4;5;6;7;8;9;10];;
 copyeven [1;2;3;4;5;6;7;8;9;10];;
 
-(* Understand the above by giving clear specifications
-   Spec: take returns only the ODD elements of a list, skip returns only the EVEN ones *)
-
 (* Using let .. in to hide functions *)
 (* Here is a version that hides the skip function -- make both internal and export one *)
 
-let copyoddonly ll =
+let copyodd ll =
     ( let rec
      copyoddlocal l = match l with
-              [] -> []
-            | hd :: tl ->  hd::(copyevenlocal tl)
-  and
+      |  [] -> []
+      | hd :: tl ->  hd::(copyevenlocal tl)
+    and
      copyevenlocal l = match l with
-              [] -> []
-            | x :: xs -> copyoddlocal xs
+    |        [] -> []
+    | x :: xs -> copyoddlocal xs
 
   in
    copyoddlocal ll
     );;
 
-copyoddonly [1;2;3;4;5;6;7;8;9;10];;
+copyodd [1;2;3;4;5;6;7;8;9;10];;
 
 (* ******************************************************************** *)
 
@@ -381,8 +377,8 @@ copyoddonly [1;2;3;4;5;6;7;8;9;10];;
  *
  *    Why?
  *       - "pluggable" programming by passing in and out chunks of code
- *       - greatly increases reusability of code since any varying part in
- *         a pattern can be pulled out as a function parameter
+ *       - greatly increases reusability of code since any varying
+ *         code can be pulled out as a function to pass in
  *)
 
 (* Lets show the power by extracting out some pluggable code *)
@@ -406,47 +402,72 @@ let rec appendgobblelist l =
 appendgobblelist ["have";"a";"good";"day"];;
 ("have" ^"gobble") :: ("a"^"gobble") :: appendgobblelist ["good";"day"];;
 
-(* Notice there is a *pattern* here of "do an operation on each list element"
- * So lets pull out the "times ten" / "add gobble" as a function parameter!
- * this is in fact a classic example, the map function *)
+(* Notice there is a common pattern of "do an operation on each
+   list element".  So lets pull out the "times ten" / "add gobble"
+   as a function parameter! This is in fact a classic example,
+   the map function *)
 
-let rec map f l =  (* Notice we are taking a function f as ARGUMENT here *)
+let rec map f l =  (* Notice function f is an ARGUMENT here *)
   match l with
     []    -> []
   | hd::tl -> (f hd) :: map f tl;;
 
 map (fun x -> x * 10) [3;2;50];;
-let middle = List.map (function s -> s^"gobble");;  (* here we use the built-in List.map which is the same as the one we defined *)
+
+(* Note there is a built-in List.map since it is so common: *)
+let middle = List.map (function s -> s^"gobble");;
 middle ["have";"a";"good";"day"];;
 
-map (fun (x,y) -> x + y) [(1,2);(3,4)];;  (* two-argument via a pair.  *)
+map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 
 let flist = map (fun x -> fun y -> x + y) [1;2;4] ;; (* lists of functions! *)
 
-(* This also shows why these "anonymous" functions are useful. *)
+(* What can you do with a list of functions?  e.g. compose them *)
 
-(* named and anonymous functions are (still) identical in usage *)
+(* compose_list [f1;..;fn] v = f1 (... (fn v) ... ) *)
+let rec compose_list lf v =
+  match lf with
+  | [] -> v
+  | hd :: tl -> hd(compose_list tl v);;
+
+compose_list flist 0;;
+
+(* another classic operator on lists *)
+(* foldl f v [b1; ..;bn] is (... (f (f v b1) b2) ...) bn ) *)
+
+let rec foldl f v l =
+  match  l with
+  | [] -> v
+  | [hd] -> f v hd
+  | hd::tl -> f (foldl f v tl) hd;;
+
+(* Note this is List.fold_left in OCaml library *)
+
+(* summing elements of a list can now be succinctly coded: *)
+foldl (fun x-> fun y -> x+y) 0 [1;2;3];;
+
+(* Just to be clear..
+  named and anonymous functions are absolutely identical *)
 let timesten x = x * 10;;
 map timesten [1;2;3;34;56;90];;
 
-(* Composition function g o f - takes in any 2 functions and returns their composition
- *)
+(* Composition function g o f: *)
 let compose g f = (fun x -> g (f x));;
 
 let plus3 x = x+3;;
 let times2 x = x*2;;
 let times2plus3 = compose plus3 times2;;
 times2plus3 10;;
-let t2p3 = compose (function x -> x+3) (function x -> x*2) 10;; (* equivalent but with anonymous functions *)
+(* equivalent but with anonymous functions: *)
+compose (function x -> x+3) (function x -> x*2) 10;;
 
-(* Other equivalent ways to define compose *)
+(* Equivalent notation for compose *)
 
-let compose2 g f x =  g (f x);;
-let compose3 = (fun g -> (fun f -> (fun x -> g(f x))));;
-
+let compose g f x =  g (f x);;
+let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 
 (*
-  Parametric polymorphism
+  Parametric polymorphism -- a key feature of inferred types
 *)
 
 let id = fun x -> x;;
@@ -456,8 +477,9 @@ let id x = x;;
 id 3;;
 (* SAME id applied to bool returns a bool *)
 id true;;
-(* conclusion: the type of id ('a -> 'a) is PARAMETRIC, i.e. the return type is
-   parameterized by the type of the argument.  Same as Java's generics.
+(* conclusion: the type of id ('a -> 'a) is PARAMETRIC, i.e.
+   the return type is parameterized by the type of the argument.
+   Same as Java's generics.
 
 We saw several parametric functions above: *)
 
@@ -578,7 +600,7 @@ let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together sho
 
 (* raise a failure exception (more on exceptions later) *)
 
-(failwith "BOOM!") +3 ;;
+(failwith "BOOM!") + 3 ;;
 
 (* you CAN also declare types, anywhere in fact *)
 (* Put parens around any such declaration or it won't parse *)
