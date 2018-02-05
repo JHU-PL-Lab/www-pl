@@ -66,6 +66,7 @@ For the course we will be implicitly assuming you installed all of these OPAM pa
   'ctrl-alt-f': 'ocaml-indent:file'
 </pre>
 <tt>linter:lint</tt> above is particularly useful if you are using the FbDK, it will refresh the lint data based on the latest compiled version of your code.  In addition, control-space should auto-complete, control-y control-o should start up an OCaml top-loop, and once you have the top loop started you can type control-y control-s to one-key copy/paste selected code into the top loop.
+<p> Note the Repl package as of 1-2018 has a really bad glitch in that it tries to reformat your input incorrectly and introduces spurious syntax errors.  Here is a quick fix:  edit the file <tt>~/.atom/packages/Repl/Repls/replOcaml.js</tt> and just make the prompt an empty string, <tt>prompt=''</tt>.  Re-start Atom and you should no longer get this reformatting glitch error; you won't have an input prompt unfortunately but it will at least work.
 
   <dt><strong><a href="https://www.gnu.org/software/emacs/">Emacs</strong></a>
     <dd>Today this is what most practicing OCaml programmers are using, but Atom is getting more popular.  Tuareg mode performs syntax highlighting and runs an OCaml shell within emacs, and Merlin mode adds lint-style analysis such as showing types.  To install them (make sure you first have all the OPAM packages above installed), type <tt>opam user-setup install</tt> which will patch your emacs startup files - restart emacs and Tuareg and Merlin should work.

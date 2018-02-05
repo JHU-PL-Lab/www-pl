@@ -39,9 +39,9 @@ let y = 0 :: z;;
 z;; (* Observe z itself did not change -- lists are IMMUTABLE in OCaml *)
 
 (* everything in OCaml returns values (i.e. is an 'expression') - no commands *)
-if (x = 3) then (5 + 35) else 6;;
+if (x = 3) then (5 + 35) else 6;; (* (x==3)?5:6 in C *)
 (if (x = 3) then 5 else 6) * 2;;
-(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error:  two branches of if must have same type *)
+(if (x = 3) then 5.4 else 6) * 2;; (* type error:  two branches of if must have same type *)
 
 (* ====================================================================== *)
 
@@ -114,10 +114,13 @@ let mixemup n =
 
 mixemup 3;; (* matches last case and x is bound to the value 3 *)
 
-"Hawaii " ^ (match 5 with
+let five_oh y =
+"Hawaii " ^ (match y with
       0 -> "Zero"
     | 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
     | _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
+
+five_oh 5;;
 
 (* List pattern matching - now things get interesting! *)
 
