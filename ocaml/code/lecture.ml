@@ -611,7 +611,7 @@ let f (p : intpair) = match p with
                       (l, r) -> l + r
 ;;
 (2,3);; (* ocaml doesn't call this an intpair by default *)
-f (2, 3);; (* can pass it to the function expecting an intpair due to type defn *)
+f (2, 3);; (* still, can pass it to the function expecting an intpair *)
 ((2,3):intpair);; (* can also explicitly tag data with its type *)
 
 
@@ -821,26 +821,25 @@ diff [1;2]   [1;2;3];; (* should return [] *)
 
 type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or", same as match *)
 
-Fixed 5;;
-Floating 4.0;;
+Fixed 5;; (* tag 5 as a Fixed *)
+Floating 4.0;; (* tag 4.0 as a Floating *)
 
 (* note constructors look like functions but they are not -- you always need to give arg *)
 
-
 let pullout x =
     match x with
-    | Fixed n -> n              (* variants fit very well into pattern matching syntax *)
+    | Fixed n -> n    (* variants fit well into pattern matching syntax *)
     | Floating z -> int_of_float z;;
 
 pullout (Fixed 5);;
 
-(* arithmetic operations on 'mynumber' variant type *)
+(* A non-trivial function using the above variant type *)
 let add_num n1 n2 =
    match (n1, n2) with    (* note use of pair here to parallel-match on two variables  *)
-     (Fixed i1, Fixed i2) ->       Fixed   (i1       +  i2)
-   | (Fixed i1,   Floating f2) ->  Floating(float i1 +. f2)       (* need to coerce *)
-   | (Floating f1, Fixed i2)   ->  Floating(f1       +. float i2) (* ditto *)
-   | (Floating f1, Floating f2) -> Floating(f1       +. f2)
+     | (Fixed i1, Fixed i2) ->       Fixed   (i1       +  i2)
+     | (Fixed i1,   Floating f2) ->  Floating(float i1 +. f2)       (* need to coerce *)
+     | (Floating f1, Fixed i2)   ->  Floating(f1       +. float i2) (* ditto *)
+     | (Floating f1, Floating f2) -> Floating(f1       +. f2)
 ;;
 
 add_num (Fixed 123) (Floating 3.14159);;
@@ -849,6 +848,7 @@ add_num (Fixed 123) (Floating 3.14159);;
  * Enum types
  *     - special case of variant types,
  *       where all alternatives are constants
+ *     - leave off the "of <type>" business since there is no data
  *)
 
 type sign = Positive | Negative | Zero;;
@@ -856,7 +856,7 @@ type sign = Positive | Negative | Zero;;
 let sign_int n = if n > 0 then Positive else if n = 0 then Zero else Negative;;
 sign_int (-6);;
 
-(* Multiple data items in a construct?  Use the pre-existing product type! *)
+(* Multiple data items in a single clause?  Use the pre-existing product type! *)
 
 type complex = CZero | Nonzero of float * float;;
 
@@ -866,11 +866,10 @@ let com = Nonzero(3.2,11.2);;
  * Recursive data structures - a key use of variant types
  *
  *  - Functional programming is fantastic for computing over tree-structured data
- *     -- (and conversely NOT as good at dealing with graphs: hard to recurse on)
  *  - recursive types can refer to themselves in their own definition
  *  - similar in spirit to how C structs can be recursive (but, no pointer needed here)
  *
- * e.g. binary trees with integers in nodes and empty leaves:
+ * Example of binary trees with integers in nodes and empty leaves:
 *)
 type itree = ILeaf | INode of int * itree * itree;;  (* type refers to itself! *)
 
@@ -912,7 +911,7 @@ let mylisteg = ColonColon(3,ColonColon(5,ColonColon(7,MtList)));; (* [3;5;7] *)
 let rec double_list_elts ml =
   match ml with
     | MtList -> MtList (* vs [] -> [] *)
-    | ColonColon(mh,mt) -> ColonColon(mh * 2,double_list_elts mt);; (* vs mh :: mt -> .. *)
+    | ColonColon(hd,tl) -> ColonColon(hd * 2,double_list_elts tl);; (* vs mh :: mt -> .. *)
 
 double_list_elts mylisteg;;
 
@@ -921,8 +920,8 @@ double_list_elts mylisteg;;
  *
  *)
 
-let rec add_gobble bintree =
-   match bintree with
+let rec add_gobble binstringtree =
+   match binstringtree with
      Leaf -> Leaf
    | Node(y, left, right) ->
        Node(y^"gobble",add_gobble left,add_gobble right)
@@ -945,7 +944,7 @@ let rec lookup x bintree =
 lookup "whack!" bt;;
 lookup "flack" bt;;
 
-(* Recall we are still all functional: tree insert is functional insert, return the new tree *)
+(* Recall we are still 100% IMMUTABLE: tree insert is functional insert, return the new tree *)
 
 let rec insert x bintree =
    match bintree with
@@ -968,7 +967,7 @@ let gooobt =
  * Record Declarations
  *   - like tuples but with labels on fields.
  *   - similar to the structs of C/C++.
- *   - types are declared just like variants.
+ *   - the types must be declared just like OCaml variants.
  *   - can be used in pattern matches as well.
  *   - again the fields are immutable by default
  *   - not used as often as structs of C, most data is a variant with tupled multiple arguments
@@ -987,11 +986,11 @@ let rattoint r =
  match r with
    {num = n; denom = d} -> n / d;;
 
-(* only one pattern matched so can again inline pattern as parameter *)
+(* only one pattern matched so can again inline pattern in functions and lets *)
 let rattoint {num = n; denom = d}  =
    n / d;;
 
-(* equivalently can use dot projections *)
+(* equivalently can use dot projections, but happy path is usually patterns *)
 let rattoint r  =
    r.num / r.denom;;
 
@@ -1005,18 +1004,17 @@ add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
 type newratio = {num: int; coeff: float};; (* shadowing ratio's label num *)
 
-function x -> x.num;; (* requires x to be a newratio -- inference HAS to give one type. *)
+fun x -> x.num;; (* requires x to be a newratio -- inference HAS to give one type. *)
 
 (* one solution: declare type *)
 
-function (x : ratio) -> x.num;;
+fun (x : ratio) -> x.num;;
 
-(* another solution: pattern match on record *)
+(* best solution: pattern match on full record *)
 
-function {num = n; denom = d} -> d;;
+fun {num = _; denom = d} -> d;;
 
-(* OCaml programmers often use tuples instead of records since the record name
- * issue is not handled satisfactorily *)
+(* OCaml programmers often use tuples instead of records for conciseness *)
 
 (* ********************************************************************** *)
 
@@ -1054,7 +1052,7 @@ x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect
 
 let x = { contents = 4};; (* identical to x's definition above *)
 x := 6;;
-x.contents <- 7;;  (* same effect as previous line: update contents field *)
+x.contents <- 7;;  (* same effect as previous line: backarrow updates a field *)
 
 !x + 1;;
 x.contents + 1;; (* same effect as previous line *)
@@ -1122,7 +1120,7 @@ let x = ref 1 in
 
 let arrhi = Array.make 100 "";; (* size and initial value are the params here *)
 let arr = [| 4; 3; 2 |];; (* another way to make an array *)
-arr.(0);; (* access (unfortunately we already used [] for lists in the syntax) *)
+arr.(0);; (* access (unfortunately already used [] for lists in the syntax) *)
 arr.(0) <- 55;; (* update *)
 arr;;
 
