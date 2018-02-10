@@ -3,7 +3,7 @@
 # interpreters or typecheckers.
 
 distdir = _dist
-fbdkrawdir = fbdk-$(shell cat version.txt)
+fbdkrawdir = fbdk
 fbdkdir = $(distdir)/$(fbdkrawdir)
 fbdkbindir = $(fbdkdir)/binaries
 fbdkmoddir = $(fbdkbindir)/libraries
@@ -34,7 +34,10 @@ dist: distclean all
 	# Overlay existing files with dist_overlay contents
 	rsync -rL $(overlaydir)/* $(fbdkdir)/
 	# Build distribution tarball
-	cd $(distdir); tar cvzf $(fbdkrawdir).tgz $(fbdkrawdir)
+	cd $(distdir); \
+		tar cvzf $(fbdkrawdir).tgz $(fbdkrawdir)
+	cd $(distdir); \
+		ln -s $(fbdkrawdir).tgz $(fbdkrawdir)-$(shell cat version.txt).tgz
 
 .PHONY: distclean
 distclean:

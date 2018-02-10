@@ -927,12 +927,11 @@ let rec add_gobble binstringtree =
        Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
 
-let gobtree = add_gobble bt;;
 
 let rec lookup x bintree =
    match bintree with
-     Leaf -> false
-   | Node(y, left, right) ->
+     | Leaf -> false
+     | Node(y, left, right) ->
        if x = y then
           true
        else if x < y then

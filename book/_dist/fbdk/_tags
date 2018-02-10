@@ -1,2 +1,3 @@
-true: traverse
+<src/**>: traverse
+<binaries>: -traverse
 true: debug

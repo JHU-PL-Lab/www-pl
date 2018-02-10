@@ -80,6 +80,8 @@ expr:
       { Equal($1, $3) }
   | FUNCTION ident_decl GOESTO expr %prec prec_fun
       { Function($2, $4) }
+  | LET ident_decl EQUAL expr IN expr %prec prec_let
+      { Let($2, $4, $6) }
   | LET REC ident_decl ident_decl EQUAL expr IN expr %prec prec_let
       { LetRec($3, $4, $6, $8) }
   | IF expr THEN expr ELSE expr %prec prec_if
@@ -87,7 +89,7 @@ expr:
 ;
 
 simple_expr:
-    INT 
+    INT
       { Int $1 }
   | BOOL
       { Bool $1 }
@@ -115,4 +117,3 @@ ident_decl:
 ;
 
 %%
-
