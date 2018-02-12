@@ -1172,7 +1172,7 @@ invalid_arg "This function works on non-empty lists only";; (* Invalid_argument 
 
 (* Modules in programming languages
    - a module is a larger level of program abstraction: functional units or library.
-   - e.g. Java package, C/C++ directory w/ header files
+   - e.g. Java package, C directory w/ header files
 
 Some principles of modules:
 
@@ -1180,7 +1180,9 @@ Some principles of modules:
   -  A module contains code declarations: functions, classes,  types, etc.
   -  The module has an interface in which it
       * imports some things (e.g. other modules) from the outside and
-      * exports some things it has declared for outsiders to use; **hides** other things (key feature)
+      * exports some things it has declared for outsiders to use;
+      * **hides** other things for internal use only
+         -- hiding is a key feature, users don't get overwhelmed
 
  The C "module" system
    - Informal use of files and filesystem directories as modules
@@ -1195,8 +1197,8 @@ Some principles of modules:
 
   - A cleaner version of the C spirit of module
   - Directory is explicitly a package; allows for nested packages
-  - Implicit .h file in the public decls on classes/methods
-  - public/private/etc for information hiding
+  - Implicit export interface via public decls on classes/methods
+  - private/protected for information hiding
   - Separate namespace for each package avoids name clashes
   - Have to have at least the .class files of the imports around to compile
 
@@ -1204,39 +1206,40 @@ Some principles of modules:
 
 (* OCaml Modules *)
 
+(* We already saw some modules in action above, e.g. with List.map.
+   This is an invocation of the map function in the system List module. *)
+
+List.map (fun x -> x ^"gobble")["Have";"a";"good";"day"];;
 (*
-   OCaml module definitions are called **structures** (via the struct keyword)
+   OCaml module definitions are called **structures**
     - collections of related definitions (functions, types, other structures,
                                           exceptions, values, ...) given a name
  *)
 
+(* lets make a very simple functional set data structure *)
+
 module FSet =
 struct
-    exception NotFound (* any top-level definition can be included in a module *)
+exception NotFound (* any top-level definable can be included in a module *)
 
-    type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
 
-    let emptyset : 'a set = []
+let emptyset : 'a set = []
 
-    let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
+let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
 
-    let rec remove x (s: 'a set) =
-        match s with
-            [] -> raise NotFound
-    | hd :: tl ->
-                if hd = x then
-                    (tl: 'a set)
-                else
-                    hd :: remove x tl
+let rec remove x (s: 'a set) =
+  match s with
+  | [] -> raise NotFound
+  | hd :: tl ->
+    if hd = x then (tl: 'a set)
+    else hd :: remove x tl
 
-    let rec contains x (s: 'a set) =
-        match s with
-            [] -> false
-        | hd :: tl ->
-                if x = hd then
-                    true
-                else
-                    contains x tl
+let rec contains x (s: 'a set) =
+  match s with
+  | [] -> false
+  | hd :: tl ->
+    if x = hd then true else contains x tl
 end
 ;;
 
@@ -1311,26 +1314,26 @@ module HFSet :
     val contains: 'a -> 'a set -> bool
   end =
 struct
-    exception NotFound
-    type 'a set = 'a list
-    let emptyset : 'a set = []
-    let rec add x (s: 'a set) = ((x :: s) : ('a set))
-    let rec remove x (s: 'a set) =
-        match s with
-            [] -> raise NotFound
-        | hd :: tl ->
-                if hd = x then
-                    (tl: 'a set)
-                else
-                    hd :: remove x tl
-    let rec contains x (s: 'a set) =
-        match s with
-            [] -> false
-        | hd :: tl ->
-                if x = hd then
-                    true
-                else
-                    contains x tl
+exception NotFound (* any top-level definable can be included in a module *)
+
+type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+
+let emptyset : 'a set = []
+
+let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
+
+let rec remove x (s: 'a set) =
+  match s with
+  | [] -> raise NotFound
+  | hd :: tl ->
+    if hd = x then (tl: 'a set)
+    else hd :: remove x tl
+
+let rec contains x (s: 'a set) =
+  match s with
+  | [] -> false
+  | hd :: tl ->
+    if x = hd then true else contains x tl
 end
 ;;
 
@@ -1347,7 +1350,7 @@ let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* now it works - <abstr> re
     - Name of module is capped name of file: fSet.ml defines module FSet
     - File fSet.mli holds the signature of module FSet
        if there is no file set.mli thats OK; you have nothing hidden
-    - Use ocamlc to compile and link to an executable: very similar to C/C++
+    - Use ocamlc to compile and link to an executable: similar to C/C++
     - main program that starts running is any non-values defined in the module(s)
     - Also need to compile the .mli files! (unlike .h files)
 
@@ -1468,18 +1471,13 @@ OrderedIntSet.contains 3 myOrderedIntSet;;
 (* We can do the same thing for a string comparison *)
 
 module OrderedString =
-  struct
-    type t = string
-
-    let compare x y =
-      if x = y then
-    EqualTo
-      else
-    if x < y then
-      LessThan
-    else
-      GreaterThan
-  end;;
+struct
+  type t = string
+  let compare x y =
+    if x = y then EqualTo
+    else if x < y then LessThan
+    else GreaterThan
+end;;
 
 module OrderedStringSet = FSetFunctor(OrderedString);; (* a DIFFERENT instantiation of same *)
 

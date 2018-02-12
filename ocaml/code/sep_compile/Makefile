@@ -6,21 +6,21 @@ OCAMLC= ocamlc
 OPT= no
 #Generate type information?
 ANNOT= yes
-#Paths to include with each command: 
+#Paths to include with each command:
 INCLUDEDPATHS=
-#Flags for the project: 
-PROJECTFLAGS= -g 
+#Flags for the project:
+PROJECTFLAGS= -g
 
 default: all
 
-#Source files list: 
-SRC= fSet.mli fSet.ml main.ml 
+#Source files list:
+SRC= fSet.mli fSet.ml main.ml
 #Find .ml files:
 MLFILES= $(filter %.ml,$(SRC))
 #Executables to produce:
-EXEC= main
+EXEC= main.byte
 
-#Find out which files to erase with clean: 
+#Find out which files to erase with clean:
 ITFOBJ=$(MLFILES:.ml=.cmi)
 ifeq ($(OPT),yes)
 	OBJ=$(MLFILES:.ml=.cmx)
@@ -32,22 +32,22 @@ ifeq ($(ANNOT),yes)
 	TYPE=$(MLFILES:.ml=.annot)
 endif
 
-#Some cleaning rules : 
+#Some cleaning rules :
 clean:
 	rm -rf $(OBJ) $(ITFOBJ) $(TYPE) $(EXEC)
 
 mrproper: clean
 	rm -rf $(EXEC)
 
-#Rules to build project : 
+#Rules to build project :
 
-allExe: $(EXEC) 
+allExe: $(EXEC)
 
-allSrc: $(OBJ) 
+allSrc: $(OBJ)
 
 all: allSrc allExe
 
-main.cmi: 
+main.cmi:
 
 fSet.cmi: fSet.mli
 	$(OCAMLC) $(INCLUDEDPATHS) $(PROJECTFLAGS) -c fSet.mli
@@ -58,5 +58,5 @@ fSet.cmo: fSet.cmi fSet.ml
 main.cmo: fSet.cmi main.cmi main.ml
 	$(OCAMLC) $(INCLUDEDPATHS) $(PROJECTFLAGS) -c main.ml
 
-main: main.cmo fSet.cmo fSet.cmi main.cmi $(MLFILES)
-	$(OCAMLC) -o main $(INCLUDEDPATHS) $(PROJECTFLAGS) fSet.cmo main.cmo
+main.byte: main.cmo fSet.cmo fSet.cmi main.cmi $(MLFILES)
+	$(OCAMLC) -o main.byte $(INCLUDEDPATHS) $(PROJECTFLAGS) fSet.cmo main.cmo
