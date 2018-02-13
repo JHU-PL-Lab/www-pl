@@ -1210,6 +1210,9 @@ Some principles of modules:
    This is an invocation of the map function in the system List module. *)
 
 List.map (fun x -> x ^"gobble")["Have";"a";"good";"day"];;
+
+(* Now, lets look into how we can build our own modules *)
+
 (*
    OCaml module definitions are called **structures**
     - collections of related definitions (functions, types, other structures,
