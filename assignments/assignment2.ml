@@ -80,15 +80,31 @@ let x8 = failwith "Not Implemented"
    string keys is by using a trie data structure
    (https://en.wikipedia.org/wiki/Trie). A trie is a tree structure
    whose edges are labeled with the elements of the alphabet. Each
-   node in the tree corresponds to the sequence of alphabets traversed
-   on the path from the root to that node. When used a map, nodes that
-   correspond to keys of the map store an additional value.
+   node in the tree corresponds to the sequence of alphabet elements
+   traversed on the path from the root to that node. When used as a map,
+   nodes that correspond to keys of the map store an additional value.
 
-   For example, this picture:
-   https://en.wikipedia.org/wiki/File:Trie_example.svg from wikipedia
+   For example, this picture based on the example in the above
+   Wikipedia article:
+
+          [ ]
+      t /  |  \ i
+       /  A|   \
+      v    v    v
+    [ ]   [15]  [11]
+  o / \ e         \ n
+   /   \           \
+  v     v           v
+[7]    [ ]          [5]
+    a / | \ n    n /
+     / d|  \      /
+    v   v   v    v
+   [3] [4] [12] [9]
+
    represents a map:
 
-   { to => 7, tea => 3, ted => 4, ten => 12, A => 15, i => 11, in => 5, inn => 9 }.
+   { to => 7, tea => 3, ted => 4, ten => 12, A => 15, i => 11, in =>
+   5, inn => 9 }.
 
    A couple of points to note:
 
@@ -99,10 +115,20 @@ let x8 = failwith "Not Implemented"
    b. The "inner" nodes (node "t" and node "te") are not part of the
    map since they do not have values associated with them.
 
-   We will use the following data type for a trie.
 
-  (We did not cover the "'a option" type in lecture but it is a built-in type for 
-   optional data; Some(3), or None for example are elements of the type int option): *)
+   For this question you will write some basic functions to manipulate trie 
+   data structures.
+
+   We will use OCamls option types, here is a brief description as we did not cover
+   them in lecture. The built-in 'a option type is the type
+     Some of 'a | None
+   Some(3), or None for example are elements of the type int option.  Option
+   types are very useful for functions that may or may not return interesting 
+   results, depending on some condition. 
+
+   We will use the following data type for a trie:
+
+*)
 
 type 'a trie = Node of 'a option * (char * 'a trie) list ;; 
 
@@ -130,7 +156,7 @@ type 'a trie = Node of 'a option * (char * 'a trie) list ;;
     print_tree string_of_int the_trie_you_want_to_print
 *)
 
-(* 3a. [10 Points]
+(* 2a. [10 Points]
 
    Given a trie, a string key and a value, write a function that
    returns a new trie that contains the key value pair.
@@ -165,7 +191,7 @@ val trie_1 : int trie =
     ('i', Node (Some 11, [('n', Node (Some 5, [('n', Node (Some 9, []))]))]))])
 *)
 
-(* 3b. [10 Points]
+(* 2b. [10 Points]
 
   Given a trie and a key, fetch the value corresponding to the key if
    it exists.  The return value should be an option type. If the key
@@ -305,7 +331,9 @@ Exception: Insufficent_Ingredient
 OCaml in fact comes with a module to do this, but to get some experience with
 tree data we are going to start from the ground up here. If you are not familiar
 with JSON it is a simple string format for writing structured data which looks a
-lot like JavaScript syntax.
+lot like JavaScript syntax.  Here is a tutorial with some examples:
+ 
+  https://www.elated.com/articles/json-basics/
 
  *)
 
@@ -428,16 +456,17 @@ Exception: Invalid_argument "Assoc not top level".
 
 (* 4c. [10 points]
 
-Write a function to deeply look up a particular field's value in a OCaml json
-object. This will look for the named field arbitrarily deeply inside of any
-Assoc, e.g. Assocs within Assocs and Assocs within Lists.
+   Write a function to deeply look up a particular field's value in a
+   OCaml json object. This will look for the named field arbitrarily
+   deeply inside of any Assoc, e.g. Assocs within Assocs and Assocs
+   within Lists.
 
-This function only needs to work on JSON data that at the top level is an
-Assoc or a List. Invoke invalid_arg in other cases. Additionally, invoke
-invalid_arg if key s isn't one of the keys in any of the Assoc's in jsn.
-You should traverse Assoc's and List's in order, returning the first value
-that matches the key being search for.
-*)
+   This function only needs to work on JSON data that at the top level
+   is an Assoc or a List. Invoke invalid_arg in other
+   cases. Additionally, invoke invalid_arg if key s isn't one of the
+   keys in any of the Assoc's in jsn.  You should traverse Assoc's and
+   List's in depth-first order, returning the first value that matches
+   the key being search for.  *)
 
 
 let deep_lookup jsn s = failwith "Not Implemented";;
