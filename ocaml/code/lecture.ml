@@ -1258,7 +1258,7 @@ end
 
 let mySet = FSet.add 5 [];;  (* notice the return type here: int FSet.set -- includes module name *)
 let myNextSet = FSet.add 22 mySet;;
-FSet.contains 5 mySet;;
+FSet.contains 22 mySet;;
 FSet.remove 5 myNextSet;;
 
 open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shadow existing names *)

@@ -106,16 +106,6 @@ let x8 = failwith "Not Implemented"
    { to => 7, tea => 3, ted => 4, ten => 12, A => 15, i => 11, in =>
    5, inn => 9 }.
 
-   A couple of points to note:
-
-   a. A typical trie does not actually store the full key at each node
-   as the picture appears to show. This is not needed since the path
-   to the node encodes the key.
-
-   b. The "inner" nodes (node "t" and node "te") are not part of the
-   map since they do not have values associated with them.
-
-
    For this question you will write some basic functions to manipulate trie 
    data structures.
 
@@ -159,7 +149,9 @@ type 'a trie = Node of 'a option * (char * 'a trie) list ;;
 (* 2a. [10 Points]
 
    Given a trie, a string key and a value, write a function that
-   returns a new trie that contains the key value pair.
+   returns a new trie that contains the key value pair.  Note that the
+   order of subtrees in your trie should not matter, as long as it is
+   a correct trie result it is correct.
 
 *)
 let rec add_to_trie trie str value = failwith "Not Implemented";;
