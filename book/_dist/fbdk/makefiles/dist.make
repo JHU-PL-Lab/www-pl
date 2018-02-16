@@ -31,6 +31,7 @@ dist: distclean all
 	# Copy modules for debugging
 	mkdir -p $(fbdkmoddir)
 	cp $(shell find $(builddir) -name '*.cmo') $(fbdkmoddir)
+	cp $(shell find $(builddir) -name '*.cmi') $(fbdkmoddir)
 	# Overlay existing files with dist_overlay contents
 	rsync -rL $(overlaydir)/* $(fbdkdir)/
 	# Build distribution tarball
