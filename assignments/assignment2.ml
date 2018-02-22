@@ -11,7 +11,7 @@ listed.
 
 Fill in the function definitions below replacing the
 
-  failwith "Not Implemented"
+  failwith "Not Implemented";;
 
 with your code.  In some cases, you may find it helpful to define auxillary
 functions, feel free to.  Other than replacing the failwiths and adding recs,
@@ -39,37 +39,37 @@ define x1.
 
  *)
 
-let x1 = failwith "Not Implemented"
+let x1 = failwith "Not Implemented";;
 
 (* val x1 : int list ref = ... *)
 
-let x2 = failwith "Not Implemented"
+let x2 = failwith "Not Implemented";;
 
 (* val x2 : 'a -> ('a -> 'b) -> 'b = ... *)
 
-let x3 = failwith "Not Implemented"
+let x3 = failwith "Not Implemented";;
 
 (* val x3 : unit -> unit = ... *)
 
-let x4 = failwith "Not Implemented"
+let x4 = failwith "Not Implemented";;
 
 (* val x4 : 'a list -> 'a array -> 'a = ... *)
 
-let x5 = failwith "Not Implemented"
+let x5 = failwith "Not Implemented";;
 
 (* val x5 : 'a list -> 'b list list -> ('a * 'b) list = ... *)
 
-let x6 = failwith "Not Implemented"
+let x6 = failwith "Not Implemented";;
 
 (* val x6 :  ('a -> 'b) -> ('b -> 'c) -> 'a -> 'c = ... *)
 
-let x7 = failwith "Not Implemented"
+let x7 = failwith "Not Implemented";;
 
 (* val x7 : 'a -> 'b = ... *)
 
 type ('a, 'b) stuff = Stu of 'a | Uff of 'b ;;
 
-let x8 = failwith "Not Implemented"
+let x8 = failwith "Not Implemented";;
     
 (* val x8 : ('a, 'b) stuff list -> (unit -> 'c) -> ('b, 'c) stuff list  = ... *)
 
@@ -222,23 +222,23 @@ type item = Tomato | Lettuce | Patty | Bun
 
 (* This function should return a new (mutable) stock structure. *)
 
-let make_stock () = failwith "Not Implemented"
+let make_stock () = failwith "Not Implemented";;
 
 (* This function should add a new item i to a stock. It should
    just return () since all it is doing is a side-effect. 
 *)
 
-let add_item s i = failwith "Not Implemented"
+let add_item s i = failwith "Not Implemented";;
 
 (* This function should remove one item i from the stock. It
    should just return () since all it is doing is a side-effect. It
    should raise an exception if a non-existent item is removed.  *)
     
-let remove_item s i = failwith "Not Implemented"
+let remove_item s i = failwith "Not Implemented";;
 
 (* This function should count the number of items i in the stock *)
 
-let count_item s i = failwith "Not Implemented"
+let count_item s i = failwith "Not Implemented";;
 
 (*
 # let s = make_stock ();;
@@ -291,7 +291,7 @@ type burgerKind = FullBurger | DoubleBurger | VeggieBurger | NothingBurger
    remove any ingredients if some of the ingredients for the
    burger are missing. *)
 
-let cook s bk = failwith "Not Implemented"
+let cook s bk = failwith "Not Implemented";;
 
 (*
 # let s = make_stock ();;
