@@ -121,11 +121,27 @@ describes how to compile and run the interpreter, and how to run the "solution" 
   </li>
 </ol>
 
-<h3>Part 3: A couple written questions</h3>
+<h3>Part 1 written questions</h3>
 <p> Here are a couple questions to reinforce the recent lectures on operational semantics.
-  <ol>
-    (To appear, come back soon!)
-  </ol>
+<ol>
+  <li>[5 points] Write an operational
+  semantics proof which shows what the Fb expression <code>(Fun z -> (Fun z -> z + z)) 2 4</code> evaluates to.  Please give the whole proof tree, using the rules in Chapter 2.  Note that there is some variable shadowing in this program so be careful with substitution!
+  </li>
+  <li> [5 points] As with the previous question, but for the expression
+    <code>(Fun p -> p 1 2)(Fun x -> Fun y -> y)</code></li>
+  <li>[5 points] Show that the Fb expression <code>If True = 0 Then False Else True</code> has no value.
+
+<li> [5 points] In languages like C or Java, binary boolean operators are
+  'short circuiting' - i.e. For an expression like <code>file != null &&
+  file.length() &lt; 0</code>, the second expression is evaluated only if the
+  first expression is true. Similarly for '||' operations, the second
+  expression is evaluated only if the first expression evaluates to
+  false. This is not true in the default Fb operational semantics.
+   Modify the operational semantics of Fb <code>And</code> and <code>Or</code> such that they
+  perform short-circuiting.</li>
+    </ol>
+
+
 
 
 <h3>Submission and Grading</h3>
