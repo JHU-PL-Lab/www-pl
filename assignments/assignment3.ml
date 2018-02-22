@@ -99,15 +99,15 @@ let fbMax = "(0 1)";;
 
 (* Pick something to represent an empty tree *)
 
-let fbMttree = "0 1";;
+let fbMttree = "(0 1)";;
 
 (* Make a function here which takes a value, a left tree, and a right tree, and makes the binary tree. *)
 
-let fbMakeNode = "0 1";;
+let fbMakeNode = "(0 1)";;
 
 (* It is important to have a function to test whether a tree is empty - it should return True if it is empty and False otherwise.  Your emptty tre and node maker need to be designed with this in mind! *)
 
-let fbIsempty = "0 1";;
+let fbIsempty = "(0 1)";;
 
 (* Lets make a simple tree for testing.
 # let node1 = "("^fbMakeNode^") 4 ("^fbMttree^") ("^fbMttree^")";;
@@ -125,8 +125,8 @@ let fbIsempty = "0 1";;
 
 (* Now we need accessors to get left and right subtrees; they should only be called on non-empty trees, feel free to do bizarre things if passed an empty tree. *)
 
-let fbGetleft = "0 1";;
-let fbGetright = "0 1";;
+let fbGetleft = "(0 1)";;
+let fbGetright = "(0 1)";;
 
 (*
 # rep ("("^fbGetleft^") ("^node2^")");;
