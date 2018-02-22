@@ -105,7 +105,7 @@ let fbMttree = "(0 1)";;
 
 let fbMakeNode = "(0 1)";;
 
-(* It is important to have a function to test whether a tree is empty - it should return True if it is empty and False otherwise.  Your emptty tre and node maker need to be designed with this in mind! *)
+(* It is important to have a function to test whether a tree is empty - it should return True if it is empty and False otherwise.  Your empty tree and node maker need to be designed with this in mind! *)
 
 let fbIsempty = "(0 1)";;
 
