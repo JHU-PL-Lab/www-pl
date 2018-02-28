@@ -2,11 +2,6 @@
 
 open Afbvast;;
 
-let rec mkappl e args =
-  match args with
-    [] -> e
-  | a::rest -> Appl(mkappl e rest, a)
-
 %}
 
 /*
@@ -55,10 +50,11 @@ let rec mkappl e args =
  */
 %right prec_let                         /* Let x = ... In ... */
 %right prec_fun                         /* function declaration */
-%right prec_seq                         /* Sequence */
+%left prec_match_body                   /* Match ... With | ... -> e */
+%right SEMICOLON                        /* Sequence */
 %right prec_if                          /* If ... Then ... Else */
-%left prec_pair                         /* Pair */
-%right SET                              /* := (assignment) */
+%right SENDTO                           /* <- */
+%left COMMA                             /* Pair */
 %right OR                               /* Or */
 %right AND                              /* And */
 %left EQUAL                             /* = */
@@ -67,7 +63,6 @@ let rec mkappl e args =
 %left prec_send                         /* send to actor */
 %right NOT                              /* not e */
 %right CONS                             /* :: */
-%nonassoc prec_paren                    /* (e) */
 
 /*
  * The entry point.
@@ -82,10 +77,8 @@ main:
 ;
 
 expr:
-    simple_expr
+  | appl_expr
       { $1 }
-  | simple_expr simple_expr_list %prec prec_appl
-      { mkappl $1 $2 }
   | expr PLUS expr
       { Plus($1, $3) }
   | expr MINUS expr
@@ -102,15 +95,15 @@ expr:
       { Function($2, $4) }
   | IF expr THEN expr ELSE expr %prec prec_if
       { If($2, $4, $6) }
-  | expr SEMICOLON expr %prec prec_seq
+  | expr SEMICOLON expr
       { Seq($1, $3) }
   | LET ident_decl EQUAL expr IN expr %prec prec_let
       { Let($2, $4, $6) }
-  | expr COMMA expr %prec prec_pair
+  | expr COMMA expr
       { Pair($1, $3) }
-  | FST simple_expr %prec prec_appl
+  | FST simple_expr
       { Fst $2 }
-  | SND simple_expr  %prec prec_appl
+  | SND simple_expr
       { Snd $2 }
   | VARIANT expr %prec prec_appl
       { Variant(Name $1, $2) }
@@ -124,7 +117,7 @@ expr:
           | Seq(e1, e2) -> Cons(e1, seq_to_list e2)
           | v -> Cons(v, EmptyList)
         in
-          seq_to_list $2  
+          seq_to_list $2
       }
   | expr CONS expr
       { Cons($1, $3) }
@@ -132,7 +125,7 @@ expr:
       { Head $2 }
   | TAIL expr %prec prec_appl
       { Tail $2 }
-  | CREATE LPAREN expr COMMA expr RPAREN %prec prec_appl
+  | CREATE LPAREN expr COMMA expr RPAREN
       { Create($3, $5) }
   | expr SENDTO expr %prec prec_send
       { Send($1, $3) }
@@ -140,8 +133,15 @@ expr:
       { Print $2 }
 ;
 
+appl_expr:
+    simple_expr
+      { $1 }
+  | appl_expr simple_expr
+      { Appl($1,$2) }
+;
+
 simple_expr:
-    INT 
+    INT
       { Int $1 }
   | BOOL
       { Bool $1 }
@@ -151,13 +151,6 @@ simple_expr:
       { $1 }
   | LPAREN expr RPAREN
       { $2 }
-;
-
-simple_expr_list:
-    simple_expr
-      { [$1] }
-  | simple_expr_list simple_expr
-      { $2::$1 }
 ;
 
 ident_usage:
@@ -174,13 +167,13 @@ pattern_list:
     pattern
       { [$1] }
   | pattern_list PIPE pattern
-      { $1 @ [$3] }    
+      { $1 @ [$3] }
 ;
 
 pattern:
-    VARIANT pattern_ident GOESTO expr
+    VARIANT pattern_ident GOESTO expr %prec prec_match_body
       { ((Name $1), $2,$4) }
-  | PIPE VARIANT pattern_ident GOESTO expr
+  | PIPE VARIANT pattern_ident GOESTO expr %prec prec_match_body
       { ((Name $2), $3, $5) }
 ;
 
@@ -188,8 +181,7 @@ pattern_ident:
     ident_decl
        { $1 }
   | LPAREN pattern_ident RPAREN
-       { $2 } 
-;      
-      
-%%
+       { $2 }
+;
 
+%%

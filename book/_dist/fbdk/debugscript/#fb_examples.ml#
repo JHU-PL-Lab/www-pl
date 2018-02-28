@@ -69,16 +69,6 @@ let combD = "Function x -> x x";;
 (* Pairs.   First lets hack some by hand, then do the general macro. *)
 
 let pair32 = "(Fun d -> d 3 2)";;
-let left32 = pair32^"(Fun l -> Fun r -> l)";;
-rep left32;;
-let right32 = pair32^"(Fun l -> Fun r -> r)";;
-rep right32;;
-
-(* General pair macros.
-   We are going to use OCaml as the macro language and compose 
-   strings to make Fb programs. This is similar in spirit how 
-   #define and the cpp pre-processor works for C. *)
-
 let pr(c1, c2)  =
   "(Let lft = ("^c1^") In Let rgt = ("^c2^") In
       Function x -> x lft rgt)";;
@@ -92,7 +82,7 @@ let pr(c1, c2)  =
 let left c =  "("^c^") (Function x -> Function y -> x)";;
 let right c =  "("^c^") (Function x -> Function y -> y)";;
 
-let pc = pr("34","45");;  (* construct a string representing the Fb program for this pair *)
+let pc = pr("34+3","45");;  (* construct a string representing the Fb program for this pair *)
 
 let preg = left pc;;
 

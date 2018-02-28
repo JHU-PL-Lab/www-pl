@@ -19,7 +19,7 @@ $(srcdir)/version.ml: version.txt
 
 # A build for a single interpreter
 %.byte: phony $(srcdir)/version.ml
-	ocamlbuild -I $(srcdir) -Is "$(interpreter_dirs)" -r $@
+	ocamlbuild -use-menhir -I $(srcdir) -Is "$(interpreter_dirs)" -r $@
 
 # Build all interpreters
 .PHONY: all

@@ -2,11 +2,6 @@
 
 open Tfbsrxast;;
 
-let rec mkappl e args =
-  match args with
-    [] -> e
-  | a::rest -> Appl(mkappl e rest, a)
-
 let rec type_string t =
 	match t with
 	| TInt -> "Int"
@@ -72,19 +67,16 @@ let mkexn n t =
 /*
  * Precedences and associativities.  Lower precedences come first.
  */
-%right prec_let                         /* Let ... In ... */
-%right prec_fun                         /* function declaration */
-%right SEMI                             /* e1; e2 (record) */
+%right prec_fun GOESTO                  /* function declaration, with clause */
+%left EXN
 %right prec_if                          /* If ... Then ... Else */
+%left RAISE                             /* Raise e */
 %right SET                              /* := (assignment) */
 %right OR                               /* Or */
 %right AND                              /* And */
 %left EQUAL                             /* = */
 %left PLUS MINUS                        /* + - */
-%left prec_appl                         /* function application */
-%left DOT                               /* record access */
 %right NOT REF GET                      /* !e, not e, ref e, etc. */
-%nonassoc prec_paren                    /* (e) */
 
 /*
  * The entry point.
@@ -99,10 +91,8 @@ main:
 ;
 
 expr:
-    simple_expr
+  | appl_expr
       { $1 }
-  | simple_expr simple_expr_list %prec prec_appl
-      { mkappl $1 $2 }
   | expr PLUS expr
       { Plus($1, $3) }
   | expr MINUS expr
@@ -127,16 +117,21 @@ expr:
       { Set($1, $3) }
   | GET expr
       { Get $2 }
-  | expr DOT label
-      { Select($3, $1) }
   | TRY expr WITH exn_def IDENT GOESTO expr
       { let (n, t) = $4 in Try($2, mkexn n t, Ident $5, t, $7) }
   | RAISE exn_def expr
       { let (n, t) = $2 in Raise(mkexn n t, t, $3) }
 ;
 
+appl_expr:
+    simple_expr
+      { $1 }
+  | appl_expr simple_expr
+      { Appl($1,$2) }
+;
+
 simple_expr:
-    INT 
+    INT
       { Int $1 }
   | BOOL
       { Bool $1 }
@@ -148,13 +143,8 @@ simple_expr:
       { Record [] }
   | LPAREN expr RPAREN
       { $2 }
-;
-
-simple_expr_list:
-    simple_expr
-      { [$1] }
-  | simple_expr_list simple_expr
-      { $2::$1 }
+  | simple_expr DOT label
+      { Select($3, $1) }
 ;
 
 record_body:
@@ -184,10 +174,10 @@ type_decl:
       { TInt }
   | BOOLTYPE
       { TBool }
-  | type_decl GOESTO type_decl
+  | type_decl GOESTO type_decl %prec prec_fun
       { TArrow($1, $3) }
   | LCURLY record_type RCURLY
-      { TRec $2 } 
+      { TRec $2 }
   | type_decl REF
       { TRef $1 }
   | LPAREN type_decl RPAREN
@@ -202,9 +192,8 @@ record_type:
 ;
 
 exn_def:
-    EXN type_decl 
+    EXN type_decl
        { ($1, $2) }
   | LPAREN exn_def RPAREN
-       { $2 } 
+       { $2 }
 %%
-

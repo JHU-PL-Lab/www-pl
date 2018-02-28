@@ -2,11 +2,6 @@
 
 open Fbast;;
 
-let rec mkappl e args =
-  match args with
-    [] -> e
-  | a::rest -> Appl(mkappl e rest, a)
-
 %}
 
 /*
@@ -40,14 +35,11 @@ let rec mkappl e args =
 %right prec_let                         /* Let Rec f x = ... In ... */
 %right prec_fun                         /* function declaration */
 %right prec_if                          /* If ... Then ... Else */
-%right SET                              /* := (assignment) */
 %right OR                               /* Or */
 %right AND                              /* And */
 %left EQUAL                             /* = */
 %left PLUS MINUS                        /* + - */
-%left prec_appl                         /* function application */
 %right NOT                              /* not e */
-%nonassoc prec_paren                    /* (e) */
 
 /*
  * The entry point.
@@ -62,10 +54,8 @@ main:
 ;
 
 expr:
-    simple_expr
+  | appl_expr
       { $1 }
-  | simple_expr simple_expr_list %prec prec_appl
-      { mkappl $1 $2 }
   | expr PLUS expr
       { Plus($1, $3) }
   | expr MINUS expr
@@ -88,6 +78,13 @@ expr:
       { If($2, $4, $6) }
 ;
 
+appl_expr:
+    simple_expr
+      { $1 }
+  | appl_expr simple_expr
+      { Appl($1,$2) }
+;
+
 simple_expr:
     INT
       { Int $1 }
@@ -97,13 +94,6 @@ simple_expr:
       { $1 }
   | LPAREN expr RPAREN
       { $2 }
-;
-
-simple_expr_list:
-    simple_expr
-      { [$1] }
-  | simple_expr_list simple_expr
-      { $2::$1 }
 ;
 
 ident_usage:

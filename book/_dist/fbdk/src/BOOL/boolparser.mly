@@ -18,7 +18,6 @@ open Boolast;;
 %right OR                               /* Or */
 %right AND                              /* And */
 %right NOT                              /* Not */
-%nonassoc prec_paren                    /* (e) */
 
 %start main
 %type <Boolast.expr> main
@@ -47,8 +46,3 @@ expr:
 ;
 
 %%
-
-
-
-
-
