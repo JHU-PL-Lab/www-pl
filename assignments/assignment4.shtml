@@ -1,0 +1,70 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+  <h3>Assigment 4: Operational semantics</h3>
+</header>
+
+<p>
+  <h3>Part A, due before spring break</h3>
+
+Make direct operational semantics rules for the following
+  <strong>Fb</strong> extensions.  Note that you can use as few or as
+  many rules as you need.  What you <em>must</em> do is write a rule
+  that actually does the "work" of the construct; don't just translate
+  it into <strong>Fb</strong> syntax or other <strong>Fb</strong> extension already defined that will do the work.
+  <br>
+<ol>
+  <li>Write out the operational semantics rules for for <strong>FbL</strong>, <strong>Fb</strong> with OCaml-style lists. We define the following new syntax following OCaml:
+    <ul>
+      <li><tt>[ ]</tt> for empty list</li>
+      <li><tt>e :: e</tt> for the cons operator</li>
+      <li><tt>Match e With [] -> e | x :: x -> e</tt> - pattern matching on lists (only - not a general pattern match)
+      </ul>
+Programmers will need to build their lists from the above operations -- you don't need to support syntax </tt>[1;2]</tt> since they can just do <tt>1 :: 2 :: []</tt>
+Here is a sample program which should evaluate to <tt>11</tt>.
+
+<pre>Match (1 :: (2 :: [])) With [] -> 0 | (h :: t) -> h + 10</pre>
+
+    For your answer:<ol>
+  <li>Make sure to define any new values in <strong>FbL</strong> (beyond those present in <strong>Fb</strong>)</li>
+  <li>Give the new operational semantics rules that would have to be 
+    added to standard <strong>Fb</strong> rules; you should not need to change the existing rules.
+    <li>When your rules are done, test that they work by writing out a complete proof of the above small program execution using your new rules.
+    </ol>
+<li>The <strong>FbS</strong> operational semantics requires changes to the existing <strong>Fb</strong> rules to thread state through the rules.  We worked through the <tt>Let</tt> rule in lecture, and the book contains the function application rule.
+  For this question consider a language <strong>FbLS</strong> which has both lists and state.  Write out state versions of the new operational semantics rules you created for the previous question, making sure to "thread the state" through them. 
+</li>
+<li>We defined the operational semantics for a language with records, <strong>FbR</strong>, in lecture.  These records are quite weak compared to e.g. Python dictionaries: the labels are fixed and cannot be computed, and records cannot be extended, unlike Python dictionaries.  For this question we will develop a language <strong>FbRe</strong>, which has records that can also be <strong>e</strong>xtended with additional mappings.
+In general we will define a "record addition" operation using <tt>+</tt>, so that operation will now also "add" two records together.  <ol>
+    <li>Note that no new grammar constructs beyond the <strong>FbR</strong> ones are needed, we already have addition of expressions in the syntax and we are just overloading it.
+    <li>Make your extension a strict extension of <strong>FbR</strong>: all of those rules can remain unchanged</li>
+    <li>Write a new rule for the <tt>+</tt> operation on records.  note that if a label occurs in both records, we will let the value in the right side have precedence: <tt> ({a = 4+1; b=6} + {b=False}).b</tt> should evaluate to <tt>False</tt>.
+      <li>Test the small program above works correctly: write out the full proof tree for the computation.
+      </ol>
+  </ol>
+
+
+  <h3>Part B</h3>
+  
+<p>This part is not finished; come back soon.
+  
+<h3>Submission and Grading</h3>
+
+<ul>
+  <li>Submit a pdf with the answers to part A at "Assignment 4A written" in Gradescope</li>
+  <li>(Part B instructions to appear.)
+    </ul>
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
