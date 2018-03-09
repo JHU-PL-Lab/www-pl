@@ -21,19 +21,17 @@ Make direct operational semantics rules for the following
   it into <strong>Fb</strong> syntax or other <strong>Fb</strong> extension already defined that will do the work.
   <br>
 <ol>
-  <li>Write out the operational semantics rules for for <strong>FbL</strong>, <strong>Fb</strong> with OCaml-style lists. We define the following new syntax following OCaml:
-    <ul>
-      <li><tt>[ ]</tt> for empty list</li>
-      <li><tt>e :: e</tt> for the cons operator</li>
-      <li><tt>Match e With [] -> e | x :: x -> e</tt> - pattern matching on lists (only - not a general pattern match)
-      </ul>
-Programmers will need to build their lists from the above operations -- you don't need to support syntax </tt>[1;2]</tt> since they can just do <tt>1 :: 2 :: []</tt>
+  <li>Write out the operational semantics rules for for <strong>FbL</strong>, <strong>Fb</strong> with OCaml-style lists. <strong>Fb</strong>'s BNF grammar is extended with the following productions:
+    <pre>e ::= .... | [] | e :: e | (Match e With [] -> e | x :: x -> e)</pre>
+
+
+Programmers will need to build their lists from the above operations -- you don't need to support syntax <tt>[1;2]</tt> since they can just do <tt>1 :: 2 :: []</tt>
 Here is a sample program which should evaluate to <tt>11</tt>.
 
 <pre>Match (1 :: (2 :: [])) With [] -> 0 | (h :: t) -> h + 10</pre>
 
     For your answer:<ol>
-  <li>Make sure to define any new values in <strong>FbL</strong> (beyond those present in <strong>Fb</strong>)</li>
+  <li>Make sure to define any new values <tt>v</tt> in <strong>FbL</strong> (beyond those present in <strong>Fb</strong>)</li>
   <li>Give the new operational semantics rules that would have to be 
     added to standard <strong>Fb</strong> rules; you should not need to change the existing rules.
     <li>When your rules are done, test that they work by writing out a complete proof of the above small program execution using your new rules.
@@ -45,7 +43,7 @@ Here is a sample program which should evaluate to <tt>11</tt>.
 In general we will define a "record addition" operation using <tt>+</tt>, so that operation will now also "add" two records together.  <ol>
     <li>Note that no new grammar constructs beyond the <strong>FbR</strong> ones are needed, we already have addition of expressions in the syntax and we are just overloading it.
     <li>Make your extension a strict extension of <strong>FbR</strong>: all of those rules can remain unchanged</li>
-    <li>Write a new rule for the <tt>+</tt> operation on records.  note that if a label occurs in both records, we will let the value in the right side have precedence: <tt> ({a = 4+1; b=6} + {b=False}).b</tt> should evaluate to <tt>False</tt>.
+    <li>Write a new rule for the <tt>+</tt> operation on records.  Note that if a label occurs in both records, we will let the value in the right side have precedence: <tt> ({a = 4+1; b=6} + {b=False}).b</tt> should evaluate to <tt>False</tt>.
       <li>Test the small program above works correctly: write out the full proof tree for the computation.
       </ol>
   </ol>
