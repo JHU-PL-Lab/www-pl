@@ -48,7 +48,7 @@ let colorPointExample2 =
 Let var_zero = `zero(3) In 
 Let var_one = `one(4) In 
 Let matcher = Fun v -> Match v With `zero(x) -> x - 1 | `one(x) -> x + 1 In
-Let do_match = Fun va -> Fun ma -> matcher var_one In do_match var_one matcher
+Let do_match = Fun va -> Fun ma -> ma va In do_match var_one matcher
 
 which should return 5.  We made the matcher a function and isolated a function to do the match
 to line up with how you will encode this example.
@@ -59,7 +59,7 @@ For this question, write out FbRe versions of each of the lines above.
 let encoded_var_zero = "(0 1)"  (* replace with manual encoding of `zero(3) in FbRe *)
 let encoded_var_one = "(0 1)"  (* replace with manual encoding of `one(4) in FbRe *)
 
-let encoded_matcher = "(0 1)"  (* replace with manual encoding of matcher in FbRe *)
+let encoded_matcher = "Fun v -> (0 1)"  (* replace with manual encoding of matcher fn in FbRe *)
 let encoded_do_match = "Fun va -> Fun ma -> (0 1)"  (* replace with manual encoding of do_match in FbRe *)
 
 (* Here is a test that should exercise your encoding, it should return 5. *)
@@ -81,7 +81,7 @@ Let append_do_match = Fun va -> Fun m0 -> Fun m1 -> (m0 va) | (m1 va) In
 
 This program is using "|" to APPEND two match clauses together -- thats not possible!
 
-But, since our encoding in FbRe also includes record appending we can in fact encode something like this, we can append match cases together by appending records.  The effect of such an append is to first try to match the first clauses, and if that fails try the second ones.  This is in fact easy to encode with record append.  Fill in the following to show how this is done.
+But, since our encoding in FbRe also includes record appending we can in fact encode something like this, we can append match cases together by appending records with +.  The effect of such an append is to first try to match the first clauses, and if that fails try the second ones.  This is in fact easy to encode with record append.  Fill in the following to show how this is done.
 
 *)
 
@@ -89,7 +89,7 @@ But, since our encoding in FbRe also includes record appending we can in fact en
 
 let encoded_match_zero = "(0 1)"  (* replace with manual encoding of match_zero in FbRe *)
 let encoded_match_one = "(0 1)"  (* replace with manual encoding of match_one in FbRe *)
-let encoded_append_do_match = "Fun va -> Fun m0 -> Fun m1 -> (0 1)"  (* replace with manual encoding of append_match in FbRe.  It must use + to append records and build a combined match from the two input matches. *)
+let encoded_append_do_match = "Fun va -> Fun m0 -> Fun m1 -> (0 1)"  (* replace with manual encoding of append_match in FbRe.  It must use + to append applied m0/m1 and build a combined match from the two input matches. If you are repeating some code for match_zero and match_one here you are failing to answer the question, it should merge any two match clauses.  *)
 
 (* Here is a test that should exercise your encoding, it should return 4. *)
 
