@@ -28,7 +28,7 @@ Make direct operational semantics rules for the following
 Programmers will need to build their lists from the above operations -- you don't need to support syntax <tt>[1;2]</tt> since they can just do <tt>1 :: 2 :: []</tt>
 Here is a sample program which should evaluate to <tt>11</tt>.
 
-<pre>Match (1 :: (2 :: [])) With [] -> 0 | (h :: t) -> h + 10</pre>
+<pre>Match (1 :: (2 :: [])) With [] -> 0 | h :: t -> h + 10</pre>
 
     For your answer:<ol>
   <li>Make sure to define any new values <tt>v</tt> in <strong>FbL</strong> (beyond those present in <strong>Fb</strong>)</li>
