@@ -49,7 +49,7 @@ In general we will define a "record addition" operation using <tt>+</tt>, so tha
   </ol>
 
 
-  <h3>Part B</h3>
+<a name="4b"></a>  <h3>Part B</h3>
   
   <ol>
     <li>Implement an interpreter for the variant language <strong>FbReL</strong> which implements the operational semantics extensions you developed in part A:  <strong>FbRe</strong> plus <strong>FbL</strong> plus modify the <tt>And</tt> and <tt>Or</tt> meaning so that they short-circuit.  Lastly, change <tt>=</tt> testing so it works on all types, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: using OCaml's = this last modification is trivial).
