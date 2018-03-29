@@ -91,7 +91,7 @@ let encoded_match_zero = "(0 1)"  (* replace with manual encoding of match_zero 
 let encoded_match_one = "(0 1)"  (* replace with manual encoding of match_one in FbRe *)
 let encoded_append_do_match = "Fun va -> Fun m0 -> Fun m1 -> (0 1)"  (* replace with manual encoding of append_match in FbRe.  It must use + to append applied m0/m1 and build a combined match from the two input matches. If you are repeating some code for match_zero and match_one here you are failing to answer the question, it should merge any two match clauses.  *)
 
-(* Here is a test that should exercise your encoding, it should return 4. *)
+(* Here is a test that should exercise your encoding, it should return 2. *)
 
 let test_merge_encoding =
   "Let ve = ("^encoded_var_zero^
