@@ -48,7 +48,7 @@ command  <tt>ocaml</tt>.
 Once you have the basics installed, run the following command to install additional necessary packages for the class:
 
 <pre>
-opam install ocamlbuild merlin ocp-indent user-setup tuareg
+opam install ocamlbuild merlin ocp-indent user-setup tuareg menhir
 </pre>
 
 For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not installed.
