@@ -12,3 +12,6 @@ lowercase = $(subst A,a,$(subst B,b,$(subst C,c,$(subst D,d,$(subst E,e,$(subst 
 # A trick to make phony wildcards possible
 .PHONY: phony
 phony:
+
+print-%: phony
+	@echo "$(info $* is a $(flavor $*) variable set to: [$($*)])"
