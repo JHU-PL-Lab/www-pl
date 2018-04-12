@@ -16,6 +16,31 @@
 </p>
 
 <h3>Part I</h3>
+<ol>
+        <b>(20 points)</b>
+    
+        In this part, you will be answering a question about typing.
+<p>    
+
+           In a previous assignment we extended Fb with variants pairs and let to make <strong>FbVPL</strong>. Here we will extend the variants component of that language (only) with types: <strong>TFbV</strong>. In this question you are just making a type system, the mathematical specification for the type checker.  Variant types are added to <strong>TFb</strong>'s types; they will be slightly different than OCaml syntax, they will be e.g. <pre>`good(Int) | `bad(Bool)</pre>
+
+	We also need to add some type labels to facilitate type checking, modifying slightly the <strong>TFbV</strong> syntax:
+replace <code>`n(e)</code> with <code>`n(e):&tau;</code> - all variant data is tagged with a variant type (we don't have the <tt>type</tt> declarations of OCaml so we need to manually do this; this type also needs to include all potential variants since we have no subtyping here.).  For example: <code>`good(0): `good(Int) | `bad(Bool)</code>.
+        
+        
+          <ol class="a">
+	    <li>Your task is to write the new type rules beyond those already present in <strong>TFb</strong> to make a full type system for <strong>TFbV</strong>.  Note you don't need to implement anything for this question.  Please make your rule be strict -- OCaml will sometimes give a warning if there is a case missing, you should not allow those programs to typecheck in your rule. (To model the warning we would need to include a warning flag in our type system.)
+	    <li>Show your rules work by proving the simple program
+	      <pre>Match (`good(0): `good(Int) | `bad(Bool)) With `good(_) -> 0 | `bad(_) -> 1</pre> typechecks: construct the type tree for it.</li>
+	    <li>Describe why the same program but with the <tt>`bad</tt> case removed fails to typecheck in your rules (yes, it should fail even though that case is not invoked).
+	      </ol>
+        
+    </li>
+</ol>
+
+
+
+<h3>Part II</h3>
 <b>(80 points)</b>
 <p>
     The FbDK has been designed to be extensible with typechecking. It is just turned off by default. For Part-I of the homework, 
@@ -100,34 +125,10 @@ Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
     </li>
 </ul>
 
-<h3>Part II</h3>
-<ol>
-        <b>(20 points)</b>
-    
-        In this part, you will be answering a question about typing.
-<p>    
-
-           In a previous assignment we extended Fb with variants pairs and let to make <strong>FbVPL</strong>. Here we will extend the variants component of that language (only) with types: <strong>TFbV</strong>. In this question you are just making a type system, the mathematical specification for the type checker.  Variant types are added to <strong>TFb</strong>'s types; they will be slightly different than OCaml syntax, they will be e.g. <pre>`good(Int) | `bad(Bool)</pre>
-
-	We also need to add some type labels to facilitate type checking, modifying slightly the <strong>TFbV</strong> syntax:
-replace <code>`n(e)</code> with <code>`n(e):&tau;</code> - all variant data is tagged with a variant type (we don't have the <tt>type</tt> declarations of OCaml so we need to manually do this; this type also needs to include all potential variants since we have no subtyping here.).  For example: <code>`good(0): `good(Int) | `bad(Bool)</code>.
-        
-        
-          <ol class="a">
-	    <li>Your task is to write the new type rules beyond those already present in <strong>TFb</strong> to make a full type system for <strong>TFbV</strong>.  Note you don't need to implement anything for this question.  Please make your rule be strict -- OCaml will sometimes give a warning if there is a case missing, you should not allow those programs to typecheck in your rule. (To model the warning we would need to include a warning flag in our type system.)
-	    <li>Show your rules work by proving the simple program
-	      <pre>Match (`good(0): `good(Int) | `bad(Bool)) With `good(_) -> 0 | `bad(_) -> 1</pre> typechecks: construct the type tree for it.</li>
-	    <li>Describe why the same program but with the <tt>`bad</tt> case removed fails to typecheck in your rules (yes, it should fail even though that case is not invoked).
-	      </ol>
-        
-    </li>
-</ol>
-
-
 <h3>Submission and Grading</h3>
 
 <ul>
-  <li>There will be two separate submissions in Gradescope for this assignment: "Assignment 5 typechecker" for part I (which will be auto-graded;  upload ONLY the file <tt>fbtype.ml</tt>), and  "Assignment 5 written" for the written question. <em>In your written question submission please include your name and list of collaborators if any.</em></li>
+  <li>There will be two separate submissions in Gradescope for this assignment: "Assignment 5 written" for the written question, and "Assignment 5 typechecker" for part II (which will be auto-graded;  upload ONLY the file <tt>fbtype.ml</tt>),. <em>In your written question submission please include your name and list of collaborators if any.</em></li>
     </ul>
 	
 </section>
