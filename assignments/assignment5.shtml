@@ -24,6 +24,10 @@
 
            In a previous assignment we extended Fb with variants pairs and let to make <strong>FbVPL</strong>. Here we will extend the variants component of that language (only) with types: <strong>TFbV</strong>. In this question you are just making a type system, the mathematical specification for the type checker.  Variant types are added to <strong>TFb</strong>'s types; they will be slightly different than OCaml syntax, they will be e.g. <pre>`good(Int) | `bad(Bool)</pre>
 
+	   In general the new type grammar for <strong>TFb</strong> is
+
+	   <pre> &tau; ::= (.. TFb's types ..) | (`n(&tau;) | ... | `n(&tau;) )</pre>
+	   
 	We also need to add some type labels to facilitate type checking, modifying slightly the <strong>TFbV</strong> syntax:
 replace <code>`n(e)</code> with <code>`n(e):&tau;</code> - all variant data is tagged with a variant type (we don't have the <tt>type</tt> declarations of OCaml so we need to manually do this; this type also needs to include all potential variants since we have no subtyping here.).  For example: <code>`good(0): `good(Int) | `bad(Bool)</code>.
         
