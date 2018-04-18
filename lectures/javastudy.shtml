@@ -112,7 +112,8 @@ The <strong>PEFb</strong> language includes both type inference and polymorphism
  Here are some
       comparisons with the <strong>PEFb</strong> or Caml-style parametric types that we  studied:
 <ul>
-  <li>Caml/<strong>PEFb</strong> <em>infers</em> generic types <code>'a</code> automatically; in Java, you must
+  <li><tt>'a list / int list</tt> from OCaml is <tt>List &lt;T> / List &lt;Integer></tt> in Java
+  <li>Caml/<strong>PEFb</strong> often <em>infers</em> generic types <code>'a</code> automatically; in Java, you must
     <em>declare</em> them as <code>&lt;T&gt;</code>.
   <li>Caml variables of type <code>'a</code> you can <em>never</em> under the hood to see what structure is there; in Java you can typecast a <code>&lt;T&gt;</code> to learn about the structure.
   <li>Java generics also have <em>bounded subtyping</em>, a feature not found in Caml due to the combination of polymorphism and subtyping.
