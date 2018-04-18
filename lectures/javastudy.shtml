@@ -8,13 +8,13 @@
 <div id="content" class="container">
 <section>
 <header class="major">
-<h2>Study of Java</h2>
+<h2>Java</h2>
 </header>
 
 
 Our reference here  is  the <a
-href="http://docs.oracle.com/javase/specs/jls/se8/html/index.html">Java
-Language Specification, SE 8 Edition</a>.<p>
+href="http://docs.oracle.com/javase/specs/jls/se10/html/index.html">Java
+Language Specification, SE 10 Edition</a>.<p>
 <ul>
   <li>The book contains three languages which collectively cover the core of Java: <strong>FbOB</strong> (objects), <strong>STFb</strong> (subtyping), and <strong>PEFb</strong> (the P, polymorphism/generics part, not the inference part). 
   <li>An Fb family language corresponding to core Java would be "<strong>PSTFbOB</strong>"
@@ -29,7 +29,7 @@ Language Specification, SE 8 Edition</a>.<p>
             <code>ColorPointType -> Int -> Int &lt;: PointType -> Int -> Int</code> which would need <code>PointType &lt;: ColorPointType</code> by function subtyping, which is <strong>false!</strong>
         <li> Its false for a good reason:
           <pre>Let p1 : Point = aPoint In let p2 : Point = aColorPoint In p2.magnitude p1 {}</pre>
-          would result in an attempt to look up p1's color, a runtime error.  Note we are abusing our encoding here, the encoding itself is OK.
+          would result in an attempt to look up p1's color, a runtime error.  Note we are abusing our encoding here by passing <tt>p1</tt> to <tt>p2</tt>, that is why the encoding in fact works.
 	<li>Solution: pre-package the <code>self</code> into objects when created so self need not be passed in at each message send and it won't show up in object types.
 	  <pre>
 Let point = .. point object as in book... In
@@ -45,7 +45,8 @@ In prePackagedPoint.magnitude () (* no self passing needed on object use (and it
 </ul>
 
 <h3>Classes and inheritance</h3>
-We can encode in <strong>STFbOB</strong> nearly all of the features of basic java class declarations and inheritance.
+<p>
+  It is not hard to make encodings of various other features of Java objects - there is nothing deep there.
 <ul>
   <li>Information hiding is possible in Java via <code>private/protected</code> fields; information hiding in <strong>STFbOB</strong> is accomplished by subsumption -- use subsumption after every <code>new</code> of an object to hide the private/protected bits.  Informal idea:
     <pre>
@@ -82,7 +83,7 @@ Let pointClass = {
 
 <h3>Java's Nominal Subtyping</h3>
 <ul>
-  <li>Subtype relationships in Java are <em>nominal</em>: they must be declared via extends/implements aclass/aninterface, except for primitive type subtyping;<br>
+  <li>Subtype relationships in Java are <em>nominal</em>: they must be declared via <tt>extends</tt>/<tt>implements</tt> aclass/aninterface, except for primitive type subtyping;<br>
 -- even if a class clearly implements all the methods of an interface, if the interface is not specified in the header there is no subtyping possible.
   <li>Running example: <code>Interface Iterable&lt;T&gt;</code> - if you have an <code>Iterable&lt;Integer&gt; thing</code> you can <code>thing.foreach(...)</code> it <b>but only if</b> <tt>thing</tt> is a class implementing that interface.
   <li>In <strong>STFb</strong> subtyping only
@@ -98,7 +99,7 @@ Let pointClass = {
 </ul>
 
 <h3><a
- href="http://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html#jls-4.4">Generics</a>
+ href="http://docs.oracle.com/javase/specs/jls/se10/html/jls-4.html#jls-4.4">Generics</a>
  </h3>
  <p>
 Generics are Java's version of parametric types.  These notes assume
@@ -160,7 +161,7 @@ To get around this weakness, Java includes <em>bounded subtyping</em>
 </ul>
 
 
-<h3><a href="http://docs.oracle.com/javase/specs/jls/se8/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
+<h3><a href="http://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
 Java's notion of method overloading (also called ad hoc polymorphism) is simply described
 <ul>
   <li> Java method overloading can be
@@ -177,20 +178,20 @@ One  of the key lessons of Caml is the importance of immutable data: its not cha
   <li>Like Caml, immutability is only shallow - the field could
       contain <em>components</em> that mutate.
   <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior and can confuse Java programmers when their final thing starts mutating on them.
-  <li>One advantage of Java is lack of need for OCaml's "<code>!</code>" for accessing mutable data - gets real annoying real fast.
+  <li>One advantage of Java is no need for "<code>!</code>" when accessing mutable data.
 </ul>
 
 <h3>Lambdas</h3>
 
-Java 8 has Lambdas!
+Java 8 has Lambdas
  <ul>
-   <li>Fully higher order functions are now available in Java
-   <li>Finally Java has caught up with Lisp circa 1964! It took only 50 years.
-   <li><a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Here is a tutorial</a>
+   <li>Fully higher order functions in Java, 50 years after they appeared in PLs.
+   <li><a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Here is a tutorial</a></li>
+   <li>Javas Lambdas are admittedly a bit clunky to use compared to "real" higher-order functions due to how they were patched in.</li>
    <li>Java 8 higher-order functions can "pun" as any interface with only one method in it.<br>
 -- the function is taken to be the body of that single method, no need to write the method name when declaring the function then.
    <li>There is also some (limited) type inference for Lambda parameters.
-   <li>Lets put some spice in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a> that we will go through.  For that example here is the <a href="https://docs.oracle.com/javase/8/docs/api/java/util/function/Function.html">Function</a> and <a href="big-bang-doc/papers/sas-17/">BiFunction</a> type.
+   <li>Lets put some spice in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a> that we will go through.  For that example here is the <a href="https://docs.oracle.com/javase/10/docs/api/java/util/function/Function.html">Function</a> and <a href="big-bang-doc/papers/sas-17/">BiFunction</a> type.
        </ul>
  Terminology aside: <em>closure</em>
  <ul>
@@ -225,21 +226,19 @@ val f : int -> int = &lt;fun&gt;
 <ul>
   <li>Java follows the "declaring types is good for code reading" philosophy - types generally need to be declared.</li>
   <li>But, in some cases it can get burdensome to declare types as there are too many of them</li>
-  <li>So, Java 7/8 has introduced some limited type inference, and more could be coming in Java 9</li>
-  <li>In particular for Lambdas the parameter types need not be declared in many cases - it was in Currying example above.</li>
+  <li>So, Java 10 has <em>local type inference</em>, a feature it is taking from Scala (and now Kotlin and C++): <pre>var first = "Hello"</pre> is legal and will infer <tt>first</tt> to be of type <tt>string</tt>.</li>
 </ul>
 
 
 </p>
   
 <h3>Concurrency</h3>
-The book chapter on concurrency reviews the Java concurrency model.
+<p> Java has standard thread-based shared memory concurrency like C/C++/etc -- low-level locks must be used, prone to bugs.
 
 <h3>Other points of comparison between Java and Caml / Fb</h3>
 <ul>
   <li>Java variant types analogue? <br>
--- used to not exist but now there are enums
-      at least; "use subtyping and dynamic dispatch instead"
+-- enums give no-argument version; "use subtyping and dynamic dispatch instead" (i.e. use the records side of the records/variants duality)
   <li>Java Exceptions -- very similar to Caml or <strong>TFbX</strong> but Caml has no <code>throws</code> declarations in the types: less apparent what is being thrown.
 </ul>
 
@@ -252,9 +251,39 @@ The book chapter on concurrency reviews the Java concurrency model.
   <li>run-time type tags and <code>instanceof</code>
 </ul>
 
+<h3>The Java spin-offs: Scala, Kotlin, and Clojure</h3>
+<ul>
+  <li>All three compile to Java bytecode so can share libraries with Java</li>
+  <li>Means much less work to get a language up and running</li>
+  <li>Each are popular in certain spaces
+    </ul>
+<h4>Scala</h4>
+<ul>
+  <li>Scala "brings OCaml to Java" - functional programming style into O-O; it also led this trend which Java/C++ followed.</li>
+  <li>It was a big deal before Java 8 but Java has been back-patching to be more Scala-like </li>
+  <li>Local type inference is the latest such back-patch in Java 10</li>
+  <li>Scala shares the immutabilty by default aspect of OCaml
+    <br> -- you can declare things final in Java for immutability, but its not the default.</li>
+  <li>Scala has an actor-based concurrency model built-in.</li>
+  <li>Scala also has pattern matching built in -- <a href="https://www.tutorialspoint.com/scala/scala_pattern_matching.htm">tutorial link</a>.</li>
+    </ul>
+<p>
+  -- in some sense Scala is the closest language to "<strong>ASTFbOBVX</strong>" -- all the <strong>Fb</strong> extensions bundled together.
 
 
-	
+<h4>Kotlin</h4>
+<ul>
+  <li>Kotlin is in a nutshell a cleaned-up version of Java; Java has gotten more and more crufty as it has evolved</li>
+  <li>It includes higher-order functions, local type inference PLUS operator overloading a la C++, etc.</li>
+  <li>One interesting novel tidbit, delegation is implicitly supported: <a href="https://kotlinlang.org/docs/reference/delegation.html">Kotlin docs of delegation</a>.
+</ul>
+
+<h4>Clojure</h4>
+<ul>
+  <li>Lisp is the "first implemented functional programming language", circa 1964.</li>
+  <li>Lisp is dynamically typed, it was also the first dynamically-typed language preceding Python, Ruby, Perl, JavaScript, Scheme, etc.
+  <li>Clojure is "modern Lisp running on the JVM"</li>
+    </ul>
 </section>
 </div>
 </div>
