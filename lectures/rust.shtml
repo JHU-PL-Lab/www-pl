@@ -20,13 +20,20 @@ Functional programming goodies:
 <li>first-class functions</li>
 <li>algebraic data types</li>
 <li>pattern matching</li>
+<li>Hindley-Milner type inference (similar to OCaml and EFb)</li>
+</ul>
+
+O-O goodies:
+<ul>
+<li>objects</li>
+<li>method call syntax</li>
 </ul>
 
 Systems programming goodies:
 <ul>
 <li>true pointer references</li>
-<li>objects</li>
-<li>method call syntax</li>
+<li>no garbage collector causing background overheard</li>
+<li>support for (efficient) stack allocation of data</li>
 </ul>
 
 Key innovation: improved memory safety in spite of low-level memory model
@@ -35,7 +42,7 @@ Key innovation: improved memory safety in spite of low-level memory model
 <li>Writes/reads are deterministic so concurrent data races are prevented</li>
 </ul>
 
-How: <em>ownership</em> of data
+How: <em>ownership</em> of data, a concept we also covered in the concurrency lecture.
 
 <h4>Ownership</h4>
 
@@ -46,7 +53,7 @@ How: <em>ownership</em> of data
 <li>Similarly, assignment often means giving up access to the value</li>
 </ul>
 
-We will consult the <a href="https://doc.rust-lang.org/book/ownership.html">documentation on ownership</a> for details.
+We will consult the <a href="https://doc.rust-lang.org/book/second-edition/ch04-00-understanding-ownership.html">documentation on ownership</a> for details.
 
 
 <h4>Borrowing</h4>
@@ -58,7 +65,7 @@ OK at this point Rust sounds nearly-useless given this rigidity.  But there are 
 <li>by-reference <em>borrows</em> ownership</li>
 </ul>
 
-We will consult the <a href="https://doc.rust-lang.org/book/references-and-borrowing.html">documentation on borrowing</a> for details.
+We will consult the <a href="https://doc.rust-lang.org/book/second-edition/ch04-02-references-and-borrowing.html">documentation on borrowing</a> for details.
 
 <h4>Lifetimes</h4>
 
@@ -69,10 +76,10 @@ We will consult the <a href="https://doc.rust-lang.org/book/references-and-borro
 </li>
 </ul>
 
-Again we will consult the <a href="https://doc.rust-lang.org/book/lifetimes.html">documentation on lifetimes</a> for details.
+Again we will consult the <a href="https://doc.rust-lang.org/book/second-edition/ch10-03-lifetime-syntax.html">documentation on lifetimes</a> for details.
 
 <h4>Efficiency</h4>
-Why all the pain compared to Java, python, etc?  Efficiency is the gain!
+Why all the pain compared to Java, python, etc?  Efficiency while preserving safety!
 <ul>
 <li>Static dispatch by default - like C++ non-virtual, very efficient
 <li>No required runtime, and no garbage collection overhead</li>
@@ -80,33 +87,33 @@ Why all the pain compared to Java, python, etc?  Efficiency is the gain!
 <h4>Freeing (finalizing) data</h4>
 <ul>
 <li>Summary Similar to C++'s informal "RAII" (Resource Acquisition Is Initialization) philosophy but enforced by compiler</li>
-<li>No manual free</li>
+<li>No manual free - could free data still being used and thats bad!</li>
 <li>Key concept: Memory freed and destructor called when value leaves owner’s scope (in reverse order of initialization, due to dependencies)
 <li>Particularly useful for resources like file handles, gets closed when scope over</li>
 </ul>
 <ul>
-Example:
+Example (paste into <a href="https://play.rust-lang.org">Rust playground</a> to run)
 <pre>
-struct HasDrop {x:i32}
+struct HasDrop {z:i32}
 impl Drop for HasDrop {
 fn drop(&amp;mut self) {  // drop method in Drop trait called when scope exits
-        println!("Dropping {}!", self.x);
+        println!("Dropping {}!", self.z);
     }
 }
 fn takes(x:HasDrop) {}        // value parameter, takes x
 fn borrows(x:&amp;HasDrop) {} // reference parameter, only borrows x
 fn main() {
-    let x = HasDrop{x:1};
-    let x = HasDrop{x:2};
+    let x1 = HasDrop{z:1};
+    let x2 = HasDrop{z:2};
     {
-      let x = HasDrop{x:3};
-      let x = HasDrop{x:4};
+      let x3 = HasDrop{z:3};
+      let x4 = HasDrop{z:4};
     }
-    let x = HasDrop{x:5};
-    takes(x);
-    let x = HasDrop{x:6};
-    borrows(&amp;x);
-    let x = HasDrop{x:7};
+    let x5 = HasDrop{z:5};
+    takes(x5);
+    let x6 = HasDrop{z:6};
+    borrows(&amp;x6);
+    let x7 = HasDrop{z:7};
 }
 </pre>
 Output:
