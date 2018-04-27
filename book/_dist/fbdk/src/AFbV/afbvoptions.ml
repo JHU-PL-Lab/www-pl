@@ -1,10 +1,20 @@
+let show_messages = ref false;;
+let show_states = ref false;;
+let deterministic_delivery = ref false;;
 
-type options_type = { mutable debug : bool }
-
-let options = { debug = false }
-
-
-
-let get_debug () = options.debug
-
-let set_debug v = options.debug <- v
+let options =
+  [
+    ("--show-messages",
+     Arg.Set(show_messages),
+     "Show messages as they are sent"
+    );
+    ("--show-states",
+     Arg.Set(show_states),
+     "Show global system states"
+    );
+    ("--deterministic",
+     Arg.Set(deterministic_delivery),
+     "Deliver messages in a deterministic order"
+    );
+  ]
+;;

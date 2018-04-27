@@ -1,8 +1,8 @@
 (* AFbV Actor programming by example *)
-(* Use "ocamlrun afbv.byte --debug" to see global actor universe as computation progresses *)
 
-(* Here is a simple actor system: only one actor
-   receiving one message *)
+(* Use "ocamlrun afbv.byte --show-messages --show-states" to see the global actor universe as computation progresses, as well as messages as they are processed. In this debugging output the actors are named @1 @2 etc. *)
+
+(* Here is a vey simple actor system: only one actor receiving one message *)
 
 Let oneMessage =
   Fun me -> (* First parameter is by contract the address of this actor *)

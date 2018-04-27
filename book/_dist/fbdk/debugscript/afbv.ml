@@ -18,9 +18,17 @@
 #load "afbvpp.cmo";;
 #load "afbvinterp.cmo";;
 
-(* uncomment the following line to turn the debug mode on *)
+(* uncomment the following line to show messages as they are delivered; 
+   this is the same as flag --show-messages on the binary. *)
+(* Afbvoptions.show_messages := true;; *)
 
-(* Afbvoptions.set_debug(true);; *)
+(* uncomment the following line to show the global state of the actor system as it evolves; 
+   this is the same as flag --show-state on the binary. *)
+(* Afbvoptions.show_states := true;; *)
+
+(* uncomment the following line to force messages to be delivered in the order sent;
+   this is the same as --deterministic on the binary. *)
+(* Afbvoptions.deterministic_delivery := true;; *)
 
 (* Make some structs available at the top for easier use *)
 
@@ -61,13 +69,12 @@ In
   Let f = Function myaddr -> Function data -> count (True, 0)
 In
   Let sendn = ycomb (Function this -> Function a -> Function n -> Function msg ->
-    If n = 0 Then True Else (a <- msg) ; this a (n-1) msg)
+    If n = 0 Then True Else ((a <- msg) ; this a (n-1) msg))
   In
   Let a = Create(f, 0) In
       sendn a 3 (`count 0) ; ( a <- `up(False) ) ; sendn a 3 (`count 0)
   ";;
 rep s1 ;;
-
 
 (* Counting down example *)
 

@@ -13,7 +13,7 @@ module type LANGUAGE = sig
 
   module Parser: sig
     type token
-    val main: 
+    val main:
      (Lexing.lexbuf -> token) -> Lexing.lexbuf -> Ast.expr
   end
 
@@ -25,11 +25,6 @@ module type LANGUAGE = sig
 		val typecheck: Ast.expr -> Ast.fbtype
 		val typecheck_default_enabled: bool
 	end
-    
-  module Options: sig
-    val set_debug: bool -> unit
-    val get_debug: unit -> bool
-  end
 
   module Pp: sig
     val pretty_print: Ast.expr -> string
@@ -37,9 +32,12 @@ module type LANGUAGE = sig
 		val pretty_print_type: Ast.fbtype -> string
 		val pp_type: Ast.fbtype -> string -> string
   end
-	
+
   module Interpreter: sig
     val eval: Ast.expr -> Ast.expr
   end
-end;;
 
+  module Options: sig
+    val options: (Arg.key * Arg.spec * Arg.doc) list
+  end
+end;;

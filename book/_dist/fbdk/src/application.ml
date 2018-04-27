@@ -89,26 +89,26 @@ struct
       ref (not Lang.Typechecker.typecheck_default_enabled) in
     let no_type_display = ref false in
     let show_exception_stack_trace = ref false in
-    let debug = ref false in
     Arg.parse
-      [("--version",
-        Arg.Set(version),
-        "show version information");
-       ("--typecheck",
-        Arg.Clear(no_typechecking),
-        "enable typechecking");
-       ("--no-typecheck",
-        Arg.Set(no_typechecking),
-        "disable typechecking");
-       ("--hide-types",
-        Arg.Set(no_type_display),
-        "disable displaying of types");
-       ("--show-backtrace",
-        Arg.Set(show_exception_stack_trace),
-        "Enable the display of exception stack traces");
-       ("--debug",
-        Arg.Set(debug),
-        "Enable debug (only applies to AFbV currently)")]
+      ([("--version",
+         Arg.Set(version),
+         "show version information");
+        ("--typecheck",
+         Arg.Clear(no_typechecking),
+         "enable typechecking");
+        ("--no-typecheck",
+         Arg.Set(no_typechecking),
+         "disable typechecking");
+        ("--hide-types",
+         Arg.Set(no_type_display),
+         "disable displaying of types");
+        ("--show-backtrace",
+         Arg.Set(show_exception_stack_trace),
+         "Enable the display of exception stack traces");
+       ]
+       @
+       Lang.Options.options
+      )
       (function fname ->
          filename := fname;
          version := false;
@@ -118,8 +118,6 @@ struct
        " [ options ] [ filename ]\noptions:");
 
     Printexc.record_backtrace (!show_exception_stack_trace) ;
-
-    Lang.Options.set_debug !debug ;
 
     if !version then
       print_version ()

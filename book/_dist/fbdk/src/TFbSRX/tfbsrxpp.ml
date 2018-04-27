@@ -1,6 +1,6 @@
 open Tfbsrxast;;
 
-let pretty_print_fun f e = (f e "") ^ "\n"
+let pretty_print_fun f e = (f e "")
 
 let rec pp_type t pad =
 	match t with

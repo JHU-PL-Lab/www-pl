@@ -1,6 +1,6 @@
 open Fbrelast;;
 
-let pretty_print_fun f e = (f e "") ^ "\n"
+let pretty_print_fun f e = (f e "")
 
 let rec pp e pad =
 match e with
