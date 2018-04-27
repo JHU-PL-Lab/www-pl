@@ -1,25 +1,28 @@
 (* Template for assignment 6 
 
    Your submitted file should ONLY define two strings.  
-   The commented-out code is what you can un-comment to test, just re-comment before submitting.  *)
+   
+   The commented-out code is what you can un-comment to test, 
+   just re-comment before submitting.  *)
 
-(* The following code is designed to run in OCaml with AFbV interpreter loaded: *)
-(* #cd "........./fbdk/");; *)
+let boom = "0 1";; (* Replace with boom's behavior *)
+let boomboom = "0 1";; (* Replace with boomboom's behavior *)
+
+(* The following test code is designed to run in OCaml with AFbV interpreter loaded: *)
+
+(* #cd "..inter-path-to-fbdk-here../fbdk/");; *)
 (* #use "debugscript/afbv.ml";; *)
 
 (* Uncomment the following to see the actor messages and/or actor states as it steps.
    Note we recently changed the FbDK so you will need to download the latest version for these options to work *)
 (* Afbvoptions.show_messages := true;; *)
 (* Afbvoptions.show_states := true;; *)
-(* .. please keep these commented out in your final submission! *)
 
-(* If you are using the updated standalone interpreter to test your programs, these are command-line flags:
+(* If you are using the updated standalone interpreter to test your programs, these are command-line flags which achieve the same effect:
+
    ocamlrun afbv.byte --show-messages --show-states *)
 
-let boom = "0 1";; (* Replace with boom's behavior *)
-let boomboom = "0 1";; (* Replace with boomboom's behavior *)
-
-(* test of the above 
+(* 
 let expr = "
     Let boom = ("^boom^") In
     Let boomboom = ("^boomboom^") In
