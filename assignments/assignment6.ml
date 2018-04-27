@@ -1,12 +1,11 @@
 (* Template for assignment 6 
 
-   Your submitted file should ONLY define these two strings.  
-   The commented-out code is what you can un-comment to test,  just re-comment before submitting.  *)
+   Your submitted file should ONLY define two strings.  
+   The commented-out code is what you can un-comment to test, just re-comment before submitting.  *)
 
 (* The following code is designed to run in OCaml with AFbV interpreter loaded: *)
 (* #cd "........./fbdk/");; *)
 (* #use "debugscript/afbv.ml";; *)
-(* PLEASE keep these lines COMMENTED OUT in your final submission to make the grader happy. *)
 
 (* Uncomment the following to see the actor messages and/or actor states as it steps.
    Note we recently changed the FbDK so you will need to download the latest version for these options to work *)
@@ -27,7 +26,6 @@ let expr = "
     Let boom1 = Create(boom, 2) In
     Let boom2 = Create(boom, 2) In
     Let boomboom = Create(boomboom, (boom1,boom2)) In
-    (boomboom <- `boomboom 0);
     (boomboom <- `boomboom 0)";;
  *)
   
@@ -38,3 +36,12 @@ rep expr ;; *)
 (* Keep this test expr and rep line commented out as well in your final submission. *)
 
 (* Note we will be testing your boom and boomboom behaviors to make sure they fully conform to the spec. *)  
+
+(* Note AfbV additionally includes syntax for pairs and lists, e.g. 
+
+# Fst(Snd(3,(4,5)));;
+==> 4
+
+We are using the pair syntax in the constructor invocation above.
+
+*)
