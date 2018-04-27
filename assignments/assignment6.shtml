@@ -13,25 +13,25 @@
 
 <ol>
 
-  <li> [worth half of this assignment]
-     In order to get the feel of actor programming you are going to write a simple messaging scenario in AFbV, the actors extension to Fb that we covered in lecture and which is in the FbDK.  Here is the basic idea.
+  !<li> [worth half of this assignment]
+     In order to get the feel of actor programming you are going to write a simple messaging scenario in AFbV, the actors extension to Fb that we covered in lecture and which is in the FbDK.  
      <ul>
-       <li>Your main program is to create three actors, <tt>boom1</tt>, <tt>boom2</tt>, and <tt>boomboom</tt>.</li>
+       <li>Your main program is to create three actors, <tt>boom1</tt>, <tt>boom2</tt>, and <tt>kaboom</tt>.</li>
        <li>Each <tt>boom</tt> actor is initialized with a counter of some integer e.g. <tt>Let mybooom = Create(boom,10)</tt>, and each time they receive a <tt>`tick(a)</tt> message, they decrement their internal counter and send <tt>a &lt;- `countis(n)</tt> for <tt>n</tt> the current count.  The <tt>a</tt> here is called the <em>customer</em> in actor terminology, you have to explicitly pass the actor that will get the result -- there is no "return" statement.
-       <li>The <tt>boomboom</tt> actor knows the two boom actors' addresses (it gets passed a pair of them at creation time - <tt>Let boomboom = Create(boomboom, (boom1,boom2)) </tt>); when a <tt>boomboom</tt> actor gets a message <tt>`boomboom(v)</tt> for any value <tt>v</tt> it will send <tt>`tick</tt> messages to each of the two boom actors, get both replies, and verify they are synchronized at the same number.  If so, it will print out a string log message via exact command <tt>Print "Synched!\n"</tt> (please exactly this command so we can verify you are printing the correct string in auto-grader) or <tt>Print "NOT synched!\n"</tt> if not. It will repeat this until it gets zero count back from both, at which point it will <tt>Print "PFFFFFFFT!\n"</tt> and stop sending ticks.  Note that if the actors get out of sync the tick messages should stop as the system is broken.</li>
-       <li>One hard part about the <tt>boomboom</tt> design is it needs to receive two replies, the behavior needs to change to deal with that.  Think of <tt>boomboom</tt> as a 3-state machine: waiting for the initial <tt>`boomboom</tt> message, waiting for first <tt>`tick</tt> <tt>`countis</tt> reply, and waiting for second <tt>`tick</tt> <tt>`countis</tt> reply.
+       <li>The <tt>kaboom</tt> actor knows the two boom actors' addresses (it gets passed a pair of them at creation time - <tt>Let kaboom = Create(kaboom, (boom1,boom2)) </tt>); when a <tt>kaboom</tt> actor gets a message <tt>`kaboom(v)</tt> for any value <tt>v</tt> it will send <tt>`tick</tt> messages to each of the two boom actors, get both replies, and verify they are synchronized at the same number.  If so, it will print out a string log message via exact command <tt>Print "Synched!\n"</tt> (please use exactly this command so we can verify you are printing the correct string in auto-grader) or <tt>Print "NOT synched!\n"</tt> if not. It will repeat this until it gets zero count back from both, at which point it will <tt>Print "PFFFFFFFT!\n"</tt> and stop sending ticks.  Note that if the actors get out of sync, <tt>kaboom</tt> should stop sending tick messages as the system is broken.</li>
+       <li>One hard part about the <tt>kaboom</tt> design is it needs to receive two replies, the behavior needs to change to deal with that.  Think of <tt>kaboom</tt> as a 3-state machine: waiting for the initial <tt>`kaboom</tt> message, waiting for first <tt>`tick</tt> <tt>`countis</tt> reply, and waiting for second <tt>`tick</tt> <tt>`countis</tt> reply.
      </ul>
-     Here are some helpful hints.
+     Hints:
      <ul>
        <li>The file <a href="../ocaml/code/AFbV-examples.afbv">AFbV-examples.afbv</a> contains several examples worked in class. These are designed to be fed into the AFbV interpreter directly.</li>
        <li>We recently improved the interpreter to elminate some bugs and clean up the trace output and strongly suggest you <a href="http://pl.cs.jhu.edu/pl/book/_dist/">download the FbDK again</a> and use the AFbV binaries in this new version.</li>
        <li>Command <tt>ocamlrun afbv.byte --show-messages --show-states</tt> with the new binary will trace the evolution of the actor system states as well as announce messages as they are delivered to actors.
-       <li>Use the template file <a href="assignment6.ml">assignment6.ml</a> for your answers.  As with the previous auto-graded assignments, all you should do is fill in the boom and boomboom definitions as strings; your submitted file should not run anything.</li>
+       <li>Use the template file <a href="assignment6.ml">assignment6.ml</a> for your answers.  As with the previous auto-graded assignments, all you should do is fill in the boom and kaboom definitions as strings; your submitted file should not run anything.</li>
 	 </ul>
 
   <li>[20 points] For this question we will explore the operational semantics of the above Actor system.  Suppose <tt>expr</tt> was exactly as in <tt>assignment6.ml</tt>.  Then the run of <tt>rep expr</tt> would first step to something like
   <pre>
-    G = { &lt;a_boom1, ...>, &lt;a_boom2, ...>, &lt;a_boomboom, ...> } U { [a_boomboom &lt- `boomboom 0]}
+    G = { &lt;a_boom1, ...>, &lt;a_boom2, ...>, &lt;a_kaboom, ...> } U { [a_kaboom &lt- `kaboom 0]}
   </pre>
   by the global rule in section 7.2.5 of the book.
   <ol class="a">

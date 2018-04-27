@@ -6,11 +6,11 @@
    just re-comment before submitting.  *)
 
 let boom = "0 1";; (* Replace with boom's behavior *)
-let boomboom = "0 1";; (* Replace with boomboom's behavior *)
+let kaboom = "0 1";; (* Replace with kaboom's behavior *)
 
 (* The following test code is designed to run in OCaml with AFbV interpreter loaded: *)
 
-(* #cd "..inter-path-to-fbdk-here../fbdk/");; *)
+(* #cd "..enter-path-to-fbdk-directory-here../fbdk/");; *)
 (* #use "debugscript/afbv.ml";; *)
 
 (* Uncomment the following to see the actor messages and/or actor states as it steps.
@@ -25,11 +25,11 @@ let boomboom = "0 1";; (* Replace with boomboom's behavior *)
 (* 
 let expr = "
     Let boom = ("^boom^") In
-    Let boomboom = ("^boomboom^") In
+    Let kaboom = ("^kaboom^") In
     Let boom1 = Create(boom, 2) In
     Let boom2 = Create(boom, 2) In
-    Let boomboom = Create(boomboom, (boom1,boom2)) In
-    (boomboom <- `boomboom 0)";;
+    Let kaboom = Create(kaboom, (boom1,boom2)) In
+    (kaboom <- `kaboom 0)";;
  *)
   
 (* should print Synched! 2 times and then print PFFFFFFFT! :
@@ -38,7 +38,7 @@ rep expr ;; *)
 
 (* Keep this test expr and rep line commented out as well in your final submission. *)
 
-(* Note we will be testing your boom and boomboom behaviors to make sure they fully conform to the spec. *)  
+(* Note we will be testing your boom and kaboom behaviors to make sure they fully conform to the spec. *)  
 
 (* Note AfbV additionally includes syntax for pairs and lists, e.g. 
 
