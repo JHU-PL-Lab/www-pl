@@ -8,7 +8,7 @@
 let boom = "0 1";; (* Replace with boom's behavior *)
 let kaboom = "0 1";; (* Replace with kaboom's behavior *)
 
-(* The following test code is designed to run in OCaml with AFbV interpreter loaded: *)
+(* The following test code is designed to run in OCaml with the AFbV interpreter loaded: *)
 
 (* #cd "..enter-path-to-fbdk-directory-here../fbdk/");; *)
 (* #use "debugscript/afbv.ml";; *)
@@ -20,7 +20,7 @@ let kaboom = "0 1";; (* Replace with kaboom's behavior *)
 
 (* If you are using the updated standalone interpreter to test your programs, these are command-line flags which achieve the same effect:
 
-   ocamlrun afbv.byte --show-messages --show-states *)
+   ocamlrun binaries/afbv.byte --show-messages --show-states *)
 
 (* 
 let expr = "
