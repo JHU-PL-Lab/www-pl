@@ -51,7 +51,7 @@
   <li><tt>(Fun y -> Not y) False =~ True </tt></li>
   <li><tt>y + x =~ x + y</tt></li>
   <li><tt>(Fun x -> Fun f -> f x + f x) x =~ Fun f -> f x + f x</tt></li>
-  <li><tt>(Fun x -> x] x) =~ x x </tt></li>
+  <li><tt>(Fun x -> x x) =~ x x </tt></li>
     </ol>
 
 </ol>
