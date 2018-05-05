@@ -1,0 +1,88 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>PL Final 2017</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 600.426, Princples of Programming Languages
+<br> Spring 2017
+<br> Final Examination
+<br> 
+</h3>
+You can use one handwritten 8.5x11 notes sheet.  You can write on both
+sides.  No printer output is allowed, it must all  be hand-written.  Please put your name on your sheet, and we will be collecting them at the end of the exam.<p>
+
+In all questions below where you need to write <strong>Fb..</strong> code, you can freely use <code>Let</code> and pairing/projection sugar without defining it.
+
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+
+   
+  <li>[12 points] For this question consider a very simple language <strong>BL</strong> with just booleans (<tt>True, False</tt>, plus <tt>And, Or, Not</tt> operators) and <tt>Let</tt>.  No functions!  So a sample program would be <tt>Let x = True And False In x And Not x</tt>.
+  <ol type="a">
+    <li>Give the grammar definitions of expressions <tt>e</tt> and values <tt>v</tt>.</li>
+    <li>Given an arbitrary <strong>BL</strong> expression e, define what the <em>bound</em> and <em>free</em> variables in the expression are.</li>
+    <li>Define substitution for <strong>BL</strong> expressions: <tt>e[v/x]</tt>.  You can assume that as with <strong>Fb</strong> etc, the values <tt>v</tt> are closed.
+    <li>We only needed to define substitution for <em>closed</em> <tt>v</tt> in <strong>Fb</strong> (and <strong>BL</strong>).  Why is that?
+</li>
+
+  </ol>
+
+    <p style="page-break-after:always;"></p>
+
+    
+  <li>[9 points] Its the PL jackpot game! Put each of the expressions below in a context <tt>C</tt> such that the result of <tt>C[the-question-expression]</tt> returns <tt>777</tt> and you get a jackpot of 3 points for that part.  If you see a way to get an answer of 1 or 2 you can get 1 or 2 points, respectively for the question.  Note you can put e.g. "...repeat 776 times..." in your expression to repeat some syntax pattern some number of times.  Of course, <em>your</em> context C cannot include any integer constants or integer operators.
+  <ol type="a">
+    <li><tt>where 2 the jackpot 777</tt> (Note that <tt>where</tt>, <tt>the</tt>, and <tt>jackpot</tt> are free variables in this expression)
+    <li><tt>f (Fun z -> 1) (Fun a -> (Fun n -> Fun m -> n + m))</tt>
+    <li><tt>(Fun x -> Fun y -> x)((Fun f -> f (Fun z -> Fun z -> 1) (Fun a -> (Fun n -> Fun m -> n + m))))</tt>
+      </ol>
+
+    <p style="page-break-after:always;"></p>
+
+  
+<li>[8 points] Suppose we defined a notion of operational equivalence <tt>~~=</tt> as follows: <br>
+  For arbitrary <tt>e</tt> and <tt>e'</tt>, we say <tt>e ~~= e'</tt> if and only if for all contexts <tt>C</tt> such that  <tt>C[e]</tt> and <tt>C[e']</tt> are closed, if <tt>C[e] => 777</tt> then <tt>C[e'] => 777</tt>, and vice-versa.<br>
+  Is this the same as the <tt>~=</tt> as was defined in the lecture/book, or not?  Either argue why if so or find an example of two expressions which are equivalent in one but not in the other.
+      
+    <p style="page-break-after:always;"></p>
+
+  <li> [12 points] The Booleans, boolean operators, and if-then-else syntax of <strong>Fb</strong> is in fact superfluous if we have variants:
+    <ol type="a">
+      <li>Show how these features can be encoded in <strong>FbV-BIE</strong>, <strong>FbV</strong> <em>without</em> booleans, built-in boolean operators, if-then-else, or integer quality (but <em>with</em> variants!).  Note that if we don't have booleans we also have to remove <tt>=</tt> since it returns a boolean value; this in turn leaves no way to compare integers which impoverishes <strong>FbV-BIE</strong> somewhat.  We will put up with this issue for now.  For this question you are concretely to write out macro definitions for <tt>True</tt>, <tt>False</tt>, and <tt>If e Then e Else e</tt> respectively which expand to <strong>FbV-BIE</strong> syntax.
+      <li>This lack of equality on integers is very unpleasant.  Let us consider a minor extension of <strong>FbV-BIE</strong> to <strong>FbV-BIE+E</strong> which adds back the <tt>e = e</tt> clause back to the grammar, and provides an operational semantics of this syntax that allows programs such as <tt>Fun x -> If x = 0 Then 0 Else 9</tt> to be encoded.  Give an operational semantics rule for <tt>e = e</tt> which would bring back this ability to branch on integer comparisons.  Don't add any other new syntax or operational semantics rules.
+	</ol>
+  
+    <p style="page-break-after:always;"></p>
+
+
+<li>[12 points] Atomic subtyping is the subtyping concept applied
+  to atomic types such as <tt>int</tt>, <tt>float</tt>, etc to give another view of
+  overloading.  It makes some sense 
+  that "integers are subtypes of floats"  since integers are a subset of the floating-point numbers. For our case, consider
+  adding  <code>Int &lt;: Bool</code> to our  <strong>STFbR</strong>
+  subtype language to give  an extension <strong>STFbR'</strong>.  We
+  will view <code>0</code>  as boolean <code>False</code> 
+  and any non-<tt>0</tt> as boolean <code>True</code>.  This should allow integers to be used as booleans similar to how e.g. C works, but also keeping the built-in ones.
+<ol type="a">
+  <li> Give the subtype of <code>(Int -> Int) -> ((Int -> Int)-> Bool)
+  -> Bool</code> which contains the most <code>Bool</code>'s.
+
+<li> This language also requires some modification of the runtime: give
+  a program typeable in <strong>STFbR'</strong> as outlined above which would get stuck
+  when run by our current <strong>Fb</strong> interpreter.  Show the full type derivation of your program to justify that it is typeable.
+
+<li> Describe how the <strong>Fb</strong> operational semantics could be modified to be brought in-line with this subtyping principle.  You need to keep the existing <tt>True/False</tt> booleans, don't just replace booleans with e.g. <tt>0/1</tt>.  You can redefine any of the <strong>Fb</strong> operational semantics rules that you choose.
+
+   </ol>
+
+    <p style="page-break-after:always;"></p>
+
+<li>[8 points] Some languages allow programs to allocate mutable references without initial values in them, under the assumpton the programmer will initialize them before using them.
+  <ol type="a">
+    <li>Consider a language <strong>FbSN</strong> which is a variation on <strong>FbS</strong>: there is a new primitive value <tt>Null</tt> which is the default initial value of any reference (similar to Java's Null), and <tt>Ref</tt> now takes no arguments and just allocates a cell with <tt>Null</tt> in it.  So for example a program in <strong>FbS</strong> such as <tt>Let x = Ref 0 In !x</tt> would be expressed in <strong>FbSN</strong> as <tt>Let x = Ref in x := 0 ; !x</tt>.  For this question give the operational semantics rules for <strong>FbSN</strong>. You may define your rules by denoting the change required to the existing <strong>FbS</strong> rules, there is no need to repeat aspects of <strong>FbS</strong> that are not changed.
+    <li>What does your operational semantics do with an improperly initialized program such as <tt>Let x = Ref in !x</tt>? 
+	</ol>
+
+    
+    </body> </html>
