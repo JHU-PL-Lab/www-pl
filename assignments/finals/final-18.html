@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>PL Final 2018</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 601.426/626, Princples of Programming Languages
+<br> Spring 2018
+<br> Final Examination
+<br> 
+</h3>
+Your Name (please write neatly to help Gradescope recognize it): _________________________________<p>
+
+You can use one handwritten 8.5x11 notes sheet.  Please put your name on your sheet, and we will be collecting them at the end of the exam.
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+
+   
+  <li>[16 points] Consider an extension to <strong>FbS</strong> which adds const references: <strong>FbcS</strong>. The only new concrete syntax needed is <tt>@e</tt>, which expects <tt>e</tt> to be a cell reference and returns a const version.  Const cells can be dereferenced but not assigned to.
+    e.g. <pre>Let x = Ref 3 In Let cx = @x In !cx</pre> evals to <tt>3</tt>,
+    while <pre>Let x = Ref 3 In Let cx = @x In cx := 3</pre> does not compute to any value (it gets stuck).  Note that <pre>Let x = Ref 3 In Let cx = @x In x:= 4; !cx</pre> will not get stuck, creating a const reference only makes that reference immutable, but the underlying cell is still mutable; this expression returns <tt>4</tt>.
+    Note that dereference ! in these examples is overloaded to work on either normal references or const references.  The type for a const reference to a value with type <tt>tau</tt> is <tt>tau ConstRef</tt>.
+    <ol type="a">
+      <li>Give the operational semantics for <strong>FbcS</strong> as an extension to <strong>FbS</strong> (you only need to give new or changed values, rules etc).</li>
+      <li>We can extend <strong>FbcS</strong> to a typed version <strong>TFbcS</strong>.  As with the previous question start from the <strong>TFbS</strong> type rules and add or modify the rules.</li>
+      <li>Now consider <strong>STFbcS</strong> in which we add a subtyping relation between constant references and normal references.
+	Which direction is correct? <tt>tau Ref &lt;: tau ConstRef</tt>, or <tt>tau ConstRef &lt;: tau Ref</tt>?  Or, are both incorrect?  Briefly justify your answer. 
+      <li>Picking an <em>incorrect</em> subtyping rule from the previous question give a program which will typecheck using that subtype rule but will have run-time type error (it will get stuck).</li>
+</ol></li>
+
+    <p style="page-break-after:always;"></p>
+
+    (extra page to answer question 1.)
+    
+  <p style="page-break-after:always;"></p>
+
+    
+  <li>[9+1 points] Let's play every PL student's favorite game, pull out the points! Put each of the expressions below in an <strong>Fb</strong> context <tt>C</tt> such that the result of <tt>C[the-question-expression]</tt> returns the number of points you get for the question (the limit is 3, any number over 3 is 3 points).  Of course, your context <tt>C</tt> cannot include any integer constants or integer operators.  (Note: remember the context <tt>C</tt> hole filling can never change the parsing order; one way to guarantee this is to put <tt>( &bull; )</tt> instead of just <tt>&bull;</tt>.)
+  <ol type="a">
+    <li><tt>(Fun x -> y (x 3))</tt>
+    <li><tt>g (Fun self -> Fun arg -> If arg = 0 Then 0 Else arg + self self (arg - 1)) 2</tt>
+    <li><tt>g (Fun self -> Fun arg -> If arg = 0 Then 0 Else arg + self (arg - 1)) 2</tt>
+      <li>(hard one for one point extra credit)<br> <tt>w (Fun f -> ((Fun b -> Fun f -> f 1 f) ((f 1) (f 1)) (f f))) (Fun x -> x + 1)</tt>
+      </ol>
+
+    <p style="page-break-after:always;"></p>
+
+  
+  <li>[10 points] One thing both Leandro and Shriram pointed out in their lectures is how JavaScript programs "hardly ever get stuck", nearly any operator applied to any values will return <em>something</em> even if its somewhat non-sensical.<ol type="a">
+      <li>    For this question you need to JavaScript-ize <strong>Fb</strong>: define the operational semantics of <strong>FbJS</strong> which has the identical syntax and values of <strong>Fb</strong>, but includes extra rules such that <em>nothing ever gets stuck</em>.  You can't change the existing <strong>Fb</strong> rules because they define the correct behavior when the program is well-formed, but you can add as many new rules as you want (do make sure your new rules don't make the language non-deterministic, however!).  Note that you are free to return whatever values you wish for these newly-allowed cases, for example <tt>True and 0</tt> can return <tt>True</tt>, <tt>0</tt>, or any other value really.</li>
+      <li> Adding these rules can change the notion of operational equivalence on programs.  For this part, give two <strong>Fb</strong> programs which are operationally equivalent as <strong>Fb</strong> programs, but are <em>not</em> operationally equivalent as <strong>FbJS</strong> programs, <em>or</em> argue that no such two programs exist.</li>
+      <li> For this question it's just the reverse of the previous: give two <strong>Fb</strong> programs which are operationally equivalent as <strong>FbJS</strong> programs, but are <em>not</em> operationally equivalent as <strong>Fb</strong> programs, <em>or</em> argue that no such two programs exist.</li>
+      
+    
+    </ol><p style="page-break-after:always;"></p>
+
+  <li> [10 points] This question concerns actor programing.  In <strong>AFbV</strong>, assume there is a program with the following initialization code skeleton:
+<pre>Let techie = ... In
+Let disarmer = ... In
+Let techie1 = Create(techie, 2) In
+Let techie2 = Create(techie, 2) In
+Let a_disarmer = Create(disarmer, (techie1, techie2)) In
+  a_disarmer <- 'ready 0;;
+		</pre>
+<ol type="a">
+  <li>Write behaviors for the <tt>techie</tt> and <tt>disarmer</tt> such that the following constraints hold:
+<ul>
+  <li>Each techie must send two <tt>`bomb(_)</tt> messages to the <tt>disarmer</tt> in total, no more, no less.</li>
+  <li>You can never have two <tt>`bomb(_)</tt> messages in the global soup at once, it will blow up if so.</li>
+</ul>
+Note that you can send any other messages of your own design and generally do anything as long as it meets the above two conditions.
+<li>Argue in words how your program enforces the constraint that no two <tt>`bomb(_)</tt> messages can be in the soup at any point.</li>
+  </ol>
+    <p style="page-break-after:always;"></p>
+
+  <li>[8 points] Trace <strong>EFb</strong>'s type inference algorithm specification (the book version, not your OCaml code) for the following programs. (1) Show the <strong>EFb</strong>  type derivation tree and (2) the subsequent constraint closure, then (3) check for inconsistencies and, if there are none, (4) simplify the type.
+  <ol type="a">
+	<li><tt>(Fun x -> x + 1)(True)</tt>
+<li><tt>(Fun f -> f 1)(Fun x -> x - 1)</tt></li>
+</ol>
+In both cases be sure to specify if type inference succeeded or failed.
+
+
+
+
+  
+        <p style="page-break-after:always;"></p>
+
+(Blank page one, if you run out of room on any question say "see blank one" and write here)
+        <p style="page-break-after:always;"></p>
+
+(Blank page two, if you run out of room on any question say "see blank two" and write here)
+ 
+    
+    </body> </html>
