@@ -164,8 +164,7 @@ let getSec t =
 (* warning - non-exhaustive pattern matching; avoid this *)
 (* let getHead l =
   match l with
-    head :: tail -> head
-;;
+    head :: tail -> head;;
  *)
 
 (* getHead [];; *)  (* OCaml warned before that this case is not covered: gives uncaught runtime exception *)

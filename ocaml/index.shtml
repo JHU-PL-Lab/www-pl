@@ -21,27 +21,28 @@
 </ul>
 
 <h3>Our ML Dialect</h3> We are going to use <a
-href="http://caml.inria.fr/">OCaml</a>, version 4.06.0.  Earlier/later versions will work perfectly fine for your own coding, but the binary distibutions of the FbDK are very picky on which version they are run under and so by that point in the course you really need to have 4.06.0 running.
+href="http://caml.inria.fr/">OCaml</a>, version 4.07.1.  Earlier/later versions will work perfectly fine for your own coding, but the binary distibutions of the FbDK are very picky on which version they are run under and so by that point in the course you really need to have 4.07.1 running.
 <p>
 
-<h3>Installing OCaml 4.06.0 on Your Machine</h3>
+<h3>Installing OCaml 4.07.1 on Your Machine</h3>
 We now require that you use the <a href="https://opam.ocaml.org">OPAM packaging system</a> for OCaml.  OPAM will allow you to easily install some necessary OCaml extensions.
 <ul>
   <li> For Linux or Mac see <a href="https://opam.ocaml.org/doc/Install.html">The OPAM install page</a> for instructions.  Depending on which method you use you may then need to run some terminal commands to set up the basics: <ol>
       <li> <code>opam init</code> to initialize OPAM;</li>
-      <li><code>opam switch 4.06.0</code> to build OCaml version 4.06.0;</li>
+      <li><code>opam switch create 4.07.1</code> to build OCaml version 4.07.1;</li>
       <li><code>eval `opam config env`</code> to let the shell know where the OPAM files are; and</li>
       <li><it>also</it> add the very same line, <code>eval `opam config env`</code>, to your <code>.profile/</code><code>.bashrc</code> shell init file so you will not have to keep doing that over and over.
   
     </ol>
   <li> The OCaml toolchain is not good in straight Windows.
     <ul>
-      <li>If you are running Windows 10, try the new MSFT <a href="https://msdn.microsoft.com/en-us/commandline/wsl/about">Bash on Windows</a> mode which once you have set up will allow you to follow the Linux Ubuntu install instructions to get opam. Windows 10 only for this unfortunately and it may have some incompatibilities.</li>
+      <li>If you are running Windows 10, try the new MSFT <a href="https://msdn.microsoft.com/en-us/commandline/wsl/about">Bash on Windows</a> mode which once you have set up will allow you to follow the Linux Ubuntu install instructions to get opam. Windows 10 only for this unfortunately and it may have some incompatibilities.  <a href="https://www.cs.umd.edu/class/spring2018/cmsc330/ocamlInstallationGuide.pdf">here</a> is a step-by-step guide for installing OCaml under Bash on Windows; this document is a bit out of date so issue the opam commands as above/below once you have opam properly installed.
+      </li>
       <li>Otherwise, you will need to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, <a href="https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098">here is one of them</a>.  Once your virtual Linux box is set up, you can follow the Linux install instructions.</li>
 	</ul>
 </ul>
 <p>
-OCaml 4.06.0 should be available  on all department Linux machines via the shell
+OCaml 4.07.1 should be available  on all department Linux machines via the shell
 command  <tt>ocaml</tt>.
 
 <h4>Required OPAM Standard packages</h4>
@@ -51,13 +52,14 @@ Once you have the basics installed, run the following command to install additio
 opam install ocamlbuild merlin ocp-indent user-setup tuareg menhir
 </pre>
 
-For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not installed.
+<strong>For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not installed.</strong>
 
 <h3>OCaml development environments</h3>
-<p>You should definitely use one of Atom, Emacs, or Vim since they have OCaml-specific features such as syntax highliting, auto-indent, and lint analysis to make the coding process much smoother.  If you are using a VM under Windows, you should run one of these editors <em>within</em> the VM to take advantage of the OCaml modes.
+<p>You should definitely use one of Atom, VSCode, Emacs, or Vim since they have OCaml-specific features such as syntax highliting, auto-indent, and lint analysis to make the coding process much smoother.  If you are using a VM under Windows, you should run one of these editors <em>within</em> the VM to take advantage of the OCaml modes.
 
 <dl><dt><a href="https://atom.io"><strong>Atom</strong></a>
-    <dd>Atom support for OCaml continues to improve and is almost up to Emacs now.  Install Atom, read a <a href="https://flight-manual.atom.io">tutorial</a> if you are not so familiar with it, and then install the <tt>atom</tt> and <tt>apm</tt> shell commands (see the <strong>Atom..Install Shell Commands</strong> menu option on Macs, or type shift-command-p(⇧⌘P) and then in the box type command <tt>Window: Install Shell Commands</tt>). With those commands installed, type into a terminal <pre>apm install language-ocaml linter ocaml-indent ocaml-merlin Repl</pre> to install the relevant OCaml packages.   Here is some documentation on the different extensions: <a href="https://atom.io/packages/ocaml-merlin">merlin</a> (syntax highlighting, auto-completion with control-space, etc); <a href="https://atom.io/packages/repl">Repl</a> (run an OCaml top-loop within Atom).   Here are some handy Atom keymaps for common operations these extensions support -- add this to your <tt>.atom/keymap.cson</tt> file:
+    <dd>Install Atom, read a <a href="https://flight-manual.atom.io">tutorial</a> if you are not so familiar with it, and then install the <tt>atom</tt> and <tt>apm</tt> shell commands (see the <strong>Atom..Install Shell Commands</strong> menu option on Macs, or type shift-command-p(⇧⌘P) and then in the box type command <tt>Window: Install Shell Commands</tt>). With those commands installed, type into a terminal <pre>apm install language-ocaml linter ocaml-indent ocaml-merlin ocaml-repl</pre> to install the relevant OCaml packages.   Here is some documentation on the different extensions: <a href="https://atom.io/packages/ocaml-merlin">merlin</a> (syntax highlighting, auto-completion with control-space, etc); <a href="https://atom.io/packages/repl">Repl</a> (run an OCaml top-loop within Atom; you should install Atom package <a href="https://atom.io/packages/ocaml-repl">ocaml-repl</a> instead of repl to patch some bugs in Repl for OCaml use)
+      ).   Here are some handy Atom keymaps for common operations these extensions support -- add this to your <tt>.atom/keymap.cson</tt> file:
 <pre>
 'atom-text-editor[data-grammar="source ocaml"]':
   'ctrl-shift-t': 'ocaml-merlin:show-type'
@@ -66,10 +68,14 @@ For the course we will be implicitly assuming you installed all of these OPAM pa
   'ctrl-alt-f': 'ocaml-indent:file'
 </pre>
 <tt>linter:lint</tt> above is particularly useful if you are using the FbDK, it will refresh the lint data based on the latest compiled version of your code.  In addition, control-space should auto-complete, control-y control-o should start up an OCaml top-loop, and once you have the top loop started you can type control-y control-s to one-key copy/paste selected code into the top loop.
-<p> Note the Repl package as of 1-2018 has a really bad glitch in that it tries to reformat your input incorrectly and introduces spurious syntax errors.  Here is a quick fix:  edit the file <tt>~/.atom/packages/Repl/Repls/replOcaml.js</tt> and just make the prompt an empty string, <tt>prompt=''</tt>.  Re-start Atom and you should no longer get this reformatting glitch error; you won't have an input prompt unfortunately but it will at least work.
+<!-- Note the Repl package as of 1-2018 has a really bad glitch in that it tries to reformat your input incorrectly and introduces spurious syntax errors.  Here is a quick fix:  edit the file ~/.atom/packages/Repl/Repls/replOcaml.js and just make the prompt an empty string, prompt=''  Re-start Atom and you should no longer get this reformatting glitch error; you won't have an input prompt unfortunately but it will at least work.
+-->
 
-  <dt><strong><a href="https://www.gnu.org/software/emacs/">Emacs</strong></a>
-    <dd>Today this is what most practicing OCaml programmers are using, but Atom is getting more popular.  Tuareg mode performs syntax highlighting and runs an OCaml shell within emacs, and Merlin mode adds lint-style analysis such as showing types.  To install them (make sure you first have all the OPAM packages above installed), type <tt>opam user-setup install</tt> which will patch your emacs startup files - restart emacs and Tuareg and Merlin should work.
+      <dt><strong><a href="https://code.visualstudio.com">Visual Studio Code</a></strong>
+	<dd>VSCode now has very good OCaml support.  Install the OCaml and Reason IDE extension to get syntax highlighting, type information, etc: from the <tt>View</tt> menu select <tt>Extensions</tt>, then type in OCaml and this extension will show up; install it.  You can also easily run an ocaml shell from within VSCode, just open it up from the <tt>Terminal</tt> menu and type ocaml into the terminal.
+	  
+      <dt><strong><a href="https://www.gnu.org/software/emacs/">Emacs</strong></a>
+    <dd>To link Tuareg (syntax highlighting) and Merlin (type display and error finding) to emacs (make sure you first have those OPAM packages installed as above), type <tt>opam user-setup install</tt> which will patch your emacs startup files - restart emacs and Tuareg and Merlin should work.
 <p>
 In emacs, every file that ends in <kbd>.ml</kbd> will automatically
 load Tuareg mode.
