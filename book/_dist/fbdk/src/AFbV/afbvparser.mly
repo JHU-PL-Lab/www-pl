@@ -109,16 +109,6 @@ expr:
       { Variant(Name $1, $2) }
   | MATCH expr WITH pattern_list
       { Match($2, $4) }
-  | LBRACKET RBRACKET
-      { EmptyList }
-  | LBRACKET expr RBRACKET
-      {
-        let rec seq_to_list e = match e with
-          | Seq(e1, e2) -> Cons(e1, seq_to_list e2)
-          | v -> Cons(v, EmptyList)
-        in
-          seq_to_list $2
-      }
   | expr CONS expr
       { Cons($1, $3) }
   | HEAD expr %prec prec_appl
@@ -151,6 +141,16 @@ simple_expr:
       { $1 }
   | LPAREN expr RPAREN
       { $2 }
+  | LBRACKET RBRACKET
+      { EmptyList }
+  | LBRACKET expr RBRACKET
+      {
+        let rec seq_to_list e = match e with
+          | Seq(e1, e2) -> Cons(e1, seq_to_list e2)
+          | v -> Cons(v, EmptyList)
+        in
+          seq_to_list $2
+      }
 ;
 
 ident_usage:

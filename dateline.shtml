@@ -1,4 +1,18 @@
 <!--#include virtual="header.html" -->
+
+<!-- old to new assignment number mapping
+1 -> 1
+2 -> 2
+3 part I -> 3
+3 parts II, III -> 4
+4A -> 5
+4B -> 6
+5 part I -> 7
+5 part II -> 10 (end of class)
+6 -> 8
+(none) -> 9
+  -->
+
 </div>
 
     <!-- Main -->
@@ -81,7 +95,7 @@
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
-href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
+href="assignments/assignment1.shtml">1 - OCaml</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -117,10 +131,10 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
-	  href="assignments/assignment2.shtml">Assignment 2 (OCaml)</a></div>
+	  href="assignments/assignment2.shtml">2 - OCaml</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 1</div>
+            <div align="center" class="body">1</div>
           </td>
         </tr>
         <tr> 
@@ -169,10 +183,10 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
-        href="assignments/assignment3.shtml">Assignment 3 (Fb, Opsem)</a></div>
+        href="assignments/assignment3.shtml">3 - Fb Opsem</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 2</div>
+            <div align="center" class="body">2</div>
           </td>
         </tr>
         <tr> 
@@ -186,7 +200,8 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="left" class="body">&nbsp;Opsem IV: The Y Combinator</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="assignments/assignment4.shtml">4 - Fb Interpreter</a>
+	    </div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -206,7 +221,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">(Assignment 3 part 1)</div>
+            <div align="center" class="body">3</div>
           </td>
         </tr>
         <tr> 
@@ -237,10 +252,10 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="left" class="body">&nbsp;State</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment4.shtml">Assignment 4A</a></div>
+            <div align="center" class="body"><a href="assignments/assignment5.shtml">5 - Records/Variants/State</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 3</div>
+            <div align="center" class="body">4</div>
           </td>
         </tr>
 	
@@ -275,7 +290,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 4A (Fri 16th)</div>
+            <div align="center" class="body">5 (Fri)</div>
           </td>
 
 		  <tr> 
@@ -300,7 +315,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="left" class="body">&nbsp;Types I: TFb</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment4.shtml">Assignment 4B</a></div>
+            <div align="center" class="body"><a href="assignments/assignment6.shtml">6 - Exceptions/Objects</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -314,8 +329,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types II:
-	  Implementing Type Checkers</div>
+            <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -353,10 +367,10 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
           </td>  
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/midterm.shtml">Take-Home Midterm</a></div>
+            <div align="center" class="body"><a href="assignments/assignment7.shtml">7 - Type Systems</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 4B</div>
+            <div align="center" class="body">6</div>
           </td>
         </tr>
         <tr> 
@@ -388,10 +402,10 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
           </td>	<!-- added this to get weeks back in synch. -->
           <td width="22%"> 
             <div align="center" class="body"><a
-          href="assignments/assignment5.shtml">Assignment 5</a></div>
+          href="assignments/assignment5.shtml">8 - Concurrency</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Midterm</div>
+            <div align="center" class="body">7</div>
           </td>
         </tr>
         <tr> 
@@ -422,10 +436,11 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="left" class="body">&nbsp;Special Topic I</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="assignments/assignment9.shtml">9 - Op Equivalence</a>
+	    </div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 5 part I</div>
+            <div align="center" class="body">8</div>
           </td>
         </tr>
         <tr> 
@@ -456,10 +471,10 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="left" class="body">&nbsp;Special Topic III</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment6.shtml">Assignment 6</a></div>
+            <div align="center" class="body"><a href="assignments/assignment10.shtml">10 - Typechecker</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 5</div>
+            <div align="center" class="body">9</div>
           </td>
         </tr>
         <tr> 
@@ -470,7 +485,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">Special Topic IV</div>
+            <div align="left" class="body">&nbsp;Special Topic IV</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -493,7 +508,7 @@ href="assignments/assignment1.shtml">Assignment 1 (OCaml)</a></div>
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">Assignment 6 (Fri 4th)</div>
+            <div align="center" class="body">10 (Fri)</div>
           </td>
         </tr>
 	<tr> 
