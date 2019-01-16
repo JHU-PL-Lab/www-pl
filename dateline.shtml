@@ -7,10 +7,10 @@
 3 parts II, III -> 4
 4A -> 5
 4B -> 6
-5 part I -> 7
+5 part I -> 9
 5 part II -> 10 (end of class)
-6 -> 8
-(none) -> 9
+6 -> 7
+(none) -> 8
   -->
 
 </div>
@@ -267,7 +267,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Exceptions; Objects I</div>
+            <div align="left" class="body">&nbsp;Special Topics I (Garbage collection?)</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -284,7 +284,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Objects II</div>
+            <div align="left" class="body">&nbsp;Special Topics II (Dynamic Languages?)</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -312,10 +312,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types I: TFb</div>
+            <div align="left" class="body">&nbsp;Exceptions; Objects I</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment6.shtml">6 - Exceptions/Objects</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -329,10 +329,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
+            <div align="left" class="body">&nbsp;Objects II</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="assignments/assignment6.shtml">6 - Exceptions/Objects</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -341,41 +341,6 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         <tr> 
           <td width="8%"> 
             <div align="center" class="body">Apr 1</div>
-          </td>
-          <td width="8%"> 
-            <div align="center" class="body">Mon</div>
-          </td>
-          <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types III: Subtyping</div>
-          </td>
-          <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
-          </td>
-          <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
-          </td>
-        </tr>
-        <tr> 
-          <td width="8%"> 
-            <div align="center" class="body">Apr 3</div>
-          </td>
-          <td width="8%"> 
-            <div align="center" class="body">Wed</div>
-          </td>
-          <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
-          </td>  
-          </td>
-          <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment7.shtml">7 - Type Systems</a></div>
-          </td>
-          <td width="22%"> 
-            <div align="center" class="body">6</div>
-          </td>
-        </tr>
-        <tr> 
-          <td width="8%"> 
-            <div align="center" class="body">Apr 9</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -392,25 +357,25 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 10</div>
+            <div align="center" class="body">Apr 3</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
             <div align="left" class="body">&nbsp;Concurrency II</div>
-          </td>	<!-- added this to get weeks back in synch. -->
-          <td width="22%"> 
-            <div align="center" class="body"><a
-          href="assignments/assignment5.shtml">8 - Concurrency</a></div>
+          </td>  
           </td>
           <td width="22%"> 
-            <div align="center" class="body">7</div>
+            <div align="center" class="body"><a href="assignments/assignment7.shtml">7 - Concurrency</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">6</div>
           </td>
         </tr>
         <tr> 
           <td width="8%"> 
-            <div align="center" class="body">Apr 15</div>
+            <div align="center" class="body">Apr 9</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Mon</div>
@@ -427,16 +392,51 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         </tr>
         <tr> 
           <td width="8%"> 
+            <div align="center" class="body">Apr 10</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Wed</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Types I: TFb</div>
+          </td>	
+          <td width="22%"> 
+            <div align="center" class="body"><a
+          href="assignments/assignment8.shtml">8 - Opeq</a></div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">7</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
+            <div align="center" class="body">Apr 15</div>
+          </td>
+          <td width="8%"> 
+            <div align="center" class="body">Mon</div>
+          </td>
+          <td width="30%"> 
+            <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+          <td width="22%"> 
+            <div align="center" class="body">&nbsp;</div>
+          </td>
+        </tr>
+        <tr> 
+          <td width="8%"> 
             <div align="center" class="body">Apr 17</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topic I</div>
+            <div align="left" class="body">&nbsp;Types III: Subtyping</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment9.shtml">9 - Op Equivalence</a>
+            <div align="center" class="body"><a href="assignments/assignment9.shtml">9 - Types</a>
 	    </div>
           </td>
           <td width="22%"> 
@@ -451,7 +451,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topic II</div>
+            <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -468,7 +468,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topic III</div>
+            <div align="left" class="body">&nbsp;Special Topics III</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a href="assignments/assignment10.shtml">10 - Typechecker</a></div>
@@ -485,7 +485,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topic IV</div>
+            <div align="left" class="body">&nbsp;Special Topics IV</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
