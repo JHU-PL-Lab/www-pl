@@ -10,7 +10,7 @@
 5 part I -> 9
 5 part II -> 10 (end of class)
 6 -> 7
-(none) -> 8
+(none - opeq) -> 8
   -->
 
 </div>
@@ -471,7 +471,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="left" class="body">&nbsp;Special Topics III</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment10.shtml">10 - Typechecker</a></div>
+            <div align="center" class="body"><a href="assignments/assignment10.shtml">10 - Type Inference</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">9</div>
