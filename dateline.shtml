@@ -58,7 +58,8 @@
         basic data, lists, let</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="ocaml/index.shtml">(0 - Install OCaml)</a>
+	    </div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
