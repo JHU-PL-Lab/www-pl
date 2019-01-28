@@ -268,7 +268,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics I (Garbage collection?)</div>
+            <div align="left" class="body">&nbsp;Midterm Exam</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -285,7 +285,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics II (Dynamic Languages?)</div>
+            <div align="left" class="body">&nbsp;Special Topics I (Dynamic Languages?)</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -469,7 +469,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics III</div>
+            <div align="left" class="body">&nbsp;Special Topics II</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a href="assignments/assignment10.shtml">10 - Type Inference</a></div>
@@ -486,7 +486,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics IV</div>
+            <div align="left" class="body">&nbsp;Special Topics III</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -522,7 +522,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
           </td>
           <td width="30%"> 
             <div align="left" class="body">&nbsp;<strong>Final Review,
-Shaffer 303 (unconfirmed)</strong></div>
+Shaffer 304 (unconfirmed)</strong></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
@@ -542,7 +542,7 @@ Shaffer 303 (unconfirmed)</strong></div>
           </td>
           <td width="30%"> 
             <div align="left" class="body">&nbsp;<strong>Final Exam,
-Shaffer 303 (unconfirmed)</strong></div>
+Shaffer 304 (unconfirmed)</strong></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
