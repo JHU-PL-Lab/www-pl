@@ -102,7 +102,7 @@ add3 20;;
 (* ******************************************************************** *)
 
 (* Pattern matching: switch or case on steroids *)
-(* A very cool and useful but not so common language feature; Haskell and Scala also have it *)
+(* A very cool and useful but not so common language feature; Haskell and Scala also have it, JavaScript getting it *)
 
 (* Basic pattern match with numbers, looks like switch more or less: *)
 
@@ -193,8 +193,8 @@ let add x y = x + y;;
 add 1 2;; (* notice different calling convention compared to cadd *)
 
 (* The difference between cadd and add can be observed in their types.
-     cadd : int * int -> int  -- C/Java etc style functions
-      add : int -> int -> int -- the default OCaml style  *)
+     cadd : int * int -> int  -- C/Java etc style functions => "Uncurried"
+      add : int -> int -> int -- the default OCaml style => "Curried" *)
 
 let add = (+);; (* this syntax is how you can give any built-in infix operator a name as a function *)
 
@@ -224,7 +224,7 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
  *   then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED.
  *)
 
-(* Now let us unwrap the "magic"; its really just marching through natural numbers
+(* Now let us unwrap the "induction magic", its not really magic its just a walk along a number line:
  * l = [] : rev [] = [], check!
  * l = [3] : rev [3] = rev (3 :: []) = (rev []) @ [3] = (using previous line) [3]
  * l = [2;3] : rev [2;3] = rev (2 :: [3]) = (rev [3]) @ [2] = (again by previous) [3;2]
