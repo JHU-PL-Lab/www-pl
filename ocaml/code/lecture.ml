@@ -80,7 +80,7 @@ fib 10;;
 
 (* Similar to lambdas in Python, Java, C++, etc - all are based on the lambda calculus *)
 
-let funny_add1 = (function x -> x + 1);; (* "x" is (sole) argument here --  one-argument functions only *)
+let funny_add1 = (function x -> x + 1);; (* "x" is (sole) argument here *)
 funny_add1 3;;
 ((function x -> x + 1) 4) + 7;; (*  a "->" function is an expression and can be used anywhere *)
 ((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off the "ction" *)
@@ -89,7 +89,7 @@ funny_add1 3;;
 let add x y = x + y;;
 add 3 4;;
 (add 3) 4;; (* same meaning as previous *)
-let add3 = add 3;; (* don't need to give all arguments at once!  Type of add is in fact int -> (int -> int) *)
+let add3 = add 3;; (* No need to give all arguments at once!  Type of add is int -> (int -> int) *)
 add3 4;;
 add3 20;;
 
@@ -97,12 +97,14 @@ add3 20;;
    So, add is a HIGHER-ORDER FUNCTION:
        it either takes a function as an argument, or returns a function as result. *)
 
-(* Observe 'int -> int -> int' is parenthesized as 'int -> (int -> int)' -- unusual RIGHT associativity *)
+(* Observe 'int -> int -> int' is parenthesized as 'int -> (int -> int)' 
+                 -- unusual RIGHT associativity *)
 
 (* ******************************************************************** *)
 
 (* Pattern matching: switch or case on steroids *)
-(* A very cool and useful but not so common language feature; Haskell and Scala also have it, JavaScript getting it *)
+(* A very cool and useful but not so common language feature; 
+   Haskell and Scala also have it, JavaScript getting it *)
 
 (* Basic pattern match with numbers, looks like switch more or less: *)
 
@@ -118,7 +120,7 @@ let five_oh y =
 "Hawaii " ^ (match y with
       0 -> "Zero"
     | 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
-    | _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything and without a name for it *)
+    | _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything *)
 
 five_oh 5;;
 
@@ -167,7 +169,7 @@ let getSec t =
     head :: tail -> head;;
  *)
 
-(* getHead [];; *)  (* OCaml warned before that this case is not covered: gives uncaught runtime exception *)
+(* getHead [];; *)  (* OCaml gives uncaught runtime exception *)
 
 (* an error-free version *)
 
@@ -185,7 +187,7 @@ let cadd p = match p with (x, y) -> x + y;;
 
 let cadd (x, y) = x + y;; (* same result *)
 
-(* This 'cadd' takes only a SINGLE argument - a tuple - more like how C etc functions are called *)
+(* This 'cadd' takes only a SINGLE (tuple) argument, more like how functions usually called *)
 cadd (1, 2);;
 
 (* compare above add to this earlier one above, recalling: *)
@@ -196,7 +198,7 @@ add 1 2;; (* notice different calling convention compared to cadd *)
      cadd : int * int -> int  -- C/Java etc style functions => "Uncurried"
       add : int -> int -> int -- the default OCaml style => "Curried" *)
 
-let add = (+);; (* this syntax is how you can give any built-in infix operator a name as a function *)
+let add = (+);; (* this syntax is how you can give a built-in infix operator a name *)
 
 (* using patterns in recursive functions: a function to reverse a list
        note this does not mutate the list, it makes a new list that reverses original
@@ -220,15 +222,16 @@ rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
  * Proof: by induction on the length of the list, say l.
  * Case l = []: obviously rev [] = [] - CHECK!
  * Case l is non-empty: then, l = x :: xs for some x and xs;
- *   we assume by INDUCTION that "rev xs" reverses the tail, xs;
+ *   we assume by INDUCTION that "rev xs" reverses the tail, xs, which is SHORTER than l;
  *   then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED.
  *)
 
-(* Now let us unwrap the "induction magic", its not really magic its just a walk along a number line:
+(* Now let us unroll the "induction magic", its NOT REALLY MAGIC:
  * l = [] : rev [] = [], check!
  * l = [3] : rev [3] = rev (3 :: []) = (rev []) @ [3] = (using previous line) [3]
- * l = [2;3] : rev [2;3] = rev (2 :: [3]) = (rev [3]) @ [2] = (again by previous) [3;2]
- * l = [1;2;3] : rev [1;2;3] = rev (1 :: [2;3]) = (rev [2;3]) @ [1] = (again by previous) [3;2;1]
+ * l = [2;3] : rev [2;3] = rev (2 :: [3]) = (rev [3]) @ [2] = (by previous) [3;2]
+ * l = [1;2;3] : rev [1;2;3] = rev (1 :: [2;3]) = (rev [2;3]) @ [1] = (by previous) [3;2;1]
+  ... the recurring pattern of this infinite series is what induction captures
 *)
 
 (* One more view, an unwrapping of the execution to equivalent code: *)
