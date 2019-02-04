@@ -137,7 +137,7 @@ let filter f lst = failwith "Not Implemented";;
 
 (* 
   assert ( filter (fun x -> x = 0) [0;1;0;0;0;1] = [0;0;0;0] )
-  assert ( filter (fun s -> String.get s 0 = 'S') ["Shiwei"; "Scott"; "Leandro"; "Andrew"; "Steve"; Yoshi] 
+  assert ( filter (fun s -> String.get s 0 = 'S') ["Shiwei"; "Scott"; "Leandro"; "Andrew"; "Steve"; "Yoshi"] 
             = ["Shiwei"; "Scott"; "Steve"] )
   assert ( filter (fun _ -> false) ['n'; 'o'; 't'] = [] )
  *)
