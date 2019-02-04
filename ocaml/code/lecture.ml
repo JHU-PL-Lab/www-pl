@@ -127,7 +127,6 @@ five_oh 5;;
 (* List pattern matching - now things get interesting! *)
 
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
-      | a :: (b :: c) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
 
@@ -179,27 +178,6 @@ let getHead l =
   |  head :: tail -> head
 ;;
 
-(* Patterns in function definitions - this is the usual usage *)
-
-let cadd p = match p with (x, y) -> x + y;;
-
-(* Shorthand for the above (only works because there is only one pattern clause - special *)
-
-let cadd (x, y) = x + y;; (* same result *)
-
-(* This 'cadd' takes only a SINGLE (tuple) argument, more like how functions usually called *)
-cadd (1, 2);;
-
-(* compare above add to this earlier one above, recalling: *)
-let add x y = x + y;;
-add 1 2;; (* notice different calling convention compared to cadd *)
-
-(* The difference between cadd and add can be observed in their types.
-     cadd : int * int -> int  -- C/Java etc style functions => "Uncurried"
-      add : int -> int -> int -- the default OCaml style => "Curried" *)
-
-let add = (+);; (* this syntax is how you can give a built-in infix operator a name *)
-
 (* using patterns in recursive functions: a function to reverse a list
        note this does not mutate the list, it makes a new list that reverses original
 
@@ -249,7 +227,7 @@ rev [1;2;3];;
 (* We are going to cover variant types later but here are a few
    simple examples *)
 (* Variant types are like unions in C, and generalize enums of Java.
-   Unlike types up to now you need to declare them. *)
+   Unlike types up to now you need to **declare** them via keyword "type". *)
 
 type comparison = LessThan | EqualTo | GreaterThan;;
 
@@ -264,7 +242,8 @@ match intcmp 4 5 with
   | EqualTo -> "equal!"
   | GreaterThan -> "greater!";;
 
-(* Variants can also wrap arguments: they are more like C unions than Java enums *)
+(* Variants can also wrap arguments: 
+   they are more like C unions than Java enums *)
 
 type 'a nullable = Null | NotNull of 'a;;
 
@@ -273,6 +252,11 @@ match NotNull(4) with
   | NotNull(n) -> (string_of_int n)^" is not null!"
 ;;
 
+(* Built-in version of this for functions with optional result 
+   type 'a option = None | Some of 'a *)
+
+Some(4);;
+None;;
 
 (* Immutable declarations *)
 (*
@@ -290,13 +274,21 @@ match NotNull(4) with
 )
 ;;
 
-(* top loop is conceptually an open-ended series of lets which never close: compare following with previous *)
+(* top loop is conceptually an open-ended series of let-ins which never close: *)
 let y = 3;;
 let x = 5;;
 let f z = x + z;;
 let x = y;; (* as in previous example, this is a nested definition, not assignment! *)
 f (y-1) + x;;
 
+(* which is also in the spirit of this C pseudo-code:
+ { int y = 3;
+   { int x = 5;
+     { int (int) f = z -> return(x + z); (* imagining higher-order functions in C *)
+       { int x = y; (* shadows previous x in C *)
+         return(f(y-1) + x); 
+  }}}})
+*)
 
 (*
  * Function definitions are similar, you can't mutate an existing definition.
@@ -314,12 +306,16 @@ let f x = if x <= 0 then 0 else x + 1;;
 
 g (-5);; (* g still refers to the initial f - !! *)
 
-let g x = f (f x);; (* FIX: resubmit (identical) g code *)
-g (-6);; (* now it works as expected *)
+assert( g (-5) = 0);; (* example of built-in assert in action - returns () if holds, exception if not *)
 
-(* MORAL: When interactively editing a group of functions that call each other,
- *        re-submit ALL the functions to the top loop when you change any ONE
- *        of them.  Otherwise you can have some functions using a now-shadowed version.
+let g x = f (f x);; (* FIX: resubmit (identical) g code *)
+
+assert(g (-5) = 0);; (* now it works as we initially expected *)
+
+(* MORAL: When interactively editing a group of functions that call each,
+ * other, re-submit ALL the functions to the top loop when you change any ONE
+ * of them.  Otherwise you can have some functions using a now-shadowed version.
+ * OR, just submit your whole file of functions: #use "myfile.ml";;
  *)
 
 (* Mutually recursive functions *)
@@ -333,14 +329,14 @@ let rec copy l =
 
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 
-(* copy is useless because immutable data can't be mutated so never a need to copy, ever! *)
+(* copy is useless because lists are immutable - can share instead *)
 
 (* Refine copy to flip back and forth between copying and not *)
 
 let rec copyodd l = match l with
   | [] -> []
   | hd :: tl ->  hd::(copyeven tl)
-and  (* keyword for mutually recursive functions *)
+and  (* new keyword for declaring mutually recursive functions *)
   copyeven l = match l with
   |  [] -> []
   | x :: xs -> copyodd xs;;
@@ -348,8 +344,8 @@ and  (* keyword for mutually recursive functions *)
 copyodd [1;2;3;4;5;6;7;8;9;10];;
 copyeven [1;2;3;4;5;6;7;8;9;10];;
 
-(* Using let .. in to hide functions *)
-(* Here is a version that hides the skip function -- make both internal and export one *)
+(* Using let .. in to define local functions *)
+(* Here is a version that hides the copyeven function -- make both internal and export one *)
 
 let copyodd ll =
     ( let rec
@@ -363,7 +359,8 @@ let copyodd ll =
   in
    copyoddlocal ll
     );;
-copyodd [1;2;3;4;5;6;7;8;9;10];;
+
+assert(copyodd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 
 (* ******************************************************************** *)
 
@@ -431,7 +428,7 @@ let rec compose_list lf v =
 
 compose_list flist 0;;
 
-(* another classic operator on lists *)
+(* foldl/r are other classic operators on lists *)
 (* foldl f v [b1; ..;bn] is (... (f (f v b1) b2) ...) bn ) *)
 
 let rec foldl f v l =
@@ -440,10 +437,11 @@ let rec foldl f v l =
   | [hd] -> f v hd
   | hd::tl -> f (foldl f v tl) hd;;
 
-(* Note this is List.fold_left in OCaml library *)
 
 (* summing elements of a list can now be succinctly coded: *)
 foldl (fun x-> fun y -> x+y) 0 [1;2;3];;
+
+(* Note this is List.fold_left in OCaml library *)
 
 (* Just to be clear..
   named and anonymous functions are absolutely identical *)
@@ -470,7 +468,7 @@ let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 *)
 
 let id = fun x -> x;;
-let id x = x;;
+let id x = x;; (* equivalent to above *)
 
 (* id applied to int returns an int *)
 id 3;;
@@ -544,11 +542,16 @@ let addC x = fun y -> x + y;;
 
 (addC 1) 2;; (* same result as above *)
 
-(* Also recall the related  non-Curry'ing version: use a pair of arguments instead *)
+(* Its also the type of the built-in + -- put parens around to see as a fun *)
+
+let addCagain = (+);;
+(addCagain 1) 2;; (* same result as above *)
+
+(* Here is the so-called non-Curried version: use a pair of arguments instead *)
 let addNC p =
     match p with (x,y) -> x+y;;
 
-(* recall this equivalent abbreviation *)
+(* Here is an equivalent abbreviation which looks like a standard C function *)
 let addNC (x, y) = x + y;;
 
 
