@@ -174,7 +174,7 @@ let fizzbuzz n1 n2 = failwith "Not Implemented";;
 *)
 
 
-(* Problem 8 ************************************************************************ *)
+(* Problem 10 ************************************************************************ *)
 
 (* Define a function that computes the cartesian_product of two sets.
    We use lists to express sets; you can assume the input lists contain no duplicates, 
