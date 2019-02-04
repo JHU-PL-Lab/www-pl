@@ -274,13 +274,6 @@ None;;
 )
 ;;
 
-(* top loop is conceptually an open-ended series of let-ins which never close: *)
-let y = 3;;
-let x = 5;;
-let f z = x + z;;
-let x = y;; (* as in previous example, this is a nested definition, not assignment! *)
-f (y-1) + x;;
-
 (* which is also in the spirit of this C pseudo-code:
  { int y = 3;
    { int x = 5;
@@ -290,20 +283,23 @@ f (y-1) + x;;
   }}}})
 *)
 
+(* top loop is conceptually an open-ended series of let-ins which never close: *)
+let y = 3;;
+let x = 5;;
+let f z = x + z;;
+let x = y;; (* as in previous example, this is a nested definition, not assignment! *)
+f (y-1) + x;;
+
+
 (*
  * Function definitions are similar, you can't mutate an existing definition.
  *)
 
 let f x = x + 1;;
-
 let g x = f (f x);;
-
 let shad = f;; (* make a new name for f *)
-
 (* lets "change" f, say we made an error in its definition above *)
-
 let f x = if x <= 0 then 0 else x + 1;;
-
 g (-5);; (* g still refers to the initial f - !! *)
 
 assert( g (-5) = 0);; (* example of built-in assert in action - returns () if holds, exception if not *)
@@ -434,21 +430,17 @@ compose_list flist 0;;
 let rec foldl f v l =
   match  l with
   | [] -> v
-  | [hd] -> f v hd
+  | [hd] -> f v hd (* note a special case for 1-length lists here *)
   | hd::tl -> f (foldl f v tl) hd;;
 
 
 (* summing elements of a list can now be succinctly coded: *)
-foldl (fun x-> fun y -> x+y) 0 [1;2;3];;
+foldl (fun x-> fun y-> x+y) 0 [1;2;3];;
+foldl (+) 5 [1;2;3];;
 
 (* Note this is List.fold_left in OCaml library *)
 
-(* Just to be clear..
-  named and anonymous functions are absolutely identical *)
-let timesten x = x * 10;;
-map timesten [1;2;3;34;56;90];;
-
-(* Composition function g o f: *)
+(* Composition function g o f: take two functions, return their composition *)
 let compose g f = (fun x -> g (f x));;
 
 let plus3 x = x+3;;
@@ -458,7 +450,7 @@ times2plus3 10;;
 (* equivalent but with anonymous functions: *)
 compose (fun x -> x+3) (fun x -> x*2) 10;;
 
-(* Equivalent notation for compose *)
+(* Equivalent notations for compose *)
 
 let compose g f x =  g (f x);;
 let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
