@@ -87,7 +87,7 @@ let circular_right_shift_n l n = failwith "Not Implemented";;
 (* Problem 5 ************************************************************************ *)
 
 (* Define a function twosum that takes a target integer and a list of integers,
-   and returns a pair of the first two elements of the list that add up to the target.
+   and returns a pair of the first two distinct elements of the list that add up to the target.
    Since there may be no such pair the function needs to return something in that case;
    use the built-in 'a option type to return Some( a pair ) if so and None if none exists.
 *)
