@@ -190,6 +190,6 @@ let rec cartesian_product lst1 lst2 = failwith "Not Implemented";;
   assert (cartesian_product ['A'] [1] = [('A', 1)])
   assert (cartesian_product ['A'; 'Z'] [1; 127] = [('A', 1); ('A', 127); ('Z', 1); ('Z', 127)])
   assert (cartesian_product ['A'; 'Z'] [1; 127; 89757] = 
-      [('A', 1); ('A', 127); ('Z', 1); ('Z', 127); ('A', 89757); ('Z', 89757);])
+      [('A', 1); ('A', 127); ('A', 89757); ('Z', 1); ('Z', 127); ('Z', 89757)])
 *)
 
