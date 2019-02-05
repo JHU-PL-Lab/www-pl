@@ -80,7 +80,7 @@ let circular_right_shift_n l n = failwith "Not Implemented";;
 
 (* assert(circular_right_shift_n [1; 2; 10] 1 = [10; 1; 2])
    assert(circular_right_shift_n ["aye"; "boo"; "sea"] 2 = ["boo", "sea"; "aye"])
-   assert(circular_right_shift_n ["aye"; "boo"; "sea"] 300 = ["aye", "boo"; "sea"])
+   assert(circular_right_shift_n ["aye"; "boo"; "sea"] 300 = ["aye"; "boo"; "sea"])
    assert(let noop_list l = circular_right_shift_n l (List.length l) in (noop_list [1;3;2]) = [1;3;2])
 *)
 
