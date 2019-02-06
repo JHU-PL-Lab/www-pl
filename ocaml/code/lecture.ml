@@ -797,13 +797,9 @@ diff [1;2]   [1;2;3];; (* should return [] *)
 (* ******************************************************************* *)
 
 (* Next topic: user-defined data-structures -- variants & records *)
-(* Big change from above: we need to declare some types now.  *)
-(* Still more convenient than Java etc: declare a type once globally, infer thereafter *)
-
-(*
- * Variant Type Declaration
+(* We saw some simple examples of variants above, now we go into the full possibilities
  *    - related to union types in C or enums in Java: "this OR that OR theother"
- *    - BUT like OCamls lists/tuples they are immutable data structures
+ *    - like OCamls lists/tuples they are IMMMUTABLE data structures
  *    - each case of the union is identified by a name called 'Constructor'
  *      which serves for both
  *           - Constructing values of the variant type
@@ -813,22 +809,23 @@ diff [1;2]   [1;2;3];; (* should return [] *)
  *)
 
 (*
- * variant type for doing mixed arithmetic (integers and floats)
+ * Example variant type for doing mixed arithmetic (integers and floats)
  *)
 
-type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or", same as match *)
+type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
 
-Fixed 5;; (* tag 5 as a Fixed *)
+Fixed(5);; (* tag 5 as a Fixed *)
 Floating 4.0;; (* tag 4.0 as a Floating *)
 
-(* note constructors look like functions but they are not -- you always need to give arg *)
+(* note constructors look like functions but they are NOT 
+  -- you always need to give argument *)
 
-let pullout x =
+let pullout_int x =
     match x with
     | Fixed n -> n    (* variants fit well into pattern matching syntax *)
     | Floating z -> int_of_float z;;
 
-pullout (Fixed 5);;
+pullout_int (Fixed 5);;
 
 (* A non-trivial function using the above variant type *)
 let add_num n1 n2 =
@@ -841,23 +838,12 @@ let add_num n1 n2 =
 
 add_num (Fixed 123) (Floating 3.14159);;
 
-(*
- * Enum types
- *     - special case of variant types,
- *       where all alternatives are constants
- *     - leave off the "of <type>" business since there is no data
- *)
-
-type sign = Positive | Negative | Zero;;
-
-let sign_int n = if n > 0 then Positive else if n = 0 then Zero else Negative;;
-sign_int (-6);;
-
-(* Multiple data items in a single clause?  Use the pre-existing product type! *)
+(* Multiple data items in a single clause?  Use the pre-existing tuple types *)
 
 type complex = CZero | Nonzero of float * float;;
 
 let com = Nonzero(3.2,11.2);;
+let zer = CZero;;
 
 (*
  * Recursive data structures - a key use of variant types
@@ -868,9 +854,9 @@ let com = Nonzero(3.2,11.2);;
  *
  * Example of binary trees with integers in nodes and empty leaves:
 *)
-type itree = ILeaf | INode of int * itree * itree;;  (* type refers to itself! *)
+type itree = ILeaf | INode of int * itree * itree;;  (* notice the type refers to itself *)
 
-INode(4,ILeaf,INode(2,INode(18,ILeaf,ILeaf),ILeaf));;
+let it = INode(4,ILeaf,INode(2,INode(18,ILeaf,ILeaf),ILeaf));;
 
 (* Better polymorphic version of above which allows any type at leaves: *)
 
@@ -897,7 +883,7 @@ let bt2 = Node("fiddly ",
                   Leaf)),
             whack);;
 
-(* type error, must have uniform data: Node("fiddly",Node(0,Leaf,Leaf),Leaf);;  *)
+(* type error, must have uniform type: Node("fiddly",Node(0,Leaf,Leaf),Leaf);;  *)
 
 (* OCaml's lists could have been defined with a recursive type declaration *)
 
@@ -923,7 +909,7 @@ let rec add_gobble binstringtree =
    | Node(y, left, right) ->
        Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
-
+(* (Notice this is not mutating the tree, its building a new one) *)
 
 let rec lookup x bintree =
    match bintree with
@@ -940,8 +926,6 @@ let rec lookup x bintree =
 lookup "whack!" bt;;
 lookup "flack" bt;;
 
-(* Recall we are still 100% IMMUTABLE: tree insert is functional insert, return the new tree *)
-
 let rec insert x bintree =
    match bintree with
      Leaf -> Node(x, Leaf, Leaf)
@@ -952,10 +936,11 @@ let rec insert x bintree =
          Node(y, left, insert x right)
 ;;
 
+(* This is also NOT MUTATING -- return the new tree instead. *)
+
 let goobt = insert "goober " bt;;
-bt;; (* Yes, OCaml data structures are by default immutable! *)
-let gooobt =
-  insert "slacker " goobt;;
+bt;; (* observe bt did not change after the insert *)
+let gooobt = insert "slacker " goobt;; (* thread in the most recent tree *)
 
 (* END variants *)
 
@@ -992,27 +977,26 @@ let rattoint r  =
 
 rattoint q;;
 
-let add_ratio r1 r2 = {num   = r1.num * r2.denom + r2.num * r1.denom; denom = r1.denom * r2.denom};;
+let add_ratio r1 r2 = {num = r1.num * r2.denom + r2.num * r1.denom; 
+                      denom = r1.denom * r2.denom};;
 
 add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
-(* Somewhat annoying shadowing issue: there is one global namespace of record labels *)
+(* Annoying shadowing issue: there is one global namespace of record labels *)
 
-type newratio = {num: int; coeff: float};; (* shadowing ratio's label num *)
+type newratio = {num: int; coeff: float};; (* shadows ratio's label num *)
 
-fun x -> x.num;; (* requires x to be a newratio -- inference HAS to give one type. *)
+fun x -> x.num;; (* x is a newratio, the most recent num field defined *)
 
-(* one solution: declare type *)
+(* solution in event of shadowing: pattern match on full record *)
 
-fun (x : ratio) -> x.num;;
-
-(* best solution: pattern match on full record *)
-
-fun {num = _; denom = d} -> d;;
+fun {num = n; denom = _} -> n;;
 
 (* OCaml programmers often use tuples instead of records for conciseness *)
 
 (* ********************************************************************** *)
+
+(* End of pure functional programming in OCaml, on to side effects land *)
 
 (*
  * State
@@ -1038,9 +1022,9 @@ let x = ref 4;;    (* always have to declare initial value when creating a refer
 
 (* x + 1;; *) (* a type error ! *)
 
-!x + 1;; (* need !x to get out the value; something like *x in C *)
+!x + 1;; (* need !x to get out the value; parallels *x in C *)
 x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
-!x + 1;; (* Mutation ! *)
+!x + 1;; (* Mutation happened to contents of cell x *)
 
 (* 'a ref is really implemented by a mutable record with one field, contents:
      'a ref abbreviates the type { mutable contents: 'a }
@@ -1064,7 +1048,8 @@ let mypoint = { x = 0.0; y = 0.0 };;
 translate mypoint 1.0 2.0;;
 mypoint;;
 
-(* observe: mypoint itself is immutable but it has two spots in it where we can mutate *)
+(* observe: mypoint is immutable at the top level 
+   but it has two spots in it where we can mutate *)
 
 (* tree with mutable nodes *)
 
@@ -1086,7 +1071,7 @@ f();;
 let x = ref 6;; (* shadowing previous x definition, NOT an assignment to x !! *)
 f ();;
 
-(* Yes, we can even write a while loop ! *)
+(* Yes, we can even use ";" and with it write a while loop ! *)
 let x = ref 1 in
     while !x < 10 do
       print_int !x;
@@ -1101,7 +1086,7 @@ let x = ref 1 in
  *    - programmer can depend on the fact that something will never be mutated
  *        when writing code: permanent like mathematical definitions
  *
- * ML still lets you express mutation, but its extra so you only use it when
+ * ML still lets you express mutation, but its only use it when
  *   its really needed
  *
  * Haskell has an even stronger separation of mutation, its all strictly "on top".
@@ -1137,7 +1122,7 @@ let g _ =  (* note that unlike Java there is no "raises" in the type of g *)
     Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
 g ();;
 
-(* exceptions that pass up an argument - syntax is sort of like a variant *)
+(* exceptions with a parameter - syntax is like a variant *)
 exception Goo of string;;
 
 let f _ = raise (Goo "keyboard on fire");;
@@ -1154,7 +1139,7 @@ let g () =
 ;;
 g ();;
 
-(* There are a few built-in exceptions we are already using *)
+(* There are a few built-in exceptions we already saw *)
 
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
