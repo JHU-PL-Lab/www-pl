@@ -79,8 +79,8 @@ let circular_right_shift l = failwith "Not Implemented";;
 let circular_right_shift_n l n = failwith "Not Implemented";;
 
 (* assert(circular_right_shift_n [1; 2; 10] 1 = [10; 1; 2])
-   assert(circular_right_shift_n ["aye"; "boo"; "sea"] 2 = ["boo", "sea"; "aye"])
-   assert(circular_right_shift_n ["aye"; "boo"; "sea"] 300 = ["aye", "boo"; "sea"])
+   assert(circular_right_shift_n ["aye"; "boo"; "sea"] 2 = ["boo"; "sea"; "aye"])
+   assert(circular_right_shift_n ["aye"; "boo"; "sea"] 300 = ["aye"; "boo"; "sea"])
    assert(let noop_list l = circular_right_shift_n l (List.length l) in (noop_list [1;3;2]) = [1;3;2])
 *)
 
@@ -190,6 +190,6 @@ let rec cartesian_product lst1 lst2 = failwith "Not Implemented";;
   assert (cartesian_product ['A'] [1] = [('A', 1)])
   assert (cartesian_product ['A'; 'Z'] [1; 127] = [('A', 1); ('A', 127); ('Z', 1); ('Z', 127)])
   assert (cartesian_product ['A'; 'Z'] [1; 127; 89757] = 
-      [('A', 1); ('A', 127); ('Z', 1); ('Z', 127); ('A', 89757); ('Z', 89757);])
+      [('A', 1); ('A', 127); ('A', 89757); ('Z', 1); ('Z', 127); ('Z', 89757)])
 *)
 
