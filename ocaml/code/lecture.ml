@@ -1154,46 +1154,52 @@ invalid_arg "This function works on non-empty lists only";; (* Invalid_argument 
 
 (* Modules in programming languages
    - a module is a larger level of program abstraction: functional units or library.
-   - e.g. Java package, C directory w/ header files
+   - e.g. Java package, Python module, C directory, etc
+   - needed for all but very small programs: imagine a file system
+     without directories/folders as analogy to a PL without modules - YUCK!
 
 Some principles of modules:
 
   -  Modules have names they can be referenced by.
   -  A module contains code declarations: functions, classes,  types, etc.
-  -  The module has an interface in which it
-      * imports some things (e.g. other modules) from the outside and
-      * exports some things it has declared for outsiders to use;
-      * **hides** other things for internal use only
-         -- hiding is a key feature, users don't get overwhelmed
+  - They often are file-based: one module per file, module name is file name
+  -  The module has a way to
+      * import things (e.g. other modules) from the outside and
+      * export some (or all) things it has declared for outsiders to use;
+      * it may **hide** some things for internal use only
+         -- hiding is a key feature, don't overwhelm users
+      * Separate name spaces, so e.g. the Window's reset() won't clash
+        with a File's reset(): use Window.reset() and File.reset()
+      * Nested name spaces for ever larger software: Window.Init.reset()
+      * Often modules can be compiled separately (for compiled languages)
 
- The C "module" system
+Most modern languages have a module system solving most of 
+these problems.
+
+For example the Java module system: **packages**
+  - File system directory is explicitly a package; supports nested packages
+  - Implicit export via public classes/methods
+  - private/protected for hiding internals from outside users
+  - Separate namespace for each package avoids name clashes
+
+ The C "module" system is a historical garbage pit
    - Informal use of files and filesystem directories as modules
    - .h file declaring what is externally visible for a module
-
- Problems with C modules
    - There is a global space of function names, so there can be name clashes
    - There is no strict relation enforced between the .c and .h  files
        * bad programmers can write really ugly code
-
- The Java module system: packages
-
-  - A cleaner version of the C spirit of module
-  - Directory is explicitly a package; allows for nested packages
-  - Implicit export interface via public decls on classes/methods
-  - private/protected for information hiding
-  - Separate namespace for each package avoids name clashes
-  - Have to have at least the .class files of the imports around to compile
+   - C++ fixed this (eventually) with namespaces
 
 *)
 
 (* OCaml Modules *)
 
-(* We already saw some modules in action above, e.g. with List.map.
+(* We already saw OCaml modules in action earlier, e.g. with List.map.
    This is an invocation of the map function in the system List module. *)
 
 List.map (fun x -> x ^"gobble")["Have";"a";"good";"day"];;
 
-(* Now, lets look into how we can build our own modules *)
+(* Now, lets look into how we can build OCaml modules *)
 
 (*
    OCaml module definitions are called **structures**
@@ -1201,7 +1207,7 @@ List.map (fun x -> x ^"gobble")["Have";"a";"good";"day"];;
                                           exceptions, values, ...) given a name
  *)
 
-(* lets make a very simple functional set data structure *)
+(* Lets make a simple functional set module in OCaml *)
 
 module FSet =
 struct
@@ -1238,7 +1244,7 @@ end
 
 (* Using modules: its something like Java packages, qualify the name *)
 
-let mySet = FSet.add 5 [];;  (* notice the return type here: int FSet.set -- includes module name *)
+let mySet = FSet.add 5 [];;
 let myNextSet = FSet.add 22 mySet;;
 FSet.contains 22 mySet;;
 FSet.remove 5 myNextSet;;
@@ -1248,7 +1254,7 @@ open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shad
 add "a" ["b"];;
 contains "a" ["a"; "b"];;
 
-(* ********************************************************************** *)
+(* *************************************************************** *)
 (* OCaml's module signatures and using them for information hiding *)
 
 module type GROWINGSET = (* define a module type (signature) with no remove; not very useful *)
@@ -1370,7 +1376,7 @@ module Main: sig (* contents of main.mli *) end
 
 (* for the following to work need to first #cd to sep_compile/.  My computer's version:
 #cd "/Users/scott/pl/ocaml/code/sep_compile";;
- *)
+Note you can use #pwd to see what directory you are in now in OCaml. *)
 
 #load "fSet.cmo"
 ;;
