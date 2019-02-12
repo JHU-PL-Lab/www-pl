@@ -339,9 +339,9 @@ let lookup jsn s = failwith "Not Implemented";;
    This function only needs to work on JSON data that at the top level
    is an Assoc or a List. Invoke invalid_arg in other
    cases. Additionally, invoke invalid_arg if key s isn't one of the
-   keys in any of the Assoc's in jsn.  You should traverse Assoc's and
-   List's in depth-first order, returning the first value that matches
-   the key being search for.  *)
+   keys in any of the Assocs in jsn.  You should traverse Assocs and
+   Lists in depth-first order, returning the first value that matches
+   the key being searched for.  *)
 
 
 let deep_lookup jsn s = failwith "Not Implemented";;
@@ -394,7 +394,7 @@ whose names match a filter predicate supplied by the user, filter : string ->
 bool. The json object should be idential other than the indicated fields being
 removed.
 
-As with deep_lookup, json_filter should traverse into both Assoc's and List's.
+As with deep_lookup, json_filter should traverse into both Assocs and Lists.
 Calling the function with a json value that isn't either should return the
 value unchanged.
 *)
