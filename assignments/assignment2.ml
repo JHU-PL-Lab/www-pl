@@ -67,9 +67,9 @@ let x6 = ();;
 
 
 (* Lets have fun with lists of functions.  Write a function mega_map which takes a
-   list of functions and another list of integers the same length, and returns a list
-   which applies the first function to the first element, second function to second
-   element, etc
+   list of functions and another list of integers the same length, and returns a list 
+   containing the application of the first function to the first element, second function
+   applied to the second element, etc.
 
    When the lengths of the lists don't match, the function should raise an exception.
 *)
@@ -100,7 +100,7 @@ type 'a homebrew_list_t =
 
 let homebrew_of_list list = failwith "Not Implemented";;
 
-(* Now take an OCaml list and make the corresponding homebrew list *)
+(* Now take a homebrew list and make the corresponding OCaml list *)
 
 let list_of_homebrew homebrew = failwith "Not Implemented";;
 
