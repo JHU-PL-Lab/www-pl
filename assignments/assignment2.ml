@@ -15,7 +15,7 @@ Fill in the function definitions below replacing the
   or ();;
 
 with your code.  In some cases, you may find it helpful to define auxillary
-functions, feel free to.  Other than replacing the failwiths and adding recs,
+functions, feel free to.  Other than replacing the failwiths and adding rec's,
 don't edit or remove anything else in the file -- the autograder will not be
 happy! You cannot use any mutation (arrays, :=, or any mutable data structure)
 on this homework unless explicitly allowed (Q3 only). You can use core library functions
@@ -80,7 +80,7 @@ let rec mega_map funs ints =  failwith "Not Implemented";;
     assert (mega_map [(fun y -> (y - 5) * 3); (fun x -> x - 4);(fun x -> x + 8)] [10;11;20] = [15; 7; 28]);;
     assert (mega_map [(fun y -> (y - 5) * 3); (fun x -> x - 4)] [10; 11] = [15; 7]);;
 
-    (mega_map [(fun y -> (y - 5) * 3); (fun x -> x - 4)] [10; 11] = [15; 7]);;
+    mega_map [(fun y -> (y - 5) * 3); (fun x -> x - 4)] [10];;
      =>
           Exception: Failure "list lengths don't match"
 *)
