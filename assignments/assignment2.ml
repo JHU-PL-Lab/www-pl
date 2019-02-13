@@ -179,7 +179,7 @@ let stream_nth s n= failwith "Not Implemented";;
   let id x = x;;
   let yes = make_const_stream "yes";;
   assert (mega_map_stream [id; id; id] yes = ["yes"; "yes"; "yes"]);;
-  assert (mega_map_stream [(fun s -> s ^ "!"); (fun s -> s^", "^s^"!")] yes =  ["yes!"; "yes,yes!"]);;
+  assert (mega_map_stream [(fun s -> s ^ "!"); (fun s -> s^", "^s^"!")] yes =  ["yes!"; "yes, yes!"]);;
  
 *)
 
@@ -215,6 +215,7 @@ let mutate_list mlist n v = failwith "Not Implemented";;
 
 (* let m_eg = mlist_of_list [1;5;2;5;2;1;6;5;3] in
    assert(list_of_mlist(mutate_list m_eg 4 99) = [1;5;2;5;99;1;6;5;3])
+   assert((mutate_list m_eg 4 99); list_of_mlist(m_eg) = [1;5;2;5;99;1;6;5;3])
 *)
 
 
