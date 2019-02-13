@@ -209,12 +209,12 @@ let list_of_mlist homebrew = failwith "Not Implemented";;
 
 (* Since we have a mutable list finally, lets use it! 
    Write a function mutate_list mlist n v which replaces the nth element 
-   of mlist with val.  The first list element is #0 *)
+   of mlist with val.  Return () as the result as the only purpose of the
+   call is the side effect it has.  The first list element is #0 *)
 
 let mutate_list mlist n v = failwith "Not Implemented";;
 
 (* let m_eg = mlist_of_list [1;5;2;5;2;1;6;5;3] in
-   assert(list_of_mlist(mutate_list m_eg 4 99) = [1;5;2;5;99;1;6;5;3])
    assert((mutate_list m_eg 4 99); list_of_mlist(m_eg) = [1;5;2;5;99;1;6;5;3])
 *)
 
