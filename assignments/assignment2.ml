@@ -300,8 +300,7 @@ let string_of_json jsn = failwith "Not Implemented";;
     ("rating",Float(4.5))
 ]);;
 
- assert(string_of_json person = "{\"id\":42,\"attributes\":{\"name\":\"John\",\"age\":80,\"gender\":\"male\"},
-     \"favorite-colors\":[\"red\",\"blue\"],\"rating\":4.5}");;
+ assert(string_of_json person = "{\"id\":42,\"attributes\":{\"name\":\"John\",\"age\":80,\"gender\":\"male\"},\"favorite-colors\":[\"red\",\"blue\"],\"rating\":4.5}");;
 
 *)
 
