@@ -159,11 +159,13 @@ let make_const_stream c = failwith "Not Implemented";;
 
 let fibonacci_stream = ();;
 
-(* assert ((stream_nth fibonacci_stream 5) = 8) *)(* Write a function to get the head of the stream, raise an exception if its End *)
+(* assert ((stream_nth fibonacci_stream 5) = 8) *)
+
+(* Write a function to get the head of the stream, raise an exception if its End *)
 
 let stream_hd s = failwith "Not Implemented";;
 
-(* Write a function to get the tail function of the stream, again raise exception if End *)
+(* Write a function to get the tail of the stream, again raise exception if End *)
 
 let stream_tl s = failwith "Not Implemented";;
 
