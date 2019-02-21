@@ -1,0 +1,65 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+  <h2>Assigment 3</h2>
+</header>
+
+<p>
+  This is a short homework giving you some practice with operational semantics before starting on writing your Fb interpreter.  Please consult <a href="http://pl.cs.jhu.edu/pl/book/book.pdf">Chapter 2 of the book</a>
+   for the full details on various definitions, and for more examples beyond those in lecture, if you have any questions.  We will also post the in-class notes to Piazza.
+  <ol>
+    <li>[5 points] Compute the following substitutions.  Note that the substitution function is defined formally in Section 2.3.2 of the book.
+      <ol class="a">
+      <li><code>(5 + z)[6/z]</code>
+      <li><code>(Fun q -> 5 + z)[6/z]</code>
+      <li><code>(Fun z -> Fun z -> 5 + z)[6/z]</code>
+      <li><code>(Fun z -> Fun q -> 5 + r)[6/r]</code>
+      <li><code>(Fun z -> Fun q -> 5 + z)[6/z]</code>
+      </ol>
+      <p>
+  <li>[5 points] Write an operational
+    semantics proof (tree) which shows what the Fb expression <pre>(Fun f -> (Fun z -> (f z) + 1)) (Fun y -> y + 1)</pre> evaluates to.  Please give the whole proof tree, using the rules in Chapter 2.
+      <p>
+  <li>[5 points] Write an operational
+    semantics proof which shows what the Fb expression <pre>((Fun f -> (Fun z -> (f z) + 1)) (Fun y -> y + 1)) 4</pre> evaluates to.  Please give the whole proof tree, using the rules in Chapter 2.  Feel free to reference the proof in question 2. in your answer.
+  </li>
+      <p>
+	<li>[5 points] Recall that if it is impossible to to build a complete proof tree showing some <code>e => v</code> then the relation doesn't hold.  Show that
+    <pre>(Fun q -> q And False) True => False</pre> fails to hold.
+
+
+      <p>
+<li> [5 points] In languages like C or Java, binary boolean operators are
+  'short circuiting' - i.e. For an expression like <code>file != null &&
+  file.length() &lt; 0</code>, the second expression is evaluated only if the
+  first expression is true. Similarly for '||' operations, the second
+  expression is evaluated only if the first expression evaluates to
+  false. This is not true in the default <strong>Fb</strong> operational semantics.
+   Modify the operational semantics of <strong>Fb</strong> <code>And</code> and <code>Or</code> such that they
+  perform short-circuiting.</li>
+
+      <p>
+	
+	<li> [5 points] Lemma 2.2 in the book states that the BOOL language is normalizing: For all BOOL expressions <tt>e</tt>, there is some BOOL value <tt>v</tt> where <tt>e => v</tt>.  The book doesn't prove this but gives a hint.  Please fill in the details of the proof.  You can leave out the <code>Implies</code> case of booleans which we also skipped in class.
+  </ol>
+
+  
+
+
+<h3>Submission and Grading</h3>
+
+Upload your homework as a pdf to Gradescope.  Feel free to write by hand and scan it in, just verify your scan is fully legible before submitting!
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
