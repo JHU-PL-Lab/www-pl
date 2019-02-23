@@ -32,7 +32,7 @@
   </li>
       <p>
 	<li>[5 points] Recall that if it is impossible to to build a complete proof tree showing some <code>e => v</code> then the relation doesn't hold.  Show that
-    <pre>(Fun q -> q And False) True => False</pre> fails to hold.
+    <pre>(Fun q -> q And False) True => True</pre> fails to hold.
 
 
       <p>
