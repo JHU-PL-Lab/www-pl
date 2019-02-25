@@ -1,161 +1,241 @@
-<!--#include virtual="/pl/header.html" -->	 
-	 </div>
-
-    
-    <!-- Main -->
-      <div id="main" class="wrapper style4">
-
-        <!-- Content -->
-        <div id="content" class="container">
-          <section>
-            <header class="major">
-	      <h2>OCaml Information</h2>
-            </header>
+<!--#include virtual="/pl/header.html" -->
+</div>
 
 
-<h3>OCaml Lecture Information</h3>
-<ul>
-  <li><a href="code/lecture.ml">lecture.ml</a>, the file we work through interactively in class.</li>
-  <li>For the separate compilation topic we cover <a href="code/sep.zip">this example (zipped)</a></li>
+<!-- Main -->
+<div id="main" class="wrapper style4">
 
-</ul>
+  <!-- Content -->
+  <div id="content" class="container">
+    <section>
+      <header class="major">
+        <h2>OCaml Information</h2>
+      </header>
 
-<h3>Our ML Dialect</h3> We are going to use <a
-href="http://ocaml.orga">OCaml</a>, version 4.07.1.  Earlier/later versions will work perfectly fine for your own coding, but the binary distibutions of the FbDK are very picky on which version they are run under and so by that point in the course you really need to have 4.07.1 running.
-<p>
+      <h3>OCaml Lecture Information</h3>
+      <ul>
+        <li><a href="code/lecture.ml">lecture.ml</a>, the file we work through interactively in class.</li>
+        <li>For the separate compilation topic we cover <a href="code/sep.zip">this example (zipped)</a></li>
+      </ul>
 
-<h3>Installing OCaml 4.07.1 on Your Machine</h3>
-We require that you use the <a href="https://opam.ocaml.org">OPAM packaging system</a> for OCaml.  OPAM will allow you to easily install some necessary OCaml extensions.
-<ul>
-  <li> For Linux or Mac see <a href="https://opam.ocaml.org/doc/Install.html">The OPAM install page</a> for instructions.  Depending on which method you use you may then need to run some terminal commands to set up the basics: <ol>
-      <li> <code>opam init</code> to initialize OPAM;</li>
-      <li><code>opam switch create 4.07.1</code> to build OCaml version 4.07.1;</li>
-      <li><code>eval `opam env`</code> to let the shell know where the OPAM files are; and</li>
-      <li><it>also</it> add the very same line, <code>eval `opam env`</code>, to your <code>.profile/</code><code>.bashrc</code> shell init file so you will not have to keep doing that over and over.
-  
-    </ol>
-  <li> The OCaml toolchain is not good in straight Windows.
-    <ul>
-      <li>If you are running Windows 10, try the new MSFT <a href="https://msdn.microsoft.com/en-us/commandline/wsl/about">Bash on Windows</a> mode which once you have set up will allow you to follow the Linux Ubuntu install instructions to get opam. Windows 10 only for this unfortunately and it may have some incompatibilities.  <a href="https://www.cs.umd.edu/class/spring2018/cmsc330/ocamlInstallationGuide.pdf">here</a> is a step-by-step guide for installing OCaml under Bash on Windows; this document is a bit out of date so issue the opam commands as above/below once you have opam properly installed.
-      </li>
-      <li>Otherwise, you will need to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, <a href="https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098">here is one of them</a>.  Once your virtual Linux box is set up, you can follow the Linux install instructions.</li>
-	</ul>
-</ul>
-<p>
-OCaml 4.07.1 should be available  on all department Linux machines via the shell
-command  <tt>ocaml</tt>.
+      <h3>Our ML Dialect</h3> We are going to use <a href="http://ocaml.orga">OCaml</a>, version 4.07.1. Earlier/later
+      versions will work perfectly fine for your own coding, but the binary distibutions of the FbDK are very picky on
+      which version they are run under and so by that point in the course you really need to have 4.07.1 running.
+      <p>
+        <h3>Installing OCaml 4.07.1 on Your Machine</h3>
+        We require that you use the <a href="https://opam.ocaml.org">OPAM packaging system</a> for OCaml. OPAM will
+        allow you to easily install some necessary OCaml extensions.
+        <ul>
+          <li> For Linux or Mac see <a href="https://opam.ocaml.org/doc/Install.html">The OPAM install page</a> for
+            instructions. Depending on which method you use you may then need to run some terminal commands to set up
+            the basics: <ol>
+              <li> <code>opam init</code> to initialize OPAM;</li>
+              <li><code>opam switch create 4.07.1</code> to build OCaml version 4.07.1;</li>
+              <li><code>eval `opam env`</code> to let the shell know where the OPAM files are; and</li>
+              <li>
+                <it>also</it> add the very same line, <code>eval `opam env`</code>, to your
+                <code>.profile/</code><code>.bashrc</code> shell init file so you will not have to keep doing that over
+                and over.
 
-<h4>Required OPAM Standard packages</h4>
-<p> Once you have the basics installed, run the following command to install additional necessary packages for the class:
+            </ol>
+          <li> The OCaml toolchain is not good in straight Windows.
+            <ul>
+              <li>If you are running Windows 10, try the new MSFT <a
+                  href="https://msdn.microsoft.com/en-us/commandline/wsl/about">Bash on Windows</a> mode which once you
+                have set up will allow you to follow the Linux Ubuntu install instructions to get opam. Windows 10 only
+                for this unfortunately and it may have some incompatibilities. <a
+                  href="https://www.cs.umd.edu/class/spring2018/cmsc330/ocamlInstallationGuide.pdf">here</a> is a
+                step-by-step guide for installing OCaml under Bash on Windows; this document is a bit out of date so
+                issue the opam commands as above/below once you have opam properly installed.
+              </li>
+              <li>Otherwise, you will need to set up a Linux VM on your Windows box, and then set up a Linux install of
+                OCaml within the VM. There are many good tutorials on how to build a Linux VM, <a
+                  href="https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098">here is one of them</a>.
+                Once your virtual Linux box is set up, you can follow the Linux install instructions.</li>
+            </ul>
+        </ul>
+        <p>
+          <!-- 
+At present (02/24/2019), OCaml and its tool chains work in Windows 10 as well as extension for VS Code.
+But since everyone should have configurated them, I decide just to keep notes here:
+1. Ubuntu is provided by Windows via Windows Subsystem for Linux(WSL).
+2. To install newer `opam`, we need update the ppa `add-apt-repository ppa:avsm/ppa`
+3. **important** Use `opam init --disable-sandboxing` to initialize `opam`. 
+  `--reinit` is a `fake` flag and never works. If you have already `init`ed it, the easiest way is to remove `~/.opam` and try it again.
+  (source: https://github.com/ocaml/opam/issues/3634). Otherwise, many packages will use `bwrap` to install, which is not supported in WSL.
+4. Now everything works in ubuntu.
+5. TL,DL; In VS Code, use `vscode-reasonml` and change the paths in config.
+6. For VS Code, 
+- `OCaml and Reason IDE`(vscode-reasonml) is enough.
+- `OCaml and Reason IDE - for WSL` is a fork of previous one.
+- The general idea here is these plugs have setting for the shell to use and the paths for tools.
+  The former can only use the default Window shell and the latter overrides the setting.
+  However, we can still make this in the former. The example is change the path of `opam` from `opam` to `bash -ic opam`.
+  It's identical to what the latter one does. Therefore, we don't need the latter plugin.
+7. There is a _terrible_ solution is to install `nodejs` `ocaml` `merlin` via `npm install -g ocaml-reason-wsl` in Window Commander (which is not WSL).
+  Maybe it could work, but if you have already `opam init` without disabling sandbox first, it still doesn't work.
+          -->
+          <!--   I guess in the next year maybe all these steps become unnecessary.-->
 
-<pre>
+          OCaml 4.07.1 should be available on all department Linux machines via the shell
+          command <tt>ocaml</tt>.
+
+          <h4>Required OPAM Standard packages</h4>
+          <p> Once you have the basics installed, run the following command to install additional necessary packages for
+            the class:
+
+            <pre>
 opam install ocamlbuild merlin ocp-indent user-setup tuareg menhir
 </pre>
 
-<strong>For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not installed.</strong>
-</p>
+            <strong>For the course we will be implicitly assuming you installed all of these OPAM packages; some things
+              will not work if these are not installed.</strong>
+          </p>
 
-<h3>OCaml development environments</h3>
-<p>You should definitely use one of Atom, VSCode, Emacs, or Vim since they have OCaml-specific features such as syntax highliting, auto-indent, and lint analysis to make the coding process much smoother.  If you are using a VM under Windows, you should run one of these editors <em>within</em> the VM to take advantage of the OCaml modes.
+          <h3>OCaml development environments</h3>
+          <p>You should definitely use one of Atom, VSCode, Emacs, or Vim since they have OCaml-specific features such
+            as syntax highliting, auto-indent, and lint analysis to make the coding process much smoother. If you are
+            using a VM under Windows, you should run one of these editors <em>within</em> the VM to take advantage of
+            the OCaml modes.
 
-  <dl>
-      <dt><strong><a href="https://code.visualstudio.com">Visual Studio Code</a></strong>
-	<dd>VSCode now has very good OCaml support.  Install the <b>OCaml and Reason IDE</b> extension to get syntax highlighting, type information, etc: from the <tt>View</tt> menu select <tt>Extensions</tt>, then type in OCaml and this extension will show up; install it.  You can also easily run an ocaml shell from within VSCode, just open it up from the <tt>Terminal</tt> menu and type ocaml into the terminal.
-	  
-    <dt><a href="https://atom.io"><strong>Atom</strong></a>
-    <dd>Install Atom, read a <a href="https://flight-manual.atom.io">tutorial</a> if you are not so familiar with it, and then install the <tt>atom</tt> and <tt>apm</tt> shell commands (see the <strong>Atom..Install Shell Commands</strong> menu option on Macs, or type shift-command-p(⇧⌘P) and then in the box type command <tt>Window: Install Shell Commands</tt>). With those commands installed, type into a terminal <pre>apm install language-ocaml linter ocaml-indent ocaml-merlin ocaml-repl</pre> to install the relevant OCaml packages.   Here is some documentation on the different extensions: <a href="https://atom.io/packages/ocaml-merlin">merlin</a> (syntax highlighting, auto-completion with control-space, etc); <a href="https://atom.io/packages/repl">Repl</a> (run an OCaml top-loop within Atom; you should install Atom package <a href="https://atom.io/packages/ocaml-repl">ocaml-repl</a> instead of repl to patch some bugs in Repl for OCaml use)
-      ).   Here are some handy Atom keymaps for common operations these extensions support -- add this to your <tt>.atom/keymap.cson</tt> file:
-<pre>
+            <dl>
+              <dt><strong><a href="https://code.visualstudio.com">Visual Studio Code</a></strong>
+              <dd>VSCode now has very good OCaml support. Install the <b>OCaml and Reason IDE</b> extension to get
+                syntax highlighting, type information, etc: from the <tt>View</tt> menu select <tt>Extensions</tt>, then
+                type in OCaml and this extension will show up; install it. You can also easily run an ocaml shell from
+                within VSCode, just open it up from the <tt>Terminal</tt> menu and type ocaml into the terminal.
+
+              <dt><a href="https://atom.io"><strong>Atom</strong></a>
+              <dd>Install Atom, read a <a href="https://flight-manual.atom.io">tutorial</a> if you are not so familiar
+                with it, and then install the <tt>atom</tt> and <tt>apm</tt> shell commands (see the
+                <strong>Atom..Install Shell Commands</strong> menu option on Macs, or type shift-command-p(⇧⌘P) and then
+                in the box type command <tt>Window: Install Shell Commands</tt>). With those commands installed, type
+                into a terminal
+                <pre>apm install language-ocaml linter ocaml-indent ocaml-merlin ocaml-repl</pre> to install the
+                relevant OCaml packages. Here is some documentation on the different extensions: <a
+                  href="https://atom.io/packages/ocaml-merlin">merlin</a> (syntax highlighting, auto-completion with
+                control-space, etc); <a href="https://atom.io/packages/repl">Repl</a> (run an OCaml top-loop within
+                Atom; you should install Atom package <a href="https://atom.io/packages/ocaml-repl">ocaml-repl</a>
+                instead of repl to patch some bugs in Repl for OCaml use)
+                ). Here are some handy Atom keymaps for common operations these extensions support -- add this to your
+                <tt>.atom/keymap.cson</tt> file:
+                <pre>
 'atom-text-editor[data-grammar="source ocaml"]':
   'ctrl-shift-t': 'ocaml-merlin:show-type'
   'alt-shift-r': 'ocaml-merlin:rename-variable'
   'ctrl-shift-l': 'linter:lint'
   'ctrl-alt-f': 'ocaml-indent:file'
 </pre>
-<tt>linter:lint</tt> above is particularly useful if you are using the FbDK, it will refresh the lint data based on the latest compiled version of your code.  In addition, control-space should auto-complete, control-y control-o should start up an OCaml top-loop, and once you have the top loop started you can type control-y control-s to one-key copy/paste selected code into the top loop.
-<!-- Note the Repl package as of 1-2018 has a really bad glitch in that it tries to reformat your input incorrectly and introduces spurious syntax errors.  Here is a quick fix:  edit the file ~/.atom/packages/Repl/Repls/replOcaml.js and just make the prompt an empty string, prompt=''  Re-start Atom and you should no longer get this reformatting glitch error; you won't have an input prompt unfortunately but it will at least work.
+                <tt>linter:lint</tt> above is particularly useful if you are using the FbDK, it will refresh the lint
+                data based on the latest compiled version of your code. In addition, control-space should auto-complete,
+                control-y control-o should start up an OCaml top-loop, and once you have the top loop started you can
+                type control-y control-s to one-key copy/paste selected code into the top loop.
+                <!-- Note the Repl package as of 1-2018 has a really bad glitch in that it tries to reformat your input incorrectly and introduces spurious syntax errors.  Here is a quick fix:  edit the file ~/.atom/packages/Repl/Repls/replOcaml.js and just make the prompt an empty string, prompt=''  Re-start Atom and you should no longer get this reformatting glitch error; you won't have an input prompt unfortunately but it will at least work.
 -->
 
-      <dt><strong><a href="https://www.gnu.org/software/emacs/">Emacs</strong></a>
-    <dd>To link Tuareg (syntax highlighting) and Merlin (type display and error finding) to emacs (make sure you first have those OPAM packages installed as above), type <tt>opam user-setup install</tt> which will patch your emacs startup files - restart emacs and Tuareg and Merlin should work.
-<p>
-In emacs, every file that ends in <kbd>.ml</kbd> will automatically
-load Tuareg mode.
+              <dt><strong><a href="https://www.gnu.org/software/emacs/">Emacs</strong></a>
+              <dd>To link Tuareg (syntax highlighting) and Merlin (type display and error finding) to emacs (make sure
+                you first have those OPAM packages installed as above), type <tt>opam user-setup install</tt> which will
+                patch your emacs startup files - restart emacs and Tuareg and Merlin should work.
+                <p>
+                  In emacs, every file that ends in <kbd>.ml</kbd> will automatically
+                  load Tuareg mode.
 
-The tuareg-mode distribution includes no documentation but is easy to
-use;  <kbd>control-h m</kbd> from within emacs gets you the 
-command list.  The main useful commands (C-c means control-C, etc) are
-<pre>
+                  The tuareg-mode distribution includes no documentation but is easy to
+                  use; <kbd>control-h m</kbd> from within emacs gets you the
+                  command list. The main useful commands (C-c means control-C, etc) are
+                  <pre>
 C-c C-e		evaluate the phrase the cursor is sitting in the middle of
 C-c C-r		evaluate the whole selected region
 C-c C-s		show the shell window; will automatically start an ocaml shell if not running
 C-c `		go to exact error location in the source</pre>
 
-<p>
-Merlin mode is useful because it can also display types of expressions and take you to a definition of a variable from its use.  See <a href="https://opam.ocaml.org/blog/turn-your-editor-into-an-ocaml-ide/">here</a> for more information on Merlin.  Useful keys available include
-<pre>
+                  <p>
+                    Merlin mode is useful because it can also display types of expressions and take you to a definition
+                    of a variable from its use. See <a
+                      href="https://opam.ocaml.org/blog/turn-your-editor-into-an-ocaml-ide/">here</a> for more
+                    information on Merlin. Useful keys available include
+                    <pre>
 C-c C-l         from a variable use jump to its definition.
 C-c &           merlin-pop-stack (go back to where you were before above)
 C-c C-t         display the type of the enclosing expression.
 </pre>
 
-  
-  <dt><strong>vim</strong>
-    <dd>If you like vim, just type <code>opam user-setup install</code> to set up syntax highlighting, tab completion, displaying types, etc.  See <a href="https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt">here</a> for some dense documentation.
-  </dl>
 
-<h3>OCaml with the Book's FbDK</h3>
-<p>
-  See the <a href="../book/_dist/fbdk/">FbDK README</a> for information on how to use the FbDK.
-</p>
+              <dt><strong>vim</strong>
+              <dd>If you like vim, just type <code>opam user-setup install</code> to set up syntax highlighting, tab
+                completion, displaying types, etc. See <a
+                  href="https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt">here</a> for some dense
+                documentation.
+            </dl>
 
-<h3><code>utop</code>: A better top-loop</h3>
-<p>
- <ul>
-   <li>There is a newer top loop which you can install easily with OPAM: just type <code>opam install utop</code>.  
-     <li>With utop you can scroll up and down your OCaml input history, do simple editing on previous inputs, etc.
-     <li>See the <a href="https://github.com/diml/utop">utop README</a> for more information on what it can do for you.  
-     </ul>
-<h3>The OCaml Manual</h3>
+            <h3>OCaml with the Book's FbDK</h3>
+            <p>
+              See the <a href="../book/_dist/fbdk/">FbDK README</a> for information on how to use the FbDK.
+            </p>
 
-<p>
-  <a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
-      manual</a> (download your local copy from the links at the top).  We only need a subset of the manual, below is the Cliff Notes version of the table of contents.
-  <ul><li>Part I is the tutorial introduction; <a
-      href="http://caml.inria.fr/pub/docs/manual-ocaml/coreexamples.html">Part
-      I Chapter 1</a> is a brief but readable introduction to the core
-      language.  This
-      will be our main reference.  The only other chapter in Part I you may need to reference is the <a href="http://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html">module system</a>. </li>
-    <li>Part II is the language reference and you can probably skip it.</li>
-    <li>Part III documents <tt>ocamlc</tt>, the batch compiler, and other command-line tools; we only use it in simple ways but look here if you want to know more. </li>
-    <li>Part IV describes the libraries; you probably only need to reference the first two chapters here.</li>
-<ul>    <li>The <a
-      href="http://caml.inria.fr/pub/docs/manual-ocaml/core.html">Core
-      Library</a> chapter describes standard types and exceptions built into OCaml, and the <a href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Pervasives module</a> referenced there includes all basic int/bool/float/string/etc operations such as <tt>&lt</tt>, <tt>mod</tt>, etc which are always available.</li>
-  <li>The <a href="http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html">Standard Library</a> chapter includes standard data structures such as hashtables and stacks as well as library operations for lists, arrays, strings, printing, etc.
-</ul>
-  </ul>
-<h3>Additional OCaml Information</h3>
-<dl>
-  <dt><a href="http://ocaml.org">ocaml.org</a>
-  <dd>This is the home of OCaml for finding downloads, documentation, etc.  The <a href="http://ocaml.org/learn/tutorials/">tutorials</a> are also very good and there is a page of <a href="http://ocaml.org/learn/books.html">books</a>.
-  <dt><a href="https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1">OCaml Youtube Tutorial</a></dt>
-    <dd>If you like watching videos to learn things here is a complete collection for OCaml.</dd>
-  <dt><a href="https://www.cs.cornell.edu/courses/cs3110/2019sp/textbook/">Cornell CS 3110 Lecture Notes</a></dt>
-  <dd>A course on OCaml programming</dd>
-      <dt><a href="http://www.seas.upenn.edu/~cis341/current/programming_style.shtml">UPenn OCaml Style Guide</a></dt>
-  <dd>A guide to proper formatting and other style concerns for OCaml.</dd>
-</dl>
+            <h3><code>utop</code>: A better top-loop</h3>
+            <p>
+              <ul>
+                <li>There is a newer top loop which you can install easily with OPAM: just type
+                  <code>opam install utop</code>.
+                <li>With utop you can scroll up and down your OCaml input history, do simple editing on previous inputs,
+                  etc.
+                <li>See the <a href="https://github.com/diml/utop">utop README</a> for more information on what it can
+                  do for you.
+              </ul>
+              <h3>The OCaml Manual</h3>
+
+              <p>
+                <a href="http://caml.inria.fr/pub/docs/manual-ocaml/">The OCaml
+                  manual</a> (download your local copy from the links at the top). We only need a subset of the manual,
+                below is the Cliff Notes version of the table of contents.
+                <ul>
+                  <li>Part I is the tutorial introduction; <a
+                      href="http://caml.inria.fr/pub/docs/manual-ocaml/coreexamples.html">Part
+                      I Chapter 1</a> is a brief but readable introduction to the core
+                    language. This
+                    will be our main reference. The only other chapter in Part I you may need to reference is the <a
+                      href="http://caml.inria.fr/pub/docs/manual-ocaml/moduleexamples.html">module system</a>. </li>
+                  <li>Part II is the language reference and you can probably skip it.</li>
+                  <li>Part III documents <tt>ocamlc</tt>, the batch compiler, and other command-line tools; we only use
+                    it in simple ways but look here if you want to know more. </li>
+                  <li>Part IV describes the libraries; you probably only need to reference the first two chapters here.
+                  </li>
+                  <ul>
+                    <li>The <a href="http://caml.inria.fr/pub/docs/manual-ocaml/core.html">Core
+                        Library</a> chapter describes standard types and exceptions built into OCaml, and the <a
+                        href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Pervasives module</a>
+                      referenced there includes all basic int/bool/float/string/etc operations such as <tt>&lt</tt>,
+                      <tt>mod</tt>, etc which are always available.</li>
+                    <li>The <a href="http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html">Standard Library</a>
+                      chapter includes standard data structures such as hashtables and stacks as well as library
+                      operations for lists, arrays, strings, printing, etc.
+                  </ul>
+                </ul>
+                <h3>Additional OCaml Information</h3>
+                <dl>
+                  <dt><a href="http://ocaml.org">ocaml.org</a>
+                  <dd>This is the home of OCaml for finding downloads, documentation, etc. The <a
+                      href="http://ocaml.org/learn/tutorials/">tutorials</a> are also very good and there is a page of
+                    <a href="http://ocaml.org/learn/books.html">books</a>.
+                  <dt><a href="https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1">OCaml Youtube
+                      Tutorial</a></dt>
+                  <dd>If you like watching videos to learn things here is a complete collection for OCaml.</dd>
+                  <dt><a href="https://www.cs.cornell.edu/courses/cs3110/2019sp/textbook/">Cornell CS 3110 Lecture
+                      Notes</a></dt>
+                  <dd>A course on OCaml programming</dd>
+                  <dt><a href="http://www.seas.upenn.edu/~cis341/current/programming_style.shtml">UPenn OCaml Style
+                      Guide</a></dt>
+                  <dd>A guide to proper formatting and other style concerns for OCaml.</dd>
+                </dl>
 
 
 
-	    
-          </section>
-        </div>
-      </div>
+
+    </section>
+  </div>
+</div>
 
 
-<!--#include virtual="/pl/footer.html" -->	 
-
-
-    
+<!--#include virtual="/pl/footer.html" -->
