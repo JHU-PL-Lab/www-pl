@@ -180,7 +180,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Opsem III: Fb Semantics, Interpreter</div>
+            <div align="left" class="body">Snow Day</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
@@ -198,7 +198,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Opsem IV: The Y Combinator</div>
+            <div align="left" class="body">&nbsp;Opsem III: Fb Semantics, Interpreter</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a href="assignments/assignment4.shtml">4 - Fb Interpreter</a>
@@ -216,7 +216,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Opsem V: Fb Programming; Tuples</div>
+            <div align="left" class="body">&nbsp;Opsem IV: The Y Combinator</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -233,7 +233,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Records, Variants</div>
+            <div align="left" class="body">&nbsp;Opsem V: Fb Programming; Tuples</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -250,7 +250,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;State</div>
+            <div align="left" class="body">&nbsp;Records, Variants</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a href="assignments/assignment5.shtml">5 - Records/Variants/State</a></div>
@@ -268,7 +268,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Midterm Exam</div>
+            <div align="left" class="body">&nbsp;State</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -285,7 +285,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics I (Dynamic Languages?)</div>
+            <div align="left" class="body">&nbsp;Midterm Exam</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -469,7 +469,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics II</div>
+            <div align="left" class="body">&nbsp;Special Topics I</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a href="assignments/assignment10.shtml">10 - Type Inference</a></div>
@@ -486,7 +486,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics III</div>
+            <div align="left" class="body">&nbsp;Special Topics II</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
