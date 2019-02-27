@@ -36,7 +36,11 @@ let unparse e = Fbpp.pretty_print e;;
 
 (* pp is a top-loop pretty printer *)
 
-let pp e = print_string (unparse e);;
+let pp e = print_string ((unparse e)^"\n");;
+
+(* pps pretty prints a string program by parsing and unparsing *)
+
+let pps e = pp (parse e);;
 
 (* ppeval evaluates an expr and then pretty prints the result *)
 
