@@ -42,7 +42,7 @@ implementation of Fb) to ensure that your functions work correctly.
 
 *)
 
-(* Part 3 question 1. [10 points]
+(* Part 2 question 1. [10 points]
 
    Fb fails to provide any operations over integers more complex
    than addition and subtraction.  Below, define the following
