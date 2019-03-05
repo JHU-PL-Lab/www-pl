@@ -106,19 +106,15 @@ let fbDictRemove = "(0 1)" ;;
 (*
 Here are some test examples.  Recall function res parses, evals, and un-parses.
 
-# let empty = res "("^fbDictEmpty^") 0";;
-# let dict_a = res "("^fbDictAdd^")("^empty^") 1 11";;
-# let dict_b = res "("^fbDictAdd^")("^dict_a^") 2 22";;
+# let empty = res ("("^fbDictEmpty^") 0");;
+# let dict_a = res ("("^fbDictAdd^")("^empty^") 1 11");;
+# let dict_b = res ("("^fbDictAdd^")("^dict_a^") 2 22");;
 # assert(res ("("^fbDictGet^")("^dict_b^") 2") = "22");;
 # res "("^fbDictGet^")("^dict_b^") 10" ;;
 Exception: ...
 # let dictCreate keyList valList = List.fold_left2 (
     fun r -> fun k -> fun v -> "("^fbDictAdd^")("^r^")("^k^")("^v^")"
   ) empty keyList valList ;;
-# let dict_c = rec (dictCreate ["4"; "3"; "2"; "1"; "0"] ["404"; "303"; "202"; "101"; "0"] ) ;;
+# let dict_c = res (dictCreate ["4"; "3"; "2"; "1"; "0"] ["404"; "303"; "202"; "101"; "0"] ) ;;
 # assert(res ("("^fbDictGet^")("^dict_c^") 3") = "303") ;;
-
 *)
-
-
-
