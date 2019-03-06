@@ -216,7 +216,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Opsem IV: The Y Combinator</div>
+            <div align="left" class="body">&nbsp;Opsem IV: Fb Programming</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -233,7 +233,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Opsem V: Fb Programming; Tuples</div>
+            <div align="left" class="body">&nbsp;Opsem V: The Y Combinator</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -250,10 +250,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Records, Variants</div>
+            <div align="left" class="body">&nbsp;Tuples, Records, Variants</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment5.shtml">5 - Records/Variants/State</a></div>
+            <div align="center" class="body"><a href="assignments/assignment5.shtml">5 - Y/Records/Variants/State</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">4</div>
