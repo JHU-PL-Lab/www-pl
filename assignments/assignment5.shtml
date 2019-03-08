@@ -36,12 +36,12 @@
 <p><li>
     <strong>FbR</strong> allows arbitrary length records to be expressed. Let us consider a "stubby" version of <strong>FbR</strong>, <strong>FbRs</strong>, in which users can only write records with <em>one</em> field.  But, to keep its usefulness the language will also include a new operator <tt>e @ e</tt> which <em>appends</em>
     two records together (if there is the same field in both, the field in the right record has precedence).  So for example
-    <code>(( {a = 5} @ {b = 7} ) @ {c = 12} ).b</code> will return <code>7</code>.
+    <pre>(( {a = 5} @ {b = 7} ) @ {c = 12} ).b</pre> will return <code>7</code>.  Other than these two changes the language is the same as <strong>FbR</strong>.
     <ol class="a">
       <li>Write out the operational semantics rules for <strong>FbRs</strong>; you can leave out the <strong>Fb</strong> rules as your language can be an extension of <strong>Fb</strong>.
       <li>Write out the proof tree for the above example using your rules.
       	</ol>
-Note there are many different ways to solve this problem.  Make sure to think carefully about what the <em>vales</em> should be.  For example, what does <code>{a = 5} @ {b = 7}</code> compute to?
+Note there are many different ways to solve this problem.  Make sure to think carefully about what the <em>values</em> should be.  For example, what does <code>{a = 5} @ {b = 7}</code> compute to?  You can make up your own new syntax for what values are if you want to.
     <p>
 
       
