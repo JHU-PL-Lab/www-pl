@@ -1,0 +1,132 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>Old Midterm Questions</h2>
+
+</header>
+
+<p>
+
+These questions are selected from past take-home midterms.  The in-class midterm questions will be easier than take-home ones.  In fact question 1 was even very hard on the take-home, you might want to skip it.
+  
+<ol>
+<li>  This question concerns mutual recursion.
+      <ol class="a">
+	<li>Write mutually recursive functions <code>
+	    iseven
+	  </code>
+	  and <code>
+	    isodd
+	  </code>
+	  in <strong>Fb</strong> without using <code>Let Rec</code>.  You can use Y combinator, self-passing, or a variation on one of these, whatever gets the job done.  Your functions need only work on non-negative numbers.
+	<li>Use your idea in a. to make general sugar for mutual recursion.  OCaml supports  the <code>and</code> syntax
+	  <pre>
+	    let rec f x = ...
+	    and     g y = ... 
+	    in            ... </pre>
+	  to allow mutually recursive functions
+  to be defined.  Write an <strong>Fb</strong> macro to support this,
+  just for the case of two mutually recursive functions of one
+  argument:
+      <pre>Let Rec f x = e And g y = e' In e'' =def= (you fill in)</pre>
+</ol>
+
+
+  <li>For this question consider a very simple language <strong>BL</strong> with just booleans (<tt>True, False</tt>, plus <tt>And, Or, Not</tt> operators) and <tt>Let</tt>.  No functions!  So a sample program would be <tt>Let x = True And False In x And Not x</tt>.
+  <ol class="a">
+    <li>Give the grammar definitions of expressions <tt>e</tt> and values <tt>v</tt>.</li>
+    <li>Given an arbitrary <strong>BL</strong> expression e, define what the <em>bound</em> and <em>free</em> variables in the expression are.</li>
+    <li>Define substitution for <strong>BL</strong> expressions: <tt>e[v/x]</tt>.  You can assume that as with <strong>Fb</strong> etc, the values <tt>v</tt> are closed.
+    <li>We only needed to define substitution for <em>closed</em> <tt>v</tt> in <strong>Fb</strong> (and <strong>BL</strong>).  Why is that?
+</li>
+
+  </ol>
+<li>
+ The evaluation rules for Fb give a general definition for the substitution function
+   e[v/x]. However if we were to start out evaluating closed expressions, not all values of 
+   e, v and x are legitimate. 
+<p>
+   For each of the following, determine whether it is a valid substitution that can occur
+   during the course of evaluation of (some) closed expression. If yes, write down a
+   closed expression that causes the particular substitution to occur,
+
+   The substitution expressions below are given in the e[v/x] form.
+<pre>
+     a. (x + y)[3/x]
+     b. (Function x -> x + y)[3/y]
+     c. (Function x -> x + 1)[3/x]
+     d. x [(Function x -> x + y)/x]
+</pre>
+
+ <li>
+ Its time to reverse engineer some operational semantics proofs.  For each
+fragment below, build out a full instance of the application rule for Fb which has the
+indicated substitution above the line.  Well, some are impossible - indicate which are
+impossible if no derivation can be built.  (Recall that for e ==> v, both e and v must
+be closed.)
+
+<pre>Example question: y[4/y] ==> ..
+Example Answer:
+
+(Fun y -> y) ==> (Fun y -> y)    4 ==> 4    y[4/y] ==> 4
+---------------------------------------------------------
+       (Fun y -> y)(4) ==> 4
+
+     a. (x + y)[3/x] ==> ..
+     b. (Function x -> x + y)[3/y] ==> ...
+     c. (Function x -> x + 1)[3/x] ==> ...
+     d. x [(Function x -> x + x)/x] ==> ...
+</pre>
+
+<li>  Consider the language FbD - Fb augmented with immutable dictionaries (maps). 
+   Dictionaries map keys to values. The following is the concrete syntax for dictionaries:<ul>
+    <li>
+   Literal syntax for creating dictionaries: { `key1 => e1 ; ... `keyn => en } 
+     E.g. { `Foo => False ; `Bar => 1 + 3 ; `Moo => 10 } 
+     (Notice the special syntax for keys)
+   
+    <li>
+      Accessing values by key: e[`key]
+     E.g. { `Foo => False ; `Bar => 1 + 3 }[`Bar] results in 4
+   
+    <li>
+      Append dictionary: e @@ e' produces a new dictionary that appends the right
+   dictionary to the left.  Mappings in e' have priority over those in e.
+  </ul>
+  E.g { `Foo => 1 } @@ {`Bar => False} results in { `Foo => 1; ` Bar => False} and
+         { `Foo => 1 } @@ {`Foo => False; `Bar => True} results in  { `Foo => False; `Bar => True }
+<ol class="a">
+  <li>
+
+ Write the operational semantics for FbD.
+
+
+   <li> Assume that the abstract syntax for FbD is like this:
+
+       <pre>type key = Key of string
+type expr = ... | Dict of (key * expr) list | Get of expr * key | Append of expr * expr
+</pre>
+       where (... indicates the original Fb AST) 
+
+      <p> Write eval function for FbD. You only need to specify
+       the new cases that need to be added to the Fb interpreter.</pre>
+     
+</ol>
+
+
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
+
+
