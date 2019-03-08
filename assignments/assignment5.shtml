@@ -1,0 +1,62 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+  <h2>Assigment 5</h2>
+</header>
+
+<p>
+  <ol>
+
+  <li> Lets play "pull out the points": for each of the <strong>Fb</strong> expressions below, come up with a particular expression <em>e</em> which you can instantiate the metavariable <em>e</em> in each expression to then evaluate to the number of points you get on the question. Your expression <em>e</em> <em>cannot</em> contain any integer literals <code>0,1,-1,2,..</code> or any integer operations <code>+/-</code>. Note any number greater than <code>3</code> we will coerce to <code>3</code> in the grading (we will also give partial credit for close answers).  Here is an example to clarify: for "<em>e</em> <code> 2 3</code>", let <em>e</em> be <tt>Fun z -> Fun t -> t</tt> and you will extract three points.
+
+ <ol type="a">
+<li> <em>e</em> <code>(0-1)(Function x -> 1 - x)</code>
+<li> <em>e</em> <code>(Function succ -> Function y -> y succ 0)(Function x -> x + 1)</code>
+<li> <code>(Function q -> q (Function s -> s (s 3)))</code> <em>e</em> 
+<li> <em>e</em> <code>
+    (Function f -> Function g -> Function x -> <br>
+    &nbsp; &nbsp; &nbsp; &nbsp; If x = 3 then x Else f g (x + 1))<br>
+    &nbsp; (0)</code> 
+</ol>
+ 
+<p>      <li>
+    <strong>FbV</strong> contains the match syntax <tt>Match e With n(x1) -> e1 | .. n(xn)->en</tt>, following OCaml.  It is also possible to use a simpler match syntax, more like an if-then-else: <tt>Match e With n(x1) -> e1 | _ -> e2</tt>.  Let us define the language <strong>FbVs</strong> to be a variation on <strong>FbV</strong> which removes the existing match and replaces with this one.
+    <ol class="a">
+      <li>Write out the operational semantics rules for <strong>FbVs</strong> which differ from the <strong>Fb</strong> rules.  Note that the rules for <strong>FbV</strong> are in the book so you have a good shot at the answer.
+      <li>Show how this language has the same expressivity as <strong>FbV</strong> by showing how the <strong>FbV</strong> form of match can be embedded into <strong>FbVs</strong>.   Rather than writing a general macro, for this question just show how the <strong>FbV</strong> program <pre>Let d = `hi(7) In Match `hi(x) -> x+1 | `ho(y) -> y-1</pre> can be coded equivalently in <strong>FbVs</strong>.</li>
+      <li>Use your rules in part a. to make the proof how the example in part b. will evaluate to the same answer as <strong>FbV</strong>, namely <tt>8</tt> here.
+      	</ol>
+<p><li>
+    <strong>FbR</strong> allows arbitrary length records to be expressed. Let us consider a "stubby" version of <strong>FbR</strong>, <strong>FbRs</strong>, in which users can only write records with <em>one</em> field.  But, to keep its usefulness the language will also include a new operator <tt>e @ e</tt> which <em>appends</em>
+    two records together (if there is the same field in both, the field in the right record has precedence).  So for example
+    <code>(( {a = 5} @ {b = 7} ) @ {c = 12} ).b</code> will return <code>7</code>.
+    <ol class="a">
+      <li>Write out the operational semantics rules for <strong>FbRs</strong>; you can leave out the <strong>Fb</strong> rules as your language can be an extension of <strong>Fb</strong>.
+      <li>Write out the proof tree for the above example using your rules.
+      	</ol>
+Note there are many different ways to solve this problem.  Make sure to think carefully about what the <em>vales</em> should be.  For example, what does <code>{a = 5} @ {b = 7}</code> compute to?
+    <p>
+
+      
+  </ol>
+
+  
+
+
+<h3>Submission and Grading</h3>
+
+Upload your homework as a pdf to Gradescope.  Feel free to write by hand and scan it in, just verify your scan is fully legible before submitting!
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
