@@ -41,7 +41,7 @@
       <li>Write out the operational semantics rules for <strong>FbRs</strong>; you can leave out the <strong>Fb</strong> rules as your language can be an extension of <strong>Fb</strong>.
       <li>Write out the proof tree for the above example using your rules.
       	</ol>
-Note there are many different ways to solve this problem.  Make sure to think carefully about what the <em>values</em> should be.  For example, what does <code>{a = 5} @ {b = 7}</code> compute to?  You can make up your own new syntax for what values are if you want to.
+Note there are many different ways to solve this problem.  Make sure to think carefully about what the <em>values</em> should be.  For example, what does <code>{a = 5} @ {b = 7}</code> compute to?  A hint is to let that itself be a value, and for records of more than two fields there could be trees of such appends and record projection <t>e.lab</tt> would need to walk the tree to find the label.
     <p>
 
       
