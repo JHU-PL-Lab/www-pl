@@ -30,7 +30,7 @@
     <strong>FbV</strong> contains the match syntax <tt>Match e With n(x1) -> e1 | .. n(xn)->en</tt>, following OCaml.  It is also possible to use a simpler match syntax, more like an if-then-else: <tt>Match e With n(x1) -> e1 | _ -> e2</tt>.  Let us define the language <strong>FbVs</strong> to be a variation on <strong>FbV</strong> which removes the existing match and replaces with this one.
     <ol class="a">
       <li>Write out the operational semantics rules for <strong>FbVs</strong> which differ from the <strong>Fb</strong> rules.  Note that the rules for <strong>FbV</strong> are in the book so you have a good shot at the answer.
-      <li>Show how this language has the same expressivity as <strong>FbV</strong> by showing how the <strong>FbV</strong> form of match can be embedded into <strong>FbVs</strong>.   Rather than writing a general macro, for this question just show how the <strong>FbV</strong> program <pre>Let d = `hi(7) In Match `hi(x) -> x+1 | `ho(y) -> y-1</pre> can be coded equivalently in <strong>FbVs</strong>.</li>
+      <li>Show how this language has the same expressivity as <strong>FbV</strong> by showing how the <strong>FbV</strong> form of match can be embedded into <strong>FbVs</strong>.   Rather than writing a general macro, for this question just show how the <strong>FbV</strong> program <pre>Let d = `hi(7) In Match d With `hi(x) -> x+1 | `ho(y) -> y-1</pre> can be coded equivalently in <strong>FbVs</strong>.</li>
       <li>Use your rules in part a. to make the proof how the example in part b. will evaluate to the same answer as <strong>FbV</strong>, namely <tt>8</tt> here.
       	</ol>
 <p><li>
