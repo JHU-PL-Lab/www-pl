@@ -65,7 +65,10 @@ Implement an interpreter for the variant language <strong>FbReL</strong> which i
 
 <h3>Submission and Grading</h3>
 
-Upload  as a pdf to Gradescope.  Feel free to write by hand and scan it in, just verify your scan is fully legible before submitting!
+<ul>
+  <li>Upload Part I as a pdf to the <em>Assignment 6 part I</em> target on Gradescope.
+<li>Upload your Part II file <tt>FILENAMEHERE.ml</tt> to the <em>Assignment 6 Part II</em> target on Gradescope.
+    </ul>
 	
 </section>
 </div>
