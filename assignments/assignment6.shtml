@@ -1,0 +1,75 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+  <h2>Assigment 6</h2>
+</header>
+<h4>Part I: written questions</h4>
+<p>
+  <ol>
+  <li>The book briefly mentions the language <strong>FbSR</strong>, the combination of <strong>Fb</strong> with state and records.
+    The book doesn't exhaustively describe the operational semantics rules for FbSR. But, they are based on the rules of the individual systems.  
+    But
+    they are straightforward. Write out the rule(s) for the following FbSR expressions:
+
+   <ol class="a">
+     <li>If expression: <tt>If e Then e1 Else e2</tt>
+     <li>Record projection: <tt>e.<em>l</em></tt>
+       </ol>
+
+    Note that since state is a side effect and side effects are pervasive, all of the rules must take in and return a state: <tt>(e,S0) ==> (v,S)</tt>.
+
+   
+
+
+    <li>For the following programs, write out a proof tree of their execution.
+      <ol class="a">
+	<li> The FbS expression
+      <pre>(Function x -> Function y -> x := !x + y) (Ref 0) 10</pre>
+	</li>
+	<li> The FbX expression
+      <pre>(Function x -> Try If x = 0 Then Raise #Invalid 0 Else x + 1 With #Invalid n -> n - 1) 0</pre>
+
+      </ol>
+    <li> (10 points)  Recall the following encoding of a <code>point</code> object in <strong>FbSR</strong> that is in the book:
+    <pre>Let point = { x = Ref 4; y = Ref 3;
+   magnitude = Function this -> Function dummy ->  !(this.x) + !(this.y);
+   iszero = Function this -> Function dummy -> (this.magnitude this {}) = 0;
+   setx = Function this -> Function newx -> this.x := newx;
+   sety = Function this -> Function newy -> this.y := newy } In
+      point.magnitude point {}</pre>
+
+    <ol class="a">
+      <li>One disadvantage of this encoding is how we can't just say simply <code>point.magnitude {}</code> to send a <code>magnitude</code> message -- we need to explicitly pass the self every time, cluttering the syntax.  Provide an alternative encoding of this <code>point</code> object which has all the functionality but for which <code>point.magnitude {}</code> (and similarly for the other methods) is going to give the right answer, <code>7</code> here.  You are not to make a macro here, you are to change the encoding so the dot syntax alone works.
+      <li>Now extend your encoding to also hide the fields <code>x</code> and <code>y</code>: make them behave like <code>private</code> fields in Java.  Make sure the internal access to the fields still works, but externally they cannot be accessed.<br>
+In both of your answers to this question you can change how internal field access and internal messaging works if you want, but do keep your encoding general so it should be clear how it will encode any standard object.
+</ol>
+
+  </ol>
+
+  
+<h4>Part II: interpreter extension</h4>
+(text from last year, revise for new extension)
+
+<p>
+Implement an interpreter for the variant language <strong>FbReL</strong> which implements the operational semantics extensions you developed in part A:  <strong>FbRe</strong> plus <strong>FbL</strong> plus modify the <tt>And</tt> and <tt>Or</tt> meaning so that they short-circuit.  Lastly, change <tt>=</tt> testing so it works on all types, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: using OCaml's = this last modification is trivial).
+      <p>In order to get you going we have added a scanner/parser/pretty printer for  <strong>FbReL</strong> to the FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbReL/"><tt>FbReL/</tt></a> in the latest version for download.  Like the Fb interpreter, that directory contains a dummy <tt>fbrelinterp.ml</tt> file which you need to complete.  <tt>make fbrel.byte</tt> will also build this <tt>ocamlrun fbrel.byte</tt> interpreter, and the <tt>debugscript/fbrel.ml</tt> file should also work for interacting with the interpreter in the OCaml top loop.   In other words, its more or less identical to how Fb developement worked, and we also supply you with "solution" binaries to check against.
+      <p>You will need to port over your <strong>Fb</strong> interpreter code for the basic <strong>Fb</strong> features.  If you lost points for buggy code there, we will be <em>very</em> helpful in getting your basic <strong>Fb</strong> interpreter stuff working now if you ask (i.e. ask any CA and you will be told how to fix your code).  In any case the tests will primarily be on the new features and not on the function calling.  <strong>FbReL</strong> does not include <tt>Let Rec</tt> in the syntax so no need to deal with that if you did not get it in HW3.  The AST type is as usual in the file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbReL/fbrelast.ml">fbrelast.ml</a>.  The AST representation is most self-explanatory; for <tt>Match</tt> the argument order is just the order in the syntax.  Use the parser in the debug script to test if you are not sure on the AST format.  Hint: the book contains a sketch of how an interpreter for records works.
+
+
+<h3>Submission and Grading</h3>
+
+Upload  as a pdf to Gradescope.  Feel free to write by hand and scan it in, just verify your scan is fully legible before submitting!
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
