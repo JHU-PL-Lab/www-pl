@@ -191,6 +191,10 @@ let t = "{a = 1; b = {b = \"good good\"}}.b.b";;
 parse t;;
 rep t;;
 
-let t = "{a = 1; b = {b = \"good good\"}}.b.a";;
+(* let t = "{a = 1; b = {b = \"good good\"}}.b.a";;
+   parse t;;
+   rep t;; *)
+
+let t = "{a = 1; b = 2} = {b = 2; a = 1}";;
 parse t;;
 rep t;;
