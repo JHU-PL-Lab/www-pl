@@ -8,85 +8,38 @@
 <div id="content" class="container">
 <section>
 <header class="major">
-  <h2>Assigment 6</h2>
+  <h2>Assigment 6: Interpreter Extension</h2>
 </header>
-<h4>Part I: written questions</h4>
-<p>
-  <ol>
-  <li>The book briefly mentions the language <strong>FbSR</strong>, the combination of <strong>Fb</strong> with state and records.
-    The book doesn't exhaustively describe the operational semantics rules for FbSR. But, they are based on the rules of the individual systems.  
-    But
-    they are straightforward. Write out the rule(s) for the following FbSR expressions:
-
-   <ol class="a">
-     <li>If expression: <tt>If e Then e1 Else e2</tt>
-     <li>Record projection: <tt>e.<em>l</em></tt>
-       </ol>
-
-    Note that since state is a side effect and side effects are pervasive, all of the rules must take in and return a state: <tt>(e,S0) ==> (v,S)</tt>.
-
-   
-
-
-    <li>For the following programs, write out a proof tree of their execution.
-      <ol class="a">
-	<li> The FbS expression
-      <pre>(Function x -> Function y -> x := !x + y) (Ref 0) 10</pre>
-	</li>
-	<li> The FbX expression
-      <pre>(Function x -> Try If x = 0 Then Raise #Invalid 0 Else x + 1 With #Invalid n -> n - 1) 0</pre>
-
-      </ol>
-    <li> (10 points)  Recall the following encoding of a <code>point</code> object in <strong>FbSR</strong> that is in the book:
-    <pre>Let point = { x = Ref 4; y = Ref 3;
-   magnitude = Function this -> Function dummy ->  !(this.x) + !(this.y);
-   iszero = Function this -> Function dummy -> (this.magnitude this {}) = 0;
-   setx = Function this -> Function newx -> this.x := newx;
-   sety = Function this -> Function newy -> this.y := newy } In
-      point.magnitude point {}</pre>
-
-    <ol class="a">
-      <li>One disadvantage of this encoding is how we can't just say simply <code>point.magnitude {}</code> to send a <code>magnitude</code> message -- we need to explicitly pass the self every time, cluttering the syntax.  Provide an alternative encoding of this <code>point</code> object which has all the functionality but for which <code>point.magnitude {}</code> (and similarly for the other methods) is going to give the right answer, <code>7</code> here.  You are not to make a macro here, you are to change the encoding so the dot syntax alone works.
-      <li>Now extend your encoding to also hide the fields <code>x</code> and <code>y</code>: make them behave like <code>private</code> fields in Java.  Make sure the internal access to the fields still works, but externally they cannot be accessed.<br>
-In both of your answers to this question you can change how internal field access and internal messaging works if you want, but do keep your encoding general so it should be clear how it will encode any standard object.
-</ol>
-
-  </ol>
-
-  
-<h4>Part II: interpreter extension</h4>
 
 <p>
-Implement an interpreter for the variant language <strong>FbRX</strong> which implements the operational semantics extensions including
+Implement an interpreter for the variant language <strong>FbRX</strong> which implements <strong>Fb</strong> operational semantics extensions including
 <ul>
-  <li><strong>FbR</strong> with record append in assignment 5 </li>
+  <li><strong>FbR</strong> with record append more or less as in assignment 5 </li>
   <li><strong>FbX</strong> with runtime exceptions</li>
   <li>short-circuit <tt>And</tt> and <tt>Or</tt> </li>
-  <li>new primitive type String</li>
-  <li>modified <tt>=</tt> working on Int, Boolean, String and Record</li>
+  <li>a new primitive type String</li>
+  <li>a modified <tt>=</tt> working on Int, Boolean, String and Record</li>
 </ul>
 
-<p>The only file you should modify is <strong>fbrxinterp.ml</strong> and do not change the code above <strong>eval</strong>.</p>
+<p>The only file you should modify is <strong>fbrxinterp.ml</strong>; do not change the code above <strong>eval</strong> in that file.</p>
 
-<p>For records, we permit the append of arbitrary records e.g. <tt>{a = 1; b = 1} @ {a = 2; c = 1} => {a = 2; b = 1; c = 1}</tt> . If there is the same field in both, the field in the right record has precedence. <tt>{a = 1; b = 2} = {b = 2; a = 1} => True</tt>. When testing equal with two records, the sequence of labels doesn't matter.
+<p>For records, we permit the append of arbitrary records e.g. <tt>{a = 1; b = 1} @ {a = 2; c = 1} => {a = 2; b = 1; c = 1}</tt> . This is slightly more general than assignment 5 where records in source code could only be one-field.  As with assignment 5, if the same field is in both, the field in the right record has precedence.  Note that  <tt>{a = 1; b = 2} = {b = 2; a = 1} => True</tt>: When testing equal with two records, the sequence of labels doesn't matter.
 </p>
 
-<p>For exceptions, <strong>FbRX</strong> supports exceptions expression <tt>Raise #Exnid e</tt> and <tt>Try e With #Exnid e</tt> which is stated in <strong>FbX</strong>. <strong>FbRX</strong> also supports runtime exceptions. When evaluating an exception, the result can be an Fb exception expression, e.g. <tt>1 + True</tt> evaluates to <tt>Raise #TypeMismatch 0</tt>. It's a valid Fb expression. Another exception is <tt>Raise #LabelNotFound 0</tt> when you select a non-exist label from a record e.g. <tt>{a = 1}.b</tt> The value 0 in the exception is dummy and when grading we will check whether the exception id matches</p>.
+<p>For exceptions, <strong>FbRX</strong> supports exceptions via expression <tt>Raise #xn e</tt> and <tt>Try e With #xn e</tt> as is defined in <strong>FbX</strong> in the book. <strong>FbRX</strong> also supports runtime exceptions so the language itself can handle the dynamic errors that may arise.  For example, e.g. <tt>1 + True</tt> should evaluate to <tt>Raise #TypeMismatch 0</tt> since there is a type mismatch here.  Another <strong>FbRX</strong> exception you should support is <tt>Raise #LabelNotFound 0</tt> when a non-existing label is selected from a record, e.g. for <tt>{a = 1}.b</tt>. The value 0 in the exception is arbitrary, but when grading we will check whether the exception id matches the names above</p>.
 
-<p>For strings, <strong>FbRX</strong> support literal strings, values in a record and equal testing on them</p> 
+<p>For the string extension, <strong>FbRX</strong> supports literal strings equality testing on them.</p> 
 
-<p>For <tt>=</tt> it works on int, boolean and record, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: using OCaml's = this last modification is trivial).</p>
+<p>For <tt>=</tt> in <strong>FbRX</strong> it should work on int, boolean and record values, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: using OCaml's = this last modification is trivial).</p>
 
-<p>In order to get you going we have added a scanner/parser/pretty printer for  <strong>FbRX</strong> to the FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/"><tt>FbRX/</tt></a> in the latest version for download.  Like the Fb interpreter, that directory contains a dummy <tt>fbrxinterp.ml</tt> file which you need to complete.  <tt>make fbrx.byte</tt> will also build this <tt>ocamlrun fbrx.byte</tt> interpreter, and the <tt>debugscript/fbrx.ml</tt> file should also work for interacting with the interpreter in the OCaml top loop.   In other words, its more or less identical to how Fb developement worked, and we also supply you with "solution" binaries to check against.
+<p>In order to get you going we have added a scanner/parser/pretty printer for  <strong>FbRX</strong> to the FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/"><tt>FbRX/</tt></a> in the latest version for download.  Like the Fb interpreter, that directory contains a dummy <tt>fbrxinterp.ml</tt> file which you need to complete.  <tt>make fbrx.byte</tt> will also build this interpreter, <tt>ocamlrun fbrx.byte</tt> will run it, and the <tt>debugscript/fbrx.ml</tt> file should also work for interacting with the interpreter in the OCaml top loop.   In other words, its more or less identical to how Fb developement worked, and we also supply you with "solution" binaries to check against in the binaries directory.
       
 <p>You will need to port over your <strong>Fb</strong> interpreter code for the basic <strong>Fb</strong> features.  If you lost points for buggy code there, we will be <em>very</em> helpful in getting your basic <strong>Fb</strong> interpreter stuff working now if you ask (i.e. ask any CA and you will be told how to fix your code).  In any case the tests will primarily be on the new features and not on the function calling.  <strong>FbRX</strong> does include <tt>Let Rec</tt> in the syntax but no testcases will touch it in this assignment.  The AST type is as usual in the file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/fbrxast.ml">fbrxast.ml</a>.  The AST representation is most self-explanatory; Use the parser in the debug script to test if you are not sure on the AST format.  Hint: the book contains a sketch of how an interpreter for records works.
 
 
-<h3>Submission and Grading</h3>
+<h3>Submission</h3>
 
-<ul>
-  <li>Upload Part I as a pdf to the <em>Assignment 6 part I</em> target on Gradescope.
-<li>Upload your Part II file <tt>fbrxinterp.ml</tt> to the <em>Assignment 6 Part II</em> target on Gradescope.
+Upload (only) your file <tt>fbrxinterp.ml</tt> to the <em>Assignment 6</em> target on Gradescope.
     </ul>
 	
 </section>
