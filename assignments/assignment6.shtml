@@ -55,19 +55,38 @@ In both of your answers to this question you can change how internal field acces
 
   
 <h4>Part II: interpreter extension</h4>
-(text from last year, revise for new extension)
 
 <p>
-Implement an interpreter for the variant language <strong>FbReL</strong> which implements the operational semantics extensions you developed in part A:  <strong>FbRe</strong> plus <strong>FbL</strong> plus modify the <tt>And</tt> and <tt>Or</tt> meaning so that they short-circuit.  Lastly, change <tt>=</tt> testing so it works on all types, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: using OCaml's = this last modification is trivial).
-      <p>In order to get you going we have added a scanner/parser/pretty printer for  <strong>FbReL</strong> to the FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbReL/"><tt>FbReL/</tt></a> in the latest version for download.  Like the Fb interpreter, that directory contains a dummy <tt>fbrelinterp.ml</tt> file which you need to complete.  <tt>make fbrel.byte</tt> will also build this <tt>ocamlrun fbrel.byte</tt> interpreter, and the <tt>debugscript/fbrel.ml</tt> file should also work for interacting with the interpreter in the OCaml top loop.   In other words, its more or less identical to how Fb developement worked, and we also supply you with "solution" binaries to check against.
-      <p>You will need to port over your <strong>Fb</strong> interpreter code for the basic <strong>Fb</strong> features.  If you lost points for buggy code there, we will be <em>very</em> helpful in getting your basic <strong>Fb</strong> interpreter stuff working now if you ask (i.e. ask any CA and you will be told how to fix your code).  In any case the tests will primarily be on the new features and not on the function calling.  <strong>FbReL</strong> does not include <tt>Let Rec</tt> in the syntax so no need to deal with that if you did not get it in HW3.  The AST type is as usual in the file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbReL/fbrelast.ml">fbrelast.ml</a>.  The AST representation is most self-explanatory; for <tt>Match</tt> the argument order is just the order in the syntax.  Use the parser in the debug script to test if you are not sure on the AST format.  Hint: the book contains a sketch of how an interpreter for records works.
+Implement an interpreter for the variant language <strong>FbRX</strong> which implements the operational semantics extensions including
+<ul>
+  <li><strong>FbR</strong> with record append in assignment 5 </li>
+  <li><strong>FbX</strong> with runtime exceptions</li>
+  <li>short-circuit <tt>And</tt> and <tt>Or</tt> </li>
+  <li>new primitive type String</li>
+  <li>modified <tt>=</tt> working on Int, Boolean, String and Record</li>
+</ul>
+
+<p>The only file you should modify is <strong>fbrxinterp.ml</strong> and do not change the code above <strong>eval</strong>.</p>
+
+<p>For records, we permit the append of arbitrary records e.g. <tt>{a = 1; b = 1} @ {a = 2; c = 1} => {a = 2; b = 1; c = 1}</tt> . If there is the same field in both, the field in the right record has precedence. <tt>{a = 1; b = 2} = {b = 2; a = 1} => True</tt>. When testing equal with two records, the sequence of labels doesn't matter.
+</p>
+
+<p>For exceptions, <strong>FbRX</strong> supports exceptions expression <tt>Raise #Exnid e</tt> and <tt>Try e With #Exnid e</tt> which is stated in <strong>FbX</strong>. <strong>FbRX</strong> also supports runtime exceptions. When evaluating an exception, the result can be an Fb exception expression, e.g. <tt>1 + True</tt> evaluates to <tt>Raise #TypeMismatch 0</tt>. It's a valid Fb expression. Another exception is <tt>Raise #LabelNotFound 0</tt> when you select a non-exist label from a record e.g. <tt>{a = 1}.b</tt> The value 0 in the exception is dummy and when grading we will check whether the exception id matches</p>.
+
+<p>For strings, <strong>FbRX</strong> support literal strings, values in a record and equal testing on them</p> 
+
+<p>For <tt>=</tt> it works on int, boolean and record, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: using OCaml's = this last modification is trivial).</p>
+
+<p>In order to get you going we have added a scanner/parser/pretty printer for  <strong>FbRX</strong> to the FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/"><tt>FbRX/</tt></a> in the latest version for download.  Like the Fb interpreter, that directory contains a dummy <tt>fbrxinterp.ml</tt> file which you need to complete.  <tt>make fbrx.byte</tt> will also build this <tt>ocamlrun fbrx.byte</tt> interpreter, and the <tt>debugscript/fbrx.ml</tt> file should also work for interacting with the interpreter in the OCaml top loop.   In other words, its more or less identical to how Fb developement worked, and we also supply you with "solution" binaries to check against.
+      
+<p>You will need to port over your <strong>Fb</strong> interpreter code for the basic <strong>Fb</strong> features.  If you lost points for buggy code there, we will be <em>very</em> helpful in getting your basic <strong>Fb</strong> interpreter stuff working now if you ask (i.e. ask any CA and you will be told how to fix your code).  In any case the tests will primarily be on the new features and not on the function calling.  <strong>FbRX</strong> does include <tt>Let Rec</tt> in the syntax so no need to deal with that if you did not get it in this assignment.  The AST type is as usual in the file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/fbrx.ml">fbast.ml</a>.  The AST representation is most self-explanatory; Use the parser in the debug script to test if you are not sure on the AST format.  Hint: the book contains a sketch of how an interpreter for records works.
 
 
 <h3>Submission and Grading</h3>
 
 <ul>
   <li>Upload Part I as a pdf to the <em>Assignment 6 part I</em> target on Gradescope.
-<li>Upload your Part II file <tt>FILENAMEHERE.ml</tt> to the <em>Assignment 6 Part II</em> target on Gradescope.
+<li>Upload your Part II file <tt>fbrxinterp.ml</tt> to the <em>Assignment 6 Part II</em> target on Gradescope.
     </ul>
 	
 </section>
