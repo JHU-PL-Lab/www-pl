@@ -30,7 +30,7 @@ Implement an interpreter for the variant language <strong>FbRX</strong> which im
 
 <p>For the string extension, <strong>FbRX</strong> supports literal strings equality testing on them.</p> 
 
-<p>For <tt>=</tt> in <strong>FbRX</strong> it should work on int, boolean and record values, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: using OCaml's = this last modification is trivial).</p>
+<p>For <tt>=</tt> in <strong>FbRX</strong> it should work on int, boolean and record values, including when the types may be different, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: use OCaml's = on your value AST's and this is trivial).  Note any comparison with a function should be an <strong>FbRX</strong> runtime type error exception.</p>
 
 <p>In order to get you going we have added a scanner/parser/pretty printer for  <strong>FbRX</strong> to the FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/"><tt>FbRX/</tt></a> in the latest version for download.  Like the Fb interpreter, that directory contains a dummy <tt>fbrxinterp.ml</tt> file which you need to complete.  <tt>make fbrx.byte</tt> will also build this interpreter, <tt>ocamlrun fbrx.byte</tt> will run it, and the <tt>debugscript/fbrx.ml</tt> file should also work for interacting with the interpreter in the OCaml top loop.   In other words, its more or less identical to how Fb developement worked, and we also supply you with "solution" binaries to check against in the binaries directory.
       
