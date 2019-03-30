@@ -38,13 +38,13 @@
           <tt>1 + True</tt> should evaluate to <tt>Raise #TypeMismatch 0</tt> since there is a type mismatch here.
           Another <strong>FbRX</strong> exception you should support is <tt>Raise #LabelNotFound 0</tt> when a
           non-existing label is selected from a record, e.g. for <tt>{a = 1}.b</tt>. The value 0 in the exception is
-          arbitrary, but when grading we will check whether the exception id matches the names above</p>.
+          arbitrary, but when grading we will check whether the exception id matches the names above.</p>
 
         <p>For the string extension, <strong>FbRX</strong> supports literal strings equality testing on them.</p>
 
-        <p>For <tt>=</tt> in <strong>FbRX</strong>, it work on two values in the same types including int, boolean,
+        <p>For <tt>=</tt> in <strong>FbRX</strong>, it works on two values in the same types including int, boolean,
           string and record. If the types of two operands are different, it evaluate to an <strong>FbRX</strong> runtime
-          type error exception <tt>Raise #TypeMismatch 0</tt>, e.g. <tt>True = {} => Raise #TypeMismatch 0</tt>. </p>
+          type error exception <tt>Raise #TypeMismatch 0</tt>.</p>
 
         <p>In order to get you going we have added a scanner/parser/pretty printer for <strong>FbRX</strong> to the
           FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/"><tt>FbRX/</tt></a>
