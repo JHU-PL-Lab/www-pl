@@ -1,49 +1,78 @@
-<!--#include virtual="/pl/header.html" -->	 
+<!--#include virtual="/pl/header.html" -->
 </div>
 
 <!-- Main -->
 <div id="main" class="wrapper style4">
 
-<!-- Content -->
-<div id="content" class="container">
-<section>
-<header class="major">
-  <h2>Assigment 6: Interpreter Extension</h2>
-</header>
+  <!-- Content -->
+  <div id="content" class="container">
+    <section>
+      <header class="major">
+        <h2>Assigment 6: Interpreter Extension</h2>
+      </header>
 
-<p>
-Implement an interpreter for the variant language <strong>FbRX</strong> which implements <strong>Fb</strong> operational semantics extensions including
-<ul>
-  <li><strong>FbR</strong> with record append more or less as in assignment 5 </li>
-  <li><strong>FbX</strong> with runtime exceptions</li>
-  <li>short-circuit <tt>And</tt> and <tt>Or</tt> </li>
-  <li>a new primitive type String</li>
-  <li>a modified <tt>=</tt> working on Int, Boolean, String and Record</li>
-</ul>
+      <p>
+        Implement an interpreter for the variant language <strong>FbRX</strong> which implements <strong>Fb</strong>
+        operational semantics extensions including
+        <ul>
+          <li><strong>FbR</strong> with record append more or less as in assignment 5 </li>
+          <li><strong>FbX</strong> with runtime exceptions</li>
+          <li>short-circuit <tt>And</tt> and <tt>Or</tt> </li>
+          <li>a new primitive type String</li>
+          <li>a modified <tt>=</tt> working on Int, Boolean, String and Record</li>
+        </ul>
 
-<p>The only file you should modify is <strong>fbrxinterp.ml</strong>; do not change the code above <strong>eval</strong> in that file.</p>
+        <p>The only file you should modify is <strong>fbrxinterp.ml</strong>; do not change the code above
+          <strong>eval</strong> in that file.</p>
 
-<p>For records, we permit the append of arbitrary records e.g. <tt>{a = 1; b = 1} @ {a = 2; c = 1} => {a = 2; b = 1; c = 1}</tt> . This is slightly more general than assignment 5 where records in source code could only be one-field.  As with assignment 5, if the same field is in both, the field in the right record has precedence.  Note that  <tt>{a = 1; b = 2} = {b = 2; a = 1} => True</tt>: When testing equal with two records, the sequence of labels doesn't matter.
-</p>
+        <p>For records, we permit the append of arbitrary records e.g. <tt>{a = 1; b = 1} @ {a = 2; c = 1} => {a = 2; b
+            = 1; c = 1}</tt> . This is slightly more general than assignment 5 where records in source code could only
+          be one-field. As with assignment 5, if the same field is in both, the field in the right record has
+          precedence. Note that <tt>{a = 1; b = 2} = {b = 2; a = 1} => True</tt>: When testing equal with two records,
+          the sequence of labels doesn't matter.
+        </p>
 
-<p>For exceptions, <strong>FbRX</strong> supports exceptions via expression <tt>Raise #xn e</tt> and <tt>Try e With #xn e</tt> as is defined in <strong>FbX</strong> in the book. <strong>FbRX</strong> also supports runtime exceptions so the language itself can handle the dynamic errors that may arise.  For example, e.g. <tt>1 + True</tt> should evaluate to <tt>Raise #TypeMismatch 0</tt> since there is a type mismatch here.  Another <strong>FbRX</strong> exception you should support is <tt>Raise #LabelNotFound 0</tt> when a non-existing label is selected from a record, e.g. for <tt>{a = 1}.b</tt>. The value 0 in the exception is arbitrary, but when grading we will check whether the exception id matches the names above</p>.
+        <p>For exceptions, <strong>FbRX</strong> supports exceptions via expression <tt>Raise #xn e</tt> and <tt>Try e
+            With #xn e</tt> as is defined in <strong>FbX</strong> in the book. <strong>FbRX</strong> also supports
+          runtime exceptions so the language itself can handle the dynamic errors that may arise. For example, e.g.
+          <tt>1 + True</tt> should evaluate to <tt>Raise #TypeMismatch 0</tt> since there is a type mismatch here.
+          Another <strong>FbRX</strong> exception you should support is <tt>Raise #LabelNotFound 0</tt> when a
+          non-existing label is selected from a record, e.g. for <tt>{a = 1}.b</tt>. The value 0 in the exception is
+          arbitrary, but when grading we will check whether the exception id matches the names above</p>.
 
-<p>For the string extension, <strong>FbRX</strong> supports literal strings equality testing on them.</p> 
+        <p>For the string extension, <strong>FbRX</strong> supports literal strings equality testing on them.</p>
 
-<p>For <tt>=</tt> in <strong>FbRX</strong> it should work on int, boolean and record values, including when the types may be different, e.g. <tt>True={}</tt> will return <tt>False</tt>, <tt>{a = 1} = {a = 0 + 1}</tt> is <tt>True</tt>, etc (hint: use OCaml's = on your value AST's and this is trivial).  Note any comparison with a function should be an <strong>FbRX</strong> runtime type error exception.</p>
+        <p>For <tt>=</tt> in <strong>FbRX</strong>, it work on two values in the same types including int, boolean,
+          string and record. If the types of two operands are different, it evaluate to an <strong>FbRX</strong> runtime
+          type error exception <tt>Raise #TypeMismatch 0</tt>, e.g. <tt>True = {} => Raise #TypeMismatch 0</tt>. </p>
 
-<p>In order to get you going we have added a scanner/parser/pretty printer for  <strong>FbRX</strong> to the FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/"><tt>FbRX/</tt></a> in the latest version for download.  Like the Fb interpreter, that directory contains a dummy <tt>fbrxinterp.ml</tt> file which you need to complete.  <tt>make fbrx.byte</tt> will also build this interpreter, <tt>ocamlrun fbrx.byte</tt> will run it, and the <tt>debugscript/fbrx.ml</tt> file should also work for interacting with the interpreter in the OCaml top loop.   In other words, its more or less identical to how Fb developement worked, and we also supply you with "solution" binaries to check against in the binaries directory.
-      
-<p>You will need to port over your <strong>Fb</strong> interpreter code for the basic <strong>Fb</strong> features.  If you lost points for buggy code there, we will be <em>very</em> helpful in getting your basic <strong>Fb</strong> interpreter stuff working now if you ask (i.e. ask any CA and you will be told how to fix your code).  In any case the tests will primarily be on the new features and not on the function calling.  <strong>FbRX</strong> does include <tt>Let Rec</tt> in the syntax but no testcases will touch it in this assignment.  The AST type is as usual in the file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/fbrxast.ml">fbrxast.ml</a>.  The AST representation is most self-explanatory; Use the parser in the debug script to test if you are not sure on the AST format.  Hint: the book contains a sketch of how an interpreter for records works.
+        <p>In order to get you going we have added a scanner/parser/pretty printer for <strong>FbRX</strong> to the
+          FbDK: there is a new directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/"><tt>FbRX/</tt></a>
+          in the latest version for download. Like the Fb interpreter, that directory contains a dummy
+          <tt>fbrxinterp.ml</tt> file which you need to complete. <tt>make fbrx.byte</tt> will also build this
+          interpreter, <tt>ocamlrun fbrx.byte</tt> will run it, and the <tt>debugscript/fbrx.ml</tt> file should also
+          work for interacting with the interpreter in the OCaml top loop. In other words, its more or less identical to
+          how Fb developement worked, and we also supply you with "solution" binaries to check against in the binaries
+          directory. </p>
+
+        <p>You will need to port over your <strong>Fb</strong> interpreter code for the basic <strong>Fb</strong>
+          features. If you lost points for buggy code there, we will be <em>very</em> helpful in getting your basic
+          <strong>Fb</strong> interpreter stuff working now if you ask (i.e. ask any CA and you will be told how to
+          fix your code). In any case the tests will primarily be on the new features and not on the function calling.
+          <strong>FbRX</strong> does include <tt>Let Rec</tt> in the syntax but no testcases will touch it in this
+          assignment. The AST type is as usual in the file <a
+            href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/FbRX/fbrxast.ml">fbrxast.ml</a>. The AST representation
+          is most self-explanatory; Use the parser in the debug script to test if you are not sure on the AST format.
+          Hint: the book contains a sketch of how an interpreter for records works.
 
 
-<h3>Submission</h3>
+          <h3>Submission</h3>
 
-Upload (only) your file <tt>fbrxinterp.ml</tt> to the <em>Assignment 6</em> target on Gradescope.
-    </ul>
-	
-</section>
-</div>
+          Upload (only) your file <tt>fbrxinterp.ml</tt> to the <em>Assignment 6</em> target on Gradescope.
+          </ul>
+
+    </section>
+  </div>
 </div>
 
 
