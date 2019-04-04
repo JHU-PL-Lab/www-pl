@@ -43,9 +43,10 @@
       point.magnitude point {}</pre>
 
     <ol class="a">
-      <li>One disadvantage of this encoding is how we can't just say simply <code>point.magnitude {}</code> to send a <code>magnitude</code> message -- we need to explicitly pass the self every time, cluttering the syntax.  Provide an alternative encoding of this <code>point</code> object which has all the functionality but for which <code>point.magnitude {}</code> (and similarly for the other methods) is going to give the right answer, <code>7</code> here.  You are not to make a macro here, you are to change the encoding so the dot syntax alone works.
+      <li>One disadvantage of this encoding is how we can't just say simply <code>point.magnitude {}</code> to send a <code>magnitude</code> message -- we need to explicitly pass the self every time, cluttering the syntax.  Provide an alternative encoding of this <code>point</code> object which has all the functionality but for which <code>point.magnitude {}</code> (and similarly for the other methods) is going to give the right answer, <code>7</code> here.  You are not to make a macro here, you are to change the encoding so the dot syntax alone works.</li>
       <li>Now extend your encoding to also hide the fields <code>x</code> and <code>y</code>: make them behave like <code>private</code> fields in Java.  Make sure the internal access to the fields still works, but externally they cannot be accessed.<br>
-In both of your answers to this question you can change how internal field access and internal messaging works if you want, but do keep your encoding general so it should be clear how it will encode any standard object.
+	In both of your answers to this question you can change how internal field access and internal messaging works if you want, but do keep your encoding general so it should be clear how it will encode any standard object.</li>
+      <li>Some O-O languages support a <tt>clone()</tt> method -- <tt>Let pc = p.clone(_) In ..</tt> for example would clone a copy of point <tt>p</tt> (i.e. the same fields and methods) into <tt>pc</tt>.  Show how the original point definition above could be extended with a clone method (no need to also include the previous two encodings for this part).  To be clear, the cloned object needs to have the <em>current</em> values of the fields, not the initial ones.
 </ol>
 
 	<p>
