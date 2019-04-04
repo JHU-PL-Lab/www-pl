@@ -1,0 +1,76 @@
+<!--#include virtual="/pl/header.html" -->
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+  <!-- Content -->
+  <div id="content" class="container">
+    <section>
+      <header class="major">
+        <h2>Assigment 7: State Objects Actors</h2>
+      </header>
+<p>
+  <ol>
+  <li>The book briefly mentions the language <strong>FbSR</strong>, the combination of <strong>Fb</strong> with state and records.
+    The book doesn't exhaustively describe the operational semantics rules for FbSR. But, they are based on the rules of the individual systems.  
+   Write out the rule(s) for the following FbSR expressions:
+
+   <ol class="a">
+     <li>If expression: <tt>If e Then e1 Else e2</tt>
+     <li>Record projection: <tt>e.<em>l</em></tt>
+       </ol>
+
+    Note that since state is a side effect and side effects are pervasive, all of the rules must take in and return a state: <tt>(e,S0) ==> (v,S)</tt>.
+
+<p>
+
+  <li>For the following programs, write out a proof tree of their execution.
+      <ol class="a">
+	<li> The FbS expression
+      <pre>(Function x -> Function y -> x := !x + y) (Ref 0) 10</pre>
+	</li>
+	<li> The FbX expression
+      <pre>(Function x -> Try If x = 0 Then Raise #Invalid 0 Else x + 1 With #Invalid n -> n - 1) 0</pre>
+      </ol>
+    <p>
+      <li> Recall the following encoding of a <code>point</code> object in <strong>FbSR</strong> that is in the book:
+    <pre>Let point = { x = Ref 4; y = Ref 3;
+   magnitude = Function this -> Function dummy ->  !(this.x) + !(this.y);
+   iszero = Function this -> Function dummy -> (this.magnitude this {}) = 0;
+   setx = Function this -> Function newx -> this.x := newx;
+   sety = Function this -> Function newy -> this.y := newy } In
+      point.magnitude point {}</pre>
+
+    <ol class="a">
+      <li>One disadvantage of this encoding is how we can't just say simply <code>point.magnitude {}</code> to send a <code>magnitude</code> message -- we need to explicitly pass the self every time, cluttering the syntax.  Provide an alternative encoding of this <code>point</code> object which has all the functionality but for which <code>point.magnitude {}</code> (and similarly for the other methods) is going to give the right answer, <code>7</code> here.  You are not to make a macro here, you are to change the encoding so the dot syntax alone works.
+      <li>Now extend your encoding to also hide the fields <code>x</code> and <code>y</code>: make them behave like <code>private</code> fields in Java.  Make sure the internal access to the fields still works, but externally they cannot be accessed.<br>
+In both of your answers to this question you can change how internal field access and internal messaging works if you want, but do keep your encoding general so it should be clear how it will encode any standard object.
+</ol>
+
+	<p>
+
+    <p>
+      <li>Consider the <tt>ping_pong</tt> example in the <a href="http://pl.cs.jhu.edu/pl/ocaml/code/AFbV-examples-for-rep.ml">AFbV examples file</a>.  Show how this global system evolves in the actor single-step relation --> as defined in the book.
+	  In particular, show the possible transition sequence <code>G1 --> G2 --> ... </code> that the system <tt>ping_pong</tt> code would evolve to, and also describe the <tt>==></tt> transitions that happen to make each global step work (you only need to list the final step, not show the whole <tt>==></tt> proof tree).  You are welcome to run the <strong>AFbV</strong> interpreter to help in answering this question.  File <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/debugscript/afbv.ml">afbv.ml</a> can be loaded and the commented-out lines in that file run to turn on the trace mode which shows the global steps.  Note that you don't need to write out all the code in the states, you can just give it an evocative name and be done with it (the code actually gets really ugly due to how the Y combinator makes lots of copies of the code etc).  We do need to see all the messages in each state <code>Gi</code> and the <tt>==></tt> steps needed to justify those global steps.
+
+    <p>	  
+    <li>In lecture we discussed the possibility of actors processing multiple messages in one go.
+<ol class="a">
+  <li>Redefine the operational semantics of <strong>AFbV</strong> so that an actor gets <em>all</em> of the messages waiting for it when it becomes active (and, this number cannot be 0, it stays idle if there are 0 messages waiting).  The implementation of <strong>AFbV</strong> in fact has lists, so the suggestion is to put all of the messages in a list for the actor.  Changes may be needed to the local actor relation, ==>, the global stepping relation -->, or to both of these relations.
+    
+  <li>Does this increase the chance of actors entering deadlock?  Argue why or why not.</li>
+</ol>
+    </li>
+
+  </ol>
+
+  
+
+
+    </section>
+  </div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
