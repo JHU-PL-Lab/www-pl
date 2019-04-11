@@ -1,0 +1,49 @@
+<!--#include virtual="/pl/header.html" -->
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+  <!-- Content -->
+  <div id="content" class="container">
+    <section>
+      <header class="major">
+        <h2>Assigment 8: Operational Equivalence</h2>
+      </header>
+      <p>
+	This assignment covers operational equivalence, Section 2.4 of the book.  We will use typesetting <tt>~=</tt> here for the operational equivalence relation.  For the questions asking you to show a certain equivalence holds, you can use the laws defined in the book in Section 2.4.2.
+  <ol>
+<li>For the following <strong>Fb</strong> operational equivalences state whether they hold or not.  If they succeed give a proof using the rules in section 2.4.  If they fail provide a context <em>C</em> realizing the failure according to the definition.
+  <ol class="a">
+    <li><code>x x x =~ x x </code>
+    <li><code>Fun x -> x =~ Fun x -> x + 0 </code>
+    <li><code>(Function x -> x)(Function x -> x)</code> =~ <code>(Function z -> z)</code>
+    <li><code>Thaw(Freeze e) ~= e</code> where these macros are defined in Section 2.3.4.
+    <li><code>x =~ y </code>
+  
+      </ol>
+<li>We only directly defined operational equivalence for <strong>Fb</strong> but the definition is basically the same in all of the extensions as well: in all contexts of the indicated language, they must equi-terminate.
+  <ol class="a">
+    <li> Show that <code>(y 0) + (z 0) ~= (z 0) + (y 0)</code> fails in <strong>FbS</strong> by finding the appropriate <strong>FbS</strong> context distinguishing the two expressions. 
+      <li>Argue informally why this equivalence <em>should</em> hold in <strong>Fb</strong>.
+      </ol>
+<li>This question relates to everyone's favorite <strong>Fb</strong> expression, the Y combinator.  To refresh, it is <pre>combY = Function body ->
+Let wrapper = Function this -> Function arg -> body (this this) arg In wrapper wrapper</pre>
+  <ol class="a">
+    <li>The book defines something called <tt>almostY</tt>, as <tt>Fun body -> body body</tt>.  Show <tt>combY ~= almostY</tt> fails.</li>
+    <li>It is tempting to simplify the Y combinator to
+      <pre>smallY = Function body -> Let wrapper = Function this -> body (this this) In wrapper wrapper</pre> -- the argument <tt>arg</tt> is just being passed in and then applied so it feels a lot like the eta-equivalence law (Definition 2.21).  But, this simplification is not sound. Show <tt>combY ~= almostY</tt> fails.
+      <li>For the previous question, also show concretely why the eta law in fact cannot apply here even though it looks "similar" to eta.
+<li>(harder) Show that the Y combinator as defined in the book can build fixed points:  <tt>e (combY e) ~= combY e</tt> for <tt>e</tt> being any functional, i.e. any expression <tt>Fun this -> Fun arg -> e'</tt>.  Again use the laws in the book to prove this; make sure the indicated law indeed will apply and dont skip any steps.
+      </ol>
+  </ol>
+
+  
+
+
+    </section>
+  </div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
