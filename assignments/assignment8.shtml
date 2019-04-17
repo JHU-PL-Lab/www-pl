@@ -30,7 +30,7 @@
 <li>This question relates to everyone's favorite <strong>Fb</strong> expression, the Y combinator.  To refresh, it is <pre>combY = Function body ->
 Let wrapper = Function this -> Function arg -> body (this this) arg In wrapper wrapper</pre>
   <ol class="a">
-    <li>The book defines something called <tt>almostY</tt>, as <tt>Fun body -> body body</tt>.  Show <tt>combY ~= almostY</tt> fails.</li>
+    <li>The book defines something called <tt>almostY</tt>, as <tt>Fun body -> body body</tt>.  Show <tt>combY ~= smallY</tt> fails.</li>
     <li>It is tempting to simplify the Y combinator to
       <pre>smallY = Function body -> Let wrapper = Function this -> body (this this) In wrapper wrapper</pre> -- the argument <tt>arg</tt> is just being passed in and then applied so it feels a lot like the eta-equivalence law (Definition 2.21).  But, this simplification is not sound. Show <tt>combY ~= almostY</tt> fails.
       <li>For the previous question, also show concretely why the eta law in fact cannot apply here even though it looks "similar" to eta.
