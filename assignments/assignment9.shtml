@@ -11,7 +11,7 @@
         <h2>Assigment 9: TFbSRX Type Checker</h2>
       </header>
       <p>Write a type checker for <strong>TFbSRX</strong>. 	
-	The language is described in section 6.4 of the book. FbDK contains source directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/TFbSRX/"><tt>TFbSRX</tt></a> which has the relevant parser and OCaml data type, all you have to do is fill in the file <tt>tfbsrxtype.ml</tt> with a correct implemention of the <tt>typecheck</tt> function there.
+	The language is described in section 6.4 of the book. FbDK contains source directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/TFbSRX/"><tt>TFbSRX</tt></a> which has the relevant parser and OCaml data type, all you have to do is fill in the file <tt>tfbsrxtype.ml</tt> with a correct implemention of the <tt>typecheck</tt> function there.  Here are some details.
 	</p>
 <li>The file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/debugscript/tfbsrx.ml"<code>debugscript/tfbsrx.ml</code></a> contains quite a few examples for you to test the typechecker with.
  </li>
@@ -23,6 +23,7 @@
 to												<pre>#directory "binaries/libraries";;</pre>
 and our solution binaries will be used instead of yours.
 </li>
+<li>Note that you need not write the interpreter portion, you can leave the file <tt>tfbsrxinterp.ml</tt> as-is and so when you ask to eval it will just return what it was given; thats fine, the point is to blow up if there was a type error, and return the right type if not. </li>
 <li>
  Notice that <code>Raise ..</code> evaluates to "arbitrary tau" in the rule in the book. As we mentioned in lecture, this is usually handled by introducing an "anything type <tt>*</tt>" - a type that is equal to every other type in the system. A new type <code>TBottom</code> has been added to the type set for this purpose.
  </li>
@@ -38,10 +39,12 @@ and our solution binaries will be used instead of yours.
   &nbsp;&nbsp;|- (Raise #Exn@Bool False) : Bottom (arbitrary tau) <br>
   And because Int and Bottom can be equated, by application rule we have <br>
   |- (Function x:Int -> x = 1) (Raise #Exn@Bool False) : Bool <br>
- </code>
- </li>
+ </code><p>
+</li>
+<li>All you should submit to Gradescope is the file <tt>tfbsrxtype.ml</tt>.</li>
 </ul>
-  </ol>
+
+
 
   
 
