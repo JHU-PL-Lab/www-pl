@@ -16,7 +16,7 @@
 <li>The file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/debugscript/tfbsrx.ml"<code>debugscript/tfbsrx.ml</code></a> contains quite a few examples for you to test the typechecker with.
  </li>
  <li>
- The AST for the language is slightly different from the one on page 116 of the textbook. It is slightly simplified.
+ The AST for the language, in file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/TFbSRX/tfbsrxast.ml"><tt>TFbSRX/tfbsrxast.ml</tt></a>, is slightly different from the one at the top of Section 6.4 in the textbook. It is slightly simplified.
  </li>
 <li>To run our reference binary (assuming you are in the <tt>fbdk</tt> directory), use <tt>ocamlrun binaries/tfbsrx.byte</tt>; to run your binary, <tt>make</tt> then <tt>ocamlrun tfbsrx.byte</tt>.   As with the Fb interpreter, you can alternatively in OCaml <tt>#use</tt> the above <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/debugscript/tfbsrx.ml"<code>debugscript/tfbsrx.ml</code></a> file and use <tt>ptc ..</tt> to first parse and then typecheck the supplied program.  If you want to use the provided binaries in this file, as with Fb change the line
 <pre>#directory "_build/src/TFbSRX";;</pre>
