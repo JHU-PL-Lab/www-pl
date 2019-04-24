@@ -66,7 +66,7 @@ The Java <code>Integer</code> performs much more slowly than the primitive type 
   <li>Garbage collection: implicit memory management, avoids explicit need
 to free<br>
  (and subsequent problem of mistakenly freeing something that is in fact still in use).
-  <li> Found in: Java, Smalltalk, Lisp, Scheme, ML, ...
+  <li> Found in: Java, JavaScript, OCaml, Ruby, Python, etc
   <li>Garbage collection is a key component of a modern "high-level
 language".
 </ul>
@@ -107,14 +107,11 @@ Disadvantages:
   <li> Reference counts updated every time a pointer moves
   <li> Any time a reference count is decremented to zero, the space is
        "free" and added to the heap.
+    <li>Wy is it rarely used?  cycles can mutually support each other even if the data is un-reachable -- will create zombie data and cause a memory leak.
 </ul>
-Points about reference counting
-<ul>
-  <li>Reference counting rarely used today because of its one major incurable
-flaw: cycles in memory will not get collected.
-  <li>Also, its slow in practice due to the need to maintain the counts.
-  <li>RMI objects are reference counted
-</ul>
+
+<p> Reference counting was more or less a dead idea until Swift decided to incorporate it as a key of their language design: <a href="https://docs.swift.org/swift-book/LanguageGuide/AutomaticReferenceCounting.html">See this document</a>.
+
 
 
 
