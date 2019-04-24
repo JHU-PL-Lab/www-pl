@@ -42,7 +42,7 @@ and our binaries will be used instead of yours.
   |- (Function x:Int -> x = 1) (Raise #Exn@Bool False) : Bool <br>
  </code><p>
 </li>
-<li>All you should submit to Gradescope is the file <tt>tfbsrxtype.ml</tt> which will (hopfully) contain your fully functioning type checker.</li>
+<li>All you should submit to Gradescope is the file <tt>tfbsrxtype.ml</tt> which will (hopefully) contain your fully functioning type checker.</li>
 </ul>
 
 

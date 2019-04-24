@@ -1,21 +1,20 @@
-<!--#include virtual="/pl/header.html" -->	 
+<!--#include virtual="/pl/header.html" -->
 </div>
 
 <!-- Main -->
 <div id="main" class="wrapper style4">
 
-<!-- Content -->
-<div id="content" class="container">
-<section>
-<header class="major">
-<h2>Implementation Issues</h2>
+  <!-- Content -->
+  <div id="content" class="container">
+    <section>
+      <header class="major">
 </header>
 
 
-
+<p>
 Here we briefly survey some key issues in programming language implementation.
 
-<h3>Runtime memory models (skipping this in 2014)</h3>
+<h3>Runtime memory models</h3>
 To review, programming language implementations have three tiers of memory:
 <ul>
   <li>Globals (globals of C/C++, static fields and class methods of class-based languages)
@@ -170,14 +169,15 @@ The garbage collection algorithm.
   <li> But, when a (live) object reached, don't mark it; instead
        <ol>
 	 <li> copy it over to newspace (putting
-	      objects in one after the other, so no fragments)
+	      objects in one next to the other, so no fragments)
+	   <li>traversal is eagerly recursive: prioritize copying over any objects this object points to that are in oldspace, so this object just copied will point to the newspace versions
 	 <li> leave behind in its place in oldspace a <em>tombstone</em>, a
 	      forwarding pointer to the new location of the object
        </ol>
   <li> If during traversal, a tombstone is pointed to, correct the
        pointer to point to the new location of the object.
   <li><strong>invariant:</strong> there will never be any newspace
-      objects with pointers to oldspace objects (think about it).
+      objects with pointers to oldspace objects (think about it - any pointer to tombstone gets updated when hit, and object put in newspace has all updated pointers due to prioritization above).
   <li> ... after all objects have been reached, the GC is finished,
        and the active semi-space is switched to newspace and
        processing resumes. 
@@ -547,11 +547,15 @@ do this since .class files could be modified)
 
 
 
-	
-</section>
-</div>
+
+
+  
+
+
+    </section>
+  </div>
 </div>
 
 
-<!--#include virtual="/pl/footer.html" -->	 
+<!--#include virtual="/pl/footer.html" -->
 
