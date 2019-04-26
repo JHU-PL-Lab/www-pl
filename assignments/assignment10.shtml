@@ -17,8 +17,8 @@
   <li><strong>TFbE</strong> is <strong>TFb</strong>
     with the following syntax for enums:
     <ul>
-      <li><code>`l</code>, the enumeration <code>l</code> for
-	  <code>l</code> a label (like a record label)
+      <li><code>`l</code>, the enumeration for
+	  a label (like a record label)
       <li><code>EMatch e With `l1 -> e1 | ... |  `ln -> en</code>
     </ul>
     <code>EMatch</code> works like match in Caml; here is an example
