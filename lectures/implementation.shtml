@@ -87,6 +87,7 @@ Advantages:
   <li>No need to explicitly free
   <li>(biggest reason really) no errors where you accidentally freed
       something that was still in use by someone else
+    <li>No memory leaks (running out of memory) due to things never freed.
 </ul>
 Disadvantages:
 <ul>
@@ -107,7 +108,7 @@ Disadvantages:
   <li> Reference counts updated every time a pointer moves
   <li> Any time a reference count is decremented to zero, the space is
        "free" and added to the heap.
-    <li>Wy is it rarely used?  cycles can mutually support each other even if the data is un-reachable -- will create zombie data and cause a memory leak.
+    <li>Why is it rarely used?  cycles can mutually support each other even if the data is un-reachable -- will create zombie data and cause a memory leak.
 </ul>
 
 <p> Reference counting was more or less a dead idea until Swift decided to incorporate it as a key of their language design: <a href="https://docs.swift.org/swift-book/LanguageGuide/AutomaticReferenceCounting.html">See this document</a>.

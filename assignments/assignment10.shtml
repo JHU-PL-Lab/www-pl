@@ -1,0 +1,70 @@
+<!--#include virtual="/pl/header.html" --> </div>
+<div id="main" class="wrapper style4"><div id="content" class="container"><section>
+<header class="major"><h2>Assigment 10: Type Systems</h2></header>
+  
+<ol>
+
+  <li>As we discussed in lecture, typing self-referential objects is impossible in basic type systems.
+    <ol class="a">
+    <li>Show that <tt>Ycomb</tt> cannot be type-checked in <strong>TFb</strong> (i.e. it can't be typed for any type declarations you add to the functions in it).
+    <li>Similarly show that the <tt>Point</tt> record object in the book cannot be typechecked in <strong>TFbSRX</strong>.
+  </ol>
+
+    You can just focus on the tricky self-application part of the proof to show that could never be made to work, no need to deal with the rest of these things as long as your argument is convincing in the end.
+
+<p>    
+
+  <li><strong>TFbE</strong> is <strong>TFb</strong>
+    with the following syntax for enums:
+    <ul>
+      <li><code>`l</code>, the enumeration <code>l</code> for
+	  <code>l</code> a label (like a record label)
+      <li><code>EMatch e With `l1 -> e1 | ... |  `ln -> en</code>
+    </ul>
+    <code>EMatch</code> works like match in Caml; here is an example
+    program to be clear:
+    <pre>
+    Let anenum = ( If 0 = 1 Then `dog Else `cat )
+    In EMatch anunum With `dog -> 0 | `cat -> 1</pre>
+
+    <ol class="a">
+      <li>Warm-up: the book in fact does not present <tt>Let</tt> syntax or type rule in <strong>TFb</strong>.  The syntax is that the variable type must be expicitly declared: <tt>Let x : &tau; In e'</tt>.  For this question write out the type system rule for this <tt>Let</tt>.
+      <li>
+    Write type rules for  <strong>TFbE</strong> that need to be added in addition
+    to the type rules of <strong>TFb</strong>.  The types now also include types such as <code>`lab1 | `lab2 | `lab3</code>, etc, which is equivalent to an OCaml
+    <pre>type myenum = Lab1 | Lab2 | Lab3</pre> </li>
+      <li>Use your new rules to write the proof tree for the above example program.</li>
+    </ol>
+
+    <p>
+
+      
+<li>Of the following pairs of types, is the left type a subtype of the right type, a supertype, or neither?  Justify your answer by showing the proofs in the subtype proof system of the book; if neither holds describe why in words.
+<ol class="a"><li>  <code>{ x : Int; y : { z : Bool } }</code>  and  <code>{ x : Int; y : {}; w : Int }</code>,
+   <li> <code>{ x : Int } -> {&nbsp;}</code> and <code>{&nbsp;} -> { x : Int }</code>
+   <li> <code>({ x : Int } -> {&nbsp;}) -> {&nbsp;}</code> and <code>({&nbsp;} -> { x : Int }) -> {&nbsp;}</code></li>
+</ol></li>
+
+  <p>
+
+    
+    <li>Describe how the <strong>EFb</strong> type inference language
+    could be extended to an <strong>EFbS</strong> (adding state)
+      type inference algorithm for the <strong>FbS</strong> language:
+      <ol class="a">
+    <li>Write out the new type rules if any to add.
+    <li>Write out the new closure rules if any to add.
+<li>Write any new cases of constraints which are obviously
+  inconsistent and which we would need to add to the inconsistency check.</li>
+    <li>Show your new system in action by running all the steps of inference on the <strong>EFbS</strong> expression
+      <pre>(Fun maker -> !(maker 4))(Fun z -> Ref z)</pre>
+      </ol>
+
+</li>
+
+
+    
+
+</ol><p></section></div></div> <!--#include virtual="/pl/footer.html" -->
+
+
