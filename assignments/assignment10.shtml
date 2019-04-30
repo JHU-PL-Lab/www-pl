@@ -25,11 +25,11 @@
     <code>EMatch</code> works like match in Caml; here is an example
     program to be clear:
     <pre>
-    Let anenum = ( If 0 = 1 Then `dog Else `cat )
+    Let anenum : (`dog | `cat)  = ( If 0 = 1 Then `dog Else `cat )
     In EMatch anunum With `dog -> 0 | `cat -> 1</pre>
 
     <ol class="a">
-      <li>Warm-up: the book in fact does not present <tt>Let</tt> syntax or type rule in <strong>TFb</strong>.  The syntax is that the variable type must be expicitly declared: <tt>Let x : &tau; In e'</tt>.  For this question write out the type system rule for this <tt>Let</tt>.
+      <li>Warm-up: the book in fact does not present <tt>Let</tt> syntax or type rule in <strong>TFb</strong>.  The syntax is that the variable type must be expicitly declared: <tt>Let x : &tau; = e In e'</tt>.  For this question write out the type system rule for this <tt>Let</tt>.
       <li>
     Write type rules for  <strong>TFbE</strong> that need to be added in addition
     to the type rules of <strong>TFb</strong>.  The types now also include types such as <code>`lab1 | `lab2 | `lab3</code>, etc, which is equivalent to an OCaml
