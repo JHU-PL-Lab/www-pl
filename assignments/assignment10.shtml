@@ -14,7 +14,8 @@
 
 <p>    
 
-  <li><strong>TFbE</strong> is <strong>TFb</strong>
+  <li><strong>TFbE</strong> is <strong>TFb</strong> (plus <tt>Let</tt>
+    )
     with the following syntax for enums:
     <ul>
       <li><code>`l</code>, the enumeration for
