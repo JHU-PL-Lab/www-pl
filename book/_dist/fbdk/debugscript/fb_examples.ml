@@ -174,22 +174,19 @@ let eglength = "Let len = "^length^" In len ("^eglist^")";;
 
 (* rep eglength;; *)
 
-(* Freeze and thaw macros: stop and start evaluation explicitly. *)
+(* Freeze and thaw macros *)
 
-let freeze e = "(Fun x -> ("^e^"))";; (* the Fun blocks the evaluator from e *)
+let freeze e = "(Fun x -> ("^e^"))";; (* glitch here -- x can't be free in e *)
+let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* better; best would be to inspect e *)
 let thaw e = "(("^e^") 0)";; (* the 0 here is arbitrary *)
 
 (* Using Freeze and Thaw *)
 
 let lazy_num = freeze "5+2+10922";;
-(* rep lazy_num (* notice no arithmetic evaluation is taking place *) *)
-let lazy_double = "(Fun nl -> "^thaw "nl"^" + "^thaw "nl"^")";;
+let lazy_double = "(Fun ln -> "^thaw "ln"^" + "^thaw "ln"^")";;
 let using_lazy = "Let f = "^lazy_double^" In f "^lazy_num;;
 
 (* rep using_lazy;; *)
-
-(* Freeze above has a bug if x occurs free in expression e. *)
-let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* better *)
 
 (* Let is built-in but it is also easy to define as a macro: its just a function call.
 *)
@@ -217,8 +214,8 @@ let summate0test = (summate0 ^ summate0 ^ "5");;
 
 (* So, our goal is to make a function ycomb such that:
 
-ycomb (Fun self -> Fun arg ->
-    If arg = 0 Then 0 Else arg + self (arg - 1)) 5
+ycomb (Fun this -> Fun arg ->
+    If arg = 0 Then 0 Else arg + this this (arg - 1)) 5
 
     computes to 15.
 
@@ -256,12 +253,12 @@ let test2 = newbump^"4";;
   but want the programmer to just write xpx, and rig 
   a harness to pass in x+x in place of x. 
 
-  This will be more clear from the example below. *)
+  This will be more clear from the example: *)
 
-(* Suppose programmer writes this: *)
+(* programmer writes this: *)
 let code = "(Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1)";; 
 
- (* And we want to convert to this: *)
+ (* want to convert to this: *)
 let goalcode =
    "(Fun x -> Fun y -> If y = 1 Then x+x Else x + x + 1)";;
 
@@ -281,14 +278,7 @@ let convertedcode = "("^cvrt^")("^code^")";;
 let run = convertedcode^" 5 2";;
 (* rep run;; *)
 
-(* We can see how we are doing code surgery if we just apply code argument: *)
 
-(* rep convertedcode;; (* shows how we plugged in the x+x; this returns
-Fun x -> Fun y -> ((Fun xpx -> Fun y -> If y = 1 Then xpx
-                    Else xpx + 1) (x + x)) (y) *) *)
-
-(* Note in the above is not identical to goalcode, but its equivalent
-   -- the evaluator stopped by Fun x before it could plug in x+x. *)
 
 (* Now back to Y above.. lets do the same trick, but
    instead of replacing xpx with x+x lets replace
@@ -298,17 +288,14 @@ Fun x -> Fun y -> ((Fun xpx -> Fun y -> If y = 1 Then xpx
 let code = "(Fun rec -> Fun arg -> 
                If arg = 0 Then 0 Else arg + rec (arg - 1))"
 
-(* here is the replacer -- replace rec with self self in above
-   for f here we will pass in "code" above *)
-
+(* here is the replacer -- replace rec with self self in above *)
 let repl = "(Fun f -> Fun self -> Fun x -> f (self self) x)";;
 
 (* Do the replacer -- should make something like summate0 *)
 let summate0again = "("^repl^code^")";;
 let go = summate0again^summate0again^"(5)";;
-(* rep go;; (* verify it works *) *)
 
-(* Now lets put this together to make a single ycomb to do it all.
+(* Now lets put this together to make a single ycomb to do all
    ycomb0 just packages what we did above into a function:
    feed it code as an argument, run repl on it, and self-apply.
 *)
@@ -326,7 +313,7 @@ let goy0 = ycomb0^code^" 5";;
 
 (* Notice we can simplify ycomb0:
    inline variable code for repl's parameter f in ycomb0  
-   to get ycomb that is in the book, the Y we need *)
+   to get ycomb that is in the book, our Y we need *)
 
 let ycomb = "(Fun code -> Let repl = Fun self -> Fun x -> code (self self) x In repl repl)";;
 
@@ -337,7 +324,6 @@ let goy = ycomb^code^" 5";;
 
 (* *********************************************************** *)
 (* Another version of Y derivation, based on whats in the book *)
-(* This is not covered in lecture, its "color commentary"      *)
 (* *********************************************************** *)
 
 (* Step one: lets write the function like we want to: *)
