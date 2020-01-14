@@ -18,11 +18,11 @@
         <li>For the separate compilation topic we cover <a href="code/sep.zip">this example (zipped)</a></li>
       </ul>
 
-      <h3>Our ML Dialect</h3> We are going to use <a href="http://ocaml.orga">OCaml</a>, version 4.07.1. Earlier/later
+      <h3>Our ML Dialect</h3> We are going to use <a href="http://ocaml.org">OCaml</a>, version 4.09.0. Earlier/later
       versions will work perfectly fine for your own coding, but the binary distibutions of the FbDK are very picky on
-      which version they are run under and so by that point in the course you really need to have 4.07.1 running.
+      which version they are run under and so by that point in the course you really need to have 4.09.0 running.
       <p>
-        <h3>Installing OCaml 4.07.1 on Your Machine</h3>
+        <h3>Installing OCaml 4.09.0 on Your Machine</h3>
         We require that you use the <a href="https://opam.ocaml.org">OPAM packaging system</a> for OCaml. OPAM will
         allow you to easily install some necessary OCaml extensions.
         <ul>
@@ -30,7 +30,7 @@
             instructions. Depending on which method you use you may then need to run some terminal commands to set up
             the basics: <ol>
               <li> <code>opam init</code> to initialize OPAM;</li>
-              <li><code>opam switch create 4.07.1</code> to build OCaml version 4.07.1;</li>
+              <li><code>opam switch create 4.09.0</code> to build OCaml version 4.09.0 (the initial install is usually a slightly outdated version);</li>
               <li><code>eval `opam env`</code> to let the shell know where the OPAM files are; and</li>
               <li>
                 <it>also</it> add the very same line, <code>eval `opam env`</code>, to your
@@ -77,7 +77,7 @@ But since everyone should have configurated them, I decide just to keep notes he
           -->
           <!--   I guess in the next year maybe all these steps become unnecessary.-->
 
-          OCaml 4.07.1 should be available on all department Linux machines via the shell
+          OCaml 4.09.0 should be available on all department Linux machines via the shell
           command <tt>ocaml</tt>.
 
           <h4>Required OPAM Standard packages</h4>
