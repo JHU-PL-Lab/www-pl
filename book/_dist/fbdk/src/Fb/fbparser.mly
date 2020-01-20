@@ -79,10 +79,17 @@ expr:
 ;
 
 appl_expr:
-    simple_expr
+    negatable_expr
       { $1 }
   | appl_expr simple_expr
       { Appl($1,$2) }
+;
+
+negatable_expr:
+    MINUS INT
+      { Int (-$2) }
+  | simple_expr
+      { $1 }
 ;
 
 simple_expr:
