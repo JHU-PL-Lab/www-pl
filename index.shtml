@@ -25,8 +25,8 @@
   <li>We study features through the implementation of interpreters and through
     <em>operational semantics</em> and <em>type systems</em>, mathematical approaches to program meaning.</li>
 
-  <li>The OCaml dialect of the ML programming language will be used.  OCaml
-    has features including type inference, and higher-order functions that make it worthy of study in its own right.</li>
+  <li>We will learn basics of functional programming via the OCaml programming language.  OCaml
+    has features including type inference that make it worthy of study in its own right.</li>
   <li>This course is mathematical in nature and so is recommended for upper-level undergraduate students with strong mathematics skills, or for graduate students. It is not recommended for sophomores.</li>
 		       </ul>
 		       
