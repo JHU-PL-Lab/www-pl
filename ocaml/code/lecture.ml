@@ -41,7 +41,7 @@ let y = 0 :: z;;
 z;; (* Observe z itself did not change -- lists are IMMUTABLE in OCaml *)
 
 (* everything in OCaml returns values (i.e. is an 'expression') - no commands *)
-if (x = 3) then (5 + 35) else 6;; (* (x==3)?5:6 in C *)
+if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
 (if (x = 3) then 5 else 6) * 2;;
 (if (x = 3) then 5.4 else 6) * 2;; (* type error:  two branches of if must have same type *)
 
@@ -59,7 +59,7 @@ let tuple = (2, "hi");;
 (* Defining and using functions *)
 
 let squared x = x * x;; (* declare a function: "squared" is its name, "x" is its one parameter.  return implicit.  *)
-squared 4;; (* call a function -- separate arguments with S P A C E S *)
+squared 4;; (* call a function -- separate arguments with S P A C E S - goofy tradition from lambada-calculus, 1934 *)
 
 (*
  * - no return statement; value of the whole body-expression is what gets
@@ -90,8 +90,8 @@ funny_add1 3;;
 (* multiple arguments - just leave spaces between multiple arguments in definition and use *)
 let add x y = x + y;;
 add 3 4;;
-(add 3) 4;; (* same meaning as previous *)
-let add3 = add 3;; (* No need to give all arguments at once!  Type of add is int -> (int -> int) *)
+(add 3) 4;; (* same meaning as previous application -- " " associates LEFT *)
+let add3 = add 3;; (* No need to give all arguments at once!  Type of add is int -> (int -> int) - "CURRIED" *)
 add3 4;;
 add3 20;;
 
@@ -101,6 +101,12 @@ add3 20;;
 
 (* Observe 'int -> int -> int' is parenthesized as 'int -> (int -> int)' 
                  -- unusual RIGHT associativity *)
+
+
+(* be careful on operator precedence with this goofy way that function application doesn't need parens! *)
+add3 (3 * 2);;
+add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than * *)
+add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
 
 (* ******************************************************************** *)
 
@@ -126,7 +132,7 @@ let five_oh y =
 
 five_oh 5;;
 
-(* List pattern matching - now things get interesting! *)
+(* List pattern matching - we can finally take apart lists! *)
 
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
       | x :: y -> "second"
@@ -195,26 +201,83 @@ let rec rev l =
 ;;
 rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
+(* Let us argue why this works.  First, for this particular list.
 
-(* The Magic of Induction lets us prove it is correct:
- *
- * Theorem: rev reverses any list.
- * Proof: by induction on the length of the list, say l.
- * Case l = []: obviously rev [] = [] - CHECK!
- * Case l is non-empty: then, l = x :: xs for some x and xs;
- *   we assume by INDUCTION that "rev xs" reverses the tail, xs, which is SHORTER than l;
- *   then, the result "rev xs @ [x]" will clearly be the reverse of the whole list.  QED.
- *)
+  We assume we have a notion of "program fragments behaving the same", ~=.
+  e.g. 1 + 2 ~= 3, 1 :: [] ~= [1], etc.  
+  (~= is called "operational equivalence", we will define it later in the course)
 
-(* Now let us unroll the "induction magic", its NOT REALLY MAGIC:
- * l = [] : rev [] = [], check!
- * l = [3] : rev [3] = rev (3 :: []) = (rev []) @ [3] = (using previous line) [3]
- * l = [2;3] : rev [2;3] = rev (2 :: [3]) = (rev [3]) @ [2] = (by previous) [3;2]
- * l = [1;2;3] : rev [1;2;3] = rev (1 :: [2;3]) = (rev [2;3]) @ [1] = (by previous) [3;2;1]
-  ... the recurring pattern of this infinite series is what induction captures
+Lemma. rev [1;2;3] ~= [3;2;1].
+Proof.
+rev [1;2;3] pattern matches with x ~= 1, xs ~= [2;3]; so the result is rev [2;3] @ [1].  
+Thus, rev [1;2;3] ~= rev [2;3] @ [1].
+So let us now figure out what rev [2;3] is:
+rev [2;3] pattern matches with x ~= 2, xs ~= [3]; so the result is rev [3] @ [2].
+Thus, rev [2;3] ~= rev [3] @ [2].
+So let us now figure out what rev [3] is:
+rev [3] pattern matches with x ~= 3, xs ~= [] (yes, empty list!); so the result is rev [] @ [3].
+Thus, rev [3] ~= rev [] @ [3].
+Lastly, rev [] ~= [] directly from the match.
+
+Given all the above, we can use the usual principle of replacing ~= with ~= to get:
+rev [1;2;3] 
+~= rev [2;3] @ [1]  
+~= (rev [3] @ [2]) @ [1] 
+~= ((rev [] @ [3]) @ [2]) @ [1]
+~= (([] @ [3]) @ [2]) @ [1]
+~= [3;2;1] by computing out the @.
+
+So by transitivity on the above, 
+
+rev [1;2;3] ~= [3;2;1].  QED.
+
+But, what we really want to show is it reverses ANY list.. use induction!
+
+Let P(n) mean "for any list l of length n, rev l ~= its reverse".
+
+Recall an induction principle:
+To show P(n) for all in, it suffices to show 
+  1) P(0), and 
+  2) P(k) holds implies P(k+1) holds for any natural number k.
+
+Recal WHY induction is justified:
+
+If we showed 1) and 2) above, 
+- P(0) is true by 1)
+- P(1) is true because letting k=0 in 2) we have P(0) implies P(1),
+    and we just showed we have P(0), so we also have P(1).
+- P(2) is true because letting k=1 in 2) we have P(1) implies P(2),
+    and we just showed we have P(1), so we also have P(2).
+- P(3) is true because letting k=2 in 2) we have P(2) implies P(3),
+    and we just showed we have P(2), so we also have P(3).
+- ... hopefully you get the pattern here.
+
+In the concrete proof above for [1;2;3] we basically unwound the induction backwards.
+
+Let us now prove by induction.
+
+Theorem: For any list l of length n, rev l ~= the reverse of l .
+Proof.  Proceed by induction to show this property for any n.
+  1) for n = 0, l ~= [] since that is the only 0-length list.
+     rev [] ~= [] which is [] reversed, check!
+  2) Assume for any k-length list l that rev l ~= l reversed.
+     Show for any k+1 length list, i.e. for any list x :: l
+     that rev (x :: l) ~= (x :: l) reversed:
+
+    OK, by computing, rev (x :: l) ~= rev l @ [x]
+    Now by the induction hypothesis, rev l is l reversed.
+    So, since (l reversed) @ [x] reverses the whole list x :: l,
+    rev (x :: l) ~= (x :: l) reversed.
+    This completes the induction step.
+
+QED.    
+
+Bonus round: here is a concrete forward-view building up the argument more like the induction.
+ * l ~= [] : rev [] ~= [], check!
+ * l ~= [3] : rev [3] ~= rev (3 :: []) ~= (rev []) @ [3] ~= (using previous line) [3]
+ * l ~= [2;3] : rev [2;3] ~= rev (2 :: [3]) ~= (rev [3]) @ [2] ~= (by previous) [3;2]
+ * l ~= [1;2;3] : rev [1;2;3] ~= rev (1 :: [2;3]) ~= (rev [2;3]) @ [1] ~= (by previous) [3;2;1]
 *)
-
-(* One more view, an unwrapping of the execution to equivalent code: *)
 
 rev [1;2;3];;
 (rev [2;3]) @ [1];;
