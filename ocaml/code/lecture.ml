@@ -74,23 +74,24 @@ let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (u
   if n <= 2 then
     1
   else
-    fib (n - 1) + fib (n - 2);;
+    fib (n - 1) + fib (n - 2);; (* notice again everything is an expression, no "return" *)
 
 fib 10;;
 
 (* Anonymous functions: define a function as an expression *)
 
 (* Similar to lambdas in Python, Java, C++, etc - all are based on the lambda calculus *)
-
+let add1 x = x + 1;; (* normal add1 definition *)
 let funny_add1 = (function x -> x + 1);; (* "x" is (sole) argument here *)
 funny_add1 3;;
+(funny_add1 4) + 7;; 
 ((function x -> x + 1) 4) + 7;; (*  a "->" function is an expression and can be used anywhere *)
 ((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off the "ction" *)
 
 (* multiple arguments - just leave spaces between multiple arguments in definition and use *)
 let add x y = x + y;;
 add 3 4;;
-(add 3) 4;; (* same meaning as previous application -- " " associates LEFT *)
+(add 3) 4;; (* same meaning as previous application -- two applications, " " associates LEFT *)
 let add3 = add 3;; (* No need to give all arguments at once!  Type of add is int -> (int -> int) - "CURRIED" *)
 add3 4;;
 add3 20;;
@@ -112,7 +113,7 @@ add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but bi
 
 (* Pattern matching: switch or case on steroids *)
 (* A very cool and useful but not so common language feature; 
-   Haskell and Scala also have it, JavaScript getting it *)
+   Haskell and Scala also have it, JavaScript should be getting it *)
 
 (* Basic pattern match with numbers, looks like switch more or less: *)
 
@@ -126,7 +127,7 @@ mixemup 3;; (* matches last case and x is bound to the value 3 *)
 
 let five_oh y =
 "Hawaii " ^ (match y with
-      0 -> "Zero"
+    | 0 -> "Zero"
     | 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
     | _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything *)
 
@@ -135,8 +136,12 @@ five_oh 5;;
 (* List pattern matching - we can finally take apart lists! *)
 
 match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
-      | x :: y -> "second"
-      | _ -> "third";;
+      | x :: y -> "first clause"
+      | _ -> "second clause";;
+
+match [] with
+      | x :: y -> "first clause"
+      | _ -> "second clause";;
 
 match ['h';'o';'p';' ';'h';'o';'p'] with
       | x :: y -> y
@@ -146,6 +151,10 @@ match ["hi"] with (* ["hi"] is "hi" :: [] *)
       | x :: (y :: z) -> "first"
       | x :: y -> "second"
       | _ -> "third";;
+
+let mm l = match l with
+      | [] -> "empty"
+      | x :: y -> "non-empty";;
 
 (* tuple pattern matching *)
 let tuple = (2, "hi", 1.2);;
@@ -187,7 +196,7 @@ let getHead l =
 ;;
 
 (* using patterns in recursive functions: a function to reverse a list
-       note this does not mutate the list, it makes a new list that reverses original
+       note this does not mutate the list, it makes a new list
 
    We also want to study this function to show how its correctness is
    justified by an induction argument
@@ -196,7 +205,7 @@ let getHead l =
 
 let rec rev l =
   match l with
-    [] -> []
+  |  [] -> []
   | x :: xs -> rev xs @ [x]
 ;;
 rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
