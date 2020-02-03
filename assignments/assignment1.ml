@@ -68,7 +68,7 @@ let interleave l1 l2 = failwith "Not Implemented";;
 
 let circular_left_shift l = failwith "Not Implemented";;
 
-(* assert(circular_left_shift [1; 2; 10] = [10; 2; 1])
+(* assert(circular_left_shift [1; 2; 10] = [2; 10; 1])
    assert(circular_left_shift ["aye"; "boo"; "sea"] = ["boo"; "sea"; "aye"])
 *)
 
