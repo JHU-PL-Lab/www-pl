@@ -1,0 +1,63 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+<h2>Assignment 1: OCaml basics</h2>
+</header>
+
+You are to write several small programs in OCaml.  <a href="assignment1.ml">Use
+the this template file</a> which contains the questions and spots
+for your answers.</p>
+
+<h3>Resources to help you</h3>
+<p>Here is a reminder of some resources at your disposal.
+<ul>
+  <li>Consult the <a href="../ocaml/code/lecture.ml">code examples run in
+      class</a>.</li>
+  <li>Consult the <a href="../ocaml/index.shtml">Course OCaml page</a> for information on installing OCaml and getting a good toolchain setup for development</li>
+  <li>You are required to use OCaml version 4.07.1 and you also must use either Atom, vim, or Emacs or other editor with built-in OCaml mode for editing.  Again see the OCaml page for how to get the editor working.
+  <li>For more OCaml examples etc, read and
+copy/paste the code defined in the <a
+href="http://caml.inria.fr/pub/docs/manual-ocaml/coreexamples.html">Caml
+      manual Part I Chapter 1</a>.</li>
+  <li>If you are looking for how some standard library function is expressed in OCaml, like not equal, etc, consult the <a
+															  href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Caml Pervasives</a> which are the predefined functions available in OCaml.</li>
+  <li><b>Hint:</b> for several of the questions you can either sweat hard to solve it outright, or you can define a series of (easy) auxiliary functions which makes the required function easy to define using them.  Take the latter route &#9786;
+  <li>You are strongly encouraged to work with other people on the assignment. You just need to list the names of people you worked with. However remember
+  that you should submit your own write up of the answers. <b>Copying of solutions is not allowed</b>. For the full collaboration policy see
+  <a href="../logistics.shtml">here</a>.
+  <li>Come to the PL Collab Labs, in the Undergrad lab, to get help from Prof, TAs, and your peers.  Lab hours are on the <a href="../contact.shtml">contact us page</a>.
+  <li>Use Piazza for online help and question clarification.
+</ul><p>
+
+<h3>Submission and Grading</h3>
+
+<ul>
+  <li>We will be using <a href="https://gradescope.com">Gradescope</a> to submit
+    programming assignments. The Gradescope entry code is posted on Piazza.</li>
+  <li>The Autograder will not be up immediately but will be up not long after the assignment is out.</li>
+  <li>When asked to, upload your <code>assignment1.ml</code> file (that name exactly and no other files).</li>
+  <li>You will see some test results when you run the autograder; we also may use soem hidden tests which you will not be able to see the results on.  More tests may also be added after the submission deadine.  Your goal is to meet the specification of the assignment, not just to see a happy autograder on your submission.</li>
+  <li>After all HWs are turned in we will show you the hidden tests and how you did on them, but not until then.</li>
+  <li>You can submit the HW as many times as you want up to the deadline.  Any submissions after the deadline will fall under the late submission policy.</li>
+  <li>Please submit your HW early and often to Gradescope, don't just wait until 10 minutes before the deadline, and report any problems/bugs to the instructors on Piazza.</li>
+  <li>Note that if there are any compile errors in your file the tests will not run.  You can check beforehand that your file is good by executing <tt>ocamlfind ocamlc -c assignment1.ml</tt> on your terminal; any errors will be reported.
+    <li>If any of your functions are of the incorrect type to handle our test inputs, all you will get is a short message to that effect, and the function and input for which it failed.  You should take that information and test it yourself to see the precise error message.  
+    <li>Any CA can look at your submission and see the details of the processing by Gradescope, so if you don't understand what the problem is just see a CA or post to Piazza.
+  <li>Please don't try to "game" the auto-grading system or hack it.  Your grade will be 0 on the assignment if gaming is detected, and any hacking will be considered a serious ethics violation.
+    </ul>
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
+
+
