@@ -21,7 +21,7 @@ for your answers.</p>
   <li>Consult the <a href="../ocaml/code/lecture.ml">code examples run in
       class</a>.</li>
   <li>Consult the <a href="../ocaml/index.shtml">Course OCaml page</a> for information on installing OCaml and getting a good toolchain setup for development</li>
-  <li>You are required to use OCaml version 4.07.1 and you also must use either Atom, vim, or Emacs or other editor with built-in OCaml mode for editing.  Again see the OCaml page for how to get the editor working.
+  <li>You are required to use OCaml version 4.09.0 and you also must use either Atom, vim, or Emacs or other editor with built-in OCaml mode for editing.  Again see the OCaml page for how to get the editor working.
   <li>For more OCaml examples etc, read and
 copy/paste the code defined in the <a
 href="http://caml.inria.fr/pub/docs/manual-ocaml/coreexamples.html">Caml
