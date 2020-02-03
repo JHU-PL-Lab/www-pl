@@ -298,7 +298,7 @@ rev [1;2;3];;
 
 (*  OCaml Lecture III  *)
 
-(* We are going to cover variant types later but here are a few
+(* We are going to cover variant types in detail later but here are a few
    simple examples *)
 (* Variant types are like unions in C, and generalize enums of Java.
    Unlike types up to now you need to **declare** them via keyword "type". *)
@@ -332,7 +332,13 @@ match NotNull(4) with
 Some(4);;
 None;;
 
-(* Immutable declarations *)
+(* Here is a use of it *)
+let gethead l = match l with
+  | [] -> None
+  | hd :: tl -> Some hd;;
+
+
+(* Subtle property of immutable declarations *)
 (*
  * All variable declarations in OCaml are IMMUTABLE -- value will never change
  * helps in reasoning about programs, we know the variable's value is fixed
@@ -371,14 +377,14 @@ f (y-1) + x;;
 
 let f x = x + 1;;
 let g x = f (f x);;
-let shad = f;; (* make a new name for f *)
+let shad = f;; (* make a new name for f above *)
 (* lets "change" f, say we made an error in its definition above *)
 let f x = if x <= 0 then 0 else x + 1;;
 g (-5);; (* g still refers to the initial f - !! *)
 
 assert( g (-5) = 0);; (* example of built-in assert in action - returns () if holds, exception if not *)
 
-let g x = f (f x);; (* FIX: resubmit (identical) g code *)
+let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
 
 assert(g (-5) = 0);; (* now it works as we initially expected *)
 
@@ -484,9 +490,10 @@ map (fun x -> x * 10) [3;2;50];;
 let middle = List.map (function s -> s^"gobble");;
 middle ["have";"a";"good";"day"];;
 
+(* Mapping on lists of pairs - shows in and out lists can be different types. *)
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 
-let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* lists of functions! *)
+let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
 
 (* What can you do with a list of functions?  e.g. compose them *)
 
@@ -498,21 +505,43 @@ let rec compose_list lf v =
 
 compose_list flist 0;;
 
-(* foldl/r are other classic operators on lists *)
-(* foldl f v [b1; ..;bn] is (... (f (f v b1) b2) ...) bn ) *)
+(* fold_left/right are other classic operators on lists 
+   - combines a vector of data like the reduce of map/reduce *)
 
-let rec foldl f v l =
+let rec fold_left f v l =
   match  l with
   | [] -> v
   | [hd] -> f v hd (* note a special case for 1-length lists here *)
-  | hd::tl -> f (foldl f v tl) hd;;
-
+  | hd::tl -> f (fold_left f v tl) hd;;
 
 (* summing elements of a list can now be succinctly coded: *)
-foldl (fun x-> fun y-> x+y) 0 [1;2;3];;
-foldl (+) 5 [1;2;3];;
+fold_left (fun elt -> fun accum -> elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) - 0 on LEFT *)
+fold_left (+) 0 [1;2;3];; (* equivalent - built-in operator in parens is function *)
+  
 
+(* and more *)
 (* Note this is List.fold_left in OCaml library *)
+
+let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
+let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
+
+(* Right fold is similar but 0 on right; also in List.fold_right *)
+(* args are swapped compared to left fold though, be careful ! *)
+let rec fold_right f l v = match l with
+  | [] -> v
+  | h::t -> f h (fold_right f t v)
+;;
+fold_right (+) 0 [1;2;3];; (* = 3+(2+(1+0)) - 0 on RIGHT *)
+
+(* Simple example where left and right folds differ *)
+List.fold_right (-) [2; 5; 7] 0;;    (* 2-(5-(7-0))) = 4; not very useful *)
+List.fold_left (-) 0 [2; 5; 7];;    (* ((0-2)-5)-7 = -14 *)
+
+let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
+let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum)  [] l ;; (* notice how this reverses *)
+let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
+
+
 
 (* Composition function g o f: take two functions, return their composition *)
 let compose g f = (fun x -> g (f x));;
