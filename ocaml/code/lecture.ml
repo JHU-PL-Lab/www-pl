@@ -505,41 +505,41 @@ let rec compose_list lf v =
 
 compose_list flist 0;;
 
-(* fold_left/right are other classic operators on lists 
+(* fold_left/right are classic operators on lists 
    - combines a vector of data like the reduce of map/reduce *)
 
-let rec fold_left f v l =
-  match  l with
-  | [] -> v
-  | [hd] -> f v hd (* note a special case for 1-length lists here *)
-  | hd::tl -> f (fold_left f v tl) hd;;
+let rec fold_left f v l = match l with
+    | []   -> v
+    | hd::tl -> fold_left f (f v hd) tl (* pass down f v hd as new "v" -- accumulating *)
+    ;;
 
 (* summing elements of a list can now be succinctly coded: *)
 fold_left (fun elt -> fun accum -> elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) - 0 on LEFT *)
-fold_left (+) 0 [1;2;3];; (* equivalent - built-in operator in parens is function *)
-  
+fold_left (+) 0 [1;2;3];; (* equivalent to previous - built-in operator in parens is function *)
 
-(* and more *)
-(* Note this is List.fold_left in OCaml library *)
+(* More examples.  Note this is List.fold_left in OCaml library *)
 
 let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
 
-(* Right fold is similar but 0 on right; also in List.fold_right *)
-(* args are swapped compared to left fold though, be careful ! *)
+(* Right fold is similar but f is applied "on the way out" of recursion,
+   not "on the way down" like in left fold above.
+   also in List.fold_right.
+   Args are swapped compared to fold_left, be careful ! *)
 let rec fold_right f l v = match l with
   | [] -> v
-  | h::t -> f h (fold_right f t v)
+  | hd::tl -> f hd (fold_right f tl v) (* v not changing on recursion here *)
 ;;
-fold_right (+) 0 [1;2;3];; (* = 3+(2+(1+0)) - 0 on RIGHT *)
+fold_right (+) [1;2;3] 0;; (* = 3+(2+(1+0)) - 0 on RIGHT *)
 
-(* Simple example where left and right folds differ *)
-List.fold_right (-) [2; 5; 7] 0;;    (* 2-(5-(7-0))) = 4; not very useful *)
-List.fold_left (-) 0 [2; 5; 7];;    (* ((0-2)-5)-7 = -14 *)
+(* Example where left and right folds produce different result: defining map *)
 
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
-let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum)  [] l ;; (* notice how this reverses *)
+let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum) [] l ;; (* notice how this reverses *)
+
+(* More operations *)
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
+let rev_slow l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* can also fold_right rev with @ *)
 
 
 
@@ -698,6 +698,10 @@ let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together sho
 (* raise a failure exception (more on exceptions later) *)
 
 (failwith "BOOM!") + 3 ;;
+
+(* Invalid argument exception - use in Assignment 1 *)
+let f x = if x <= 0 then invalid_arg "Let's be positive, please!" else x + 1;;
+f (-5);;
 
 (* you CAN also declare types, anywhere in fact *)
 (* Put parens around any such declaration or it won't parse *)
