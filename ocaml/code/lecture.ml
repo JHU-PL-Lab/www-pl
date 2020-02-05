@@ -513,9 +513,17 @@ let rec fold_left f v l = match l with
     | hd::tl -> fold_left f (f v hd) tl (* pass down f v hd as new "v" -- accumulating *)
     ;;
 
+
 (* summing elements of a list can now be succinctly coded: *)
 fold_left (fun elt -> fun accum -> elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) - 0 on LEFT *)
 fold_left (+) 0 [1;2;3];; (* equivalent to previous - built-in operator in parens is function *)
+
+(* compare to manual summate - pulled out the combining operator and zero *)
+let rec summate accum l = match l with
+    | []   -> accum
+    | hd::tl -> summate (accum + hd) tl (* pass down f v hd as new "v" -- accumulating *)
+    ;;
+summate 0 [1;2;3];;
 
 (* More examples.  Note this is List.fold_left in OCaml library *)
 
@@ -530,18 +538,20 @@ let rec fold_right f l v = match l with
   | [] -> v
   | hd::tl -> f hd (fold_right f tl v) (* v not changing on recursion here *)
 ;;
-fold_right (+) [1;2;3] 0;; (* = 3+(2+(1+0)) - 0 on RIGHT *)
+fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - 0 on right *)
 
-(* Example where left and right folds produce different result: defining map *)
+(* Example where left and right folds produce different result: *)
+fold_left (fun elt -> fun accum -> "("^elt^"+"^accum^")") "0" ["1";"2";"3"] ;; 
+fold_right (fun accum -> fun elt -> "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;; 
 
+(* map is a simple right fold - the fold does the recursion work. *)
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
+(* Another example of left vs right - left's accumulating maps and reverses *)
 let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum) [] l ;; (* notice how this reverses *)
 
 (* More operations *)
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
 let rev_slow l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* can also fold_right rev with @ *)
-
-
 
 (* Composition function g o f: take two functions, return their composition *)
 let compose g f = (fun x -> g (f x));;
@@ -953,23 +963,36 @@ let com = Nonzero(3.2,11.2);;
 let zer = CZero;;
 
 (*
- * Recursive data structures - a key use of variant types
- *
- *  - Functional programming is fantastic for computing over tree-structured data
- *  - recursive types can refer to themselves in their own definition
- *  - similar in spirit to how C structs can be recursive (but, no pointer needed here)
- *
- * Example of binary trees with integers in nodes and empty leaves:
+   Recursive data structures - a key use of variant types
+
+   - Functional programming is fantastic for computing over tree-structured data
+   - recursive types can refer to themselves in their own definition
+   - similar in spirit to how C structs can be recursive (but, no pointer needed here)
+ *)
+
+(* Warm-up: homebrew lists - built-in list type not needed *)
+(* First just int lists *)
+type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent to [3;5;7] *)
+
+(* Let us extend the above to be just like built-in polymorphic lists *)
+
+type 'a mylist = Mt | Cons of 'a * ('a mylist);;
+(* Observe how above type takes a (prefix) argument, 'a -- "mylist" is a type function *)
+let mylisteg = Cons(3.,Cons(5.,Cons(7.,Mt)));;
+
+let rec double_list_elts ml =
+  match ml with
+    | Mt -> Mt (* vs [] -> [] *)
+    | Cons(hd,tl) -> Cons(hd *. 2.,double_list_elts tl);; (* vs hd :: tl -> .. *)
+
+double_list_elts mylisteg;;
+
+(* 
+ * Binary trees, like lists but two self-referential sub-structures not one
 *)
-type itree = ILeaf | INode of int * itree * itree;;  (* notice the type refers to itself *)
-
-let it = INode(4,ILeaf,INode(2,INode(18,ILeaf,ILeaf),ILeaf));;
-
-(* Better polymorphic version of above which allows any type at leaves: *)
 
 type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
-
-(* Observe how above type takes a (prefix) argument, 'a -- "btree" is a type function *)
 
 (* example trees *)
 
@@ -990,25 +1013,9 @@ let bt2 = Node("fiddly ",
                   Leaf)),
             whack);;
 
-(* type error, must have uniform type: Node("fiddly",Node(0,Leaf,Leaf),Leaf);;  *)
+(* type error, like list, must have uniform type: Node("fiddly",Node(0,Leaf,Leaf),Leaf);;  *)
 
-(* OCaml's lists could have been defined with a recursive type declaration *)
-
-type 'a mylist = MtList | ColonColon of 'a * 'a mylist;;
-
-let mylisteg = ColonColon(3,ColonColon(5,ColonColon(7,MtList)));; (* [3;5;7] *)
-
-let rec double_list_elts ml =
-  match ml with
-    | MtList -> MtList (* vs [] -> [] *)
-    | ColonColon(hd,tl) -> ColonColon(hd * 2,double_list_elts tl);; (* vs mh :: mt -> .. *)
-
-double_list_elts mylisteg;;
-
-(*
- * Functions on binary trees are similar to functions on lists: use recursion
- *
- *)
+(* Functions on binary trees are similar to functions on lists: use recursion *)
 
 let rec add_gobble binstringtree =
    match binstringtree with
@@ -1016,7 +1023,7 @@ let rec add_gobble binstringtree =
    | Node(y, left, right) ->
        Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
-(* (Notice this is not mutating the tree, its building a new one) *)
+(* (Remember, this is not mutating the tree, its building a new one) *)
 
 let rec lookup x bintree =
    match bintree with
@@ -1043,7 +1050,7 @@ let rec insert x bintree =
          Node(y, left, insert x right)
 ;;
 
-(* This is also NOT MUTATING -- return the new tree instead. *)
+(* This is also NOT MUTATING -- returns a whole new tree instead. *)
 
 let goobt = insert "goober " bt;;
 bt;; (* observe bt did not change after the insert *)
@@ -1103,7 +1110,10 @@ fun {num = n; denom = _} -> n;;
 
 (* ********************************************************************** *)
 
-(* End of pure functional programming in OCaml, on to side effects land *)
+(* End of pure functional programming in OCaml, on to side effects *)
+(* But before heading there, remember to stay OUT of side effects unless
+   really needed - that is the happy path in OCaml coding *)
+(* For interpreters and typecheckers side effects are not helpful at all *)   
 
 (*
  * State
@@ -1117,10 +1127,9 @@ fun {num = n; denom = _} -> n;;
  *                           but what it points to can.
  *   - items are immutable unless their mutability is explicitly declared
  *
- *   - DON'T use state unless its really needed (you can't use it in HW1 or most of HW2)
  *)
 
-(* References *)
+(* Mutable References *)
 
 let x = ref 4;;    (* always have to declare initial value when creating a reference *)
 
@@ -1183,7 +1192,7 @@ let x = ref 1 in
     while !x < 10 do
       print_int !x;
       print_string "\n";
-      x := !x + 1
+      x := !x + 1;
     done;;
 
 (* Fact: while loops are useless without mutation: either never loop or infinitely loop *)
@@ -1217,12 +1226,12 @@ arr;;
 
 exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
 
-let f () = raise Foo;; (* note no need to "raises Foo" in functions type as in Java *)
+let f () = raise Foo;; (* note no need to "raises Foo" in the type as in Java *)
 f ();;
 
 exception Bar;;
 
-let g _ =  (* note that unlike Java there is no "raises" in the type of g *)
+let g _ = 
   (try
     f ()
   with
