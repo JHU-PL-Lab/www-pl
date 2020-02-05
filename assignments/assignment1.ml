@@ -131,7 +131,7 @@ let extract_mins l = failwith "Not Implemented";;
    For this question write a selection_sort function which could repeatedly invoke 
    extract_mins from the previous question to sort the list. *)
 
-let selection_sort f lst = failwith "Not Implemented";;
+let selection_sort lst = failwith "Not Implemented";;
 
 (* 
   assert ( selection_sort [5;2;4;1;9] = [1; 2; 4; 5; 9] )
