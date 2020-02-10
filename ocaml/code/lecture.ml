@@ -1315,7 +1315,10 @@ For example the Java module system: **packages**
 
 List.map (fun x -> x ^"gobble")["Have";"a";"good";"day"];;
 
-(* Now, lets look into how we can build OCaml modules *)
+(* See the standard library documentation at http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html
+   to see all the operations possible with List, and for all the other built-in modules *)
+
+(* Now, lets look into how we can build our own OCaml modules *)
 
 (*
    OCaml module definitions are called **structures**
@@ -1325,28 +1328,28 @@ List.map (fun x -> x ^"gobble")["Have";"a";"good";"day"];;
 
 (* Lets make a simple functional set module in OCaml *)
 
-module FSet =
-struct
-exception NotFound (* any top-level definable can be included in a module *)
+module FSet = (* Module names must start with a Capital Letter *)
+struct (* keyword stands for "structure" *)
+  exception NotFound (* any top-level definable can be included in a module *)
 
-type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+  type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
 
-let emptyset : 'a set = []
+  let emptyset : 'a set = []
 
-let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
+  let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
 
-let rec remove x (s: 'a set) =
-  match s with
-  | [] -> raise NotFound
-  | hd :: tl ->
-    if hd = x then (tl: 'a set)
-    else hd :: remove x tl
+  let rec remove x (s: 'a set) =
+   match s with
+    | [] -> raise NotFound
+    | hd :: tl ->
+     if hd = x then (tl: 'a set)
+     else hd :: remove x tl
 
-let rec contains x (s: 'a set) =
-  match s with
-  | [] -> false
-  | hd :: tl ->
-    if x = hd then true else contains x tl
+  let rec contains x (s: 'a set) =
+   match s with
+   | [] -> false
+   | hd :: tl ->
+     if x = hd then true else contains x tl
 end
 ;;
 
@@ -1358,7 +1361,7 @@ end
 
 *)
 
-(* Using modules: its something like Java packages, qualify the name *)
+(* Use modules via dot notation, like the List.map above  *)
 
 let mySet = FSet.add 5 [];;
 let myNextSet = FSet.add 22 mySet;;
@@ -1444,7 +1447,7 @@ let rec contains x (s: 'a set) =
 end
 ;;
 
-let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
+let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* same use as before *)
 
 (* ********************************************************************** *)
 
@@ -1463,22 +1466,25 @@ let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* now it works - <abstr> re
 
 Here is how the ocamlc compiler makes object files
 
-      .ml --ocamlc -c --> .cmo
-      .mli --ocamlc -c --> .cmi
+      .ml -- ocamlc -c --> .cmo
+      .mli -- ocamlc -c --> .cmi
 
 Then to make the binary
 
-      .cmo's --ocamlc -o mybinary --> mybinary
+      .cmo's -- ocamlc -o mybinary --> mybinary
 
 You need any dependent .cmi's for modules you refer to before you can ocamlc -c them.
 
 *)
 
-module FSett: sig (* contents of file fSett.mli *) end
-          = struct (* contents of file fSett.ml *) end;;
+(* Example of how file method of definition relates to top-loop: 
+module FSet: sig (* contents of file fSet.mli *) end
+          = struct (* contents of file fSet.ml *) end;;
 
 module Main: sig (* contents of main.mli *) end
            = struct (* contents of main.ml *) end;;
+
+*)
 
 (* See http://pl.cs.jhu.edu/pl/ocaml/code/sep.zip for the example we cover in lecture.
    We will follow http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt in particular.
