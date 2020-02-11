@@ -69,10 +69,10 @@ squared 4;; (* call a function -- separate arguments with S P A C E S - goofy tr
  *      multiple arguments can be encoded by some tricks (later)
 *)
 
-(* fibonacci series - 1 1 2 3 5 8 13 ... *)
+(* fibonacci series - 0 1 1 2 3 5 8 13 ... *)
 let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (ugh) *)
-  if n <= 2 then
-    1
+  if n <= 0 then 0
+  else if n = 1 then 1
   else
     fib (n - 1) + fib (n - 2);; (* notice again everything is an expression, no "return" *)
 

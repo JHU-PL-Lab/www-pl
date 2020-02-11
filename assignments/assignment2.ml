@@ -169,18 +169,25 @@ assert( check_enrollment lst (AS(000,101)) "Kelvin Qian" = CourseNotFound );;
 
 (* Problem 3 *****************************************************************)
 (*
-In class, we have seen the Fibonacci function as an example of a recursive
-function. See the implementation as the function fib in the lecture notes.
+Recall the Fibonacci number sequence: 0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144
+ -- it starts with 0, 1 and each successive number is the sum of the previous two.
+ 
+ Here is a simple function to generate the nth number in this list
+(to be clear, 0 is the 0th-number, 1 is the 1th, 1 is the 2nd, 3 is the 3rd etc):
 
-We want to count the number of times fib is called. For example, for fib 0 or
-fib 1, fib is called exactly once, but for fib 2 it is called three times
+let rec fib nth =
+        if nth <= 0 then 0 else if nth = 1 then 1
+        else fib (nth - 1) + fib (nth - 2);;
+
+For this question we want to count the number of times fib is called. For example, 
+for fib 0 or fib 1, fib is called exactly once, but for fib 2 it is called three times
 (the original call, then the calls fib (2 - 1) and fib (2 - 2)).
 *)
 
 (*
 3a. Use a ref variable to implement a counter that counts the number of times
 the function count_fib_mut is called. count_fib_mut should return the same
-result as fib (ie. fib 2 = count_fib_mut 2 = 2), but should mutate the counter
+result as fib (ie. fib 3 = count_fib_mut 3 = 1), but should mutate the counter
 so that it counts the correct number of function counts.
 *)
 
@@ -189,13 +196,13 @@ let rec count_fib_mut n = failwith "Not_implemented";;
 
 (* Test:
 let res = count_fib_mut 2;;
-assert( res = 2 );;
+assert( res = 1 );;
 assert( !counter = 3 );;
 *)
 
 (*
 3b. Implement the function count_fib_immut that does the same thing as the
-function count_fib_mut, but does not use mutability. (We will check this!)
+function count_fib_mut, but does not use refs or mutability. (We will check this!)
 count_fib_immut takes in an extra variable count, which will keep track of
 the current count of function calls, and will return a int * int tuple, where
 the first int is the Fibonacci sum (ie. the return value of fib) and the second
@@ -205,8 +212,7 @@ is the count of function calls.
 let rec count_fib_immut n count = failwith "Not_implemented";;
 
 (* Test:
-let res_tup = count_fib_immut 2 0;;
-assert( res_tup = (2,3) );;
+assert( count_fib_immut 2 0 = (1,3) );;
 *)
 
 (* Problem 4 *****************************************************************)
