@@ -43,7 +43,7 @@ z;; (* Observe z itself did not change -- lists are IMMUTABLE in OCaml *)
 (* everything in OCaml returns values (i.e. is an 'expression') - no commands *)
 if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
 (if (x = 3) then 5 else 6) * 2;;
-(if (x = 3) then 5.4 else 6) * 2;; (* type error:  two branches of if must have same type *)
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type error:  two branches of if must have same type *)
 
 (* ====================================================================== *)
 
@@ -1361,7 +1361,7 @@ end
 
 *)
 
-(* Use modules via dot notation, like the List.map above  *)
+(* Use modules via dot notation, like List.map above  *)
 
 let mySet = FSet.add 5 [];;
 let myNextSet = FSet.add 22 mySet;;
@@ -1500,10 +1500,11 @@ module Main: sig (* contents of main.mli *) end
 #cd "/Users/scott/pl/ocaml/code/sep_compile";;
 Note you can use #pwd to see what directory you are in now in OCaml. *)
 
+(*
 #load "fSet.cmo"
 ;;
 FSet.emptyset;;
-
+*)
 
 
 (* ********************************************************************** *)
