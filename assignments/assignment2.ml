@@ -187,7 +187,7 @@ for fib 0 or fib 1, fib is called exactly once, but for fib 2 it is called three
 (*
 3a. Use a ref variable to implement a counter that counts the number of times
 the function count_fib_mut is called. count_fib_mut should return the same
-result as fib (ie. fib 3 = count_fib_mut 3 = 1), but should mutate the counter
+result as fib (ie. fib 2 = count_fib_mut 2 = 1), but should mutate the counter
 so that it counts the correct number of function counts.
 *)
 
