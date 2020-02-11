@@ -42,8 +42,8 @@ type 'a woogie = FillInToo
 let f6 = failwith "Not Implemented" ;;
 (* val f6: 'a boogie -> 'b woogie -> 'b woogie = <fun> *)
 type 'a frec = FillInThree
-let f5 = failwith "Not Implemented";;
-(* val f5 : ('a -> 'b) -> 'a -> 'b frec = <fun> *)
+let f7 = failwith "Not Implemented";;
+(* val f7 : ('a -> 'b) -> 'a -> 'b frec = <fun> *)
 let f8 = failwith "Not Implemented";;
 (* val f8 : ('a -> 'b -> int -> 'c) -> 'a -> ('a -> 'b) -> 'c = <fun> *)
 
