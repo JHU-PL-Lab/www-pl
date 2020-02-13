@@ -119,8 +119,9 @@ assert( return_waitlist lst (EN(601,426)) = [] );;
 assert( return_enrollment lst (EN(601,626)) = ["Yunmo Chen"; "Chang Liu"] );;
 assert( return_waitlist lst (EN(601,626)) = ["Shiwei Weng"; "Leandro Facchinetti"] );;
 
-assert( try (return_enrollment lst (AS(000,101))) with Not_found -> true );;
-assert( try (return_waitlist lst (AS(000,101))) with Not_found -> true );;
+assert( ( try (return_enrollment lst (AS(000,101))) with Not_found -> ["Error!"] ) = ["Error!"] );;
+assert( ( try (return_waitlist lst (AS(000,101))) with Not_found -> ["Error!"] ) = ["Error!"] );;
+
 *)
 
 (*
