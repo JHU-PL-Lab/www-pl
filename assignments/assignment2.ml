@@ -345,12 +345,12 @@ let rec eval (e : expr) : int = failwith "Not Implemented";;
 (* Problem 5 *****************************************************************)
 (* 
 Port your arithmetic evaluator in Problem 4 to a module: make a file arith.ml
-which is a standalone module implementation of the expr type, and the eval
-function defined above (just copy your final code into that file, you are
+which is a standalone module implementation of the expr type, and all of the
+functions defined above (just copy your final code into that file, you are
 submitting two versions of the same question answer).
 
 We will test it by compiling and #load-ing your arith.ml into the top loop and
-invoking it using OCaml module syntax:
+invoking it using OCaml module syntax, for example:
 
 #load "arith.cmo";; (* we will compile your arith.ml to make this file *)
 #open Arith;; (* make type expr and eval function available at top level *)
