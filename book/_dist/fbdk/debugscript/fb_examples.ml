@@ -67,9 +67,14 @@ let combK = "Function x -> Function y -> x";;
 let combS = "Function x -> Function y -> Function z -> (x z) (y z)";;
 let combD = "Function x -> x x";;
 
-(* ************************************************ *)
-(* ****** Simplistic Macros Using Strings ********* *)
-(* ************************************************ *)
+(* ************************************************************* *)
+(* ****** Simplistic Macros Using String Concatenation ********* *)
+(* ************************************************************* *)
+
+(* Macros: like functions but "they are inlined before program runs" *)
+(* Hackish but effective version for Fb: use OCaml as the macro language *)
+(* Take the concrete syntax view and make macros as functions on strings *)
+(* (Could also do the AST version in OCaml but harder to read and write) *)
 
 (* Pairs.   First lets hack some by hand, then do the general macro. *)
 
@@ -100,6 +105,10 @@ let applyeg = apply "Fun x ->x" "0";;
 (* fix .. *)
 let apply f x = "("^f^")( "^x^")";;
 
+
+(* Real macro systems today are not string-based so do not have this problem -
+   they work over the AST internally. *)
+
 (* Macros for extracting contents of pairs *)
 let left c =  "Let c = "^c^" In c (Function x -> Function y -> x)";;
 let right c =  "("^c^") (Function x -> Function y -> y)";;
@@ -114,8 +123,8 @@ let use_pr = left pc;;
 (* First lets just make lists as pairs of (head,tail), 
    which has a bug *)
 
-let cons e1 e2 = pr e1 e2;;
-let emptylist = pr "0" "0";; (* gotta make something up here *)
+let cons e1 e2 = pr e1 e2;; (* use the above pair macro in cons (::) macro *)
+let emptylist = pr "0" "0";; (* make something up here *)
 let head e = left e;;
 let tail e = right e;;
 
@@ -189,9 +198,15 @@ let using_lazy = "Let f = "^lazy_double^" In f "^lazy_num;;
 (* rep using_lazy;; *)
 
 (* Freeze above has a bug if x occurs free in expression e. *)
-let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* better *)
 
-(* Let is built-in but it is also easy to define as a macro: its just a function call.
+let bad_freeze_use = "Let x = 5 In ("^freeze "1 + x"^")"
+let thaw_bad = thaw bad_freeze_use;; (* should be 6 but returns 1 *)
+
+(* fix hack *)
+let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* a hack; really should find a var not in e *)
+(* This issue is called a _hygiene condition_ and real-world macro systems need to address this *)
+
+(* Let is built-in but it is also easy to define as a macro: it is just a function call.
 *)
 
 let fblet x e1 e2 = "(Fun "^x^" -> "^e2^")("^e1^")";;
