@@ -1,0 +1,131 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+  <h2>Assigment 4: F&#x266d; Interpreter</h2>
+</header>
+
+<p>
+  This assignment has two parts.
+  <ol>
+    <li>
+      Write an interpreter for F&#x266d; as defined in the book. You need to
+      implement all features <strong>except</strong> for <code>Let Rec</code>  (if you implement <code>Let Rec</code> you can get 5 points extra credit).</li>
+    <li>Write some F&#x266d; programs by filling in the template in <a href="assignment4.ml">assignment4.ml</a>.</li>
+  </ol>
+
+  <h3>The F&#x266d; Development Kit (FbDK)</h3>
+
+We have provided you with the FbDK to make your job easier.
+<ul>
+  <li>
+    The FbDK distribution is
+    <a href="http://pl.cs.jhu.edu/pl/book/_dist">here</a>.
+  </li>
+  <li>
+    The FbDK source includes code and scripts to build a standalone
+    F&#x266d; interpreter, a F&#x266d; top loop in analogy to
+    the <code>ocaml</code> top loop. It includes a parser and pretty printer.
+    All you need to do is write an <code>eval</code> function in the
+    file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/Fb/fbinterp.ml"><code>.../fbdk/src/Fb/fbinterp.ml</code></a>.
+  </li>
+  <li>The <code>README.md</code> file in <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/"><code>.../fbdk/</code></a>
+describes how to compile and run the interpreter, and how to run the "solution" binaries we also include with the distribution.    </li> 
+  <li>
+    The distribution
+    file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/Fb/fbast.ml"><code>.../fbdk/src/Fb/fbast.ml</code></a>
+    is a variant type that defines the grammar to be used for F&#x266d;.
+  </li>
+  <li>
+    The FbDK also contains a complete BOOL interpreter for the little boolean
+    language in the
+    subdirectory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/BOOL/"><code>.../fbdk/src/BOOL/</code></a>.
+    The complete source for the BOOL evaluator is also given.
+  </li>
+  <li>
+    The FbDK distribution also includes binaries in <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/binaries/"><code>.../fbdk/binaries/</code></a> which include bytecodes for a correct F&#x266d;
+    interpreter <code>fb.byte</code> - executed as <code>ocamlrun fb.byte</code>
+    - that you can test your interpreter against.
+  </li>
+  <li>
+    You may find it handy to debug your interpreter with help of the
+    interactive <code>ocaml</code> top loop. Once you have <code>make</code>'d
+    all the files, launch <code>ocaml</code> from the <code>fbdk/</code>
+    directory and <code>#use "debugscript/fb.ml";;</code> which loads
+    the <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/debugscript/fb.ml"><code>...fbdk/debugscript/fb.ml</code></a>
+    file -- this will load your F&#x266d; interpreter binary modules. Look at the
+    source of this file for the functions it contains.  Note
+    you can also use <code>fb.ml</code> with the binaries by using
+    the <code>.cmo</code> files in the binary distribution.
+  </li>
+  <li>
+    The F&#x266d;DK distribution also contains the source of all F&#x266d; code
+    examples in the
+    book, <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/debugscript/fb_examples.ml"><code>...fbdk/debugscript/fb_examples.ml</code></a>
+  </li>
+</ul>
+
+<h3>Interpreter writing hints</h3>
+<ol>
+  <li>
+    Use the F&#x266d; operational semantics rules as the guidepost: all you are
+    doing is implementing those rules.
+    <p style="margin-bottom: 0px;">
+      You may have heard
+      of <a href="https://en.wikipedia.org/wiki/Postels_law">Postel's Law</a>:
+      "Be conservative in what you do, be liberal in what you accept from
+      others."
+    <p style="margin-bottom: 0px;">
+      Do <em>not</em> do this; stay as close to the spec as possible in all
+      cases (Optional reading: <a href="https://queue.acm.org/detail.cfm?id=1999945">
+      The Robustness Principle Reconsidered</a>).
+  </li>
+  <li>
+    For a warm-up, get the numbers and booleans to evaluate properly, then
+    tackle functions.  The BOOL interpreter at <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/BOOL/boolinterp.ml"> will be a huge hint on getting booleans working in F&#x266d;.</a>
+  </li>
+  <li>
+    You will need to write several auxiliary functions for performing
+    substitution, etc. </li>
+  <li>
+    Declare and raise appropriate exceptions.
+  </li>
+  <li>
+    You will probably want to write at least three functions:
+    <ol type="i">
+      <li><tt>eval</tt>, a stub for which is provided,</li>
+      <li><tt>subst</tt>, a function implementing variable substitution</li>
+      <li><tt>check_closed</tt>, a function which determines whether or not an expression is closed</li>
+    </ol>
+    Remember that you must raise an exception if you are provided an expression
+    which is not closed, such as <tt>Function x -> y</tt>.
+  </li>
+  <li>
+    If you start the F&#x266d; interpreter with the command line
+    argument <tt>--show-backtrace</tt>, the toploop should print out a stack
+    trace whenever it encounters an exception. This can be useful for
+    debugging.
+  </li>
+</ol>
+
+
+<h3>Submission</h3>
+
+<ul>
+    <li>We will be putting up two separate Gradescope submission points.
+  <li>For part 1, upload <em>only</em> your <code>fbinterp.ml</code> file with your evaluator code.</li>
+  <li>For part 2, upload <em>only</em> the filled-in <code>assignment4.ml</code> file (that name exactly and no other files).</li>
+    </ul>
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
