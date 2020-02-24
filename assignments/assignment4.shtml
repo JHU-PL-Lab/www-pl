@@ -76,19 +76,10 @@ describes how to compile and run the interpreter, and how to run the "solution" 
   <li>
     Use the F&#x266d; operational semantics rules as the guidepost: all you are
     doing is implementing those rules.
-    <p style="margin-bottom: 0px;">
-      You may have heard
-      of <a href="https://en.wikipedia.org/wiki/Postels_law">Postel's Law</a>:
-      "Be conservative in what you do, be liberal in what you accept from
-      others."
-    <p style="margin-bottom: 0px;">
-      Do <em>not</em> do this; stay as close to the spec as possible in all
-      cases (Optional reading: <a href="https://queue.acm.org/detail.cfm?id=1999945">
-      The Robustness Principle Reconsidered</a>).
   </li>
   <li>
     For a warm-up, get the numbers and booleans to evaluate properly, then
-    tackle functions.  The BOOL interpreter at <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/BOOL/boolinterp.ml"> will be a huge hint on getting booleans working in F&#x266d;.</a>
+    tackle functions.  The BOOL interpreter at <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/BOOL/boolinterp.ml"> is a hint on getting booleans working in F&#x266d;.</a>
   </li>
   <li>
     You will need to write several auxiliary functions for performing
@@ -106,6 +97,7 @@ describes how to compile and run the interpreter, and how to run the "solution" 
     Remember that you must raise an exception if you are provided an expression
     which is not closed, such as <tt>Function x -> y</tt>.
   </li>
+  <li>There are many implementations of interpreters for functional languages out there, but you need to hedge closely to the rules in your implementation.  For example make sure you are using substitution for function application, etc.  We will look over your code to verify this.</li>
   <li>
     If you start the F&#x266d; interpreter with the command line
     argument <tt>--show-backtrace</tt>, the toploop should print out a stack
