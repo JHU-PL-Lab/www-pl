@@ -7,7 +7,7 @@ List of Collaborators :
    For this part, you will write some programs in Fb.  Your answers for
    this section must be in the form of OCaml strings which the parse
    function in debugscript/fb.ml will successfully turn into Fb ASTs.
-   If you want a macro for repeated code, you are wecome to use OCaml
+   If you want a macro for repeated code, you are welcome to use OCaml
    to put strings together.  Here is an example from debugscript/fb_examples.ml:
 
  *)
