@@ -100,8 +100,8 @@ let fbChurch = "(0 1)";;
 
 (*
 let church2 = "Function f -> Function x -> f (f x)";;
-assert ( res "("^fbUnchurch^")("^church2^")" = "2" );;
-assert ( res "("^fbChurch^" 4) (Function n -> n + n) 3" = "48" );;
+assert ( res ("("^fbUnchurch^")("^church2^")") = "2" );;
+assert ( res ("("^fbChurch^" 4) (Function n -> n + n) 3") = "48" );;
 *)
 
 (* Write a function to add two church encoded values *)
@@ -113,6 +113,6 @@ let fbChurchMult = "(0 1)";;
 (*
 let church2 = "(Function f -> Function x -> f (f x))";;
 let church3 =  "(Function f -> Function x -> f (f (f x)))" ;;
-assert ( res fbUnchurch^"("^fbChurchAdd^church3^church2^")" = "5" );;
-assert ( res fbUnchurch^"("^fbChurchMult^church3^church2^")" = "6" );;
+assert ( res (fbUnchurch^"("^fbChurchAdd^church3^church2^")") = "5" );;
+assert ( res (fbUnchurch^"("^fbChurchMult^church3^church2^")") = "6" );;
 *)
