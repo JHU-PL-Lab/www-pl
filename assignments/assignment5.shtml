@@ -1,0 +1,105 @@
+<!--#include virtual="/pl/header.html" -->	 
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+<!-- Content -->
+<div id="content" class="container">
+<section>
+<header class="major">
+  <h2>Assigment 5 DRAFT</h2>
+</header>
+
+<p>
+  <ol>
+     <li>
+    <strong>FbV</strong> contains the match syntax <tt>Match e With n(x1) -> e1 | .. n(xn) -> en</tt>, following OCaml.  It is also possible to use a simpler match syntax, more like an if-then-else: <tt>Match e With n(x1) -> e1 | _ -> e2</tt>.  Let us define the language <strong>FbVs</strong> to be a variation on <strong>FbV</strong> which removes the existing match and replaces with this one.
+    <ol class="a">
+      <li>Write out the operational semantics rules for <strong>FbVs</strong> which differ from the <strong>Fb</strong> rules.  Note that the rules for <strong>FbV</strong> are in the book so you have a good shot at the answer.
+      <li>Show how this language has the same expressivity as <strong>FbV</strong> by showing how the <strong>FbV</strong> form of match can be embedded into <strong>FbVs</strong>.   Rather than writing a general macro, for this question just show how the <strong>FbV</strong> program <pre>Let d = `hi(7) In Match d With `hi(x) -> x+1 | `ho(y) -> y-1</pre> can be coded equivalently in <strong>FbVs</strong>.</li>
+      <li>Use your rules in part a. to make the proof how the example in part b. will evaluate to the same answer as <strong>FbV</strong>, namely <tt>8</tt> here.
+      	</ol>
+
+
+    <p>
+      <li>
+Let us consider <strong>Fbr</strong>, <strong>Fb</strong>  with circular lists we call <em>rings</em>.  Rings are a new kind of value; thus, the types of values in <strong>Fbr</strong> are functions, integers, booleans, and rings (of values).  A ring is a form of circular list, a slot in a ring has a forward link and a backward link.  All rings must contain at least one element.  The syntax of <strong>Fb</strong>  is extended as follows, using the non-terminal <i>e'</i> to represent the expression non-terminals from <strong>Fb</strong>.
+        </p>
+        <ul>
+            <li><i>e</i> ::= <i>e'</i>
+                                | <tt>Left</tt> e | <tt>Right</tt> e
+                                | <tt>Add</tt> e e
+                                | <tt>Drop</tt> e | <tt>Get</tt> e
+                                | <tt>Ring</tt> e <tt>@</tt> ... <tt>@</tt> e
+
+        </ul>
+        <p>
+            The <tt>Ring</tt> value links a series of expressions together, with the last expression being linked to the first.  The <tt>Left</tt> and <tt>Right</tt> operations cycle the ring.  <tt>Add</tt> adds a new value at the current position in the ring while <tt>Drop</tt> drops the current value in a ring (resulting in the cell to its right).  <tt>Get</tt> retrieves the value in the current cell.
+        </p>
+        <p>
+            The following examples should help you understand the behavior of these syntactic constructs.
+        </p>
+        <ul>
+            <li><tt>Ring 5 @ 3</tt> represents a ring containing two elements: <tt>5</tt> and <tt>3</tt></li>
+            <li><tt>Ring 1 + 2 @ 3 + 4</tt> &#x21d2; <tt>Ring 3 @ 7</tt>.  Observe that rings are eagerly evaluated.
+            <li><tt>Left (Ring 1 @ 2 @ 3)</tt> &#x21d2; <tt>Ring 2 @ 3 @ 1</tt></li>
+            <li><tt>Left Left Left (Ring 1 @ 2 @ 3)</tt> &#x21d2; <tt>Ring 1 @ 2 @ 3</tt></li>
+            <li><tt>Right (Ring 1 @ 2 @ 3)</tt> &#x21d2; <tt>Ring 3 @ 1 @ 2</tt></li>
+            <li><tt>Left (Ring 0)</tt> &#x21d2; <tt>Ring 0</tt></li>
+            <li><tt>Add (Ring 1 @ 2) False</tt> &#x21d2; <tt>Ring False @ 1 @ 2</tt></li>
+            <li><tt>Drop (Ring 1 @ 2 @ 3)</tt> &#x21d2; <tt>Ring 2 @ 3</tt></li>
+            <li><tt>Drop (Ring 1)</tt> does not compute to any value - our rings canot be empty.</li>
+            <li><tt>Get (Ring 2 @ 4)</tt> &#x21d2; <tt>2</tt></li>
+        </ul>
+<p>
+  <ol class="a">
+    <li>     Write operational semantics rules for the language <strong>Fbr</strong>.  These rules must directly define the meaning, don't just encode rings in terms of existing <strong>Fb</strong>  expressions.</li>
+    <li> Can lists be directly encoded in rings?  Either give the encoding or argue why it is not possible.
+      </ol>
+        </p>
+    </li>
+
+     <li>Write an <strong>Fb</strong> function <code>cheapY</code> which works like the
+    <code>Y</code>-combinator but only supports ten levels deep of recursive
+    call.  So for example
+    <pre>
+    cheapY (Function this -> Function x ->
+         If x = 1 then 1 Else x + this (x-1)) 10</pre>
+returns <code>55</code> but if the <code>10</code> was replaced with
+    <code>11</code> it diverges since the recursion tried to go 11
+    levels deep.  This behavior is the same as a
+    recursive function invocation with a runtime stack depth of at
+    most 10 in e.g. the C language.  Hint: you don't actually need a
+    counter to count the number of recursive calls, its easier than that.
+     </li>
+ 
+  <li>Consider <strong>FbG</strong>, an <strong>Fb</strong> extension with a very simple notion of mutable state: there is only one fixed, global memory location.  Here is the new syntax.
+        <ul>
+            <li><i>e</i> ::= <i>e'</i>
+                                | <tt>Stash</tt> e | <tt>Unstash</tt>
+        </ul>
+	And here is a very simple program to hopefully make clear how it works.
+
+	<pre> (Let _ = Stash 5 In Unstash) + Unstash &#x21d2; 10</pre>
+	If you try to <tt>Unstash</tt> before having stashed anything you will get stuck.  <tt>Stash</tt>'s only purpose is the side effect it has on the global store, and this informal specification is silent on what actual value it returns.
+	<ol class="a">
+	  <li>
+	    Write the operational semantics rules for <strong>FbG</strong>.  Give rules for the two new operations as well as what the <tt>+</tt> rule will now look like in <strong>FbG</strong> (all the rules will need to change a bit due to the side effects, just as with <strong>FbS</strong>).</li>
+	  <li>Write out the derivation for the above example with your rules (you didn't write out the Let rule but use the expected rule in your derivation).
+	</ol>
+</ol>
+
+    </ol>
+
+
+<h3>Submission and Grading</h3>
+
+Upload your homework as a pdf to Gradescope.  Feel free to write by hand and scan it in, just verify your scan is fully legible before submitting!
+	
+</section>
+</div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
