@@ -13,6 +13,13 @@
 
 <p>
   <ol>
+    <li>(10 points) Perform the following <strong>Fb</strong> substitutions
+<ol class="a">      	<li><tt>Not(x22)[4/x22]</tt>
+	<li><tt>(Function x -> x x)(Function x -> x x)[(1 0)/x]</tt>
+	<li><tt>(Function x -> x + y)[False/y]</tt>
+	<li><tt>(Let z = x In y)[33/x]</tt></li>
+</ol>
+
       <li> (20 points)
 Let us consider <strong>Fbr</strong>, <strong>Fb</strong>  with circular lists we call <em>rings</em>.  Rings are a new kind of value; thus, the types of values in <strong>Fbr</strong> are functions, integers, booleans, and rings (of values).  A ring is a form of circular list, a slot in a ring has a forward link and a backward link.  All rings must contain at least one element.  The syntax of <strong>Fb</strong>  is extended as follows, using the non-terminal <i>e'</i> to represent the expression non-terminals from <strong>Fb</strong>.
         </p>
@@ -45,6 +52,7 @@ Let us consider <strong>Fbr</strong>, <strong>Fb</strong>  with circular lists w
 <p>
   <ol class="a">
     <li>     Write operational semantics rules for the language <strong>Fbr</strong>.  These rules must directly define the meaning, don't just encode rings in terms of existing <strong>Fb</strong>  expressions.</li>
+    <li> Write out a proof derivation showing <tt>Drop (Left (Ring 1 @ 2 @ 3))</tt> &#x21d2; <tt>Ring 3 @ 1</tt>
     <li> Can lists be directly encoded in rings?  Either give the encoding or argue why it is not possible.
       </ol>
         </p>
