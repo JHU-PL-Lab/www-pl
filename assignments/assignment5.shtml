@@ -13,7 +13,7 @@
 
 <p>
   <ol>
-      <li>
+      <li> (20 points)
 Let us consider <strong>Fbr</strong>, <strong>Fb</strong>  with circular lists we call <em>rings</em>.  Rings are a new kind of value; thus, the types of values in <strong>Fbr</strong> are functions, integers, booleans, and rings (of values).  A ring is a form of circular list, a slot in a ring has a forward link and a backward link.  All rings must contain at least one element.  The syntax of <strong>Fb</strong>  is extended as follows, using the non-terminal <i>e'</i> to represent the expression non-terminals from <strong>Fb</strong>.
         </p>
         <ul>
@@ -50,7 +50,7 @@ Let us consider <strong>Fbr</strong>, <strong>Fb</strong>  with circular lists w
         </p>
     </li>
 
-     <li>Write an <strong>Fb</strong> function <code>cheapY</code> which works like the
+     <li>(10 points) Write an <strong>Fb</strong> function <code>cheapY</code> which works like the
     <code>Y</code>-combinator but only supports ten levels deep of recursive
     call.  So for example
     <pre>
@@ -64,7 +64,7 @@ returns <code>55</code> but if the <code>10</code> was replaced with
     counter to count the number of recursive calls, its easier than that.
      </li>
  
-  <li>Consider <strong>FbG</strong>, an <strong>Fb</strong> extension with a very simple notion of mutable state: there is only one fixed, global memory location.  Here is the new syntax.
+  <li>(10 points) Consider <strong>FbG</strong>, an <strong>Fb</strong> extension with a very simple notion of mutable state: there is only one fixed, global memory location.  Here is the new syntax.
         <ul>
             <li><i>e</i> ::= <i>e'</i>
                                 | <tt>Stash</tt> e | <tt>Unstash</tt>
