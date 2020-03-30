@@ -8,21 +8,21 @@
   <div id="content" class="container">
     <section>
       <header class="major">
-        <h2>Assigment 6: Extensible Records and Objects<br>DRAFT</h2>
+        <h2>Assigment 6: Extensible Records and Objects</h2>
       </header>
 
-      In this Homwework all the answers are "written" except for question 2; there will be two submission points in Gradescope for this.
+      In this Homwework all the answers are "written" except for question 2; there will be two submission points in Gradescope for written and code portions.
       <ol>
   <li>Consider <strong>FbR@</strong>,  the records language <strong>FbR</strong> with in addition an operator <code>e @ e</code> allowing records to be <em>appended</em>.
 If there is the same field in both records, the field in the right record has precedence.  So for example
     <pre>({a = 5; b = 7} @ {b = 1 + 2}).b</pre> will return <code>3</code>.  Other than this change the language is the same as <strong>FbR</strong>.
     <ol class="a">
       <li>Give the expressions and values for <strong>FbR@</strong>.</li>
-      <li>Write out the operational semantics rules for <strong>FbR@</strong>; you can leave out the <strong>Fb</strong> rules as your language can be an extension of <strong>Fb</strong>.  <em>Do</em> include the rules for <strong>FbR</strong> which didn't change, if any.
+      <li>Write out the operational semantics rules for <strong>FbR@</strong>; you can leave out the <strong>Fb</strong> rules as your language can be an extension of <strong>Fb</strong>.  <em>Do</em> include the rules for <strong>FbR</strong> which didn't change, if any (hint: they are not in the book, but we covered them in lecture).
       <li>Write out the proof tree for the above example using your rules.</li>
       </ol>
 <li>
-  For this question you are to implement an interpreter for <strong>FbR@</strong>.  In order to make things easier we will do this in one of the language extensions already in the FbDK that you have: <strong>FbRX</strong>.  Here is the expression type in <tt>src/FbRX/fbrxast.ml</tt> with some irrelevant things deleted:
+  For this question you are to implement an interpreter for <strong>FbR@</strong> based on your spec from the previous question.  In order to make things easier we will do this in one of the language extensions already in the FbDK that you have: <strong>FbRX</strong>.  Here is the expression type in <tt>src/FbRX/fbrxast.ml</tt>:
 
   <pre>
 type label = Lab of string
@@ -30,7 +30,7 @@ type label = Lab of string
 type expr = (* ... Fb stuff, elided, see file *) |
   (* records *)
   | Record of (label * expr) list   | Select of label * expr  | Append of expr * expr
-  (* other features of FbRX you can skip -- raise an exception if you see any of this. *)
+  (* other features of FbRX you should SKIP -- raise an exception if you see any of this. *)
   | Raise of exnid * expr
   | Try of expr * exnid * ident * expr
   | String of string
@@ -61,7 +61,7 @@ Here are some points.<ul>
       iszero = Fun this -> Fun _ -> this.mag this { }
     } In Let c = pointC 0 10 In p.iszero p { }
   </pre>
-  This encoding is slightly different in that it uses immutable fields, there is no "Ref" around the ix or iy values like in lecture.  (We also have a null argument on the methods, and sqr and sqrt are squaring and square root functions not shown here; if you want to run the code you can assume they are identity functions).
+  This encoding is slightly different than the one in class in that it uses immutable fields, there is no "Ref" around the ix or iy values like in lecture.  (We also have a null argument on the methods, and sqr and sqrt are squaring and square root functions not shown here; if you want to run the code you can assume they are identity functions).
   <p> In this question we want to show how inheritance is easier to write in this encoded style now that we have record append.
     <ol class="a">
       <li>Consider the color point extension we made in lecture, something like 
@@ -78,10 +78,8 @@ Here are some points.<ul>
 Let cp = cPointC 0 10 {r = 0; g = 0; b = 0} In
   cp.iszero cp { }
    </pre>
-  Re-write this example using record append so we don't have to manually copy-over all the fields and methods from the superclass.  You should run your example in FbRX before submitting to be sure it works.</li>
-      <li> Multiple inheritance is when there are multiple superclasses with one subclass.  Since we are just hacking up classes here we can also hack up multiple inheritance: redo the answer from your previous question to make a class <tt>colorC</tt> which just has the color and brightness, and then create the cPointC as an extension of both colorC and pointC.  Hint: you will need two supers. Also keep using record append, don't copy and paste.</li>
-      <li>etc.
-
+  Re-write this example using record append so we don't have to manually copy-over all the fields and methods from the superclass.  You should run your example in <strong>FbRX</strong> before submitting to be sure it works.</li>
+      <li> Multiple inheritance is when there are multiple superclasses with one subclass.  Since we are just hacking up classes here we can also hack up multiple inheritance: redo the answer from your previous question to make a class <tt>colorC</tt> which just has the color and brightness, and then create the <tt>cPointC</tt> as an extension of both <tt>colorC</tt> and <tt>pointC</tt>.  Make sure to also use record append here to put objects together as in the previous question, don't copy and paste. Hint: you will need two supers. </li>
     </ol>
 </ol>
 
