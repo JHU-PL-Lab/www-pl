@@ -59,7 +59,7 @@ Here are some points.<ul>
       y = iy;
       mag = Fun this -> Fun _ -> sqrt (sqr(this.x) + sqr(this.y));
       iszero = Fun this -> Fun _ -> this.mag this { }
-    } In Let c = pointC 0 10 In p.iszero p { }
+    } In Let p = pointC 0 10 In p.iszero p { }
   </pre>
   This encoding is slightly different than the one in class in that it uses immutable fields, there is no "Ref" around the ix or iy values like in lecture.  (We also have a null argument on the methods, and sqr and sqrt are squaring and square root functions not shown here; if you want to run the code you can assume they are identity functions).
   <p> In this question we want to show how inheritance is easier to write in this encoded style now that we have record append.
