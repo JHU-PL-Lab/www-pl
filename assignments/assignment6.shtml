@@ -73,7 +73,7 @@ Here are some points.<ul>
       c = ic;
       iszero = super.iszero;
       mag = Fun this -> Fun _ -> mult(super.mag this { })(this.bright this { });
-      bright = Fun this -> Fun _ -> this.r + this.g + this.b
+      bright = Fun this -> Fun _ -> this.c.r + this.c.g + this.c.b
     } In
 Let cp = cPointC 0 10 {r = 0; g = 0; b = 0} In
   cp.iszero cp { }
