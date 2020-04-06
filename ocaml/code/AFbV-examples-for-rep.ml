@@ -1,8 +1,18 @@
 (* AFbV Actor programming by example *)
 
-(* Use "ocamlrun afbv.byte --show-messages --show-states" to see the global actor universe as computation progresses, as well as messages as they are processed. In this debugging output the actors are named @1 @2 etc. *)
+(* uncomment the following line to show messages as they are delivered; 
+   this is the same as flag --show-messages on the binary. *)
+(* Afbvoptions.show_messages := true;; *)
 
-(* Here is a vey simple actor system: only one actor receiving one message *)
+(* uncomment the following line to show the global state of the actor system as it evolves; 
+   this is the same as flag --show-state on the binary. Actor names are @1 @2 etc here*)
+(* Afbvoptions.show_states := true;; *)
+
+(* uncomment the following line to force messages to be delivered in the order sent;
+   this is the same as --deterministic on the binary. *)
+(* Afbvoptions.deterministic_delivery := true;; *)
+
+(* Here is a very simple actor system: only one actor receiving one message *)
 
 let onemsg = "Let oneMessage =
   Fun me -> (* First parameter is by contract the address of this actor *)

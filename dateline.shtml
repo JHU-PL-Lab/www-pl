@@ -323,7 +323,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body"><a href="assignments/assignment6.shtml">6 - State/Exceptions/Objects</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">5</div>
+            <div align="center" class="body">5 (Fri)</div>
           </td>
         </tr>
         <tr> 
@@ -355,10 +355,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
           </td>  
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment7.shtml">7 - Concurrency</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">6</div>
+            <div align="center" class="body">6 (Sun)</div>
           </td>
         </tr>
         <tr> 
@@ -369,10 +369,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Operational Equivalence</div>
+            <div align="left" class="body">&nbsp;Types I: TFb</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="assignments/assignment7.shtml">7 - Concurrency and Types</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -386,14 +386,13 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types I: TFb</div>
+            <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
           </td>	
           <td width="22%"> 
-            <div align="center" class="body"><a
-          href="assignments/assignment8.shtml">8 - Opeq</a></div>
+            <div align="center" class="body"></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">7</div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
         </tr>
         <tr> 
@@ -404,13 +403,13 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
+            <div align="left" class="body">&nbsp;Types III: Subtyping</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"></div>
           </td>
         </tr>
         <tr> 
@@ -421,14 +420,14 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types III: Subtyping</div>
+            <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment9.shtml">9 - Types</a>
+            <div align="center" class="body"><a href="assignments/assignment8.shtml">8 - Types and Inference</a>
 	    </div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">8</div>
+            <div align="center" class="body">7</div>
           </td>
         </tr>
         <tr> 
@@ -439,7 +438,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
+            <div align="left" class="body">&nbsp;Operational Equivalence</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
@@ -459,10 +458,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="left" class="body">&nbsp;Special Topics I</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body"><a href="assignments/assignment10.shtml">10 - Type Inference</a></div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">9</div>
+            <div align="center" class="body">&nbsp;</div>
           </td>
         </tr>
         <tr> 
@@ -476,10 +475,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="left" class="body">&nbsp;Special Topics II</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body"><a href="assignments/assignment9.shtml">9 - Operational Equivalence</a></div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
+            <div align="center" class="body">8</div>
           </td>
         </tr>
         <tr> 
@@ -490,49 +489,28 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Exam Pre-Cram Session</div>
+            <div align="left" class="body">Special Topics III</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">10 (Fri)</div>
+            <div align="center" class="body">9 (next Mon)</div>
           </td>
         </tr>
 	<tr> 
           <td width="8%"> 
-            <div align="center" class="body">May 6,
-        5:00-5:50PM</div>
+            <div align="center" class="body">May 6</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Weds</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;<strong>Final Review,
-Shaffer 301 (to be confirmed)</strong></div>
+            <div align="left" class="body">Take-Home Final?</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
           href="assignments/finals/final-study.shtml">Study Guide</a></div>
-          </td>
-          <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
-          </td>
-        </tr>
-	<tr> 
-          <td width="8%"> 
-            <div align="center" class="body">May 8,
-        2-5PM</div>
-          </td>
-          <td width="8%"> 
-            <div align="center" class="body">Fri</div>
-          </td>
-          <td width="30%"> 
-            <div align="left" class="body">&nbsp;<strong>Final Exam,
-Shaffer 301</strong></div>
-          </td>
-          <td width="22%"> 
-            <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
