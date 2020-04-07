@@ -1,0 +1,56 @@
+<!--#include virtual="/pl/header.html" -->
+</div>
+
+<!-- Main -->
+<div id="main" class="wrapper style4">
+
+  <!-- Content -->
+  <div id="content" class="container">
+    <section>
+      <header class="major">
+        <h2>Assigment 7: Actors; basic type systems</h2>
+      </header>
+For the actors questions, the file <a href="http://pl.cs.jhu.edu/pl/ocaml/code/AFbV-examples-for-rep.ml">AFbV-examples-for-rep.ml</a> has some simple examples we ran in class; we also refer to it in one of the questions.
+      <ol>
+	<li>
+	Suppose there is an actor system global state:<p>
+	   <code> G1 = { &lt; a0, Function dummy -> Let x = create(internal_count, 2) In x <- `count(_) &gt; ,
+            [ a0 &lt;- 5444 ] } </code>.</p>
+	<p>
+    Show all of the possible transition sequences <code>G1 --> G2 --> ... </code> that the system starting in this configuration could evolve to.  Note the definition of <tt>internal_count</tt> is given in the actor examples file linked above; recall that this code that we are installing in an actor is called its <em>behavior</em> in actor-speak.  We are only counting down starting from 2 to save wear and tear on your fingers here.  Note that for each step <code>Gi --> G(i+1)</code> give the <code>v v' ==S==> v'</code> that leads to that step as per the Global Rule in section 7.2.5 of the book.  You don't need to show how this <code>v v'</code> computation computes, just give each one of them, i.e. be clear what <code>v/v'/v''</code> are for each global transition.
+	</p>
+  </li>
+  
+<li> Write an <strong>AFbV</strong> (mutable) set actor. Here is an outline of the messages your actor needs to handle.
+  <ul>
+    <li><tt>`add(d,a)</tt>: it should add data <tt>d</tt> to the set and send a <tt>True</tt> back to actor <tt>a</tt> indicating the add worked (recall this is a mutable set).  Recall that since actors allow only asynchronous messaging, the set needs to explicitly acknowledge all actions completed to the sender, <tt>a</tt>.</li>
+    <li><tt>`delete(d,a)</tt>: it should delete data <tt>d</tt> from the set and send a <tt>True</tt> back to actor <tt>a</tt> indicating the delete worked; if <tt>d</tt> is not in the set send <tt>False</tt> back.</li>
+    <li><tt>`ismember(d,a)</tt>: Return <tt>True</tt> back to actor <tt>a</tt> if <tt>d</tt>  is in the set,  <tt>False</tt> otherwise.</li>
+    <li><tt>`isempty(a)</tt>: Return <tt>True</tt> back to actor <tt>a</tt> if the set is empty,  <tt>False</tt> otherwise.</li>
+  </ul>
+  For this question, write your code in, and submit, the file <a href="assignment7.ml">  assignment7.ml</a>.  The file includes one simple test and some hints.
+   </li>
+	<li> For each of these expressions, either construct a typing proof in <strong>TFb</strong> <strong>or</strong> show exactly why they cannot typecheck (i.e. no derivation tree could ever be built; don't just informally describe it, use the formal system rules).
+<ol class="a">
+  <li><tt>If True Then 0 Else False</tt></li>
+  <li><tt>(If True Then (Fun x:Int -> x+1) Else (Fun x:Int -> x)) 0</tt></li>
+  <li><tt>(Fun x:(Int -> Int) -> x False)</tt></li>
+  <li><tt>(Fun x:Int -> Fun x:Bool -> x + 1)</tt></li>
+</ol>
+
+    </ol>
+</ol>
+
+
+          <h3>Submission</h3>
+
+          Upload (only) your file <tt>.ml</tt>from question 2 to the <em>Assignment 7 code</em> target on Gradescope; upload the rest of your answers to <em>Assignment 7 written</em>.
+          </ul>
+
+    </section>
+  </div>
+</div>
+
+
+<!--#include virtual="/pl/footer.html" -->
+
