@@ -7,27 +7,6 @@
 
 let set_beh = "0 1";; (* Replace with your set actor's behavior *)
 
-let set_beh = "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
-Let setbeh = Fun me ->  Fun data -> y (Fun this -> Fun msg ->
-     Match msg With
-       `add(p) -> (Snd(p) <- 0); (this)
-     | `delete(p) -> (Snd(p) <- 0); (this)
-     | `isempty(a) -> (a <- True); (this) ) In
-   Let set_test = 
-      Fun me -> Fun data -> Fun m1 ->
-        Let aset = Create(setbeh, 0) In
-           ( aset <- `add(22,me) );
-           Fun m2 -> 
-              (aset <- `add(2,me));
-              Fun m3 ->  
-                 (aset <- `delete(2,me));
-                 Fun m4 -> 
-                    (aset <- `isempty(me));
-                    Fun m5 -> If m5 Then Print \"Correct\" Else Print \"Wrong\"
-    In
-    Let set_test_actor = Create(set_test, 0) In
-    (set_test_actor <- 0)";;
-
 (* The test code is designed to run in OCaml with the AFbV interpreter loaded.
    Loading AFbV inside OCaml with the debugscript file is similar to Fb etc: *)
 
