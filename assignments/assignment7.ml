@@ -37,8 +37,7 @@ let set_test = "
                  (aset <- `delete(2,me));
                  Fun m4 -> 
                     (aset <- `isempty(me));
-                    Fun m5 -> If m5 Then Print \"Wrong\" Else Print \"Correct\"
-
+                    Fun m5 -> If m5 Then Print \"Wrong\" Else Print \"Correct\" In
     Let set_test_actor = Create(set_test, 0) In
     (set_test_actor <- 0)";;
  *)
