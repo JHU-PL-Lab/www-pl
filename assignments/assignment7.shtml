@@ -14,10 +14,20 @@ For the actors questions, the file <a href="http://pl.cs.jhu.edu/pl/ocaml/code/A
       <ol>
 	<li>
 	Suppose there is an actor system global state:<p>
-	   <code> G1 = { &lt; a0, Function dummy -> Let x = create(internal_count, 2) In x <- `count(_) &gt; ,
+	   <code> G1 = { &lt; a0, Function dummy -> Let x = create(internal_count_beh, 2) In x <- `count(_) &gt; ,
             [ a0 &lt;- 5444 ] } </code>.</p>
 	<p>
-    Show all of the possible transition sequences <code>G1 --> G2 --> ... </code> that the system starting in this configuration could evolve to.  Note the definition of <tt>internal_count</tt> is given in the actor examples file linked above; recall that this code that we are installing in an actor is called its <em>behavior</em> in actor-speak.  We are only counting down starting from 2 to save wear and tear on your fingers here.  Note that for each step <code>Gi --> G(i+1)</code> give the <code>v v' ==S==> v''</code> that leads to that step as per the Global Rule in section 7.2.5 of the book.  You don't need to show how this <code>v v'</code> computation computes, just give each one of them, i.e. be clear what <code>v/v'/v''</code> are for each global transition.
+	  Show all of the possible transition sequences <code>G1 --> G2 --> ... </code> that the system starting in this configuration could evolve to.  The definition of <tt>internal_count_beh</tt> is as follows:
+<pre>
+let internal_count_beh =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
+  Fun me -> y (Fun this -> Fun data -> Fun msg ->
+     Match msg With
+       `count(_) ->
+           (Print \"OUTPUT: \"; (Print data); Print \"\n\");
+           (If data = 0 Then 0 Else (me <- (`count (_))));
+           (this (data-1)))"
+</pre>
+recall that this code that we are installing in an actor is called its <em>behavior</em> in actor-speak.  We are only counting down starting from 2 to save wear and tear on your fingers here.  Note that for each step <code>Gi --> G(i+1)</code> give the <code>v v' ==S==> v''</code> that leads to that step as per the Global Rule in section 7.2.5 of the book.  You don't need to show how this <code>v v'</code> computation computes, just give each one of them, i.e. be clear what <code>v/v'/v''</code> are for each global transition.
 	</p>
   </li>
   
