@@ -12,7 +12,7 @@
       </header>
       <h4>Part A</h4>
       <p>Write a type checker for <strong>TFbX</strong>. 	
-	The  <strong>TFbSRX</strong> language (also with records and state) is described in section 6.4 of the book. FbDK contains source directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/TFbSRX/"><tt>TFbSRX</tt></a> which has the relevant parser and OCaml data type, all you have to do is fill in the file <tt>tfbsrxtype.ml</tt> with a correct implemention of the <tt>typecheck</tt> function there.  Note that you <em>don't</em> have to do the state or records part, just raise a not-implemented exception if the source program contains any of that syntax. Here are some details.
+	The  <strong>TFbSRX</strong> language (also with records and state) is described in section 6.4 of the book. FbDK contains source directory <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/src/TFbSRX/"><tt>TFbSRX</tt></a> which has the relevant parser and OCaml data type, all you have to do is fill in the file <tt>tfbsrxtype.ml</tt> with a correct implemention of the <tt>typecheck</tt> function there.  Note that you <em>don't</em> have to do the state or records part, just raise an OCaml exception if the source program contains any of that syntax. Here are some details.
 	</p>
       <ul>
 	<li>The file <a href="http://pl.cs.jhu.edu/pl/book/_dist/fbdk/debugscript/tfbsrx.ml"<code>debugscript/tfbsrx.ml</code></a> contains quite a few examples for you to test the typechecker with.
