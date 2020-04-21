@@ -455,7 +455,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics I</div>
+            <div align="left" class="body">&nbsp;Special Topics I: Garbage collection</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
