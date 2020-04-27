@@ -195,7 +195,7 @@ Java 8+ has Lambdas, use them!  We are probably going to skip this topic, the on
  <em>substituted</em> when we did function application, but that is not very efficient)
    <li>OCaml example:
        <pre># let f = (fun x -> fun y -> x + y) 4;;
-val f : int -> int = &lt;fun&gt; (* f is at runtime the closure &lt;fun y code, {x |-> 3)&gt; *)
+val f : int -> int = &lt;fun&gt; (* f is at runtime the closure &lt;fun y code, {x |-> 4}&gt; *)
 # f 3;;
 - : int = 7   </pre>
 Note how <code>x</code> is a function parameter and is remembered in spite of function returning, means <code>x</code> needs to be <em>copied</em> into the closure.
