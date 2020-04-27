@@ -12,16 +12,16 @@
 </header>
 
 
-Our reference here  is  the <a
-href="http://docs.oracle.com/javase/specs/jls/se10/html/index.html">Java
-Language Specification, SE 10 Edition</a>.<p>
+Thesis: we covered the core ideas, we can now <em>encode</em> Java in <strong>PSTFbOB</strong>!
 <ul>
-  <li>The book contains three languages which collectively cover the core of Java: <strong>FbOB</strong> (objects), <strong>STFb</strong> (subtyping), and <strong>PEFb</strong> (the P, polymorphism/generics part, not the inference part). 
-  <li>An Fb family language corresponding to core Java would be "<strong>PSTFbOB</strong>"
-  <li>We did not cover this but most of the aspects would not be surprising to you; a few gaps include
-      <ul>
-	<li><strong>STFb</strong> had subtyping on records and we need subtyping on objects for Java; <em>but</em>, as we know from the <strong>FbOB</strong> encoding, objects and records are very similar
-	<li><code>this</code> imposes some additional issues in object typing.  Notice that
+  <li>The book contains three languages which put together can encode the core features of Java: <strong>FbOB</strong> (objects), <strong>STFb</strong> (subtyping), and <strong>PEFb</strong> (the P for polymorphism/generics, and the E for type inference). 
+  <li>An Fb family language corresponding to core Java could be "<strong>PSTFbOB</strong>"
+	</ul>
+
+<h3>Encoding Typed Objects</h3>
+We encoded objects with records, but the encoding we gave does not lift perfectly to typed objects.
+<ul>
+  <li><code>this</code> imposes some additional issues in object typing.  Notice that
 	          <pre>PointType = { x : Int; y : Int; magnitude: PointType -> Int -> Int; ...}</pre>
 	    should be a proper type for our point object encoding, but notice how <code>PointType</code> is contravariant, it is in the domain of the magnitude method.  Consider
 	    <pre>ColorPointType = { x : Int; y : Int; c : Color; magnitude: ColorPointType -> Int -> Int; ...}</pre>
@@ -41,12 +41,11 @@ Let point = .. point object as in book... In
   };
 In prePackagedPoint.magnitude () (* no self passing needed on object use (and its gone from the type) *) </pre>
 	  -- with this encoding the subtyping above holds since the object type arguments have been removed
-	</ul>
+	  <li>One more thing needed in the above that we skipped: notice how the <tt>PointType</tt> is self-referential, it refers to itself in its definition.  Such types are called <em>recursive types</em>.  Fortunately, we can make type systems with recursive types (but will skip that here).
 </ul>
 
-<h3>Classes and inheritance</h3>
-<p>
-  It is not hard to make encodings of various other features of Java objects - there is nothing deep there.
+<h3>Encoding Other Java O-O Features</h3>
+
 <ul>
   <li>Information hiding is possible in Java via <code>private/protected</code> fields; information hiding in <strong>STFbOB</strong> is accomplished by subsumption -- use subsumption after every <code>new</code> of an object to hide the private/protected bits.  Informal idea:
     <pre>
@@ -85,7 +84,7 @@ Let pointClass = {
 <ul>
   <li>Subtype relationships in Java are <em>nominal</em>: they must be declared via <tt>extends</tt>/<tt>implements</tt> aclass/aninterface, except for primitive type subtyping;<br>
 -- even if a class clearly implements all the methods of an interface, if the interface is not specified in the header there is no subtyping possible.
-  <li>Running example: <code>Interface Iterable&lt;T&gt;</code> - if you have an <code>Iterable&lt;Integer&gt; thing</code> you can <code>thing.foreach(...)</code> it <b>but only if</b> <tt>thing</tt> is a class implementing that interface.
+  <li>Running example: <code>Interface Iterable&lt;T&gt;</code> - if you have an <code>Iterable&lt;Integer&gt; thing</code> you can <code>thing.foreach(...)</code> it <b>but only if</b> <tt>thing</tt> is a class explicitly <tt>implements</tt>-ing that interface.
   <li>In <strong>STFb</strong> subtyping only
       depended on the structure of the underlying records.
       <strong>STFb</strong> subtyping is thus <em>purely
@@ -95,11 +94,12 @@ Let pointClass = {
 	<li>Structural subtyping is more flexible: "use your own implicit interface without needing to declare it". 
 	<li>Nominal subtyping lets you think about subtyping in terms of names of things, not the details of whats inside<br>
 -- a helpful abstraction of detail in many cases.
+	  <li>Pretty much all major languages used nominal subtyping until TypeScript decided to take the structural approach.  Good for them!
       </ul>
 </ul>
 
 <h3><a
- href="http://docs.oracle.com/javase/specs/jls/se10/html/jls-4.html#jls-4.4">Generics</a>
+ href="http://docs.oracle.com/javase/specs/jls/se14/html/jls-4.html#jls-4.4">Generics</a>
  </h3>
  <p>
 Generics are Java's version of parametric types.  These notes assume
@@ -113,10 +113,8 @@ The <strong>PEFb</strong> language includes both type inference and polymorphism
       comparisons with the <strong>PEFb</strong> or Caml-style parametric types that we  studied:
 <ul>
   <li><tt>'a list / int list</tt> from OCaml is <tt>List &lt;T> / List &lt;Integer></tt> in Java
-  <li>Caml/<strong>PEFb</strong> often <em>infers</em> generic types <code>'a</code> automatically; in Java, you must
-    <em>declare</em> them as <code>&lt;T&gt;</code>.
-  <li>Caml variables of type <code>'a</code> you can <em>never</em> under the hood to see what structure is there; in Java you can typecast a <code>&lt;T&gt;</code> to learn about the structure.
-  <li>Java generics also have <em>bounded subtyping</em>, a feature not found in Caml due to the combination of polymorphism and subtyping.
+  <li>Caml/<strong>PEFb</strong> often <em>infers</em> generic types <code>'a</code> automatically; in Java, you need to declare them as <code>&lt;T&gt;</code>.  But you can just write <code>&lt;&gt;</code> to instantiate a generic type: the type will be inferred.
+  <li>Java generics have <em>bounded subtyping</em>, the combination of polymorphism and subtyping (note, this doesn't exist in OCaml and we didn't cover the principles in class).
 </ul>
 <h4>Bounded subtyping</h4>
     <p>
@@ -125,8 +123,8 @@ The <strong>PEFb</strong> language includes both type inference and polymorphism
 
 <ul>
   <li>The root of this  in subtpying theory is that
-      <code>String/Object</code> may occur both positively and
-      negatively  in <code>List</code>'s signature, so it needs to be
+      <code>String/Object</code> may occur both positively (rhs of function arrow) and
+      negatively  (lhs of arrow) in <code>List</code>'s signature, so it needs to be
       invariant.  
   <li>In <strong>STFb</strong> the problem comes up in how subtyping
       is defined contravariantly on function types.   A  list type
@@ -162,7 +160,7 @@ To get around this weakness, Java includes <em>bounded subtyping</em>
 </ul>
 
 
-<h3><a href="http://docs.oracle.com/javase/specs/jls/se10/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
+<h3><a href="http://docs.oracle.com/javase/specs/jls/se14/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
 Java's notion of method overloading (also called ad hoc polymorphism) is simply described
 <ul>
   <li> Java method overloading can be
@@ -174,9 +172,8 @@ Java's notion of method overloading (also called ad hoc polymorphism) is simply 
 <h3>Immutable Data</h3>
 One  of the key lessons of Caml is the importance of immutable data: its not changing underneath your feet.<p>
 <ul>
-  <li>Java allows fields to not mutate if qualified with <code>final</code>.
-  <li>Caml analogy: a <code>let</code>-defined variable.
-  <li>Like Caml, immutability is only shallow - the field could
+  <li>Java allows fields to not mutate if qualified with <code>final</code>; so, it is something like  <code>let</code> in OCaml.
+  <li>As with OCaml, immutability is only shallow - the field could
       contain <em>components</em> that mutate.
   <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior and can confuse Java programmers when their final thing starts mutating on them.
   <li>One advantage of Java is no need for "<code>!</code>" when accessing mutable data.
@@ -184,7 +181,7 @@ One  of the key lessons of Caml is the importance of immutable data: its not cha
 
 <h3>Lambdas</h3>
 
-Java 8 has Lambdas
+Java 8+ has Lambdas
  <ul>
    <li>Fully higher order functions in Java, 50 years after they appeared in PLs.
    <li><a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Here is a tutorial</a></li>
@@ -192,7 +189,7 @@ Java 8 has Lambdas
    <li>Java 8 higher-order functions can "pun" as any interface with only one method in it.<br>
 -- the function is taken to be the body of that single method, no need to write the method name when declaring the function then.
    <li>There is also some (limited) type inference for Lambda parameters.
-   <li>Lets put some spice in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a> that we will go through.  For that example here is the <a href="https://docs.oracle.com/javase/10/docs/api/java/util/function/Function.html">Function</a> and <a href="big-bang-doc/papers/sas-17/">BiFunction</a> type.
+   <li>Lets put some spice in our latte!  Here at long last is Currying in Java: <a href="https://gist.github.com/timyates/7674005">Gist currying example</a>.  For that example here is the <a href="https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/function/Function.html">Function</a> and <a href="https://docs.oracle.com/en/java/javase/14/docs/api/java.base/java/util/function/BiFunction.html">BiFunction</a> type.
        </ul>
  Terminology aside: <em>closure</em>
  <ul>
@@ -225,9 +222,9 @@ val f : int -> int = &lt;fun&gt;
 
 <p>
 <ul>
-  <li>Java follows the "declaring types is good for code reading" philosophy - types generally need to be declared.</li>
-  <li>But, in some cases it can get burdensome to declare types as there are too many of them</li>
-  <li>So, Java 10 has <em>local type inference</em>, a feature it is taking from Scala (and now Kotlin and C++): <pre>var first = "Hello"</pre> is legal and will infer <tt>first</tt> to be of type <tt>string</tt>.</li>
+  <li>For years Java followed the "declaring types is good for code reading" philosophy - types were all declared.</li>
+  <li>But, "type inference is coming to a language near you" caught on a few years ago.</li>
+  <li>So, Java 10+ has <em>local type inference</em>, a feature it is taking from Scala (and is also in Kotlin and C++): <pre>var first = "Hello"</pre> is legal and will infer <tt>first</tt> to be of type <tt>string</tt>.</li>
 </ul>
 
 
@@ -238,18 +235,8 @@ val f : int -> int = &lt;fun&gt;
 
 <h3>Other points of comparison between Java and Caml / Fb</h3>
 <ul>
-  <li>Java variant types analogue? <br>
--- enums give no-argument version; "use subtyping and dynamic dispatch instead" (i.e. use the records side of the records/variants duality)
-  <li>Java Exceptions -- very similar to Caml or <strong>TFbX</strong> but Caml has no <code>throws</code> declarations in the types: less apparent what is being thrown.
-</ul>
-
-<h3>Dimensions of Java we did not get very close to
-</h3><ul>
-  <li>The implementation side: the JVM, JNI, etc
-  <li>Reflection
-  <li>Dynamic class loading
-  <li>Java packages
-  <li>run-time type tags and <code>instanceof</code>
+  <li>Java has no variant types?!?  "Use subtyping and dynamic dispatch instead" (i.e. use the records side of the records/variants duality)
+  <li>Java Exceptions -- very similar to Caml or <strong>TFbX</strong> but Caml has no <code>throws</code> declarations in the types: less apparent what is being thrown in OCaml, arguably inferior.
 </ul>
 
 <h3>The Java spin-offs: Scala, Kotlin, and Clojure</h3>
@@ -262,21 +249,18 @@ val f : int -> int = &lt;fun&gt;
 <ul>
   <li>Scala "brings OCaml to Java" - functional programming style into O-O; it also led this trend which Java/C++ followed.</li>
   <li>It was a big deal before Java 8 but Java has been back-patching to be more Scala-like </li>
-  <li>Local type inference is the latest such back-patch in Java 10</li>
+  <li>Local type inference is the latest such back-patch in Java 14</li>
   <li>Scala shares the immutabilty by default aspect of OCaml
     <br> -- you can declare things final in Java for immutability, but its not the default.</li>
   <li>Scala has an actor-based concurrency model built-in.</li>
   <li>Scala also has pattern matching built in -- <a href="https://www.tutorialspoint.com/scala/scala_pattern_matching.htm">tutorial link</a>.</li>
     </ul>
-<p>
-  -- in some sense Scala is the closest language to "<strong>ASTFbOBVX</strong>" -- all the <strong>Fb</strong> extensions bundled together.
-
 
 <h4>Kotlin</h4>
 <ul>
   <li>Kotlin is in a nutshell a cleaned-up version of Java; Java has gotten more and more crufty as it has evolved</li>
   <li>It includes higher-order functions, local type inference PLUS operator overloading a la C++, etc.</li>
-  <li>One interesting novel tidbit, delegation is implicitly supported: <a href="https://kotlinlang.org/docs/reference/delegation.html">Kotlin docs of delegation</a>.
+  <li>One interesting novel tidbit, delegation (message forwarding) is directly supported in the syntax: <a href="https://kotlinlang.org/docs/reference/delegation.html">Kotlin docs of delegation</a>.
 </ul>
 
 <h4>Clojure</h4>
