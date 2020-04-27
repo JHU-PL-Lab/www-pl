@@ -8,7 +8,7 @@
 <div id="content" class="container">
 <section>
 <header class="major">
-<h2>Java</h2>
+<h2>Principles Behind Java</h2>
 </header>
 
 
@@ -113,7 +113,7 @@ The <strong>PEFb</strong> language includes both type inference and polymorphism
       comparisons with the <strong>PEFb</strong> or Caml-style parametric types that we  studied:
 <ul>
   <li><tt>'a list / int list</tt> from OCaml is <tt>List &lt;T> / List &lt;Integer></tt> in Java
-  <li>Caml/<strong>PEFb</strong> often <em>infers</em> generic types <code>'a</code> automatically; in Java, you need to declare them as <code>&lt;T&gt;</code>.  But you can just write <code>&lt;&gt;</code> to instantiate a generic type: the type will be inferred.
+  <li>Caml/<strong>PEFb</strong> often <em>infers</em> generic types <code>'a</code> automatically; in Java, you need to declare them as <code>&lt;T&gt;</code>.  But you can often just write <code>&lt;&gt;</code> to instantiate a generic type: the type will be inferred.
   <li>Java generics have <em>bounded subtyping</em>, the combination of polymorphism and subtyping (note, this doesn't exist in OCaml and we didn't cover the principles in class).
 </ul>
 <h4>Bounded subtyping</h4>
@@ -126,18 +126,15 @@ The <strong>PEFb</strong> language includes both type inference and polymorphism
       <code>String/Object</code> may occur both positively (rhs of function arrow) and
       negatively  (lhs of arrow) in <code>List</code>'s signature, so it needs to be
       invariant.  
-  <li>In <strong>STFb</strong> the problem comes up in how subtyping
-      is defined contravariantly on function types.   A  list type
-      would at least include <code>add</code> and <code>head</code> so
-      the subtyping needed for the above would be at least
+  <li>Consider a list-like object encoded as a <strong>STFbR</strong> record:
  <pre>{ add: String -> {}; head : {} -> String } &lt;: { add: Object -> {}; head : {} -> Object }      </pre>
-and this relation fails because it also requires <code>Object &lt;:
+-- this relation <em>fails</em> in <strong>STFbR</strong> because it requires <code>Object &lt;:
       String</code> due to the <code>add</code> parameter argument contravariance.  
   <li>In <strong>STFb</strong> we could in fact have such subtypings
       holding for the case they were positive  only -- imagine some
       list which you could only get the head of, nothing else:
       <pre>{ head : {} -> String } &lt;: { head : {} -> Object }      </pre>
-      would be a legal subtyping in our <strong>STFb</strong> rules
+      would be a legal subtyping in <strong>STFb</strong>
       assuming <code>String &lt;: Object</code>. 
   <li>Java is
       conservatively assuming that <code>List<T></code> will have
@@ -147,41 +144,38 @@ and this relation fails because it also requires <code>Object &lt;:
 
 To get around this weakness, Java includes <em>bounded subtyping</em>
   <ul>
-    <li>You can also write things like <code>&lt;T extends Comparable&lt;T&gt;&gt; void test(List&lt;T&gt; t) </code>
-  <li>the "<code>T extends Comparable&lt;T&gt;&gt;</code>" means <code>T</code> can be
-    any type which extends <code>Comparable&lt;T&gt;&gt;</code> -- in other words, <code>T &lt;: Comparable&lt;T&gt;&gt;</code> in our subtyping terminology.
+    <li>You can write things like <code>&lt;T extends Comparable&lt;T&gt;&gt; void test(List&lt;T&gt; t) </code>
+  <li>the "<code>&lt;T extends Comparable&lt;T&gt;&gt;</code>" means <code>T</code> can be
+    any type which extends <code>Comparable&lt;T&gt;&gt;</code> -- in other words, <code>T &lt;: Comparable&lt;T&gt;</code> in our subtyping terminology.
     <br> -- And, in English this means <code>T</code> can be compared with itself.
   <li>This adds more flexibility, <code>T</code> need not be any type,
   but from a restricted range of types which gives added flexibility later.
   <li>In terms of type theory this is the theory of <em>bounded polymorphism</em>: there are subtype bounds on the parametric types.  Its a <em>very</em> natural combination of polymorphism and subtyping.
-  <li>Java also allows type variable wildcards, <code>?</code> - this is
-      a form of <em>existential type</em> -- the typing  holds  for
-  <em>some</em> <code>?</code>.
 </ul>
 
 
 <h3><a href="http://docs.oracle.com/javase/specs/jls/se14/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
-Java's notion of method overloading (also called ad hoc polymorphism) is simply described
 <ul>
   <li> Java method overloading can be
   viewed as concatenating all of the argument types onto the method
   name. 
-  <li>So it is really just a form of syntactic sugar. 
+    <li>This makes "a new method for each different type"
+  <li>So it is just simple syntactic sugar. 
 </ul>
 
 <h3>Immutable Data</h3>
-One  of the key lessons of Caml is the importance of immutable data: its not changing underneath your feet.<p>
+One of the key lessons of Caml is the importance of immutable data.<p>
 <ul>
   <li>Java allows fields to not mutate if qualified with <code>final</code>; so, it is something like  <code>let</code> in OCaml.
   <li>As with OCaml, immutability is only shallow - the field could
       contain <em>components</em> that mutate.
-  <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior and can confuse Java programmers when their final thing starts mutating on them.
+  <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior.
   <li>One advantage of Java is no need for "<code>!</code>" when accessing mutable data.
 </ul>
 
 <h3>Lambdas</h3>
 
-Java 8+ has Lambdas
+Java 8+ has Lambdas, use them!  We are probably going to skip this topic, the only real novelty is the (gross) syntax.
  <ul>
    <li>Fully higher order functions in Java, 50 years after they appeared in PLs.
    <li><a href="http://docs.oracle.com/javase/tutorial/java/javaOO/lambdaexpressions.html">Here is a tutorial</a></li>
@@ -198,23 +192,13 @@ Java 8+ has Lambdas
    <li>The term "closure" comes from how they are
  implemented -- all variables not local to the function must be remembered
    <li>(We didn't have this problem in our interpreters because we
- substituted when we did function application, but that is not very efficient)
-   <li>Caml example:
-       <pre>
-       let x = 5 in
-         let f y = x + y in (* f is at runtime a closure: a pair (f's-code, {x |-> 5}) *)
-           let x = 22 in
-             f 2 (* prints 7 because x was 5 in f's closure *)
-       </pre>
-   <li>Caml example writing out the let:
+ <em>substituted</em> when we did function application, but that is not very efficient)
+   <li>OCaml example:
        <pre># let f = (fun x -> fun y -> x + y) 4;;
-val f : int -> int = &lt;fun&gt;
+val f : int -> int = &lt;fun&gt; (* f is at runtime the closure &lt;fun y code, {x |-> 3)&gt; *)
 # f 3;;
-- : int = 7
-       </pre>
-       -- note how <code>x</code> is a function parameter and is remembered in spite of function returning, means <code>x</code> needs to be <em>copied</em> into the closure.
-   <li>Closures are more difficult to deal with in C++11's lambdas due to its lower-level memory model - see <a href="cppstudy.shtml#lambdas">the C++ notes</a>.
-   <li>The PL book Section 8.1 describes <em>closure conversion</em>, a method to "implement" closures in <strong>FbSR</strong> itself by modifying functions to explicitly record the information.
+- : int = 7   </pre>
+Note how <code>x</code> is a function parameter and is remembered in spite of function returning, means <code>x</code> needs to be <em>copied</em> into the closure.
  </ul>
 
  
@@ -223,19 +207,17 @@ val f : int -> int = &lt;fun&gt;
 <p>
 <ul>
   <li>For years Java followed the "declaring types is good for code reading" philosophy - types were all declared.</li>
-  <li>But, "type inference is coming to a language near you" caught on a few years ago.</li>
-  <li>So, Java 10+ has <em>local type inference</em>, a feature it is taking from Scala (and is also in Kotlin and C++): <pre>var first = "Hello"</pre> is legal and will infer <tt>first</tt> to be of type <tt>string</tt>.</li>
+  <li>But, "type inference is coming to a language near you" caught on a few years ago, a trend initiated by Scala.</li>
+  <li>So, Java 10+ has <em>local type inference</em>, along with Scala, Kotlin, C++, etc:
+    <pre>var first = "Hello"</pre> is legal and will infer <tt>first</tt> to be of type <tt>string</tt>.</li>
 </ul>
 
 
 </p>
   
-<h3>Concurrency</h3>
-<p> Java has standard thread-based shared memory concurrency like C/C++/etc -- low-level locks must be used, prone to bugs.
-
 <h3>Other points of comparison between Java and Caml / Fb</h3>
 <ul>
-  <li>Java has no variant types?!?  "Use subtyping and dynamic dispatch instead" (i.e. use the records side of the records/variants duality)
+  <li>Java has no variant types?!? --  "Use subtyping and dynamic dispatch instead" (i.e. use the records side of the records/variants duality)
   <li>Java Exceptions -- very similar to Caml or <strong>TFbX</strong> but Caml has no <code>throws</code> declarations in the types: less apparent what is being thrown in OCaml, arguably inferior.
 </ul>
 
