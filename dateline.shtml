@@ -472,7 +472,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Mon</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">&nbsp;Special Topics II: Principles of Java</div>
+            <div align="left" class="body">&nbsp;Special Topics II: <a href="lectures/java-principles.shtml">Principles of Java</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a href="assignments/assignment9.shtml">9 - Operational Equivalence</a></div>
