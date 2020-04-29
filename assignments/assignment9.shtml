@@ -26,14 +26,14 @@
 
 
   <li>Recall the definition of operational equivalence in the book:
-    <blockquote>     <strong>Definition 2.16</strong> (Operational Equivalence).  e =~ e'
-      if and only if for all contexts C such that C[e] and C[e'] are closed, C[e]&nbsp;==&gt;&nbsp;v  for
-      some v  if and only if C[e']&nbsp;==&gt;&nbsp;v' for some v'.
+    <blockquote><strong>Definition 2.16</strong> (Operational Equivalence).  <code>e</code> =~ <code>e'</code>
+      if and only if for all contexts <code>C</code> such that <code>C[e]</code> and <code>C[e']</code> are closed, <code>C[e]</code>&nbsp;==&gt;&nbsp;<code>v</code>  for
+      some <code>v</code>  if and only if <code>C[e']</code>&nbsp;==&gt;&nbsp;<code>v'</code> for some <code>v'</code>.
 </blockquote>
       Is the following variation equivalent?
- <blockquote>     <strong>Definition 2.16'</strong> (Operational Equivalence).  e =~ e'
-      if and only if for all contexts C such that C[e] and C[e'] are closed, C[e]&nbsp;==&gt;&nbsp;0 if
-      and only if C[e']&nbsp;==&gt;&nbsp;0. 
+ <blockquote>     <strong>Definition 2.16'</strong> (Operational Equivalence).  <code>e</code> =~ <code>e'</code>
+      if and only if for all contexts <code>C</code> such that <code>C[e]</code> and <code>C[e']</code> are closed, <code>C[e]</code>&nbsp;==&gt;&nbsp;<code>0</code> if
+      and only if <code>C[e']</code>&nbsp;==&gt;&nbsp;<code>0</code>. 
 </blockquote>
      Justify your answer by either finding a counterexample or outlining a proof that they are the same.
 

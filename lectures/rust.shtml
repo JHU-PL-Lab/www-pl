@@ -11,14 +11,15 @@
 <h2>A Taste of Rust</h2>
 </header>
 
-OCaml meets C++ for <em>safe</em> but <em>efficient</em> systems programming</li>
+In a nutshell: "OCaml meets C++ for safe but efficient systems programming"</li>
 <br>
-Functional programming goodies:
+OCaml goodies:
 <ul>
-  <li>immutable by default with let-definition</li>
-  <li>parametric polymorphism</li>
+  <li>immutable by default with <tt>let</tt>-definition</li>
+  <li>parametric polymorphism (with syntax like Java's, <tt>&lt;T&gt;</tt>)</li>
 <li>first-class functions</li>
-<li>algebraic data types</li>
+<li>tuples such as <tt>(1,2)</tt></li>
+<li>algebraic data types - the <tt>type</tt> declarations in OCaml</li>
 <li>pattern matching</li>
 <li>Hindley-Milner type inference (similar to OCaml and EFb)</li>
 </ul>
@@ -31,8 +32,8 @@ O-O goodies:
 
 Systems programming goodies:
 <ul>
-<li>true pointer references</li>
-<li>no garbage collector causing background overheard</li>
+<li>true pointer references you can get your hands on</li>
+<li><strong>no garbage collector!!</strong> so no pausing problems for systems code, and also no manual freeing like in C++</li>
 <li>support for (efficient) stack allocation of data</li>
 </ul>
 
@@ -53,7 +54,7 @@ How: <em>ownership</em> of data, a concept we also covered in the concurrency le
 <li>Similarly, assignment often means giving up access to the value</li>
 </ul>
 
-We will consult the <a href="https://doc.rust-lang.org/book/second-edition/ch04-00-understanding-ownership.html">documentation on ownership</a> for details.
+We will look at some examples in the <a href="https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html">documentation on ownership</a> for details.
 
 
 <h4>Borrowing</h4>
@@ -62,10 +63,10 @@ OK at this point Rust sounds nearly-useless given this rigidity.  But there are 
 <ul>
 <li>A function can accept arguments by-value or by-reference
 <li>by-value transfers ownership as we saw up to now</li>
-<li>by-reference <em>borrows</em> ownership</li>
+<li>by-reference <em>borrows</em> ownership - !</li>
 </ul>
 
-We will consult the <a href="https://doc.rust-lang.org/book/second-edition/ch04-02-references-and-borrowing.html">documentation on borrowing</a> for details.
+We will look at the examples in the <a href="https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html">documentation on borrowing</a> for details.
 
 <h4>Lifetimes</h4>
 
@@ -76,17 +77,18 @@ We will consult the <a href="https://doc.rust-lang.org/book/second-edition/ch04-
 </li>
 </ul>
 
-Again we will consult the <a href="https://doc.rust-lang.org/book/second-edition/ch10-03-lifetime-syntax.html">documentation on lifetimes</a> for details.
+Again we will consult the <a href="https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html">documentation on lifetimes</a> for details.
 
 <h4>Efficiency</h4>
 Why all the pain compared to Java, python, etc?  Efficiency while preserving safety!
 <ul>
 <li>Static dispatch by default - like C++ non-virtual, very efficient
-<li>No required runtime, and no garbage collection overhead</li>
+<li>No manual <tt>free</tt> required at runtime, and no garbage collection overhead</li>
+<li>Corollary: if you don't care about these issues don't use Rust, the pain is not worth it.</li>
+<li>Note that some Rust-ites would disagree with previous and point out how ownership preserves more referential transparency, etc.  Yes, there are other benefits but the price is high.
 </ul>
 <h4>Freeing (finalizing) data</h4>
 <ul>
-<li>Summary Similar to C++'s informal "RAII" (Resource Acquisition Is Initialization) philosophy but enforced by compiler</li>
 <li>No manual free - could free data still being used and thats bad!</li>
 <li>Key concept: Memory freed and destructor called when value leaves owner’s scope (in reverse order of initialization, due to dependencies)
 <li>Particularly useful for resources like file handles, gets closed when scope over</li>
