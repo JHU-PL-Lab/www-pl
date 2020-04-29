@@ -489,24 +489,24 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
             <div align="center" class="body">Wed</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">Special Topics III</div>
+            <div align="left" class="body">Special Topics III: <a href="lectures/rust.shtml">Rust</a>, <a href="lectures/cpp-principles.shtml">Principles of C++</a></div>
           </td>
           <td width="22%"> 
             <div align="center" class="body">&nbsp;</div>
           </td>
           <td width="22%"> 
-            <div align="center" class="body">9 (next Tues)</div>
+            <div align="center" class="body">9 (next Mon)</div>
           </td>
         </tr>
 	<tr> 
           <td width="8%"> 
-            <div align="center" class="body">May 6-8</div>
+            <div align="center" class="body">May 6-11</div>
           </td>
           <td width="8%"> 
             <div align="center" class="body">Weds-Fri</div>
           </td>
           <td width="30%"> 
-            <div align="left" class="body">Take-Home Final: out 6th due 8th</div>
+            <div align="left" class="body">Take-Home Final: out 6th due 11th</div>
           </td>
           <td width="22%"> 
             <div align="center" class="body"><a
