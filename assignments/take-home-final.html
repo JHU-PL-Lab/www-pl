@@ -45,7 +45,7 @@ This question concerns operational equivalence for <strong>FbP'</strong>.  Its d
       <li> [20 points]
 Consider a typed version of <strong>FbP'</strong> from the previous question, <strong>TFbP'</strong>, which extends  <strong>TFb</strong> of Section 6.2.2 of the book.  Along with pairs and the new <tt>Let</tt> pattern match syntax, <strong>TFbP'</strong> also includes regular typed-<tt>Let</tt> of the form <tt>Let x : tau = e in e</tt> (which was left out of <strong>TFb</strong> for some reason). 
 	        <ol type="a">
-      <li> Give the grammmar of <strong>TFbP'</strong>.  Make sure to include a grammar for the types, and appropriate type declarations in the code to make writing a type checker feasible.</li>
+      <li> Give the BNF grammar of <strong>TFbP'</strong>.  Make sure to include a grammar for the types, and appropriate type declarations in the code to make writing a type checker feasible.</li>
       <li>Now, write out the new type rules.  Include two rules for <tt>Let</tt>, one for the normal let and one for the new pairs pattern let.</li>
       <li>Write out a <strong>TFbP'</strong> <tt>typecheck</tt> function which includes the cases for the two new <tt>Let</tt> forms as well as for pairs.  You don't need to repeat all the old <strong>TFb</strong> clauses, "..." is fine.  Look at Section 6.3 of the book to recall the <strong>TFb</strong> type checker structure.</li>
       <li>Finally, consider <strong>STFbRP'</strong> -- adding pairs to  <strong>STFbR</strong>.  Generally this is just putting together the  <strong>STFbR</strong> with the pair rules from  <strong>TFbP'</strong> as per the previous question, but some new subtyping rules <tt>tau <: tau'</tt> may be needed.  Either give the new rules or argue no new subtyping rules are needed.
@@ -55,7 +55,7 @@ Consider a typed version of <strong>FbP'</strong> from the previous question, <s
   <li> [15 points] This question concerns operational semantics for printing.
       <ol type="a">
 	<li>  Consider language <strong>FbPrint</strong>, <strong>Fb</strong> with printing.  This printing is similar to what was in the <strong>AFbV</strong> binary, but can <em>only</em> print integers.  Additional expression <code>Print(e)</code> will print out the result of expression <tt>e</tt> assuming <tt>e</tt> evaluates to an integer.  Printing is a side effect like state and actors; propose a side-effecting operational semantics <tt>==></tt> for <strong>FbPrint</strong> (adding any extra parameters or annotations to <tt>==></tt>  as needed), and write the operational semantics rules for <code>+</code> and <code>Print</code> expressions (the other rules will be similar).   Make sure that you record prints in the order they occurred.</li>
-	<li>When we did the <strong>AFbV</strong> operational semantics we did not include <tt>Print</tt> as a side-effect, only the actor side-effects.  For this question, show how we could combine both actor and print side effects in the <tt>==></tt> relation for actors.  Make sure you keep the print side effects in order as above.
+	<li>When we did the <strong>AFbV</strong> operational semantics we did not include <tt>Print</tt> as a side-effect, only the actor side-effects (messages and newly created actors were accumulated in a set).  For this question, show how we could combine both actor and print side effects in the <tt>==></tt> relation for actors.  Make sure you keep the print side effects in order as above.
 </ol>
 
 
@@ -117,10 +117,8 @@ val r : rt = {a = 5; b = 7}
 - : int = 4
 	      </pre>
 
-For this question you are to define a language with mutable records, <strong>FbmR</strong>.   For simplicity, we will assume <em>all</em> fields in a record are mutable.  Compared to <strong>FbR</strong> you only need to support the additional field mutation syntax <tt>e.l <- e</tt> for <tt>l</tt> a record label.
+For this question concerns a language with mutable records, <strong>FbmR</strong>.   For simplicity, we will assume <em>all</em> fields in a record are mutable in all records.  Compared to <strong>FbR</strong> the only additional syntax is <tt>e.l <- e</tt> for <tt>l</tt> a record label.  This is the same as the OCaml <tt>mutable</tt> fields in records, it is like having keyword <tt>mutable</tt> on every field.
     <ol type="a">
-      <li>Give the operational semantics for <strong>FbmR</strong> which should follow the analogous OCaml behavior as shown in the OCaml top loop example above. Since there is mutation you will need a store <em>S</em> as in <strong>FbS</strong>; you can make the format of the store be whatever you want.  Also as with <strong>FbS</strong> you will need to redo all of the old <strong>Fb</strong> rules to thread the state.
-        Since that would take a lot of writing, for your answer here just show the revised <tt>+</tt> rule.  Do make sure to give rules for all of the record operations: record formation, projection (<tt>.</tt>) and field mutation (<tt>&lt;-</tt>).
       <li>We can extend <strong>FbmR</strong> to a typed version <strong>TFbmR</strong>.  For this question give all type rules needed for any record operation.  You don't need to repeat any type rules of <strong>TFb</strong>, but do give all the record-related typing rules.
       <li>Now consider <strong>STFbmR</strong> in which we add subtyping like we did in <strong>STFbR</strong>, but now the fields are potentially mutable.  You don't need to write out any rules, but think about what it should be.
 	Which direction is correct? <tt>{ a : Int;  b : Int } &lt;: { a : Int }</tt>, or  <tt>{ a : Int } &lt;: { a : Int; b : Int }</tt> Or, are both incorrect?  Briefly justify your answer. 
