@@ -232,25 +232,8 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">4</div>
       </td>
     </tr>
-   <tr> 
-      <td width="8%"> 
-        <div align="center" class="body">Mar 9</div>
-      </td>
-      <td width="8%"> 
-        <div align="center" class="body">Mon</div>
-      </td>
-      <td width="30%"> 
-        <div align="left" class="body">&nbsp;TBA</div>
-      </td>
-      <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
-      </td>
-      <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
-      </td>
-    </tr>
-    <tr> 
-      <td width="8%"> 
+    <tr>      
+    <td width="8%"> 
         <div align="center" class="body">Mar 11</div>
       </td>
       <td width="8%"> 
@@ -265,6 +248,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
       </td>
+      </tr>
       <tr> 
       <td width="8%" height="2"> 
         <div align="center" class="body">Mar 16-20</div>
@@ -499,4 +483,4 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
-
+</table>
