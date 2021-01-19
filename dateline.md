@@ -1,8 +1,7 @@
 ## DATELINE
 
-Lecture material and assigments are under the indicated links; lectures with no such link will be based on the <a href="book">book</a>. </p>
+Lecture material and assigments are under the indicated links; lectures with no such link will be based on the <a href="book">book</a>.
 
-<p>
 <table class="date" width="100%" border="1" cellspacing="0" cellpadding="0" bordercolor="#CCCCCC">
     <tr> 
       <td width="8%"> 
@@ -33,7 +32,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
     basic data, lists, let</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="ocaml/index.shtml">(0 - Install OCaml)</a>
+        <div align="center" class="body"><a href="ocaml/index.html">(0 - Install OCaml)</a>
     </div>
       </td>
       <td width="22%"> 
@@ -70,7 +69,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
-href="assignments/assignment1.shtml">1 - OCaml</a></div>
+href="assignments/assignment1.html">1 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -106,7 +105,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
-  href="assignments/assignment2.shtml">2 - OCaml</a></div>
+  href="assignments/assignment2.html">2 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">1</div>
@@ -158,7 +157,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
-    href="assignments/assignment3.shtml">3 - Fb Opsem</a></div>
+    href="assignments/assignment3.html">3 - Fb Opsem</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">2</div>
@@ -175,7 +174,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Opsem IV: Fb Programming</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment4.shtml">4 - Fb Interpreter</a>
+        <div align="center" class="body"><a href="assignments/assignment4.html">4 - Fb Interpreter</a>
     </div>
       </td>
       <td width="22%"> 
@@ -227,7 +226,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;State</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment5.shtml">5 - Y/Records/Variants/State</a></div>
+        <div align="center" class="body"><a href="assignments/assignment5.html">5 - Y/Records/Variants/State</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">4</div>
@@ -305,7 +304,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Objects</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment6.shtml">6 - State/Exceptions/Objects</a></div>
+        <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">5 (Fri)</div>
@@ -356,7 +355,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Types I: TFb</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment7.shtml">7 - Concurrency and Types</a></div>
+        <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency and Types</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -407,7 +406,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment8.shtml">8 - Types and Inference</a>
+        <div align="center" class="body"><a href="assignments/assignment8.html">8 - Types and Inference</a>
     </div>
       </td>
       <td width="22%"> 
@@ -456,10 +455,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Special Topics II: <a href="lectures/java-principles.shtml">Principles of Java</a></div>
+        <div align="left" class="body">&nbsp;Special Topics II: <a href="lectures/java-principles.html">Principles of Java</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment9.shtml">9 - Operational Equivalence</a></div>
+        <div align="center" class="body"><a href="assignments/assignment9.html">9 - Operational Equivalence</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">8</div>
@@ -473,7 +472,7 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">Special Topics III: <a href="lectures/rust.shtml">Rust</a>, <a href="lectures/cpp-principles.shtml">Principles of C++</a></div>
+        <div align="left" class="body">Special Topics III: <a href="lectures/rust.html">Rust</a>, <a href="lectures/cpp-principles.html">Principles of C++</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -494,11 +493,10 @@ href="assignments/assignment1.shtml">1 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
-      href="assignments/finals/final-study.shtml">Study Guide</a></div>
+      href="assignments/finals/final-study.html">Study Guide</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
-</table>
 
