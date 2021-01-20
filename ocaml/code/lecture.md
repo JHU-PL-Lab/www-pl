@@ -1,9 +1,11 @@
 
-## Basic OCaml Programming
+## Basic OCaml Programming Lecture
 
 * To start with we will use the top loop as a simple calculator.
 * Top loop is also called a "read-eval-print" loop - write and run small code snippets. 
 * Invented for Lisp; found in JavaScript, Python, Scheme, Ruby, OCaml, Perl, etc
+
+(Note if you want to get all the code (only) in this webpage into a `.ml` file to load into your editor, download the file [lecture.ml](lecture.ml).)
 
 #### Simple integer operations in the top loop
 
