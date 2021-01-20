@@ -35,17 +35,11 @@ if it is not already in the file.  The contents of this file are entered in the 
     -   If you are running a recent Windows install, we recommend installing [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/) which once you have set up will allow you to follow the Linux Ubuntu install instructions to get `opam`. 
     -   Option 2 is to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, [here is one of them](https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098).  Once your virtual Linux box is set up, you can follow the `opam` Linux install instructions.
 
-
-#### Required OPAM Standard packages
-
-
-**For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not all installed.**
-
 ### OCaml with the PL Book FbDK
 
-See the [FbDK README](../book/_dist/fbdk/) for information on how to use the FbDK.
+See the [FbDK README](../book/_dist/fbdk/) for information on how to use the FbDK.  We will not use it on the first several assignments.
 
-#### The OCaml Manual
+### The Official OCaml Manual
 
 The OCaml manual is [here](http://caml.inria.fr/pub/docs/manual-ocaml/).
 * We will cover most of the topics in Part I Chapters 1 and 2 from the manual.
@@ -102,7 +96,7 @@ to install the relevant OCaml packages. Here are some handy Atom keymaps for com
 
 ### Other Resources
 
-* [Cornell cs3110 book](https://www.cs.cornell.edu/courses/cs3110/2020sp/textbook/) is related to this course and was one of the main inspirations along with Real World OCaml.
+* [Cornell cs3110 book](https://www.cs.cornell.edu/courses/cs3110/2020sp/textbook/) is another course which uses OCaml; it is more focused on programming and less on PL theory than this class is.
 * [ocaml.org](http://ocaml.org) is the home of OCaml for finding downloads, documentation, etc. The [tutorials](http://ocaml.org/learn/tutorials/) are also very good and there is a page of [books](http://ocaml.org/learn/books.html).
 * The [OCaml Youtube Tutorial](https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1) if you like watching videos to learn things.
 
