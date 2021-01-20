@@ -1,7 +1,7 @@
 ## Contact Information
 
-**For quickest response, post to CampusWire**.
-Please send private questions for instructors as a private DM to the head CA or Professor under CampusWire.  To contact an individual CA or instructor also use the DM feature in CampusWire.
+**For quickest response, post to Campuswire**.
+Please send private questions for instructors as a post to "Instructors and TAs" (not "Everyone") in Campuswire.  To contact an individual CA or instructor you can use the DM feature in CampusWire.
 
 **Professor** Scott Smith
 **email** [scott@cs.jhu.edu](mailto:scott@cs.jhu.edu)
@@ -17,5 +17,5 @@ Please send private questions for instructors as a private DM to the head CA or 
 
 ### Office Hours
 
-They will be posted on CampusWire along with connection information.
+They will be posted on Campuswire along with connection information.
 
