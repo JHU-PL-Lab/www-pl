@@ -9,7 +9,10 @@ Please Send private questions for instructors as a private post to "Instructors"
 **Head Course Assistant** Devin Hill
 **email** dhill45 --at-- jhu.edu
 
-**Course Assistants** Shiwei Weng, more TBA
+**Course Assistants** 
+* Melissa Shohet (grading, office hours)
+* Jiatong Shi (grading, office hours)
+* Shiwei Weng (office hours)
 
 ### Office Hours
 
