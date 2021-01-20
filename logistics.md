@@ -2,7 +2,15 @@
 
 ### Class Times
 
-We will meet 1:30-2:45PM on Mondays and Wednesdays in Hodson 110, and in parallel on Zoom.
+We will meet 1:30-2:45PM on Mondays and Wednesdays in Hodson 110, and in parallel on Zoom.  lectures will also be recorded and uploaded to Panopto.
+
+### Q&amp;A
+
+We will be using [CampusWire](https://campuswire.com/c/G9E051068) for announcements and Q&amp;A. You must register for CampusWire via the link you should have been emailed.  If you added the course late, see the course Blackboard site for the link.  We won't be using Blackboard for anything else.
+
+### Zoom and Panopto Locations
+
+See the CampusWire site for those links.  They are also posted on the course Blackboard site.
 
 ### The Book
 
@@ -10,11 +18,7 @@ The book for the course is the on-line [Book](book/index.html), which directly c
 
 ### Gradescope
 
-[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See Piazza for the entry code.
-
-### Piazza
-
-We will be using Piazza for online discussions. You will need to manually register for The [PL Piazza Page]() so you can receive course announcements and discuss the material with other students.
+[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See CampusWire for the entry code.
 
 ### Assignments
 
@@ -32,16 +36,16 @@ Please make sure to consult the course [Academic Integrity Policy](integrity.htm
 
 #### Late HW Policy
 
-You will be given the same number of "late days" as there are assignments, which is 10 this year. For each assigment you can use up to three of your late days quota, each one allowing you to submit the assignment one day later. **The quantum of lateness is the day, so if you are 15 seconds late that counts as a day late.** If you have a cold or flu you can use the late days for such absences; if you have an extended excused absence contact instructors on Piazza and we can work something out.
+You will be given the same number of "late days" as there are assignments, which is 10 this year. For each assigment you can use up to three of your late days quota, each one allowing you to submit the assignment one day later. **The quantum of lateness is the day, so if you are 15 seconds late that counts as a day late.** If you have a cold or flu you can use the late days for such absences; if you have an extended excused absence contact the instructor and we can work something out.
 
 ### Office Hours
 
-Office hours will be pinned on Piazza where the Zoom rooms will also be listed.
+Office hours will be pinned on CampusWire where the Zoom rooms for office hours will also be listed.
 
 ### Exams
 
-There will be an in-class midterm before spring break and a final examination during the normal final exam slot.
+There will be a midterm before spring break and a final examination during the normal final exam period.
 
 ### Grading
 
-The final will count around 1/3 of the grade, the midterm 1/6th and the homeworks the rest. The HWs will be weighed somewhat differently based on the length/difficulty of the assignment.
+The final will count around 1/3 of the grade, the midterm 1/6th, and the homeworks the rest. The HWs will be weighed somewhat differently based on the time commitment of the assignment.
