@@ -20,10 +20,15 @@ We require that you use the [OPAM packaging system](https://opam.ocaml.org) for 
     2.  `opam switch create 4.11.1` (this will take awhile) to build OCaml version 4.11.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to `opam update` before this `switch` to make sure OPAM is aware of the latest version);
 	3.  `eval (opam env)` to let your shell know where the OPAM files are; and
     4.  Also add the very same line, `eval (opam env)`, to your`.profile`/`.bashrc` shell init file as you would need to do that in every new terminal window otherwise. (for `.zshrc` on macs, use ``eval `opam env` ``instead )
-    5. Lastly, in order for the OCaml top loop to start up with some of these libraries already loaded, edit the file `~/.ocamlinit` to add the lines below (note `opam` might have created this file, just make sure the line below is in it).  The lines in this file are input to the top loop when it first starts.  `topfind` really should be built-in, it allows you to load libraries. 
+    5. Once you have the basics installed, run the following shell command to install additional necessary packages used in the class:
+```bash
+opam install merlin ocp-indent menhir utop ppx_deriving ounit2
+```
+    6. Lastly, edit the file `~/.ocamlinit` to add the line 
 ```ocaml
 #use "topfind";;
 ```
+if it is not already in the file.  The contents of this file are entered in the top loop when it starts.
 
 
 -   Windows Windows Windows.. the OCaml toolchain is unfortunately not good in straight Windows.
@@ -32,12 +37,6 @@ We require that you use the [OPAM packaging system](https://opam.ocaml.org) for 
 
 
 #### Required OPAM Standard packages
-
-Once you have the basics installed, run the following shell command to install additional necessary packages used in the class:
-
-```bash
-opam install merlin ocp-indent menhir utop ppx_deriving ounit2
-```
 
 
 **For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not all installed.**

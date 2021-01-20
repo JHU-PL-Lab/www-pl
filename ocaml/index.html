@@ -54,12 +54,7 @@
        </ul></li>
 
          <li><a href="/pl/ocaml/index.html">OCaml</a>
-       <ul class="menu">
-         <li><a href="http://ocaml.org/docs/install.html">Install</a></li>
-	 <li><a href="http://caml.inria.fr/pub/docs/manual-ocaml/">Manual</a></li>
-	 <li><a href="/pl/ocaml/code/lecture.ml">lecture.ml</a></li>
-         <li><a href="http://ocaml.org">ocaml.org</a></li>
-       </ul></li>
+         </li>
          <li><a href="">Assignments</a>
          <ul class="menu">
          <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
@@ -116,9 +111,14 @@
       <li><code>opam switch create 4.11.1</code> (this will take awhile) to build OCaml version 4.11.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to <code>opam update</code> before this <code>switch</code> to make sure OPAM is aware of the latest version);</li>
       <li><code>eval (opam env)</code> to let your shell know where the OPAM files are; and</li>
       <li>Also add the very same line, <code>eval (opam env)</code>, to your<code>.profile</code>/<code>.bashrc</code> shell init file as you would need to do that in every new terminal window otherwise. (for <code>.zshrc</code> on macs, use <code>eval `opam env`</code>instead )</li>
-      <li>Lastly, in order for the OCaml top loop to start up with some of these libraries already loaded, edit the file <code>~/.ocamlinit</code> to add the lines below (note <code>opam</code> might have created this file, just make sure the line below is in it).  The lines in this file are input to the top loop when it first starts.  <code>topfind</code> really should be built-in, it allows you to load libraries.
+      <li>Once you have the basics installed, run the following shell command to install additional necessary packages used in the class:
+        <pre><code class="language-bash">opam install merlin ocp-indent menhir utop ppx_deriving ounit2
+</code></pre>
+      </li>
+      <li>Lastly, edit the file <code>~/.ocamlinit</code> to add the line
         <pre><code class="language-ocaml">#use "topfind";;
 </code></pre>
+        <p>if it is not already in the file.  The contents of this file are entered in the top loop when it starts.</p>
       </li>
     </ol>
   </li>
@@ -131,11 +131,6 @@
 </ul>
 
 <h4 id="required-opam-standard-packages">Required OPAM Standard packages</h4>
-
-<p>Once you have the basics installed, run the following shell command to install additional necessary packages used in the class:</p>
-
-<pre><code class="language-bash">opam install merlin ocp-indent menhir utop ppx_deriving ounit2
-</code></pre>
 
 <p><strong>For the course we will be implicitly assuming you installed all of these OPAM packages; some things will not work if these are not all installed.</strong></p>
 
