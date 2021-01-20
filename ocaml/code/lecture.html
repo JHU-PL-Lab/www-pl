@@ -1,0 +1,1803 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://piazza.com/jhu/spring2020/601426626">Piazza</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/_dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+       <ul class="menu">
+         <li><a href="http://ocaml.org/docs/install.html">Install</a></li>
+	 <li><a href="http://caml.inria.fr/pub/docs/manual-ocaml/">Manual</a></li>
+	 <li><a href="/pl/ocaml/code/lecture.ml">lecture.ml</a></li>
+         <li><a href="http://ocaml.org">ocaml.org</a></li>
+       </ul></li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    
+<h2 id="basic-ocaml-programming">Basic OCaml Programming</h2>
+
+<ul>
+  <li>To start with we will use the top loop as a simple calculator.</li>
+  <li>Top loop is also called a “read-eval-print” loop - write and run small code snippets.</li>
+  <li>Invented for Lisp; found in JavaScript, Python, Scheme, Ruby, OCaml, Perl, etc</li>
+</ul>
+
+<h4 id="simple-integer-operations-in-the-top-loop">Simple integer operations in the top loop</h4>
+
+<pre><code class="language-ocaml">3;; (* use ;; to end input. *)
+3 + 4;; (* notice how types are inferred in output *)
+let x = 3 + 4;; (* give the value a name via let keyword. *)
+x + 5;;
+let y = 5 in x + y;; (* this makes y a local variable: think C's { int y; return(x+y); }  *)
+(* y + 6 ;; *) (* errors because y was only defined *locally* in previous line *)
+</code></pre>
+
+<h4 id="boolean-operations">Boolean operations</h4>
+
+<pre><code class="language-ocaml">true &amp;&amp; false;;
+true || false;;
+1 = 2;; (* = not == for equality comparison *)
+1 &lt;&gt; 2;;  (* &lt;&gt; not != for not equal *)
+</code></pre>
+
+<p><code>int</code> and <code>float</code> cannot be mixed without being explicit - a wonky OCaml-ism</p>
+<pre><code class="language-ocaml">1;;
+1.;;
+4 * 5;;
+4.0 * 1.5;; (* errors -- '*' operator is only for integers *)
+4.0 *. 1.5;;      (* works -- '*.' is for floats *)
+(float 4) *. 1.5;; (* use an explicit cast when you want to mix *)
+</code></pre>
+
+<h3 id="lists">Lists</h3>
+
+<p>Lists are pervasive in OCaml; easy to create and manipulate</p>
+
+<pre><code class="language-ocaml">[1; 2; 3];;
+[1; 1+1; 1+1+1];;
+["a"; "b"; "c"];;
+[1; "a"];; (* errors - All elements must have same type - HOMOGENEOUS *)
+[];; (* empty list *)
+</code></pre>
+
+<h4 id="operations-on-lists">Operations on lists.</h4>
+
+<p>Lists are represented internally as BINARY TREES with left child a leaf.</p>
+<pre><code class="language-ocaml">0 :: [1; 2; 3];; (* "::" is 'consing' an element to the front - fast *)
+0 :: (1 :: (2 :: (3 :: [])));; (* equivalent to the above *)
+[1; 2; 3] @ [4; 5];; (* appending lists - slower *)
+let z = [2; 4; 6];;
+let y = 0 :: z;;
+z;; (* Observe z itself did not change -- lists are immutable in OCaml *)
+</code></pre>
+
+<p>Everything in OCaml returns values (i.e. is an ‘expression’) - no commands</p>
+<pre><code class="language-ocaml">if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
+(if (x = 3) then 5 else 6) * 2;;
+(if (x = 3) then 5.4 else 6) * 2;; (* type errors:  two branches of if must have same type *)
+</code></pre>
+
+<h2 id="basic-ocaml-ii">Basic Ocaml II</h2>
+
+<p>Tuples - fixed length lists, but types of each element CAN differ, unlike lists *)</p>
+
+<pre><code class="language-ocaml">(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
+let tuple = (2, "hi");;
+(1,1.1,'c',"cc");;
+</code></pre>
+
+<h4 id="defining-and-using-functions">Defining and using functions</h4>
+
+<p>To declare a function <code>squared</code> with <code>x</code> its one parameter.  <code>return</code> is  implicit.</p>
+<pre><code class="language-ocaml">let squared x = x * x;; 
+squared 4;; (* to call a function -- separate arguments with S P A C E S *)
+</code></pre>
+<ul>
+  <li>OCaml has no return statement; value of the whole body-expression is what gets returned</li>
+  <li>type is printed as domain -&gt; range</li>
+  <li>“officially”, OCaml functions take only one argument - !  multiple arguments can be encoded by some tricks (later)</li>
+</ul>
+
+<p>Fibonacci series - <code>0 1 1 2 3 5 8 13 ...</code></p>
+
+<pre><code class="language-ocaml">let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (ugh) *)
+  if n &lt;= 0 then 0
+  else if n = 1 then 1
+  else
+    fib (n - 1) + fib (n - 2);; (* notice again everything is an expression, no "return" *)
+
+fib 10;;
+</code></pre>
+
+<h4 id="anonymous-functions">Anonymous functions</h4>
+
+<ul>
+  <li>Lets users define a function as an expression</li>
+  <li>Similar to lambdas in Python, Java, C++, etc - all are based on the lambda calculus *)</li>
+</ul>
+
+<pre><code class="language-ocaml">let add1 x = x + 1;; (* normal add1 definition *)
+let funny_add1 = (function x -&gt; x + 1);; (* "x" is (sole) argument here *)
+funny_add1 3;;
+(funny_add1 4) + 7;; 
+((function x -&gt; x + 1) 4) + 7;; (*  a "-&gt;" function is an expression and can be used anywhere *)
+((fun x -&gt; x + 1) 4) + 7;; (*  shorthand notation -- cut off the "ction" *)
+</code></pre>
+
+<p>Multiple arguments - just leave spaces between multiple arguments in definition and use</p>
+
+<pre><code class="language-ocaml">let add x y = x + y;;
+add 3 4;;
+(add 3) 4;; (* same meaning as previous application -- two applications, " " associates LEFT *)
+let add3 = add 3;; (* No need to give all arguments at once!  Type of add is int -&gt; (int -&gt; int) - "CURRIED" *)
+add3 4;;
+add3 20;;
+</code></pre>
+
+<p>Conclusion: add is a function taking an integer, and returning a <strong>function</strong> which takes ints to ints.<br />
+So, add is a <strong>higher-order function</strong>: it either takes a function as an argument, or returns a function as result.</p>
+
+<p>Observe <code>int -&gt; int -&gt; int</code> is parenthesized as <code>int -&gt; (int -&gt; int)</code> – unusual <strong>right</strong> associativity</p>
+
+<p>Be careful on operator precedence with this goofy way that function application doesn’t need parens!</p>
+<pre><code class="language-ocaml">add3 (3 * 2);;
+add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than * *)
+add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
+</code></pre>
+
+<h3 id="pattern-matching">Pattern matching</h3>
+
+<ul>
+  <li>Switch or case on steroids</li>
+  <li>A very cool and useful but not so common language feature</li>
+  <li>Haskell and Scala also have it, JavaScript and Python should be getting it</li>
+</ul>
+
+<p>Basic pattern match with numbers, looks like switch more or less:</p>
+
+<pre><code class="language-ocaml">let mixemup n =
+    match n with
+    | 0 -&gt; 4
+    | 5 -&gt; 0
+    | y -&gt; y + 1;; (* default case giving a name to the matched number, x *)
+
+mixemup 3;; (* matches last case and x is bound to the value 3 *)
+</code></pre>
+
+<pre><code class="language-ocaml">let five_oh y =
+"Hawaii " ^ (match y with
+    | 0 -&gt; "Zero"
+    | 5 -&gt; "Five"  (* notice the "|" separator between multiple patterns *)
+    | _ -&gt; "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything *)
+
+five_oh 5;;
+</code></pre>
+
+<p>List pattern matching - we can finally take apart lists!</p>
+
+<pre><code class="language-ocaml">match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
+      | x :: y -&gt; "first clause"
+      | _ -&gt; "second clause";;
+
+match [] with
+      | x :: y -&gt; "first clause"
+      | _ -&gt; "second clause";;
+
+match ['h';'o';'p';' ';'h';'o';'p'] with
+      | x :: y -&gt; y
+      | _ -&gt; ['0'];;
+
+match ["hi"] with (* ["hi"] is "hi" :: [] *)
+      | x :: (y :: z) -&gt; "first"
+      | x :: y -&gt; "second"
+      | _ -&gt; "third";;
+
+let mm l = match l with
+      | [] -&gt; "empty"
+      | x :: y -&gt; "non-empty";;
+</code></pre>
+
+<p>Tuple pattern matching</p>
+<pre><code class="language-ocaml">let tuple = (2, "hi", 1.2);;
+
+match tuple with
+  (f, s, th) -&gt; s
+;;
+</code></pre>
+
+<p>Let pattern shorthand: a single pattern match to assign multiple values</p>
+
+<pre><code class="language-ocaml">let mypair = (2.2, 3.3);;
+let (f, s) = mypair in f +. s;;
+match mypair with (f,s) -&gt; f +. s;; (* same behavior as above let *)
+</code></pre>
+
+<pre><code class="language-ocaml">let getSecond t =
+  match t with
+    (f, s) -&gt; s
+;;
+let s = getSecond (2, "hi");;
+let s = getSecond mypair;;
+
+let getSec t =
+  match t with
+    (f, s) -&gt; (s :: [],4)
+;;
+</code></pre>
+
+<p>Warning - non-exhaustive pattern matching; avoid this</p>
+
+<pre><code class="language-ocaml">let getHead l =
+  match l with
+    head :: tail -&gt; head;;
+
+getHead [];;  (* OCaml gives uncaught runtime exception *)
+</code></pre>
+
+<p>An error-free version</p>
+
+<pre><code class="language-ocaml">let getHead l =
+  match l with
+    | [] -&gt; failwith "you dodo"
+  |  head :: tail -&gt; head
+;;
+</code></pre>
+
+<p>Using patterns in recursive functions: a function to reverse a list</p>
+<ul>
+  <li>Note this does not mutate the list, it makes a new list</li>
+  <li>We also want to study this function to show how its correctness is justified by an induction argument</li>
+</ul>
+
+<pre><code class="language-ocaml">let rec rev l =
+  match l with
+  |  [] -&gt; []
+  | x :: xs -&gt; rev xs @ [x]
+;;
+rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
+</code></pre>
+
+<p>Let us argue why this works.  First, for this particular list.</p>
+
+<p>We assume we have a notion of “program fragments behaving the same”, <code>~=</code>.</p>
+<ul>
+  <li>e.g. <code>1 + 2 ~= 3</code>, <code>1 :: [] ~= [1]</code>, etc.</li>
+  <li>(<code>~=</code> is called “operational equivalence”, we will define it later in the course)</li>
+</ul>
+
+<p>Lemma. <code>rev [1;2;3] ~= [3;2;1]</code>.<br />
+Proof.<br />
+<code>rev [1;2;3]</code> pattern matches with <code>x ~= 1</code>, <code>xs ~= [2;3]</code>; so the result is <code>rev [2;3] @ [1]</code>.  <br />
+Thus, <code>rev [1;2;3] ~= rev [2;3] @ [1]</code>.<br />
+So let us now figure out what <code>rev [2;3]</code> is:<br />
+<code>rev [2;3]</code> pattern matches with <code>x ~= 2, xs ~= [3]</code>; so the result is <code>rev [3] @ [2]</code>.<br />
+Thus, <code>rev [2;3] ~= rev [3] @ [2]</code>.<br />
+So let us now figure out what <code>rev [3]</code> is:<br />
+<code>rev [3]</code> pattern matches with <code>x ~= 3</code>, <code>xs ~= []</code> (yes, empty list!); so the result is <code>rev [] @ [3]</code>.<br />
+Thus, <code>rev [3] ~= rev [] @ [3]</code>.<br />
+Lastly, <code>rev [] ~= []</code> directly from the match.</p>
+
+<p>Given all the above, we can use the usual principle of replacing <code>~=</code> with <code>~=</code> to get:</p>
+<pre><code class="language-ocaml">rev [1;2;3] 
+~= rev [2;3] @ [1]  
+~= (rev [3] @ [2]) @ [1] 
+~= ((rev [] @ [3]) @ [2]) @ [1]
+~= (([] @ [3]) @ [2]) @ [1]
+~= [3;2;1]
+</code></pre>
+<p>by computing out the <code>@</code>.</p>
+
+<p>So by transitivity on the above,</p>
+
+<p><code>rev [1;2;3] ~= [3;2;1]</code>.  QED.</p>
+
+<p>But, what we really want to show is it reverses ANY list.. use induction!</p>
+
+<p>Let P(n) mean “for any list l of length n, <code>rev l ~=</code> its reverse”.</p>
+
+<p>Recall an induction principle:<br />
+To show P(n) for all in, it suffices to show <br />
+  1) P(0), and <br />
+  2) P(k) holds implies P(k+1) holds for any natural number k.</p>
+
+<p>Recal WHY induction is justified:</p>
+
+<p>If we showed 1) and 2) above,</p>
+<ul>
+  <li>P(0) is true by 1)</li>
+  <li>P(1) is true because letting k=0 in 2) we have P(0) implies P(1),<br />
+  and we just showed we have P(0), so we also have P(1).</li>
+  <li>P(2) is true because letting k=1 in 2) we have P(1) implies P(2),<br />
+  and we just showed we have P(1), so we also have P(2).</li>
+  <li>P(3) is true because letting k=2 in 2) we have P(2) implies P(3),<br />
+  and we just showed we have P(2), so we also have P(3).</li>
+  <li>… hopefully you get the pattern here.</li>
+</ul>
+
+<p>In the concrete proof above for <code>[1;2;3]</code> we basically unwound the induction backwards.</p>
+
+<p>Let us now prove by induction.</p>
+
+<p>Theorem: For any list <code>l</code> of length n, <code>rev l ~=</code> the reverse of <code>l</code> .<br />
+Proof.  Proceed by induction to show this property for any n.<br />
+  1) for n = 0, <code>l ~= []</code> since that is the only 0-length list.<br />
+     <code>rev [] ~= []</code> which is <code>[]</code> reversed, check!<br />
+  2) Assume for any k-length list <code>l</code> that <code>rev l ~= l</code> reversed.<br />
+     Show for any k+1 length list, i.e. for any list <code>x :: l</code><br />
+     that <code>rev (x :: l) ~= (x :: l)</code> reversed:</p>
+
+<p>OK, by computing, <code>rev (x :: l) ~= rev l @ [x]</code>.<br />
+Now by the induction hypothesis, <code>rev l</code> is <code>l</code> reversed.<br />
+So, since <code>(l</code> reversed<code>) @ [x]</code> reverses the whole list <code>x :: l</code>,<br />
+<code>rev (x :: l) ~= (x :: l)</code> reversed.<br />
+This completes the induction step.</p>
+
+<p>QED.</p>
+
+<p>Bonus round: here is a concrete forward-view building up the argument more like the induction.</p>
+<ul>
+  <li><code>l ~= [] : rev [] ~= []</code>, check!</li>
+  <li><code>l ~= [3] : rev [3] ~= rev (3 :: []) ~= (rev []) @ [3] ~= (using previous line) [3]</code></li>
+  <li><code>l ~= [2;3] : rev [2;3] ~= rev (2 :: [3]) ~= (rev [3]) @ [2] ~= (by previous) [3;2]</code></li>
+  <li><code>l ~= [1;2;3] : rev [1;2;3] ~= rev (1 :: [2;3]) ~= (rev [2;3]) @ [1] ~= (by previous) [3;2;1]</code></li>
+</ul>
+
+<pre><code class="language-ocaml">rev [1;2;3];;
+(rev [2;3]) @ [1];;
+((rev [3]) @ [2]) @ [1];;
+(((rev []) @ [3]) @ [2]) @ [1];;
+(([]@[3]) @ [2]) @ [1];;
+</code></pre>
+
+<h3 id="ocaml-lecture-iii">OCaml Lecture III</h3>
+
+<ul>
+  <li>We are going to cover variant types in detail later but here are a few simple examples</li>
+  <li>Variant types are like unions in C, and generalize enums of Java. Unlike types up to now you need to <strong>declare</strong> them via keyword “type”.</li>
+</ul>
+
+<pre><code class="language-ocaml">type comparison = LessThan | EqualTo | GreaterThan;;
+
+let intcmp x y =
+	if x &lt; y then LessThan else
+		if x &gt; y then GreaterThan else EqualTo;;
+</code></pre>
+
+<p>Of course we will pattern match to take the data apart:</p>
+
+<pre><code class="language-ocaml">match intcmp 4 5 with
+  | LessThan -&gt; "less!"
+  | EqualTo -&gt; "equal!"
+  | GreaterThan -&gt; "greater!";;
+</code></pre>
+
+<p>Variants can also wrap arguments: they are more like C unions than Java enums</p>
+
+<pre><code class="language-ocaml">type 'a nullable = Null | NotNull of 'a;;
+
+match NotNull(4) with
+  | Null -&gt; "null!"
+  | NotNull(n) -&gt; (string_of_int n)^" is not null!"
+;;
+</code></pre>
+
+<p>Built-in version of this for functions with optional result:</p>
+
+<pre><code class="language-ocaml">type 'a option = None | Some of 'a *)
+
+Some(4);;
+None;;
+</code></pre>
+
+<p>Here is a use of it:</p>
+
+<pre><code class="language-ocaml">let gethead l = match l with
+  | [] -&gt; None
+  | hd :: tl -&gt; Some hd;;
+</code></pre>
+
+<p>Subtle property of immutable declarations</p>
+<ul>
+  <li>All variable declarations in OCaml are <strong>immutable</strong> – value will never change</li>
+  <li>helps in reasoning about programs, we know the variable’s value is fixed</li>
+</ul>
+
+<pre><code class="language-ocaml">(let y = 3 in
+  ( let x = 5 in
+    ( let f z = x + z in
+      ( let x = y in  (* this is a re-definition of x, NOT an assignment *)
+        (f (y - 1)) + x
+            )
+        )
+    )(* x is STILL 5 in the function body - thats what x was when f defined *)
+)
+;;
+</code></pre>
+
+<p>This is in the spirit of this C pseudo-code:</p>
+<pre><code class="language-c"> { int y = 3;
+   { int x = 5;
+     { int (int) f = z -&gt; return(x + z); (* imagining higher-order functions in C *)
+       { int x = y; (* shadows previous x in C *)
+         return(f(y-1) + x); 
+  }}}})
+</code></pre>
+
+<p>The top loop is conceptually an open-ended series of let-ins which never close:</p>
+<pre><code class="language-ocaml">let y = 3;;
+let x = 5;;
+let f z = x + z;;
+let x = y;; (* as in previous example, this is a nested definition, not assignment! *)
+f (y-1) + x;;
+</code></pre>
+<p>Function definitions are similar, you can’t mutate an existing definition.</p>
+
+<pre><code class="language-ocaml">let f x = x + 1;;
+let g x = f (f x);;
+let shad = f;; (* make a new name for f above *)
+(* lets "change" f, say we made an error in its definition above *)
+let f x = if x &lt;= 0 then 0 else x + 1;;
+g (-5);; (* g still refers to the initial f - !! *)
+
+assert( g (-5) = 0);; (* example of built-in assert in action - returns () if holds, exception if not *)
+
+let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
+
+assert(g (-5) = 0);; (* now it works as we initially expected *)
+</code></pre>
+
+<p><strong>Moral</strong>: When interactively editing a group of functions that call each other, re-submit ALL the functions to the top loop when you change any <em>one</em> of them.  Otherwise you can have some functions using a now-shadowed version. <strong>Or</strong>, just submit your whole file of functions: <code>#use "myfile.ml";;</code></p>
+
+<h4 id="mutually-recursive-functions">Mutually recursive functions</h4>
+
+<p>Warm up to the next function - write a (useless) copy function on lists</p>
+
+<pre><code class="language-ocaml">let rec copy l =
+  match l with
+  | [] -&gt; []
+  | hd :: tl -&gt;  hd::(copy tl);;
+
+let result = copy [1;2;3;4;5;6;7;8;9;10]
+</code></pre>
+
+<p>List copy is in fact useless because lists are immutable - can share instead</p>
+
+<p>Refine copy to flip back and forth between copying and not</p>
+
+<pre><code class="language-ocaml">let rec copyodd l = match l with
+  | [] -&gt; []
+  | hd :: tl -&gt;  hd::(copyeven tl)
+and  (* new keyword for declaring mutually recursive functions *)
+  copyeven l = match l with
+  |  [] -&gt; []
+  | x :: xs -&gt; copyodd xs;;
+
+copyodd [1;2;3;4;5;6;7;8;9;10];;
+copyeven [1;2;3;4;5;6;7;8;9;10];;
+</code></pre>
+
+<h3 id="using-let--in-to-define-local-functions">Using <code>let .. in</code> to define local functions</h3>
+
+<p>Here is a version that hides the <code>copyeven</code> function – make both internal and export one</p>
+
+<pre><code class="language-ocaml">let copyodd ll =
+    ( let rec
+     copyoddlocal l = match l with
+      |  [] -&gt; []
+      | hd :: tl -&gt;  hd::(copyevenlocal tl)
+    and
+     copyevenlocal l = match l with
+    |        [] -&gt; []
+    | x :: xs -&gt; copyoddlocal xs
+  in
+   copyoddlocal ll
+    );;
+
+assert(copyodd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
+</code></pre>
+
+<h3 id="higher-order-functions">Higher Order Functions</h3>
+
+<p>Higher order functions are functions that either</p>
+<ul>
+  <li>take other functions as arguments</li>
+  <li>or return functions as results</li>
+  <li>or both of the above</li>
+</ul>
+
+<p>Why?</p>
+<ul>
+  <li>“pluggable” programming by passing in and out chunks of code</li>
+  <li>greatly increases reusability of code since any varying code can be pulled out as a function to pass in</li>
+</ul>
+
+<p>Lets show the power by extracting out some pluggable code</p>
+
+<p>Example: multiply each element of a list by ten</p>
+
+<pre><code class="language-ocaml">let rec timestenlist l =
+  match l with
+    []    -&gt; []
+  | hd::tl -&gt; (hd * 10) :: timestenlist tl;;
+
+timestenlist [3;2;50];;
+</code></pre>
+
+<p>Example: append gobble to a list of words</p>
+
+<pre><code class="language-ocaml">let rec appendgobblelist l =
+  match l with
+    []    -&gt; []
+  | hd::tl -&gt; (hd ^"gobble") :: appendgobblelist tl;;
+
+appendgobblelist ["have";"a";"good";"day"];;
+("have" ^"gobble") :: ("a"^"gobble") :: appendgobblelist ["good";"day"];;
+</code></pre>
+
+<p>Notice there is a common pattern of “do an operation on each list element”.  So lets pull out the “times ten” / “add gobble” as a function parameter! This is in fact a classic example, the map function</p>
+
+<pre><code class="language-ocaml">let rec map f l =  (* Notice function f is an ARGUMENT here *)
+  match l with
+    []    -&gt; []
+  | hd::tl -&gt; (f hd) :: map f tl;;
+
+map (fun x -&gt; x * 10) [3;2;50];;
+</code></pre>
+
+<p>Note there is a built-in <code>List.map</code> since it is so common:</p>
+
+<pre><code class="language-ocaml">let middle = List.map (function s -&gt; s^"gobble");;
+middle ["have";"a";"good";"day"];;
+</code></pre>
+
+<p>Mapping on lists of pairs - shows in and out lists can be different types.</p>
+<pre><code class="language-ocaml">map (fun (x,y) -&gt; x + y) [(1,2);(3,4)];;
+let flist = map (fun x -&gt; (fun y -&gt; x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
+</code></pre>
+
+<p>What can you do with a list of functions?  e.g. compose them</p>
+
+<pre><code class="language-ocaml">(* compose_list [f1;..;fn] v = f1 (... (fn v) ... ) *)
+let rec compose_list lf v =
+  match lf with
+  | [] -&gt; v
+  | hd :: tl -&gt; hd(compose_list tl v);;
+
+compose_list flist 0;;
+</code></pre>
+
+<h3 id="folds">Folds</h3>
+
+<ul>
+  <li>fold_left/right are classic operators on lists</li>
+  <li>combines a vector of data like the reduce of map/reduce</li>
+</ul>
+
+<pre><code class="language-ocaml">let rec fold_left f v l = match l with
+    | []   -&gt; v
+    | hd::tl -&gt; fold_left f (f v hd) tl (* pass down f v hd as new "v" -- accumulating *)
+    ;;
+</code></pre>
+
+<p>Summing elements of a list can now be succinctly coded:</p>
+<pre><code class="language-ocaml">fold_left (fun elt -&gt; fun accum -&gt; elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) - 0 on LEFT *)
+fold_left (+) 0 [1;2;3];; (* equivalent to previous - built-in operator in parens is function *)
+</code></pre>
+
+<p>Compare to manual summate - pulled out the combining operator and zero</p>
+
+<pre><code class="language-ocaml">let rec summate accum l = match l with
+    | []   -&gt; accum
+    | hd::tl -&gt; summate (accum + hd) tl (* pass down f v hd as new "v" -- accumulating *)
+    ;;
+summate 0 [1;2;3];;
+</code></pre>
+
+<p>More examples.  Note this is <code>List.fold_left</code> in OCaml library</p>
+
+<pre><code class="language-ocaml">let length l = List.fold_left (fun accum elt -&gt; accum + 1) 0 l;; (* adds accum, ignores elt *)
+let rev l = List.fold_left (fun accum elt -&gt; elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
+</code></pre>
+<ul>
+  <li>Right fold is similar but f is applied “on the way out” of recursion, not “on the way down” like in left fold above.</li>
+  <li>also in List.fold_right.</li>
+  <li>Args are swapped compared to fold_left, be careful !</li>
+</ul>
+
+<pre><code class="language-ocaml">let rec fold_right f l v = match l with
+  | [] -&gt; v
+  | hd::tl -&gt; f hd (fold_right f tl v) (* v not changing on recursion here *)
+;;
+fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - 0 on right *)
+</code></pre>
+
+<p>Example where left and right folds produce different result:</p>
+<pre><code class="language-ocaml">fold_left (fun elt -&gt; fun accum -&gt; "("^elt^"+"^accum^")") "0" ["1";"2";"3"] ;; 
+fold_right (fun accum -&gt; fun elt -&gt; "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;; 
+</code></pre>
+
+<p><code>map</code> is a simple right fold - the fold does the recursion work.</p>
+<pre><code class="language-ocaml">let map f l = List.fold_right (fun elt accum -&gt; (f elt)::accum) l [];;
+</code></pre>
+
+<p>Another example of left vs right - left’s accumulating maps and reverses</p>
+<pre><code class="language-ocaml">let map_and_rev f l = List.fold_left (fun accum elt -&gt; (f elt)::accum) [] l ;; (* notice how this reverses *)
+</code></pre>
+
+<p>More operations</p>
+<pre><code class="language-ocaml">let filter f l = List.fold_right (fun elt accum -&gt; if f elt then elt::accum else accum) l [];; 
+let rev_slow l = List.fold_right (fun elt accum -&gt; accum @ [elt]) l [];; (* can also fold_right rev with @ *)
+</code></pre>
+
+<p>Composition function g o f: take two functions, return their composition</p>
+<pre><code class="language-ocaml">let compose g f = (fun x -&gt; g (f x));;
+
+let plus3 x = x+3;;
+let times2 x = x*2;;
+let times2plus3 = compose plus3 times2;;
+times2plus3 10;;
+(* equivalent but with anonymous functions: *)
+compose (fun x -&gt; x+3) (fun x -&gt; x*2) 10;;
+</code></pre>
+
+<p>Equivalent notations for compose</p>
+
+<pre><code class="language-ocaml">let compose g f x =  g (f x);;
+let compose = (fun g -&gt; (fun f -&gt; (fun x -&gt; g(f x))));;
+</code></pre>
+
+<h3 id="parametric-polymorphism">Parametric polymorphism</h3>
+<ul>
+  <li>A key feature of inferred types</li>
+</ul>
+
+<pre><code class="language-ocaml">let id = fun x -&gt; x;;
+let id x = x;; (* equivalent to above *)
+id 3;; (* id applied to int returns an int *)
+id true;; (* SAME id applied to bool returns a bool *)
+</code></pre>
+
+<p>Conclusion: the type of id, <code>'a -&gt; 'a</code> is <strong>parametric</strong>, i.e. the return type is parameterized by the type of the argument.  Same as Java’s generics.</p>
+
+<p>We saw several parametric functions above:</p>
+
+<pre><code class="language-ocaml">copyodd;;    (* type is 'a list -&gt; 'a list *)
+map;;     (* type is ('a -&gt; 'b) -&gt; 'a list -&gt; 'b list *)
+compose;; (* type is ('a -&gt; 'b) -&gt; ('c -&gt; 'a) -&gt; 'c -&gt; 'b *)
+</code></pre>
+
+<h2 id="self-study-topic-only-let-defined-functions-are-polymorphic">Self-study topic: only ‘let’-defined functions are polymorphic</h2>
+
+<p>Background: turning a let-defined function into an argument to a function</p>
+
+<pre><code class="language-ocaml">let add1 = fun x -&gt; x + 1;;
+add1 4;;
+</code></pre>
+
+<p>Equivalent way to do the above: define add1 as an anonymous function and pass in</p>
+
+<pre><code class="language-ocaml">(function addup -&gt; addup 4)(fun x -&gt; x + 1);;
+</code></pre>
+
+<p>Lets try to do the same refactoring for a polymorphic function</p>
+
+<pre><code class="language-ocaml">let id = function x -&gt; x;;
+
+match id (true) with
+    true -&gt; id (3)
+  | false -&gt; id(4);;
+</code></pre>
+
+<p>The below will error - variable mono_id is not defined by let so it can’t be polymorphic</p>
+
+<pre><code class="language-ocaml">(function mono_id -&gt;
+    match mono_id(true) with
+                true -&gt; mono_id(3)
+              | false -&gt; mono_id(4)) (fun x -&gt; x);;
+</code></pre>
+
+<p>If only used at one type its OK:</p>
+
+<pre><code class="language-ocaml">(function mono_id -&gt; mono_id 4) id;; (* mono_id is solely of type int -&gt; int, thats OK *)
+</code></pre>
+<h3 id="currying">Currying</h3>
+
+<ul>
+  <li>One topic left in higher-order functions.</li>
+  <li>Currying - idea due to logician Haskell Curry</li>
+</ul>
+
+<p>First lets recall how functions allow incremental arguments to be passed</p>
+
+<pre><code class="language-ocaml">let addC x y = x + y;;
+addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
+let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
+</code></pre>
+
+<p>An equivalent way to define addC, clarifying what the above means:</p>
+
+<pre><code class="language-ocaml">let addC = fun x -&gt; (fun y -&gt; x + y);;
+(* yet another identical way .. *)
+let addC x = fun y -&gt; x + y;;
+
+(addC 1) 2;; (* same result as above *)
+</code></pre>
+
+<p>Its also the type of the built-in + – put parens around to see as a fun</p>
+
+<pre><code class="language-ocaml">let addCagain = (+);;
+(addCagain 1) 2;; (* same result as above *)
+</code></pre>
+
+<p>Here is the so-called non-Curried version: use a pair of arguments instead</p>
+<pre><code class="language-ocaml">let addNC p =
+    match p with (x,y) -&gt; x+y;;
+</code></pre>
+
+<p>Here is an equivalent abbreviation which looks like a standard C function</p>
+<pre><code class="language-ocaml">let addNC (x, y) = x + y;;
+</code></pre>
+
+<p>Notice how the type of the above differs from addC’s type</p>
+<pre><code class="language-ocaml">addNC (3, 4);;
+addNC 3;; (* will error, need all or no arguments supplied *)
+</code></pre>
+<p>Fact: these two approaches to a 2-argument function are isomorphic:</p>
+
+<p><code>'a * 'b -&gt; 'c</code> === <code>'a -&gt; 'b -&gt; 'c</code></p>
+
+<p>We now define two cool higher-order functions:</p>
+<ul>
+  <li><code>curry</code>   - takes in non-curry’ing 2-arg function and returns a curry’ing version</li>
+  <li><code>uncurry</code> - takes in curry’ing 2-arg function and returns an non-curry’ing version</li>
+</ul>
+
+<p>Since we can then go back and forth between the two reps, they are <strong>ISOMORPHIC</strong></p>
+
+<pre><code class="language-ocaml">let curry fNC = fun x -&gt; fun y -&gt; fNC (x, y);;
+let uncurry fC = fun (x, y) -&gt; fC x y;;
+
+let newaddNC = uncurry addC;;
+newaddNC (2,3);;
+let newaddC  = curry   addNC;;
+newaddC 2 3;;
+</code></pre>
+
+<p>Observe the types themselves pretty much specify the behavior</p>
+<pre><code class="language-ocaml">curry : ('a * 'b -&gt; 'c) -&gt; 'a -&gt; 'b -&gt; 'c
+uncurry : ('a -&gt; 'b -&gt; 'c) -&gt; 'a * 'b -&gt; 'c
+</code></pre>
+
+<pre><code class="language-ocaml">let noop1 = curry (uncurry addC);; (* a no-op *)
+let noop2 = uncurry (curry addNC);; (* another no-op; noop1 &amp; noop2 together show isomorphism *)
+</code></pre>
+<h3 id="misc-ocaml">Misc OCaml</h3>
+
+<p>See <a href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html">Pervasives</a> for various functions available in the OCaml top-level.</p>
+
+<p>See <a href="http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html">stdlib</a> for modules of extra functions for lists, strings, integers, as well as sets, trees, etc structures.</p>
+
+<p><code>print_x</code> for atomic types ‘x’, again no overloading in meaning here</p>
+
+<pre><code class="language-ocaml">print_string ("hi\n");;
+</code></pre>
+
+<p>Raise a failure exception (more on exceptions later)</p>
+
+<pre><code class="language-ocaml">(failwith "BOOM!") + 3 ;;
+</code></pre>
+
+<p>Invalid argument exception:</p>
+<pre><code class="language-ocaml">let f x = if x &lt;= 0 then invalid_arg "Let's be positive, please!" else x + 1;;
+f (-5);;
+</code></pre>
+
+<p>You CAN also declare types, anywhere in fact</p>
+<ul>
+  <li>Put parens around any such declaration or it won’t parse</li>
+</ul>
+
+<pre><code class="language-ocaml">let add (x: float) (y: float) = x +. y;;
+let add (x: int) (y: int) = (((x:int) + y) : int);;
+</code></pre>
+
+<p>Type abbreviations are also possible via <code>type </code></p>
+<pre><code class="language-ocaml">type intpair = int * int;;
+let f (p : intpair) = match p with
+                      (l, r) -&gt; l + r
+;;
+(2,3);; (* ocaml doesn't call this an intpair by default *)
+f (2, 3);; (* still, can pass it to the function expecting an intpair *)
+((2,3):intpair);; (* can also explicitly tag data with its type *)
+</code></pre>
+
+<h3 id="time-out-to-solve-some-simple-problems">Time-out to solve some simple problems</h3>
+<p>Lets work through some simple programming problems to get experience with writing simple functional OCaml programs</p>
+
+<ol>
+  <li>Write a function ‘compose_funs’ which takes a list of functions <code>[f1; ...; fn]</code> and returns a function representing the composition <code>fn o .. o f1 of all of these.</code></li>
+</ol>
+
+<p><strong>Answer:</strong></p>
+<pre><code class="language-ocaml">let rec compose_funs lf =
+  match lf with
+    [] -&gt; (function x -&gt; x)
+  | f :: fs -&gt; (function x -&gt; (compose_funs fs) (f x))
+;;
+</code></pre>
+
+<p>Equivalent alternate version - refactor to hoist out the “function x”</p>
+
+<pre><code class="language-ocaml">let rec compose_funs lf =
+  function x -&gt;
+    (match lf with
+      [] -&gt; x
+    | f :: fs -&gt; (compose_funs fs) (f x)
+    )
+;;
+</code></pre>
+
+<p>Yet another equivalent alternative - hoist x up one more level</p>
+<pre><code class="language-ocaml">let rec compose_funs lf x =
+    match lf with
+      [] -&gt; x
+    | f :: fs -&gt; (compose_funs fs) (f x)
+;;
+</code></pre>
+
+<p>Tests</p>
+
+<pre><code class="language-ocaml">let composeexample = compose_funs [(function x -&gt; x+1); (function x -&gt; x-1);
+                 (function x -&gt; x*3); (function x -&gt; x-1)];;
+assert(composeexample 5 = 14);;
+</code></pre>
+
+<ol>
+  <li>Write a function ‘toUpperCase’ which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).</li>
+</ol>
+
+<p>Notes: <br />
+a. Assume that the capital of characters other than alphabets<br />
+            (A - Z or a - z), are the characters themselves e.g.</p>
+
+<pre><code>                character               corresponding capital character
+
+                    a                             A
+                    z                             Z
+                    A                             A
+                    1                             1
+                    %                             %
+</code></pre>
+
+<p>b. You can only use <code>Char.code</code> and <code>Char.chr</code> library functions. You <strong>cannot</strong> use <code>Char.uppercase</code>.</p>
+
+<p><strong>Answer:</strong></p>
+<pre><code class="language-ocaml">let toUpperChar c =
+  let c_code = Char.code c in
+  if c_code &gt;= 97 &amp;&amp; c_code &lt;= 122 then
+    Char.chr (c_code - 32)
+  else c;;
+
+
+let rec toUpperCase l =
+  match l with
+    [] -&gt; []
+  | c :: cs -&gt; toUpperChar c :: toUpperCase cs
+;;
+</code></pre>
+
+<p>Test</p>
+<pre><code class="language-ocaml">assert(toUpperCase ['a'; 'q'; 'B'; 'Z'; ';'; '!'] = ['A'; 'Q'; 'B'; 'Z'; ';'; '!']);;
+</code></pre>
+
+<p>Could have used map instead (note map is built in as <code>List.map</code>):</p>
+
+<pre><code class="language-ocaml">let toUpperCase l = List.map toUpperChar l ;;
+</code></pre>
+
+<p>Could have also defined it even more simply - partly apply the Curried map:</p>
+
+<pre><code class="language-ocaml">let toUpperCase = List.map toUpperChar ;;
+</code></pre>
+
+<ol>
+  <li>Write a function ‘nth’ which takes a list (l) and index (n) and returns the nth element of the list. If n is an invalid index i.e. n is negative or l has less then (n + 1) elements then fail.</li>
+</ol>
+
+<p>Note: indices start with 0 for the head of the list, 1 for the next element and so on (similar to arrays).</p>
+
+<p><strong>Answer:</strong></p>
+<pre><code class="language-ocaml">let rec nth l n =
+  match l with
+  |  [] -&gt; failwith "list too short"
+  | x :: xs -&gt;
+      if n = 0 then
+        x
+      else
+        nth xs (n - 1) (* eureka *)
+;;
+</code></pre>
+
+<p>Tests</p>
+<pre><code class="language-ocaml">assert(nth [1;2;3] 0 = 1);;
+nth [1;2;3] 1;; (* should return 2 *)
+nth [1;2;3] (-1);; (* should raise exception *)
+nth [1;2;3] 3;; (* should raise exception *)
+</code></pre>
+
+<ol>
+  <li>Write a function ‘partition’ which takes a predicate (p) and a list (l) as arguments  and returns a tuple (l1, l2) such that l1 is the list of all the elements of l that satisfy the predicate p and l2 is the list of all the elements of l that do NOT satisfy p. The order of the elements in the input list (l) should be preserved.</li>
+</ol>
+
+<p>Note: A predicate is any function which returns a boolean. e.g. let isPositive n = (n &gt; 0);;</p>
+
+<p><strong>Answer:</strong></p>
+<pre><code class="language-ocaml">let rec partition p l =
+  match l with
+  |[] -&gt; ([],[])
+  | hd :: tl -&gt;
+    let (posl,negl) = partition p tl in
+    if (p hd)
+    then
+      (hd :: posl,negl)
+    else
+      (posl,hd::negl);;
+</code></pre>
+<p>Test</p>
+
+<pre><code class="language-ocaml">let isPositive n = n &gt; 0 in
+assert(partition isPositive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
+</code></pre>
+
+<ol>
+  <li>Write a function <code>diff</code> which takes in two lists l1 and l2 and returns a list containing all elements in l1 not in l2.</li>
+</ol>
+
+<p>Note: You will need to write another function <code>contains x l</code> which checks  whether an element <code>x</code> is contained in a list <code>l</code> or not.</p>
+
+<p><strong>Answer:</strong></p>
+<pre><code class="language-ocaml">let rec contains x l =
+  match l with
+    [] -&gt; false
+  | y :: ys -&gt; x = y || contains x ys
+;;
+
+let rec diff l1 l2 =
+  match l1 with
+    [] -&gt; []
+  | x :: xs -&gt;
+      if contains x l2 then
+    diff xs l2
+      else
+    x :: diff xs l2
+;;
+</code></pre>
+
+<p>Tests</p>
+<pre><code class="language-ocaml">assert(contains 1 [1; 2; 3])
+assert(not(contains 5 [1; 2; 3]))
+assert(diff [1;2;3] [3;4;5] = [1; 2])
+assert(diff [1;2] [1;2;3] = [])
+</code></pre>
+
+<h3 id="ocaml-lecture-iv-variants--records">OCaml Lecture IV: Variants &amp; records</h3>
+
+<p>We saw some simple examples of variants above, now we go into the full possibilities</p>
+<ul>
+  <li>related to union types in C or enums in Java: “this OR that OR theother”</li>
+  <li>like OCamls lists/tuples they are IMMMUTABLE data structures</li>
+  <li>each case of the union is identified by a name called ‘Constructor’ which serves for both
+    <ul>
+      <li>Constructing values of the variant type</li>
+      <li>inspecting them by pattern matching</li>
+      <li>Constructors must start with Capital Letter to distinguish from variables</li>
+      <li>type declarations needed but once they are in place type inference on them works</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Example variant type for doing mixed arithmetic (integers and floats)</p>
+
+<pre><code class="language-ocaml">type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
+
+Fixed(5);; (* tag 5 as a Fixed *)
+Floating 4.0;; (* tag 4.0 as a Floating *)
+</code></pre>
+
+<p>Note constructors look like functions but they are <strong>not</strong> – you always need to give argument</p>
+
+<pre><code class="language-ocaml">let pullout_int x =
+    match x with
+    | Fixed n -&gt; n    (* variants fit well into pattern matching syntax *)
+    | Floating z -&gt; int_of_float z;;
+
+pullout_int (Fixed 5);;
+</code></pre>
+
+<p>A non-trivial function using the above variant type</p>
+
+<pre><code class="language-ocaml">let add_num n1 n2 =
+   match (n1, n2) with    (* note use of pair here to parallel-match on two variables  *)
+     | (Fixed i1, Fixed i2) -&gt;       Fixed   (i1       +  i2)
+     | (Fixed i1,   Floating f2) -&gt;  Floating(float i1 +. f2)       (* need to coerce *)
+     | (Floating f1, Fixed i2)   -&gt;  Floating(f1       +. float i2) (* ditto *)
+     | (Floating f1, Floating f2) -&gt; Floating(f1       +. f2)
+;;
+
+add_num (Fixed 123) (Floating 3.14159);;
+</code></pre>
+
+<p>Multiple data items in a single clause?  Use the pre-existing tuple types</p>
+
+<pre><code class="language-ocaml">type complex = CZero | Nonzero of float * float;;
+
+let com = Nonzero(3.2,11.2);;
+let zer = CZero;;
+</code></pre>
+
+<h4 id="recursive-data-structures">Recursive data structures</h4>
+<ul>
+  <li>A key use of variant types</li>
+  <li>Functional programming is fantastic for computing over tree-structured data</li>
+  <li>recursive types can refer to themselves in their own definition</li>
+  <li>similar in spirit to how C structs can be recursive (but, no pointer needed here)</li>
+</ul>
+
+<p>Warm-up: homebrew lists - built-in list type not needed<br />
+First just int lists</p>
+
+<pre><code class="language-ocaml">type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent to [3;5;7] *)
+</code></pre>
+<p>Let us extend the above to be just like built-in polymorphic lists</p>
+
+<pre><code class="language-ocaml">type 'a mylist = Mt | Cons of 'a * ('a mylist);;
+</code></pre>
+<p>Observe how above type takes a (prefix) argument, ‘a – “mylist” is a type function</p>
+
+<pre><code class="language-ocaml">let mylisteg = Cons(3.,Cons(5.,Cons(7.,Mt)));;
+</code></pre>
+
+<pre><code class="language-ocaml">let rec double_list_elts ml =
+  match ml with
+    | Mt -&gt; Mt (* vs [] -&gt; [] *)
+    | Cons(hd,tl) -&gt; Cons(hd *. 2.,double_list_elts tl);; (* vs hd :: tl -&gt; .. *)
+
+double_list_elts mylisteg;;
+</code></pre>
+
+<p>Binary trees, like lists but two self-referential sub-structures not one</p>
+
+<pre><code class="language-ocaml">type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
+</code></pre>
+
+<p>Example trees</p>
+
+<pre><code class="language-ocaml">let whack = Node("whack!",Leaf, Leaf);;
+let bt = Node("fiddly ",
+            Node("backer ",
+               Leaf,
+               Node("crack ",
+                  Leaf,
+                  Leaf)),
+            whack);;
+
+let bt2 = Node("fiddly ",
+            Node("backer ",
+               Leaf,
+               Node("crack ",
+                  Leaf,
+                  Leaf)),
+            whack);;
+(* Type error, like list, must have uniform type: *)
+Node("fiddly",Node(0,Leaf,Leaf),Leaf);;
+</code></pre>
+
+<p>Functions on binary trees are similar to functions on lists: use recursion</p>
+
+<pre><code class="language-ocaml">let rec add_gobble binstringtree =
+   match binstringtree with
+     Leaf -&gt; Leaf
+   | Node(y, left, right) -&gt;
+       Node(y^"gobble",add_gobble left,add_gobble right)
+;;
+</code></pre>
+<p>(Remember, this is not mutating the tree, its building a new one)</p>
+
+<pre><code class="language-ocaml">let rec lookup x bintree =
+   match bintree with
+     | Leaf -&gt; false
+     | Node(y, left, right) -&gt;
+       if x = y then
+          true
+       else if x &lt; y then
+          lookup x left
+       else
+          lookup x right
+;;
+
+lookup "whack!" bt;;
+lookup "flack" bt;;
+</code></pre>
+
+<pre><code class="language-ocaml">let rec insert x bintree =
+   match bintree with
+     Leaf -&gt; Node(x, Leaf, Leaf)
+   | Node(y, left, right) -&gt;
+       if x &lt;= y then
+         Node(y, insert x left, right)
+       else
+         Node(y, left, insert x right)
+;;
+</code></pre>
+
+<p>This is also NOT MUTATING – returns a whole new tree instead.</p>
+
+<pre><code class="language-ocaml">let goobt = insert "goober " bt;;
+bt;; (* observe bt did not change after the insert *)
+let gooobt = insert "slacker " goobt;; (* thread in the most recent tree *)
+</code></pre>
+
+<h3 id="records">Records</h3>
+<ul>
+  <li>like tuples but with labels on fields.</li>
+  <li>similar to the structs of C/C++.</li>
+  <li>the types must be declared just like OCaml variants.</li>
+  <li>can be used in pattern matches as well.</li>
+  <li>again the fields are immutable by default</li>
+  <li>not used as often as structs of C, most data is a variant with tupled multiple arguments</li>
+</ul>
+
+<p>Record type to represent rational numbers</p>
+
+<pre><code class="language-ocaml">type ratio = {num: int; denom: int};;
+let q = {num = 53; denom = 6};;
+q.num;;
+q.denom;;
+</code></pre>
+
+<p>Pattern matching works of course</p>
+<pre><code class="language-ocaml">let rattoint r =
+ match r with
+   {num = n; denom = d} -&gt; n / d;;
+</code></pre>
+
+<p>Only one pattern matched so can again inline pattern in functions and lets</p>
+<pre><code class="language-ocaml">let rattoint {num = n; denom = d}  =
+   n / d;;
+</code></pre>
+
+<p>Equivalently can use dot projections, but happy path is usually patterns</p>
+<pre><code class="language-ocaml">let rattoint r  =
+   r.num / r.denom;;
+rattoint q;;
+</code></pre>
+
+<pre><code class="language-ocaml">let add_ratio r1 r2 = {num = r1.num * r2.denom + r2.num * r1.denom; 
+                      denom = r1.denom * r2.denom};;
+add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
+</code></pre>
+
+<p>Annoying shadowing issue: there is one global namespace of record labels</p>
+<pre><code class="language-ocaml">type newratio = {num: int; coeff: float};; (* shadows ratio's label num *)
+
+fun x -&gt; x.num;; (* x is a newratio, the most recent num field defined *)
+</code></pre>
+<p>Solution in event of shadowing: pattern match on full record</p>
+
+<pre><code class="language-ocaml">fun {num = n; denom = _} -&gt; n;;
+</code></pre>
+<p>OCaml programmers often use tuples instead of records for conciseness</p>
+
+<ul>
+  <li>End of pure functional programming in OCaml, on to side effects</li>
+  <li>But before heading there, remember to stay OUT of side effects unless <em>really</em> needed - that is the happy path in OCaml coding</li>
+  <li>For interpreters and typecheckers side effects are not helpful at all</li>
+</ul>
+
+<h3 id="state">State</h3>
+<ul>
+  <li>Variables in OCaml are NEVER directly mutable themselves; only (indirectly) mutable if they hold a
+    <ul>
+      <li>reference</li>
+      <li>mutable record</li>
+      <li>array</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Indirect mutability - variable itself can’t change, but what it points to can.</p>
+<ul>
+  <li>items are immutable unless their mutability is explicitly declared</li>
+</ul>
+
+<h3 id="mutable-references">Mutable References</h3>
+
+<pre><code class="language-ocaml">let x = ref 4;;    (* always have to declare initial value when creating a reference *)
+</code></pre>
+
+<p>Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The <strong>contents</strong> of that fixed call can change, but not x.</p>
+
+<pre><code class="language-ocaml">x + 1;; (* a type error ! *)
+!x + 1;; (* need !x to get out the value; parallels *x in C *)
+x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
+!x + 1;; (* Mutation happened to contents of cell x *)
+</code></pre>
+
+<ul>
+  <li><code>'a ref</code> is really implemented by a mutable record with one field, contents:</li>
+  <li><code>'a ref</code> abbreviates the type <code>{ mutable contents: 'a }</code></li>
+  <li>The keyword mutable on a record field means it can mutate</li>
+</ul>
+
+<pre><code class="language-ocaml">let x = { contents = 4};; (* identical to x's definition above *)
+x := 6;;
+x.contents &lt;- 7;;  (* same effect as previous line: backarrow updates a field *)
+
+!x + 1;;
+x.contents + 1;; (* same effect as previous line *)
+</code></pre>
+
+<p>Declaring your own mutable record: put <code>mutable</code> qualifier on field</p>
+
+<pre><code class="language-ocaml">type mutable_point = { mutable x: float; mutable y: float };;
+let translate p dx dy =
+                p.x &lt;- (p.x +. dx); (* observe use of ";" here to sequence effects *)
+                p.y &lt;- (p.y +. dy)  (* ";" is useless without side effects (think about it) *)
+                                ;;
+let mypoint = { x = 0.0; y = 0.0 };;
+translate mypoint 1.0 2.0;;
+mypoint;;
+</code></pre>
+
+<p>Observe: mypoint is immutable at the top level but it has two spots in it where we can mutate</p>
+
+<p>Tree with mutable nodes</p>
+
+<pre><code class="language-ocaml">type mtree = MLeaf | MNode of int * mtree ref * mtree ref;;
+</code></pre>
+
+<ul>
+  <li>ONLY ref typed variables or mutable records may be assigned to</li>
+  <li>The notion of immutable variables is one of the great strengths of OCaml.</li>
+  <li>Note: <code>let</code> doesn’t turn into a mutation operator with <code>ref</code>:</li>
+</ul>
+
+<pre><code class="language-ocaml">let x = ref 4;;
+let f () = !x;; (* This is syntax for a 0-argument function in OCaml - it only takes () as argument *)
+
+x := 234;;
+f();;
+
+let x = ref 6;; (* shadowing previous x definition, NOT an assignment to x !! *)
+f ();;
+</code></pre>
+
+<p>Yes, we can even use “;” and with it write a while loop !</p>
+<pre><code class="language-ocaml">let x = ref 1 in
+    while !x &lt; 10 do
+      print_int !x;
+      print_string "\n";
+      x := !x + 1;
+    done;;
+</code></pre>
+
+<p>Fact: while loops are useless without mutation: either never loop or infinitely loop</p>
+
+<p>Why is immutability good?</p>
+<ul>
+  <li>programmer can depend on the fact that something will never be mutated when writing code: permanent like mathematical definitions</li>
+  <li>ML still lets you express mutation, but its only use it when its really needed</li>
+  <li>Haskell has an even stronger separation of mutation, its all strictly “on top”.</li>
+</ul>
+
+<h3 id="arrays">Arrays</h3>
+<ul>
+  <li>fairly self-explanatory</li>
+  <li>have to be initialized before using</li>
+  <li>in general there is no such thing as “uninitialized” in OCaml.</li>
+</ul>
+
+<pre><code class="language-ocaml">let arrhi = Array.make 100 "";; (* size and initial value are the params here *)
+let arr = [| 4; 3; 2 |];; (* another way to make an array *)
+arr.(0);; (* access (unfortunately already used [] for lists in the syntax) *)
+arr.(0) &lt;- 55;; (* update *)
+arr;;
+</code></pre>
+
+<h3 id="exceptions">Exceptions</h3>
+<ul>
+  <li>Pretty standard and mostly Java-like</li>
+  <li>Unfortunately types do not include what exceptions a function will raise - outdated aspect of ML.</li>
+</ul>
+
+<pre><code class="language-ocaml">exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
+
+let f () = raise Foo;; (* note no need to "raises Foo" in the type as in Java *)
+f ();;
+
+exception Bar;;
+
+let g _ = 
+  (try
+    f ()
+  with
+    Foo -&gt;  5 | Bar -&gt; 3) + 4;; (* Use power of pattern matching in handlers *)
+g ();;
+</code></pre>
+
+<p>Exceptions with a parameter - syntax is like a variant</p>
+<pre><code class="language-ocaml">exception Goo of string;;
+
+let f _ = raise (Goo "keyboard on fire");;
+f ();;
+
+let g () =
+  try
+    f ()
+  with
+      Foo -&gt; ()
+        | Goo s -&gt;
+      (print_string("exception raised: ");
+       print_string(s);print_string("\n"))
+;;
+g ();;
+</code></pre>
+
+<p>There are a few built-in exceptions we already saw</p>
+
+<pre><code class="language-ocaml">failwith "Oops";; (* Generic code failure - exception is named Failure *)
+invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
+</code></pre>
+<h3 id="ocaml-lecture-v">OCaml Lecture V</h3>
+
+<h3 id="modules---structures-and-functors">Modules - structures and functors</h3>
+
+<p>Modules in programming languages</p>
+<ul>
+  <li>a module is a larger level of program abstraction: functional units or library.</li>
+  <li>e.g. Java package, Python module, C directory, etc</li>
+  <li>needed for all but very small programs: imagine a file system without directories/folders as analogy to a PL without modules - YUCK!</li>
+</ul>
+
+<p>Some principles of modules:</p>
+<ul>
+  <li>Modules have names they can be referenced by.</li>
+  <li>A module contains code declarations: functions, classes,  types, etc.</li>
+  <li>They often are file-based: one module per file, module name is file name</li>
+  <li>The module has a way to
+    <ul>
+      <li>import things (e.g. other modules) from the outside and</li>
+      <li>export some (or all) things it has declared for outsiders to use;</li>
+      <li>it may <strong>hide</strong> some things for internal use only<br />
+ – hiding is a key feature, don’t overwhelm users</li>
+      <li>Separate name spaces, so e.g. the Window’s reset() won’t clash<br />
+with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()</code></li>
+      <li>Nested name spaces for ever larger software: <code>Window.Init.reset()</code></li>
+      <li>Often modules can be compiled separately (for compiled languages)</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Most modern languages have a module system solving most of these problems.</p>
+
+<p>For example the Java module system: <strong>packages</strong></p>
+<ul>
+  <li>File system directory is explicitly a package; supports nested packages</li>
+  <li>Implicit export via public classes/methods</li>
+  <li>private/protected for hiding internals from outside users</li>
+  <li>Separate namespace for each package avoids name clashes</li>
+</ul>
+
+<p>The C “module” system is a historical garbage pit</p>
+<ul>
+  <li>Informal use of files and filesystem directories as modules</li>
+  <li>.h file declaring what is externally visible for a module</li>
+  <li>There is a global space of function names, so there can be name clashes</li>
+  <li>There is no strict relation enforced between the <code>.c</code> and <code>.h</code>  files
+    <ul>
+      <li>bad programmers can write really ugly code</li>
+    </ul>
+  </li>
+  <li>C++ fixed this (eventually) with namespaces</li>
+</ul>
+
+<h3 id="modules-in-ocaml">Modules in OCaml</h3>
+
+<p>We already saw OCaml modules in action earlier, e.g. with <code>List.map</code>.  This is an invocation of the map function in the system <code>List module</code>.</p>
+
+<pre><code class="language-ocaml">List.map (fun x -&gt; x ^"gobble")["Have";"a";"good";"day"];;
+</code></pre>
+<p>See the <a href="http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html">standard library documentation</a> to see all the operations possible with List, and for all the other built-in modules</p>
+
+<p>Now, lets look into how we can build our own OCaml modules</p>
+
+<p>OCaml module definitions are called <strong>structures</strong><br />
+    - collections of related definitions (functions, types, other structures, exceptions, values, …) given a name</p>
+
+<p>Lets make a simple functional set module in OCaml</p>
+
+<pre><code class="language-ocaml">module FSet = (* Module names must start with a Capital Letter *)
+struct (* keyword stands for "structure" *)
+  exception NotFound (* any top-level definable can be included in a module *)
+
+  type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+
+  let emptyset : 'a set = []
+
+  let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
+
+  let rec remove x (s: 'a set) =
+   match s with
+    | [] -&gt; raise NotFound
+    | hd :: tl -&gt;
+     if hd = x then (tl: 'a set)
+     else hd :: remove x tl
+
+  let rec contains x (s: 'a set) =
+   match s with
+   | [] -&gt; false
+   | hd :: tl -&gt;
+     if x = hd then true else contains x tl
+end
+;;
+</code></pre>
+
+<p>Observe what is printed in the top loop when the above is entered: a module <em>signature</em> is inferred</p>
+
+<ul>
+  <li>The types of structs are called signatures
+    <ul>
+      <li>they are the interfaces for structures, something like Java interfaces</li>
+      <li>signatures can be used to hide some things from outside users</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Use modules via dot notation, like <code>List.map</code> above</p>
+
+<pre><code class="language-ocaml">let mySet = FSet.add 5 [];;
+let myNextSet = FSet.add 22 mySet;;
+FSet.contains 22 mySet;;
+FSet.remove 5 myNextSet;;
+
+open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shadow existing names *)
+
+add "a" ["b"];;
+contains "a" ["a"; "b"];;
+</code></pre>
+
+<p>OCaml’s module signatures and using them for information hiding</p>
+
+<pre><code class="language-ocaml">module type GROWINGSET = (* define a module type (signature) with no remove; not very useful *)
+  sig
+    exception NotFound
+    type 'a set = 'a list
+    val emptyset : 'a set
+    val add : 'a -&gt; 'a set -&gt; 'a set
+    val contains : 'a -&gt; 'a set -&gt; bool
+  end
+;;
+
+module GrowingSet = (FSet: GROWINGSET);; (* constrain a structure to have that signature *)
+GrowingSet.add "a" ["b"];;
+
+(* GrowingSet.remove;; *) (* Error: remove in struct but not in signature! *)
+
+FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making GrowingSet *)
+</code></pre>
+
+<p>Now lets do some useful hiding.  Hiding types is possible and allows “black box” data structures</p>
+<ul>
+  <li>can be good software engineering practice to enforce hiding of internals</li>
+</ul>
+
+<pre><code class="language-ocaml">module type HIDDENSET =
+  sig
+    type 'a set (* hide the type 'a list here by not giving 'a set definition in signature *)
+    val emptyset : 'a set
+    val add: 'a -&gt; 'a set -&gt; 'a set
+    val remove : 'a -&gt; 'a set -&gt; 'a set
+    val contains: 'a -&gt; 'a set -&gt; bool
+  end
+;;
+
+module HiddenSet = (FSet: HIDDENSET);;
+
+HiddenSet.add 3 [];; (* Errors: [] not a set since we HID the fact that sets are really lists *)
+
+let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - &lt;abstr&gt; result means type is abstract *)
+HiddenSet.contains 5 hs;;
+</code></pre>
+
+<p>Also can declare signature along with module</p>
+
+<pre><code class="language-ocaml">module HFSet :
+  sig
+    type 'a set
+    val emptyset : 'a set
+    val add: 'a -&gt; 'a set -&gt; 'a set
+    val remove : 'a -&gt; 'a set -&gt; 'a set
+    val contains: 'a -&gt; 'a set -&gt; bool
+  end =
+struct
+exception NotFound (* any top-level definable can be included in a module *)
+
+type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
+
+let emptyset : 'a set = []
+
+let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
+
+let rec remove x (s: 'a set) =
+  match s with
+  | [] -&gt; raise NotFound
+  | hd :: tl -&gt;
+    if hd = x then (tl: 'a set)
+    else hd :: remove x tl
+
+let rec contains x (s: 'a set) =
+  match s with
+  | [] -&gt; false
+  | hd :: tl -&gt;
+    if x = hd then true else contains x tl
+end
+;;
+
+let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* same use as before *)
+</code></pre>
+
+<h3 id="separate-compilation-with-ocaml">Separate Compilation with OCaml</h3>
+
+<ul>
+  <li>We can program OCaml in a cc / javac like way - use ocamlc instead of ocaml.</li>
+  <li>Key invariant: each OCaml module is a separate .ml file</li>
+  <li>Syntax of module <strong>body</strong> is identical</li>
+  <li>No header “module XX = struct .. end” is included in .ml module file</li>
+  <li>Name of module is capped name of file: fSet.ml defines module FSet</li>
+  <li>File fSet.mli holds the signature of module FSet if there is no file set.mli thats OK; you have nothing hidden</li>
+  <li>Use ocamlc to compile and link to an executable: similar to C/C++</li>
+  <li>main program that starts running is any non-values defined in the module(s)</li>
+  <li>Also need to compile the .mli files! (unlike .h files)</li>
+</ul>
+
+<p>Here is how the ocamlc compiler makes object files</p>
+
+<pre><code>  .ml -- ocamlc -c --&gt; .cmo
+  .mli -- ocamlc -c --&gt; .cmi
+</code></pre>
+
+<p>Then to make the binary</p>
+
+<pre><code>  .cmo's -- ocamlc -o mybinary --&gt; mybinary
+</code></pre>
+
+<p>You need any dependent .cmi’s for modules you refer to before you can ocamlc -c them.</p>
+
+<p>Example of how file method of definition relates to top-loop:</p>
+
+<pre><code class="language-ocaml">module FSet: sig (* contents of file fSet.mli *) end
+          = struct (* contents of file fSet.ml *) end;;
+
+module Main: sig (* contents of main.mli *) end
+           = struct (* contents of main.ml *) end;;
+</code></pre>
+
+<ul>
+  <li>See <a href="http://pl.cs.jhu.edu/pl/ocaml/code/sep.zip">sep.zip</a> for the example we cover in lecture.</li>
+  <li>We will follow <a href="http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt">readme.txt</a> in particular.</li>
+  <li>See the ocaml manual Chapter 8 for the full documentation</li>
+</ul>
+
+<h4 id="loading-object-file-modules-into-the-top-loop">Loading object file modules into the top loop</h4>
+
+<p>It is possible to mix ocamlc and ocaml for debugging: load .cmo files into top loop.</p>
+
+<p>For the following to work need to first <code>#cd</code> to <code>sep_compile/</code>.  My computer’s version:</p>
+<pre><code>#cd "/Users/scott/pl/ocaml/code/sep_compile";;
+</code></pre>
+<p>Note you can use <code>#pwd</code> to see what directory you are in now in OCaml.</p>
+
+<pre><code class="language-ocaml">#load "fSet.cmo";;
+FSet.emptyset;;
+</code></pre>
+<h3 id="functors">Functors</h3>
+<ul>
+  <li>A “function” from structures to structures</li>
+  <li>Allows a module to be parameterized and so instantiated in multiple ways
+    <ul>
+      <li>think of it as the ability to “plug in” a code module</li>
+    </ul>
+  </li>
+  <li>In object-oriented languages, object polymorphism gives you much of this ability
+    <ul>
+      <li>the “Animal” variable can have a Dog, Cat, Fish, etc plugged in to it</li>
+      <li>But, OCaml has no object polymorphism and something is needed to support this</li>
+      <li>General functors are found only in a few languages</li>
+    </ul>
+  </li>
+</ul>
+
+<p>Recall this type above: <code>type comparison = LessThan | EqualTo | GreaterThan</code></p>
+
+<p>Here is a kind of struct that we can take as a parameter; in Java we would just use an interface Comparable</p>
+
+<pre><code class="language-ocaml">module type ORDERED_TYPE =
+  sig
+    type t
+    val compare: t -&gt; t -&gt; comparison
+  end;;
+</code></pre>
+<p>Here is a functor version of a set, you feed in a struct with the set element ordering defined on it</p>
+
+<pre><code class="language-ocaml">module FSetFunctor =
+  functor (Elt: ORDERED_TYPE) -&gt;
+  struct
+    type element = Elt.t (* import the type of elements from the structure *)
+    type set = element list
+
+    let empty = []
+
+    let rec add x s =
+      match s with
+        [] -&gt; [x]
+      | hd::tl -&gt;
+          match Elt.compare x hd with
+            EqualTo   -&gt; s
+          | LessThan    -&gt; x :: s
+          | GreaterThan -&gt; hd :: add x tl
+
+    let rec contains x s =
+      match s with
+        [] -&gt; false
+      | hd::tl -&gt;
+          match Elt.compare x hd with
+            EqualTo   -&gt; true
+          | LessThan    -&gt; false
+          | GreaterThan -&gt; contains x tl
+  end;;
+</code></pre>
+
+<p>Here is a concrete ordering we can feed in, one over ints</p>
+
+<pre><code class="language-ocaml">module OrderedInt =
+  struct
+    type t = int
+    let compare x y =
+      if x = y then
+    EqualTo
+      else
+    if x &lt; y then
+      LessThan
+    else
+      GreaterThan
+  end;;
+</code></pre>
+
+<p>Here is how we feed it in, instantiating the functor to give a structure</p>
+
+<pre><code class="language-ocaml">module OrderedIntSet = FSetFunctor(OrderedInt);; (* note how this looks like a function application *)
+
+let myOrderedIntSet = OrderedIntSet.add 5 OrderedIntSet.empty;;
+OrderedIntSet.contains 3 myOrderedIntSet;;
+</code></pre>
+
+<p>We can do the same thing for a string comparison</p>
+
+<pre><code class="language-ocaml">module OrderedString =
+struct
+  type t = string
+  let compare x y =
+    if x = y then EqualTo
+    else if x &lt; y then LessThan
+    else GreaterThan
+end;;
+
+module OrderedStringSet = FSetFunctor(OrderedString);; (* a DIFFERENT instantiation of same *)
+
+let myOrderedStringSet = OrderedStringSet.add "abc" OrderedStringSet.empty;;
+</code></pre>
+
+<p>Functors also have signatures; there can also be type abstraction in a functor signature</p>
+
+<pre><code class="language-ocaml">module type SETFUNCTOR = (* below is the syntax for a signature of a functor *)
+    functor (Elt: ORDERED_TYPE) -&gt;
+  sig
+    type element = Elt.t      (* concrete *)
+    type set                  (* abstract *)
+    val empty : set
+    val add : element -&gt; set -&gt; set
+    val contains : element -&gt; set -&gt; bool
+  end;;
+
+module AbstractSet = (FSetFunctor : SETFUNCTOR);; (* slap that sig on a functor *)
+module AbstractIntSet = AbstractSet(OrderedInt);;
+
+AbstractIntSet.add 5 AbstractIntSet.empty;;
+</code></pre>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
