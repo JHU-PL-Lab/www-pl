@@ -14,7 +14,7 @@ See the CampusWire site for those links.  They are also posted on the course Bla
 
 ### The Book
 
-The book for the course is the on-line [Book](book/index.html), which directly complements the lectures. The course will cover most of the book, but leaving out Chapter 8\. The book doesn't contain an introduction to OCaml; we will be doing running examples in class as the lecture, from file [lecture.ml](ocaml/code/lecture.ml). See the [OCaml page](ocaml) for material on learning OCaml. Some of the later lecture topics are also not in the book lecture notes for those topics are found on the [dateline](dateline.html).
+The book for the course is the on-line [Book](book/index.html), which directly complements the lectures. The course will cover most of the book, but leaving out Chapter 8\. The book doesn't contain an introduction to OCaml; we will be doing running examples in class as the lecture, from file [lecture.html](ocaml/code/lecture.html). See the [OCaml page](ocaml) for material on learning OCaml. Some of the later lecture topics are also not in the book lecture notes for those topics are found on the [dateline](dateline.html).
 
 ### Gradescope
 
@@ -29,8 +29,6 @@ All assignments are linked from the [dateline](dateline.html). There will be thr
 3.  Written assignments covering topics in the mathematical theory of programming languages.
 
 The collaboration policy for assignments is you are _strongly encouraged_ to form teams of up to four people to work together on solving the assignments, but everyone must submit their own writeup of the answers (no emailing solutions to each other). Those of you who understand the material are encouraged to engage in peer teaching to help other students on your team or other teams.
-
-We have several _Collab Lab_ slots each week when your group can meet together and work, and have us around to get feedback or help from. The collab lab is described in more detail below.
 
 Please make sure to consult the course [Academic Integrity Policy](integrity.html) on what is legitimate interaction for homeworks, it is spelled out in detail there.
 

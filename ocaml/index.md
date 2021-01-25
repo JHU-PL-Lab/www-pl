@@ -37,7 +37,7 @@ if it is not already in the file.  The contents of this file are entered in the 
 
 ### OCaml with the PL Book FbDK
 
-See the [FbDK README](../book/_dist/fbdk/) for information on how to use the FbDK.  We will not use it on the first several assignments.
+See the [FbDK README](../book/dist/fbdk/README.md) for information on how to use the FbDK.  We will not use it on the first several assignments.
 
 ### The Official OCaml Manual
 
@@ -46,7 +46,7 @@ The OCaml manual is [here](http://caml.inria.fr/pub/docs/manual-ocaml/).
 * Manual Chapter 7 is the language reference where you can look up details if needed. 
 * Part III of the manual documents the tools, we will not be using much of this because third parties have improved on many of the tools and we will instead use those versions.
 * Part IV describes the standard libraries, which we will make some use of. 
-   -  The [Core Library](http://caml.inria.fr/pub/docs/manual-ocaml/core.html) chapter describes standard types and exceptions built into OCaml, and the [Pervasives module](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html) referenced there includes all basic int/bool/float/string/etc operations such as `<`, `mod`, etc which are always available.
+   -  The [Core Library](http://caml.inria.fr/pub/docs/manual-ocaml/core.html) chapter describes standard types and exceptions built into OCaml, and the [Stdlib module](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Stdlib.html) referenced there includes all basic int/bool/float/string/etc operations such as `<`, `mod`, etc which are always available.
    -  The [Standard Library](http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html) chapter includes standard data structures such as hashtables and stacks as well as library operations for lists, arrays, strings, printing, etc.
 
 ### Our OCaml Toolbox
@@ -92,7 +92,7 @@ to install the relevant OCaml packages. Here are some handy Atom keymaps for com
 ### Example Worked OCaml Exercises
 Looking at other people's code is a good way to learn good coding practices.
 
-* [Exercism OCaml Track](https://exercism.io/tracks/ocaml/exercises) has a large set of programming problems to solve which have solutions by many other programmers as well.  We will reference some of these examples in lecture.
+* [Exercism OCaml Track](https://exercism.io/tracks/ocaml/exercises) has a large set of programming problems to solve which have solutions by many other programmers as well.
 * [Learn OCaml](https://ocaml-sf.org/learn-ocaml-public/#activity%3Dexercises) has a large number of exercises to solve.  The [solutions are online](https://github.com/ocaml-sf/learn-ocaml-corpus/tree/master/exercises).
 
 ### Other Resources

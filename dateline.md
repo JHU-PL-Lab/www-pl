@@ -439,7 +439,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Special Topics I: Garbage collection</div>
+        <div align="left" class="body">&nbsp;Special Topics I</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -484,13 +484,13 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">May 5-13</div>
+        <div align="center" class="body">early May</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">MWF</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">Finals</div>
+        <div align="left" class="body">Final Exam, date TBA</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a

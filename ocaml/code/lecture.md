@@ -7,6 +7,7 @@
 
 * We will begin exploration of OCaml in the interactive *top loop*
 * The top loop is the same as the read-eval-print loop or the console window for other languages
+* To get the top loop we are using, `utop`, follow the course [OCaml install instructions](../index.html).
 
 #### Simple integer operations in the top loop
 
