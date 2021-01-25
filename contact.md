@@ -17,5 +17,5 @@ Please send private questions for instructors as a new Post to "Instructors and 
 
 ### Office Hours
 
-They will be posted on Campuswire along with Zoom room information.  All office hours will be held in Zoom.
+They will be posted on Campuswire along with Zoom room information.  All office hours will be held in Zoom and will commence on Monday of the second week of classes.
 
