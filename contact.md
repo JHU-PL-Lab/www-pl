@@ -1,7 +1,7 @@
 ## Contact Information
 
 **For quickest response, post to Campuswire**.
-Please send private questions for instructors as a post to "Instructors and TAs" (not "Everyone") in Campuswire.  To contact an individual CA or instructor you can use the DM feature in CampusWire.
+Please send private questions for instructors as a new Post to "Instructors and TAs" (not "Post to everyone") in Campuswire.  To contact an individual CA or instructor, use the DM feature of Campuswire.
 
 **Professor** Scott Smith
 **email** [scott@cs.jhu.edu](mailto:scott@cs.jhu.edu)
@@ -9,7 +9,7 @@ Please send private questions for instructors as a post to "Instructors and TAs"
 **Head Course Assistant** Devin Hill
 **email** dhill45 --at-- jhu.edu
 
-**Course Assistants** 
+**Course Assistants**
 * Melissa Shohet (grading, office hours)
 * Jiatong Shi (grading, office hours)
 * Shiwei Weng (office hours)
@@ -17,5 +17,5 @@ Please send private questions for instructors as a post to "Instructors and TAs"
 
 ### Office Hours
 
-They will be posted on Campuswire along with connection information.
+They will be posted on Campuswire along with Zoom room information.  All office hours will be held in Zoom.
 
