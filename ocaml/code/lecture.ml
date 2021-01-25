@@ -1,59 +1,35 @@
-3;; (* use ;; to end input. *)
-3 + 4;; (* notice how types are inferred in output *)
+3 + 4;; (* ";;" denotes end of input, somewhat archaic. *)
 let x = 3 + 4;; (* give the value a name via let keyword. *)
-x + 5;;
-let y = 5 in x + y;; (* this makes y a local variable: think C's { int y; return(x+y); }  *)
-(* y + 6 ;; *) (* errors because y was only defined *locally* in previous line *)
+let y = x + 5;; (* can use x now *)
+let z = x + 5 in z - 1;; (* let .. in defines a local variable z *)
 
-true && false;;
+let b = true;;
+b && false;;
 true || false;;
-1 = 2;; (* = not == for equality comparison *)
+1 = 2;; (* = not == for equality comparison - ! *)
 1 <> 2;;  (* <> not != for not equal *)
 
-1;;
-1.;;
-4 * 5;;
-4.0 * 1.5;; (* errors -- '*' operator is only for integers *)
-4.0 *. 1.5;;      (* works -- '*.' is for floats *)
-(float 4) *. 1.5;; (* use an explicit cast when you want to mix *)
-
-[1; 2; 3];;
-[1; 1+1; 1+1+1];;
-["a"; "b"; "c"];;
-[1; "a"];; (* errors - All elements must have same type - HOMOGENEOUS *)
-[];; (* empty list *)
-
-0 :: [1; 2; 3];; (* "::" is 'consing' an element to the front - fast *)
-0 :: (1 :: (2 :: (3 :: [])));; (* equivalent to the above *)
-[1; 2; 3] @ [4; 5];; (* appending lists - slower *)
-let z = [2; 4; 6];;
-let y = 0 :: z;;
-z;; (* Observe z itself did not change -- lists are immutable in OCaml *)
-
-if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
-(if (x = 3) then 5 else 6) * 2;;
-(if (x = 3) then 5.4 else 6) * 2;; (* type errors:  two branches of if must have same type *)
-
-(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
-let tuple = (2, "hi");;
-(1,1.1,'c',"cc");;
+4.5;; (* floats *)
+4.5 +. 4.3;; (* operations are +. etc not just + which is for ints only *)
+30980314323422L;; (* 64-bit integers *)
+'c';; (* characters *)
+"and of course strings";;
 
 let squared x = x * x;; 
 squared 4;; (* to call a function -- separate arguments with S P A C E S *)
 
-let rec fib n =     (* the "rec" keyword needs to be added to allow recursion (ugh) *)
+let rec fib n =     (* the "rec" keyword needs to be added to allow recursion *)
   if n <= 0 then 0
   else if n = 1 then 1
-  else
-    fib (n - 1) + fib (n - 2);; (* notice again everything is an expression, no "return" *)
+  else fib (n - 1) + fib (n - 2);; (* notice again everything is an expression, no "return" *)
 
-fib 10;;
+fib 10;; (* get the 10th Fibonacci number *)
 
-let add1 x = x + 1;; (* normal add1 definition *)
-let funny_add1 = (function x -> x + 1);; (* "x" is (sole) argument here *)
-funny_add1 3;;
-(funny_add1 4) + 7;; 
-((function x -> x + 1) 4) + 7;; (*  a "->" function is an expression and can be used anywhere *)
+let add1 x = x + 1;; (* a normal add1 definition *)
+let anon_add1 = (function x -> x + 1);; (* equivalent anonymous version; "x" is argument here *)
+anon_add1 3;;
+(anon_add1 4) + 7;; 
+((function x -> x + 1) 4) + 7;; (* can inline anonymous function definition *)
 ((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off the "ction" *)
 
 let add x y = x + y;;
@@ -62,10 +38,68 @@ add 3 4;;
 let add3 = add 3;; (* No need to give all arguments at once!  Type of add is int -> (int -> int) - "CURRIED" *)
 add3 4;;
 add3 20;;
+(+) 3 4;; (* Putting () around any infix operator turns it into a 2-argument function *)
 
 add3 (3 * 2);;
 add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than * *)
 add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
+
+Some 5;;
+- : int option = Some 5
+
+None;;
+- : 'a option = None
+
+# let nicer_div m n = if n = 0 then Error "Divide by zero" else Ok (m / n);;
+val nicer_div : int -> int -> (int, string) result = <fun>
+
+# match (nicer_div 5 2) with 
+   | Ok i -> i + 7
+   | Error s -> failwith s;;
+- : int = 9
+
+let div_exn m n = if n = 0 then failwith "divide by zero is bad!" else m / n;;
+div_exn 3 4;;
+
+if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
+(if (x = 3) then 5 else 6) * 2;;
+(if (x = 3) then 5.4 else 6) * 2;; (* type errors:  two branches of if must have same type *)
+
+let l1 = [1; 2; 3];;
+let l2 = [1; 1+1; 1+1+1];;
+let l3 = ["a"; "b"; "c"];;
+let l4 = [1; "a"];; (* error - All elements must have same type *)
+let l5 = [];; (* empty list *)
+
+0 :: l1;; (* "::" is 'consing' 0 to the top of the tree - fast *)
+0 :: (1 :: (2 :: (3 :: [])));; (* equivalent to [0;1;2;3] *)
+[1; 2; 3] @ [4; 5];; (* appending lists - slower, needs to cons 3/2/1 on front of [4;5] *)
+let z = [2; 4; 6];;
+let y = 0 :: z;;
+z;; (* Observe z itself did not change -- recall lists are immutable in OCaml *)
+
+let hd l =
+  match l with
+  |  [] -> Error "empty list has no head"
+  |  x :: xs -> Ok x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
+;;
+hd [1;2;3];;
+hd [];;
+
+let rec nth l n =
+  match l with
+  |  [] -> failwith "no nth element in this list"
+  |  x :: xs -> if n = 0 then x else nth xs (n-1)
+;;
+nth [33;22;11] 1;;
+nth [33;22;11] 3;;
+
+# List.nth [1;2;3] 2;;
+- : int = 3
+
+(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
+let tuple = (2, "hi");;
+(1,1.1,'c',"cc");;
 
 let mixemup n =
     match n with
