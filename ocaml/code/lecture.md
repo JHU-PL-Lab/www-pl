@@ -1,6 +1,10 @@
 
 ## Introduction to OCaml Programming
 
+* OCaml is a *strongly typed functional programming language*
+   - Strongly typed means the compiler will detect type errors; you won't get them at runtime like in JavaScript/Python
+   - Functional means an emphasis on *functions* as a key building block and use of functions as data (functions that themselves can take functions as arguments and return functions as results)
+
 (Note if you want to get all the code (only) in this webpage into a `.ml` file to load into your editor, download the file [lecture.ml](lecture.ml).)
 
 ### The top loop
@@ -46,7 +50,7 @@ squared 4;; (* to call a function -- separate arguments with S P A C E S *)
 ```
  *  OCaml has no `return` statement; value of the whole body-expression is what gets returned
  *  Type is automatically **inferred** and printed as domain `->` range
- *  OCaml functions in fact always take only one argument - !  multiple arguments can be encoded by a trick (later)
+ *  OCaml functions in fact always take only one argument - !  multiple arguments can be encoded (later)
 
 
 #### Fibonacci series example - `0 1 1 2 3 5 8 13 ...` 
@@ -89,7 +93,7 @@ add3 20;;
 ```
 
 Conclusion: add is a function taking an integer, and returning a **function** which takes ints to ints.
-So, add is a **higher-order function**: it either takes a function as an argument, or returns a function as result.
+So, add is a **higher-order function**: it returns a function as result.
 
 Observe `int -> int -> int` is parenthesized as `int -> (int -> int)` -- unusual **right** associativity
 
@@ -164,27 +168,6 @@ Here is a real solution to the above issue:
 * The LHS in OCaml can be a general pattern which binds variables (the `i` here), etc
 * Note that we turned `None` into a runtime exception via `failwith`.
 
-#### Result
-
-An "even nicer" version of the above would be to use the `result` type, which is very similar to `option` but is specialized just for error handling.
-
-```ocaml
-# let nicer_div m n = if n = 0 then Error "Divide by zero" else Ok (m / n);;
-val nicer_div : int -> int -> (int, string) result = <fun>
-```
-* The `result` type is explicitly intended for this case of failure-result
-    - `Ok` means the normal result
-    - `Error` is the error case, which unlike none can include failure data, usually a string.
-* Again we can do the same kind of pattern match on `Ok/Error` as above.
-* This is a "more well-typed" version of the C approach of returning `-1` or `NULL` to indicate failure.
-
-```ocaml
-# match (nicer_div 5 2) with 
-   | Ok i -> i + 7
-   | Error s -> failwith s;;
-- : int = 9
-```
-
 Lastly, the function could itself raise an exception
 
 ```ocaml
@@ -211,7 +194,7 @@ if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
 ### Lists
 
 * Lists are pervasive in OCaml
-* They are **immutable** so while they look something like arrays or vectors they are not
+* They are **immutable** (cannot update elements in an existing list) so while they look something like arrays or vectors they are not
 
 ```ocaml
 let l1 = [1; 2; 3];;
@@ -260,7 +243,7 @@ nth [33;22;11] 1;;
 nth [33;22;11] 3;;
 ```
 
-Fortunately many common operations are in the `List` module in the standard library:
+Fortunately many common list operations are in the `List` module in the standard library:
 
 ```ocaml
 # List.nth [1;2;3] 2;;

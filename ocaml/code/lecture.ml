@@ -50,14 +50,6 @@ Some 5;;
 None;;
 - : 'a option = None
 
-# let nicer_div m n = if n = 0 then Error "Divide by zero" else Ok (m / n);;
-val nicer_div : int -> int -> (int, string) result = <fun>
-
-# match (nicer_div 5 2) with 
-   | Ok i -> i + 7
-   | Error s -> failwith s;;
-- : int = 9
-
 let div_exn m n = if n = 0 then failwith "divide by zero is bad!" else m / n;;
 div_exn 3 4;;
 

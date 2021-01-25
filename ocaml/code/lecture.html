@@ -85,6 +85,15 @@
     
 <h2 id="introduction-to-ocaml-programming">Introduction to OCaml Programming</h2>
 
+<ul>
+  <li>OCaml is a <em>strongly typed functional programming language</em>
+    <ul>
+      <li>Strongly typed means the compiler will detect type errors; you won’t get them at runtime like in JavaScript/Python</li>
+      <li>Functional means an emphasis on <em>functions</em> as a key building block and use of functions as data (functions that themselves can take functions as arguments and return functions as results)</li>
+    </ul>
+  </li>
+</ul>
+
 <p>(Note if you want to get all the code (only) in this webpage into a <code>.ml</code> file to load into your editor, download the file <a href="lecture.ml">lecture.ml</a>.)</p>
 
 <h3 id="the-top-loop">The top loop</h3>
@@ -129,7 +138,7 @@
 <ul>
   <li>OCaml has no <code>return</code> statement; value of the whole body-expression is what gets returned</li>
   <li>Type is automatically <strong>inferred</strong> and printed as domain <code>-&gt;</code> range</li>
-  <li>OCaml functions in fact always take only one argument - !  multiple arguments can be encoded by a trick (later)</li>
+  <li>OCaml functions in fact always take only one argument - !  multiple arguments can be encoded (later)</li>
 </ul>
 
 <h4 id="fibonacci-series-example---0-1-1-2-3-5-8-13-">Fibonacci series example - <code>0 1 1 2 3 5 8 13 ...</code></h4>
@@ -173,7 +182,7 @@
 </code></pre></div></div>
 
 <p>Conclusion: add is a function taking an integer, and returning a <strong>function</strong> which takes ints to ints.<br />
-So, add is a <strong>higher-order function</strong>: it either takes a function as an argument, or returns a function as result.</p>
+So, add is a <strong>higher-order function</strong>: it returns a function as result.</p>
 
 <p>Observe <code>int -&gt; int -&gt; int</code> is parenthesized as <code>int -&gt; (int -&gt; int)</code> – unusual <strong>right</strong> associativity</p>
 
@@ -251,30 +260,6 @@ So, add is a <strong>higher-order function</strong>: it either takes a function 
   <li>Note that we turned <code>None</code> into a runtime exception via <code>failwith</code>.</li>
 </ul>
 
-<h4 id="result">Result</h4>
-
-<p>An “even nicer” version of the above would be to use the <code>result</code> type, which is very similar to <code>option</code> but is specialized just for error handling.</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="k">let</span> <span class="n">nicer_div</span> <span class="n">m</span> <span class="n">n</span> <span class="o">=</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="nc">Error</span> <span class="s2">"Divide by zero"</span> <span class="k">else</span> <span class="nc">Ok</span> <span class="p">(</span><span class="n">m</span> <span class="o">/</span> <span class="n">n</span><span class="p">);;</span>
-<span class="k">val</span> <span class="n">nicer_div</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">-&gt;</span> <span class="kt">int</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="kt">int</span><span class="o">,</span> <span class="kt">string</span><span class="p">)</span> <span class="n">result</span> <span class="o">=</span> <span class="o">&lt;</span><span class="k">fun</span><span class="o">&gt;</span>
-</code></pre></div></div>
-<ul>
-  <li>The <code>result</code> type is explicitly intended for this case of failure-result
-    <ul>
-      <li><code>Ok</code> means the normal result</li>
-      <li><code>Error</code> is the error case, which unlike none can include failure data, usually a string.</li>
-    </ul>
-  </li>
-  <li>Again we can do the same kind of pattern match on <code>Ok/Error</code> as above.</li>
-  <li>This is a “more well-typed” version of the C approach of returning <code>-1</code> or <code>NULL</code> to indicate failure.</li>
-</ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="k">match</span> <span class="p">(</span><span class="n">nicer_div</span> <span class="mi">5</span> <span class="mi">2</span><span class="p">)</span> <span class="k">with</span> 
-   <span class="o">|</span> <span class="nc">Ok</span> <span class="n">i</span> <span class="o">-&gt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">7</span>
-   <span class="o">|</span> <span class="nc">Error</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="n">s</span><span class="p">;;</span>
-<span class="o">-</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="mi">9</span>
-</code></pre></div></div>
-
 <p>Lastly, the function could itself raise an exception</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">div_exn</span> <span class="n">m</span> <span class="n">n</span> <span class="o">=</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">failwith</span> <span class="s2">"divide by zero is bad!"</span> <span class="k">else</span> <span class="n">m</span> <span class="o">/</span> <span class="n">n</span><span class="p">;;</span>
@@ -305,7 +290,7 @@ So, add is a <strong>higher-order function</strong>: it either takes a function 
 
 <ul>
   <li>Lists are pervasive in OCaml</li>
-  <li>They are <strong>immutable</strong> so while they look something like arrays or vectors they are not</li>
+  <li>They are <strong>immutable</strong> (cannot update elements in an existing list) so while they look something like arrays or vectors they are not</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">l1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">];;</span>
@@ -355,7 +340,7 @@ So, add is a <strong>higher-order function</strong>: it either takes a function 
 <span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">3</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Fortunately many common operations are in the <code>List</code> module in the standard library:</p>
+<p>Fortunately many common list operations are in the <code>List</code> module in the standard library:</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="nn">List</span><span class="p">.</span><span class="n">nth</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">2</span><span class="p">;;</span>
 <span class="o">-</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="mi">3</span>
