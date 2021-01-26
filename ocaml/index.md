@@ -19,7 +19,7 @@ We require that you use the [OPAM packaging system](https://opam.ocaml.org) for 
     1.  `opam init` to initialize OPAM;
     2.  `opam switch create 4.11.1` (this will take awhile) to build OCaml version 4.11.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to `opam update` before this `switch` to make sure OPAM is aware of the latest version);
 	3.  `eval (opam env)` to let your shell know where the OPAM files are; and
-    4.  Also add the very same line, `eval (opam env)`, to your`.profile`/`.bashrc` shell init file as you would need to do that in every new terminal window otherwise. (for `.zshrc` on macs, use ``eval `opam env` ``instead )
+    4.  Also add the very same line, `eval (opam env)`, to your `~/.profile` or `.~/.bashrc` or `~/.zshrc` shell init file (the command `echo $SHELL` will report whether your shell is `sh`, `bash`, or `zsh` respectively, edit the apporiate file or create the file and add the one line if it doesn't already exist). For `.zshrc`, use ``eval `opam env` `` instead of `eval (opam env)`.
     5. Once you have the basics installed, run the following shell command to install additional necessary packages used in the class:
 ```bash
 opam install merlin ocp-indent menhir utop ppx_deriving ounit2
@@ -64,7 +64,11 @@ Here are all the tools we will be using.  You are required to have a build for w
 You should use one of VSCode or Atom since they have OCaml-specific features such as syntax highliting, auto-indent, and lint analysis to make the coding process much smoother. If you are using a VM under Windows, you should aim to run one of these editors *within* the VM to take advantage of syntax highlighting and the like for OCaml.
 
 **[Visual Studio Code](https://code.visualstudio.com)**: 
-VSCode has very good OCaml support and is the "officially recommended editor". Install the **OCaml and Reason IDE** extension to get syntax highlighting, type information, etc: from the `View` menu select `Extensions`, then type in OCaml and this extension will show up; install it. You can also easily run a `utop` shell from within VSCode, just open up a shell from the `Terminal` menu and type `utop`.
+VSCode has very good OCaml support and is the "officially recommended editor". Install the **OCaml and Reason IDE** extension to get syntax highlighting, type information, etc: from the `View` menu select `Extensions`, then type in OCaml and this extension will show up; install it. 
+
+You can also easily run a `utop` shell from within VSCode, just open up a shell from the `Terminal` menu and type `utop`.
+
+An alternative VSCode OCaml environment to consider is the [OCaml Platform](https://marketplace.visualstudio.com/items?itemName=ocamllabs.ocaml-platform), follow link for install instructions.  It is more powerful but is still a bit bleeding-edge (read: buggy) and is harder to install.
 
 [**Atom**](https://atom.io): 
 Atom is very good with OCaml, but is unfortunately being slowly phased out after Microsoft bought Github.  So, it is probably a good time to switch from Atom to VSCode if you have not already.  To use Atom with OCaml install the `atom` and `apm` shell commands (see the **Atom..Install Shell Commands** menu option on Macs, or type shift-command-p(⇧⌘P) and then in the box type command `Window: Install Shell Commands`). With those commands installed, type into a terminal
