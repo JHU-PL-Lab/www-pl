@@ -109,8 +109,8 @@
     <ol>
       <li><code>opam init</code> to initialize OPAM;</li>
       <li><code>opam switch create 4.11.1</code> (this will take awhile) to build OCaml version 4.11.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to <code>opam update</code> before this <code>switch</code> to make sure OPAM is aware of the latest version);</li>
-      <li><code>eval (opam env)</code> to let your shell know where the OPAM files are; and</li>
-      <li>Also add the very same line, <code>eval (opam env)</code>, to your <code>~/.profile</code> or <code>.~/.bashrc</code> or <code>~/.zshrc</code> shell init file (the command <code>echo $SHELL</code> will report whether your shell is <code>sh</code>, <code>bash</code>, or <code>zsh</code> respectively, edit the apporiate file or create the file and add the one line if it doesn’t already exist). For <code>.zshrc</code>, use <code>eval `opam env`</code> instead of <code>eval (opam env)</code>.</li>
+      <li><code>eval $(opam env)</code> to let your shell know where the OPAM files are; and</li>
+      <li>Also add the very same line, <code>eval $(opam env)</code>, to your <code>~/.profile</code> or <code>.~/.bashrc</code> or <code>~/.zshrc</code> shell init file (the command <code>echo $SHELL</code> will report whether your shell is <code>sh</code>, <code>bash</code>, or <code>zsh</code> respectively, edit the apporiate file or create the file and add the one line if it doesn’t already exist). For <code>.zshrc</code>, use <code>eval `opam env`</code> instead of <code>eval $(opam env)</code>.</li>
       <li>Once you have the basics installed, run the following shell command to install additional necessary packages used in the class:
         <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opam <span class="nb">install </span>merlin ocp-indent menhir utop ppx_deriving ounit2
 </code></pre></div>        </div>
@@ -118,7 +118,9 @@
       <li>Lastly, edit the file <code>~/.ocamlinit</code> to add the line
         <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span><span class="n">use</span> <span class="s2">"topfind"</span><span class="p">;;</span>
 </code></pre></div>        </div>
-        <p>if it is not already in the file.  The contents of this file are entered in the top loop when it starts.</p>
+        <p>if it is not already in the file.  The contents of this file are entered in the top loop when it starts.  Here is an easy one-liner you can copy/paste to set that file up:</p>
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s1">'#use "topfind";;'</span>  <span class="o">&gt;</span> ~/.ocamlinit
+</code></pre></div>        </div>
       </li>
     </ol>
   </li>
