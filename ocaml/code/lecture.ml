@@ -72,10 +72,11 @@ z;; (* Observe z itself did not change -- recall lists are immutable in OCaml *)
 
 let hd l =
   match l with
-  |  [] -> Error "empty list has no head"
-  |  x :: xs -> Ok x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
+  |  [] -> None
+  |  x :: xs -> Some x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
 ;;
 hd [1;2;3];;
+hd [1];; (* [1] is 1 :: [] - !  So the head is 1. *)
 hd [];;
 
 let rec nth l n =
@@ -86,83 +87,25 @@ let rec nth l n =
 nth [33;22;11] 1;;
 nth [33;22;11] 3;;
 
+let dumb l = match l with
+      | x :: y -> x;;
+dumb [1;2;3];; (* this works to return head of list but.. *)
+dumb [];; (* runtime error here *)
+
 # List.nth [1;2;3] 2;;
 - : int = 3
 
-(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
-let tuple = (2, "hi");;
-(1,1.1,'c',"cc");;
+List.length ["d";"ss";"qwqw"];;
+List.concat [[1;2];[22;33];[444;5555]];;
+List.append [1;2] [3;4];; 
+[1;2] @ [3;4] (* Use this equivalent infix syntax for append *)
 
-let mixemup n =
-    match n with
-    | 0 -> 4
-    | 5 -> 0
-    | y -> y + 1;; (* default case giving a name to the matched number, x *)
-
-mixemup 3;; (* matches last case and x is bound to the value 3 *)
-
-let five_oh y =
-"Hawaii " ^ (match y with
-    | 0 -> "Zero"
-    | 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
-    | _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything *)
-
-five_oh 5;;
-
-match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
-      | x :: y -> "first clause"
-      | _ -> "second clause";;
-
-match [] with
-      | x :: y -> "first clause"
-      | _ -> "second clause";;
-
-match ['h';'o';'p';' ';'h';'o';'p'] with
-      | x :: y -> y
-      | _ -> ['0'];;
-
-match ["hi"] with (* ["hi"] is "hi" :: [] *)
-      | x :: (y :: z) -> "first"
-      | x :: y -> "second"
-      | _ -> "third";;
-
-let mm l = match l with
-      | [] -> "empty"
-      | x :: y -> "non-empty";;
-
-let tuple = (2, "hi", 1.2);;
-
-match tuple with
-  (f, s, th) -> s
-;;
-
-let mypair = (2.2, 3.3);;
-let (f, s) = mypair in f +. s;;
-match mypair with (f,s) -> f +. s;; (* same behavior as above let *)
-
-let getSecond t =
-  match t with
-    (f, s) -> s
-;;
-let s = getSecond (2, "hi");;
-let s = getSecond mypair;;
-
-let getSec t =
-  match t with
-    (f, s) -> (s :: [],4)
-;;
-
-let getHead l =
-  match l with
-    head :: tail -> head;;
-
-getHead [];;  (* OCaml gives uncaught runtime exception *)
-
-let getHead l =
-  match l with
-    | [] -> failwith "you dodo"
-  |  head :: tail -> head
-;;
+# List.length;;
+- : 'a list -> int = <fun>
+# List.concat;;
+- : 'a list list -> 'a list = <fun>
+# List.append;;
+- : 'a list -> 'a list -> 'a list = <fun>
 
 let rec rev l =
   match l with
@@ -172,44 +115,23 @@ let rec rev l =
 rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 
 rev [1;2;3] 
-~= rev [2;3] @ [1]  
-~= (rev [3] @ [2]) @ [1] 
+~= rev [2;3] @ [1]  (the second pattern is matched)
+~= (rev [3] @ [2]) @ [1]  (same thing for the rev [2;3] expression - plug in its elaboration)
 ~= ((rev [] @ [3]) @ [2]) @ [1]
 ~= (([] @ [3]) @ [2]) @ [1]
-~= [3;2;1]
+~= [3;2;1] (by the meaning of append)
 
-rev [1;2;3];;
-(rev [2;3]) @ [1];;
-((rev [3]) @ [2]) @ [1];;
-(((rev []) @ [3]) @ [2]) @ [1];;
-(([]@[3]) @ [2]) @ [1];;
+(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
+let tuple = (2, "hi");;
+(1,1.1,'c',"cc");;
 
-type comparison = LessThan | EqualTo | GreaterThan;;
+let tuple = (2, "hi", 1.2);;
 
-let intcmp x y =
-    if x < y then LessThan else
-        if x > y then GreaterThan else EqualTo;;
+match tuple with
+  (f, s, th) -> s;;
 
-match intcmp 4 5 with
-  | LessThan -> "less!"
-  | EqualTo -> "equal!"
-  | GreaterThan -> "greater!";;
-
-type 'a nullable = Null | NotNull of 'a;;
-
-match NotNull(4) with
-  | Null -> "null!"
-  | NotNull(n) -> (string_of_int n)^" is not null!"
-;;
-
-type 'a option = None | Some of 'a *)
-
-Some(4);;
-None;;
-
-let gethead l = match l with
-  | [] -> None
-  | hd :: tl -> Some hd;;
+(* shorthand for the above - only one pattern, can use let syntax *)
+let (f, s, th) = tuple in s;;
 
 (let y = 3 in
   ( let x = 5 in
@@ -274,13 +196,6 @@ let copyodd ll =
 
 assert(copyodd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 
-let rec timestenlist l =
-  match l with
-    []    -> []
-  | hd::tl -> (hd * 10) :: timestenlist tl;;
-
-timestenlist [3;2;50];;
-
 let rec appendgobblelist l =
   match l with
     []    -> []
@@ -291,12 +206,10 @@ appendgobblelist ["have";"a";"good";"day"];;
 
 let rec map f l =  (* Notice function f is an ARGUMENT here *)
   match l with
-    []    -> []
+  |  [] -> []
   | hd::tl -> (f hd) :: map f tl;;
 
-map (fun x -> x * 10) [3;2;50];;
-
-let middle = List.map (function s -> s^"gobble");;
+let middle = map (function s -> s^"gobble");;
 middle ["have";"a";"good";"day"];;
 
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
@@ -343,6 +256,10 @@ let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum) [] l ;; (
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
 let rev_slow l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* can also fold_right rev with @ *)
 
+let nth_end l n = List.nth (List.rev l) n;;
+
+let nth_end l n = l |> List.rev |> (Fun.flip(List.nth) n);;
+
 let compose g f = (fun x -> g (f x));;
 
 let plus3 x = x+3;;
@@ -354,33 +271,6 @@ compose (fun x -> x+3) (fun x -> x*2) 10;;
 
 let compose g f x =  g (f x);;
 let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
-
-let id = fun x -> x;;
-let id x = x;; (* equivalent to above *)
-id 3;; (* id applied to int returns an int *)
-id true;; (* SAME id applied to bool returns a bool *)
-
-copyodd;;    (* type is 'a list -> 'a list *)
-map;;     (* type is ('a -> 'b) -> 'a list -> 'b list *)
-compose;; (* type is ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b *)
-
-let add1 = fun x -> x + 1;;
-add1 4;;
-
-(function addup -> addup 4)(fun x -> x + 1);;
-
-let id = function x -> x;;
-
-match id (true) with
-    true -> id (3)
-  | false -> id(4);;
-
-(function mono_id ->
-    match mono_id(true) with
-                true -> mono_id(3)
-              | false -> mono_id(4)) (fun x -> x);;
-
-(function mono_id -> mono_id 4) id;; (* mono_id is solely of type int -> int, thats OK *)
 
 let addC x y = x + y;;
 addC 1 2;; (* recall this is the same as '(addC 1) 2' *)

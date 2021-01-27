@@ -47,7 +47,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html">OCaml II: tuples,
+        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#ii">OCaml II: tuples,
     patterns, functions</a> </div> 
       </td>
       <td width="22%"> 

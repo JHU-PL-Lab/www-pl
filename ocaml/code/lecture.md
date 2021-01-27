@@ -80,6 +80,9 @@ anon_add1 3;;
 ((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off the "ction" *)
 ```
 
+<a name="ii"></a>
+## Basic OCaml II
+
 * Multiple arguments - just leave s p a c e s between multiple arguments in both definitions and uses
 
 ```ocaml
@@ -179,8 +182,7 @@ div_exn 3 4;;
 * Note that the built-in `/` also raises an exception.
 * Exceptions are side effects though, we want to minimize their usage to avoid error-at-a-distance.
 * The above examples show how exceptional conditions can either be handled via exceptions or in the return value; 
-   - the latter is the C approach but also the monadic approach as we will learn
-   - a key dimension of this course is the side effect vs direct trade-off
+   - the latter is the C approach
 
 ### Everything is an expression
 
@@ -224,10 +226,11 @@ z;; (* Observe z itself did not change -- recall lists are immutable in OCaml *)
 ```ocaml
 let hd l =
   match l with
-  |  [] -> Error "empty list has no head"
-  |  x :: xs -> Ok x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
+  |  [] -> None
+  |  x :: xs -> Some x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
 ;;
 hd [1;2;3];;
+hd [1];; (* [1] is 1 :: [] - !  So the head is 1. *)
 hd [];;
 ```
 
@@ -242,133 +245,61 @@ let rec nth l n =
 nth [33;22;11] 1;;
 nth [33;22;11] 3;;
 ```
+* Pattern priority: pick the first matched clause
+* The above two patterns are mutually exclusive so order irrelevant, but not in all cases.
 
+Don't use non-exhaustive pattern matches!
+
+```ocaml
+let dumb l = match l with
+      | x :: y -> x;;
+dumb [1;2;3];; (* this works to return head of list but.. *)
+dumb [];; (* runtime error here *)
+```
+
+Built-in `List.hd` is the same as `dumb` and it is nearly always a **dumb** function, don't use it unless it is 100% obvious that the list is not empty.
+
+
+### List library functions
 Fortunately many common list operations are in the `List` module in the standard library:
 
 ```ocaml
 # List.nth [1;2;3] 2;;
 - : int = 3
 ```
+* We will discuss modules later, but for now just think of them as containers of a collection of functions types etc.  Something like a `package` in Java, or a Java `class` with only `static` methods.
 
-## Basic Ocaml II
-
-Tuples - fixed length lists, but types of each element CAN differ, unlike lists *)
-
+Some more handy `List` library functions
 ```ocaml
-(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
-let tuple = (2, "hi");;
-(1,1.1,'c',"cc");;
+List.length ["d";"ss";"qwqw"];;
+List.concat [[1;2];[22;33];[444;5555]];;
+List.append [1;2] [3;4];; 
+[1;2] @ [3;4] (* Use this equivalent infix syntax for append *)
 ```
 
+* Type `#show List;;` into utop to get a dump of all the functions in `List`.
+* The [Standard Library Reference page for lists](http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html) contains descriptions as well.
+* There are similar modes for `Int`, `String`, `Float`, etc modules which similarly contain handy functions.
 
-### Pattern matching
+#### Types of these library functions
 
- * Switch or case on steroids
- * A very cool and useful but not so common language feature
- * Haskell and Scala also have it, JavaScript and Python should be getting it 
-
-Basic pattern match with numbers, looks like switch more or less:
-
+* The types of the functions are additional hints to their purpose, get used to reading them
+* Much of the time when you mis-use a function you will get a type error
+* `'a list` etc is a polymorphic aka generic type, `'a` can be *any* type
 ```ocaml
-let mixemup n =
-    match n with
-    | 0 -> 4
-    | 5 -> 0
-    | y -> y + 1;; (* default case giving a name to the matched number, x *)
-
-mixemup 3;; (* matches last case and x is bound to the value 3 *)
+# List.length;;
+- : 'a list -> int = <fun>
+# List.concat;;
+- : 'a list list -> 'a list = <fun>
+# List.append;;
+- : 'a list -> 'a list -> 'a list = <fun>
 ```
 
-```ocaml
-let five_oh y =
-"Hawaii " ^ (match y with
-    | 0 -> "Zero"
-    | 5 -> "Five"  (* notice the "|" separator between multiple patterns *)
-    | _ -> "Nothing") ^ "-O";; (* default case -- _ is a pattern matching anything *)
+A cool feature of OCaml is how it automatically *infers* polymorphic types, unlike Java where generics usually need to be declared explicitly.
 
-five_oh 5;;
-```
+### Correctness of recursive Functions
 
-List pattern matching - we can finally take apart lists!
-
-```ocaml
-match ['h';'o'] with      (* recall ['h';'o'] is really 'h' :: ('o' :: []) *)
-      | x :: y -> "first clause"
-      | _ -> "second clause";;
-
-match [] with
-      | x :: y -> "first clause"
-      | _ -> "second clause";;
-
-match ['h';'o';'p';' ';'h';'o';'p'] with
-      | x :: y -> y
-      | _ -> ['0'];;
-
-match ["hi"] with (* ["hi"] is "hi" :: [] *)
-      | x :: (y :: z) -> "first"
-      | x :: y -> "second"
-      | _ -> "third";;
-
-let mm l = match l with
-      | [] -> "empty"
-      | x :: y -> "non-empty";;
-```
-
-Tuple pattern matching
-```ocaml
-let tuple = (2, "hi", 1.2);;
-
-match tuple with
-  (f, s, th) -> s
-;;
-```
-
-Let pattern shorthand: a single pattern match to assign multiple values
-
-```ocaml
-let mypair = (2.2, 3.3);;
-let (f, s) = mypair in f +. s;;
-match mypair with (f,s) -> f +. s;; (* same behavior as above let *)
-```
-
-```ocaml
-let getSecond t =
-  match t with
-    (f, s) -> s
-;;
-let s = getSecond (2, "hi");;
-let s = getSecond mypair;;
-
-let getSec t =
-  match t with
-    (f, s) -> (s :: [],4)
-;;
-```
-
-Warning - non-exhaustive pattern matching; avoid this
-
-```ocaml
-let getHead l =
-  match l with
-    head :: tail -> head;;
-
-getHead [];;  (* OCaml gives uncaught runtime exception *)
-```
-
-An error-free version
-
-```ocaml
-let getHead l =
-  match l with
-    | [] -> failwith "you dodo"
-  |  head :: tail -> head
-;;
-```
-
-Using patterns in recursive functions: a function to reverse a list
- * Note this does not mutate the list, it makes a new list
- * We also want to study this function to show how its correctness is justified by an induction argument
-
+Consider list reverse (no need to code as it is `List.rev`; this is just an example):
 ```ocaml
 let rec rev l =
   match l with
@@ -378,38 +309,22 @@ let rec rev l =
 rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
 ```
 
-Let us argue why this works.  First, for this particular list.
+Let us argue why this works.
 
 We assume we have a notion of "program fragments behaving the same", `~=`.
  -  e.g. `1 + 2 ~= 3`, `1 :: [] ~= [1]`, etc.  
  -  (`~=` is called "operational equivalence", we will define it later in the course)
 
-Lemma. `rev [1;2;3] ~= [3;2;1]`.
-Proof.
-`rev [1;2;3]` pattern matches with `x ~= 1`, `xs ~= [2;3]`; so the result is `rev [2;3] @ [1]`.  
-Thus, `rev [1;2;3] ~= rev [2;3] @ [1]`.
-So let us now figure out what `rev [2;3]` is:
-`rev [2;3]` pattern matches with `x ~= 2, xs ~= [3]`; so the result is `rev [3] @ [2]`.
-Thus, `rev [2;3] ~= rev [3] @ [2]`.
-So let us now figure out what `rev [3]` is:
-`rev [3]` pattern matches with `x ~= 3`, `xs ~= []` (yes, empty list!); so the result is `rev [] @ [3]`.
-Thus, `rev [3] ~= rev [] @ [3]`.
-Lastly, `rev [] ~= []` directly from the match.
-
-Given all the above, we can use the usual principle of replacing `~=` with `~=` to get:
+Before doing the general case, here are some equivalences we can see from the above program run 
+(by running it in our heads):
 ```ocaml
 rev [1;2;3] 
-~= rev [2;3] @ [1]  
-~= (rev [3] @ [2]) @ [1] 
+~= rev [2;3] @ [1]  (the second pattern is matched)
+~= (rev [3] @ [2]) @ [1]  (same thing for the rev [2;3] expression - plug in its elaboration)
 ~= ((rev [] @ [3]) @ [2]) @ [1]
 ~= (([] @ [3]) @ [2]) @ [1]
-~= [3;2;1]
+~= [3;2;1] (by the meaning of append)
 ``` 
-by computing out the `@`.
-
-So by transitivity on the above, 
-
-`rev [1;2;3] ~= [3;2;1]`.  QED.
 
 But, what we really want to show is it reverses ANY list.. use induction!
 
@@ -430,9 +345,7 @@ If we showed 1) and 2) above,
     and we just showed we have P(1), so we also have P(2).
 - P(3) is true because letting k=2 in 2) we have P(2) implies P(3),
     and we just showed we have P(2), so we also have P(3).
-- ... hopefully you get the pattern here.
-
-In the concrete proof above for `[1;2;3]` we basically unwound the induction backwards.
+- ... etc for all k
 
 Let us now prove by induction.
 
@@ -452,69 +365,29 @@ This completes the induction step.
 
 QED.    
 
-Bonus round: here is a concrete forward-view building up the argument more like the induction.
- * `l ~= [] : rev [] ~= []`, check!
- * `l ~= [3] : rev [3] ~= rev (3 :: []) ~= (rev []) @ [3] ~= (using previous line) [3]`
- * `l ~= [2;3] : rev [2;3] ~= rev (2 :: [3]) ~= (rev [3]) @ [2] ~= (by previous) [3;2]`
- * `l ~= [1;2;3] : rev [1;2;3] ~= rev (1 :: [2;3]) ~= (rev [2;3]) @ [1] ~= (by previous) [3;2;1]`
+
+### Tuples
+
+Tuples are fixed length lists, but types of each element CAN differ, unlike lists *)
 
 ```ocaml
-rev [1;2;3];;
-(rev [2;3]) @ [1];;
-((rev [3]) @ [2]) @ [1];;
-(((rev []) @ [3]) @ [2]) @ [1];;
-(([]@[3]) @ [2]) @ [1];;
+(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
+let tuple = (2, "hi");;
+(1,1.1,'c',"cc");;
 ```
+Tuple pattern matching
+```ocaml
+let tuple = (2, "hi", 1.2);;
+
+match tuple with
+  (f, s, th) -> s;;
+
+(* shorthand for the above - only one pattern, can use let syntax *)
+let (f, s, th) = tuple in s;;
+```
+
 
 ###  OCaml Lecture III
-
-* We are going to cover variant types in detail later but here are a few simple examples 
-* Variant types are like unions in C, and generalize enums of Java. Unlike types up to now you need to **declare** them via keyword "type".
-
-```ocaml
-type comparison = LessThan | EqualTo | GreaterThan;;
-
-let intcmp x y =
-	if x < y then LessThan else
-		if x > y then GreaterThan else EqualTo;;
-```
-
-Of course we will pattern match to take the data apart:
-
-```ocaml
-match intcmp 4 5 with
-  | LessThan -> "less!"
-  | EqualTo -> "equal!"
-  | GreaterThan -> "greater!";;
-```
-
-Variants can also wrap arguments: they are more like C unions than Java enums
-
-```ocaml
-type 'a nullable = Null | NotNull of 'a;;
-
-match NotNull(4) with
-  | Null -> "null!"
-  | NotNull(n) -> (string_of_int n)^" is not null!"
-;;
-```
-
-Built-in version of this for functions with optional result:
-
-```ocaml
-type 'a option = None | Some of 'a *)
-
-Some(4);;
-None;;
-```
-
-Here is a use of it:
-
-```ocaml
-let gethead l = match l with
-  | [] -> None
-  | hd :: tl -> Some hd;;
-```
 
 Subtle property of immutable declarations
  * All variable declarations in OCaml are **immutable** -- value will never change
@@ -568,7 +441,8 @@ let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
 assert(g (-5) = 0);; (* now it works as we initially expected *)
 ```
 
-**Moral**: When interactively editing a group of functions that call each other, re-submit ALL the functions to the top loop when you change any *one* of them.  Otherwise you can have some functions using a now-shadowed version. **Or**, just submit your whole file of functions: `#use "myfile.ml";;`
+* Moral: don't code (too much) directly in the top-loop since this behavior can cause anomalies
+* For Homework one, you will be able to say `dune test` in the terminal to run tests on your code, and `dune utop` will load it all into `utop` so you can then play with your functions.
 
 #### Mutually recursive functions
 
@@ -634,17 +508,6 @@ Why?
 
 Lets show the power by extracting out some pluggable code
 
-Example: multiply each element of a list by ten
-
-```ocaml
-let rec timestenlist l =
-  match l with
-    []    -> []
-  | hd::tl -> (hd * 10) :: timestenlist tl;;
-
-timestenlist [3;2;50];;
-```
-
 Example: append gobble to a list of words
 
 ```ocaml
@@ -657,21 +520,17 @@ appendgobblelist ["have";"a";"good";"day"];;
 ("have" ^"gobble") :: ("a"^"gobble") :: appendgobblelist ["good";"day"];;
 ```
 
-Notice there is a common pattern of "do an operation on each list element".  So lets pull out the "times ten" / "add gobble" as a function parameter! This is in fact a classic example, the map function
-
+* Lets pull out the "append gobble" as a function parameter, make it code we can plug in
+* The resulting function is called `map` (it is also built-in as `List.map`):
 ```ocaml
 let rec map f l =  (* Notice function f is an ARGUMENT here *)
   match l with
-    []    -> []
+  |  [] -> []
   | hd::tl -> (f hd) :: map f tl;;
-
-map (fun x -> x * 10) [3;2;50];;
 ```
 
-Note there is a built-in `List.map` since it is so common:
-
 ```ocaml
-let middle = List.map (function s -> s^"gobble");;
+let middle = map (function s -> s^"gobble");;
 middle ["have";"a";"good";"day"];;
 ```
 
@@ -680,6 +539,7 @@ Mapping on lists of pairs - shows in and out lists can be different types.
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
 ```
+* This aligns with the type of `map`, `('a -> 'b) -> 'a list -> 'b list ` - `'a` and `'b` can differ.
 
 What can you do with a list of functions?  e.g. compose them
 
@@ -740,6 +600,7 @@ fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - 0 on right *)
 ```
 
 Example where left and right folds produce different result:
+
 ```ocaml
 fold_left (fun elt -> fun accum -> "("^elt^"+"^accum^")") "0" ["1";"2";"3"] ;; 
 fold_right (fun accum -> fun elt -> "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;; 
@@ -761,6 +622,25 @@ let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else
 let rev_slow l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* can also fold_right rev with @ *)
 ```
 
+### Pipeling and composition
+
+Pipelining Example: get the nth-from the end from a list, by first reversing and then getting nth element.
+
+Obvious version:
+```ocaml
+let nth_end l n = List.nth (List.rev l) n;;
+```
+
+But, from the analogy of shell pipes `|`, we are "piping" the output of `rev` into `nth` for some fixed n.  Here is an equivalent way to code that.
+
+```ocaml
+let nth_end l n = l |> List.rev |> (Fun.flip(List.nth) n);;
+```
+* All `[1;2] |> List.rev` in fact does is apply the second argument to the first - very simple!
+* The `Fun.flip` is needed to put the list argument second, not first; it is another interesting higher-order function, it has type `('a -> 'b -> 'c) -> 'b -> 'a -> 'c`.
+
+#### Function Composition
+
 Composition function g o f: take two functions, return their composition
 ```ocaml
 let compose g f = (fun x -> g (f x));;
@@ -780,65 +660,6 @@ let compose g f x =  g (f x);;
 let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 ```
 
-### Parametric polymorphism
- * A key feature of inferred types
-
-```ocaml
-let id = fun x -> x;;
-let id x = x;; (* equivalent to above *)
-id 3;; (* id applied to int returns an int *)
-id true;; (* SAME id applied to bool returns a bool *)
-```
-
-Conclusion: the type of id, `'a -> 'a` is **parametric**, i.e. the return type is parameterized by the type of the argument.  Same as Java's generics.
-
-We saw several parametric functions above:
-
-```ocaml
-copyodd;;    (* type is 'a list -> 'a list *)
-map;;     (* type is ('a -> 'b) -> 'a list -> 'b list *)
-compose;; (* type is ('a -> 'b) -> ('c -> 'a) -> 'c -> 'b *)
-```
-
-## Self-study topic: only 'let'-defined functions are polymorphic
-
-Background: turning a let-defined function into an argument to a function
-
-```ocaml
-let add1 = fun x -> x + 1;;
-add1 4;;
-```
-
-Equivalent way to do the above: define add1 as an anonymous function and pass in
-
-```ocaml
-(function addup -> addup 4)(fun x -> x + 1);;
-```
-
-Lets try to do the same refactoring for a polymorphic function
-
-```ocaml
-let id = function x -> x;;
-
-match id (true) with
-    true -> id (3)
-  | false -> id(4);;
-```
-
-The below will error - variable mono_id is not defined by let so it can't be polymorphic
-
-```ocaml
-(function mono_id ->
-    match mono_id(true) with
-                true -> mono_id(3)
-              | false -> mono_id(4)) (fun x -> x);;
-```
-
-If only used at one type its OK:
-
-```ocaml
-(function mono_id -> mono_id 4) id;; (* mono_id is solely of type int -> int, thats OK *)
-```
 ### Currying
 
 * One topic left in higher-order functions.
@@ -918,23 +739,20 @@ let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together sho
 ```
 ### Misc OCaml
 
-See [Pervasives](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Pervasives.html) for various functions available in the OCaml top-level.
+See [Stdlib](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Stdlib.html) for various functions available in the OCaml top-level like `+`, `^` (string append), `print_int` (print an integer), etc.
 
-See [stdlib](http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html) for modules of extra functions for lists, strings, integers, as well as sets, trees, etc structures.
-
-`print_x` for atomic types 'x', again no overloading in meaning here
+See [stdlib](http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html) for modules of functions for lists, strings, integers, as well as sets, trees, etc structures.
 
 ```ocaml
 print_string ("hi\n");;
 ```
 
-Raise a failure exception (more on exceptions later)
-
+Some `Stdlib` built-in exception generating functions (more on exceptions later)
 ```ocaml
 (failwith "BOOM!") + 3 ;;
 ```
 
-Invalid argument exception:
+Invalid argument exception built-in:
 ```ocaml
 let f x = if x <= 0 then invalid_arg "Let's be positive, please!" else x + 1;;
 f (-5);;
@@ -1135,7 +953,7 @@ assert(diff [1;2] [1;2;3] = [])
 
 ### OCaml Lecture IV: Variants & records
 
-We saw some simple examples of variants above, now we go into the full possibilities
+We saw a simple examples of variants above, the `option` type; now we go into the full possibilities
   - related to union types in C or enums in Java: "this OR that OR theother"
   - like OCamls lists/tuples they are IMMMUTABLE data structures
   - each case of the union is identified by a name called 'Constructor' which serves for both
