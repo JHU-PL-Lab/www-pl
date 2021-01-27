@@ -306,7 +306,7 @@ let rec rev l =
   |  [] -> []
   | x :: xs -> rev xs @ [x]
 ;;
-rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
+rev [1;2;3];; (* recall [1;2;3] is equivalent to 1 :: ( 2 :: ( 3 :: [])) *)
 ```
 
 Let us argue why this works.
@@ -319,7 +319,8 @@ Before doing the general case, here are some equivalences we can see from the ab
 (by running it in our heads):
 ```ocaml
 rev [1;2;3] 
-~= rev [2;3] @ [1]  (the second pattern is matched)
+~= rev (1 :: [2;3]) (by the meaning of the [...] list syntax)
+~= (rev [2;3]) @ [1]  (the second pattern is matched: x is 1, xs is [2;3] and run the match body)
 ~= (rev [3] @ [2]) @ [1]  (same thing for the rev [2;3] expression - plug in its elaboration)
 ~= ((rev [] @ [3]) @ [2]) @ [1]
 ~= (([] @ [3]) @ [2]) @ [1]
@@ -335,9 +336,11 @@ To show P(n) for all in, it suffices to show
   1) P(0), and 
   2) P(k) holds implies P(k+1) holds for any natural number k.
 
-Recal WHY induction is justified:
+* Induction is not explained well by mathematicians which causes confusion
+* It is easier for us CS-ers, the induction step 2) is really just a **proof macro** with k a parameter
+* Induction is justified by repeatedly instantiating the macro for 1,2,3,..
 
-If we showed 1) and 2) above, 
+So, if we showed 1) and 2) above, 
 - P(0) is true by 1)
 - P(1) is true because letting k=0 in 2) we have P(0) implies P(1),
     and we just showed we have P(0), so we also have P(1).

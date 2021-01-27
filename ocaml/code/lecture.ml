@@ -112,10 +112,11 @@ let rec rev l =
   |  [] -> []
   | x :: xs -> rev xs @ [x]
 ;;
-rev [1;2;3];; (* = 1 :: ( 2 :: ( 3 :: [])) *)
+rev [1;2;3];; (* recall [1;2;3] is equivalent to 1 :: ( 2 :: ( 3 :: [])) *)
 
 rev [1;2;3] 
-~= rev [2;3] @ [1]  (the second pattern is matched)
+~= rev (1 :: [2;3]) (by the meaning of the [...] list syntax)
+~= (rev [2;3]) @ [1]  (the second pattern is matched: x is 1, xs is [2;3] and run the match body)
 ~= (rev [3] @ [2]) @ [1]  (same thing for the rev [2;3] expression - plug in its elaboration)
 ~= ((rev [] @ [3]) @ [2]) @ [1]
 ~= (([] @ [3]) @ [2]) @ [1]
