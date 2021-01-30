@@ -8,7 +8,7 @@ You are to write several small programs in OCaml.
 * The only other file you might want to edit is `assignment1/tests/tests.ml` which contains some initial tests; you are welcome to add your own tests.
 * The terminal command `dune build` run from the top level `assignment1/` directory will build (compile) all your functions in the `assignment.ml` file.
 * The terminal command `dune test` also run from `assignment1/` will build the code and run all the tests in the above `test.ml` file.  It will report on each test whether it succeeded or failed.
-* To play with your code in `utop`, you could copy/paste your functions directly into the top loop, but a perhaps easier way is to type `dune utop` again from the `assignment1/` directory.  This will compile all your functions and load them into `utop`.  They will all be part of a module `Assignment` since the file was called `assignment.ml`; so, next type `open Assignment;;` into `utop` so the functions will be directly available -- you will then be able to type e.g. `factorial 11;;` to informally test your factorial code.
+* To play with your code in `utop`, you could copy/paste your functions directly into the top loop, but a perhaps easier way is to type terminal command `dune utop`, again from the `assignment1/` directory.  This will compile all your functions and load them into `utop`.  They will all be part of a module `Assignment` since the file was called `assignment.ml`; so, next type `open Assignment;;` into `utop` so the functions will be directly available -- you will then be able to type e.g. `factorial 11;;` to informally test your factorial code.
 * When you are all done the homework, from directory `assignment1` run the command `dune build` one last time which will build `src/submission.zip` -- that is the zip file you should upload to Gradescope.
 
 ### Resources to help you
@@ -17,7 +17,7 @@ Here is a reminder of some resources at your disposal.
 
 *   Consult the [code examples run in class](../ocaml/code/lecture.html).
 *   Consult the [Course OCaml page](../ocaml/index.html) for information on installing OCaml and getting a good toolchain setup for development
-*   You are required to use OCaml version 4.09.0 and you also must use either Atom, vim, or Emacs or other editor with built-in OCaml mode for editing. Again see the OCaml page for how to get the editor working.
+*   You are required to use OCaml version 4.11.1 and we strongly recommend using Visual Studio Code for editing. Again see the OCaml page for how to get an editor working.
 *   For more OCaml examples etc, read and copy/paste the code defined in the [OCaml.org tutorials](https://ocaml.org/learn/tutorials/) (mainly "the Basics" for this assignment).
 *   If you are looking for how some standard function is expressed in OCaml, like not equal, etc, consult the [Caml Stdlib](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Stdlib.html) which contains the predefined functions available in OCaml.
 *   You are strongly encouraged to work with other people on the assignment. You just need to list the names of people you worked with. However remember that you should submit your own write up of the answers. **Copying of solutions is not allowed**. For the full collaboration policy see [here](../logistics.html).
