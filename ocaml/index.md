@@ -19,8 +19,11 @@ We require that you use the [OPAM packaging system](https://opam.ocaml.org) for 
     1.  `opam init` to initialize OPAM;
     2.  `opam switch create 4.11.1` (this will take awhile) to build OCaml version 4.11.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to `opam update` before this `switch` to make sure OPAM is aware of the latest version);
 	3.  `eval $(opam env)` to let your shell know where the OPAM files are; and
-    4.  Also add the very same line, `eval $(opam env)`, to your `~/.profile` or `.~/.bashrc` or `~/.zshrc` shell init file (the command `echo $SHELL` will report whether your shell is `sh`, `bash`, or `zsh` respectively, edit the apporiate file or create the file and add the one line if it doesn't already exist). For `.zshrc`, use ``eval `opam env` `` instead of 
-    `eval $(opam env)`.
+    4.  Also add the very same line, `eval $(opam env)`, to your `~/.profile` or `.~/.bashrc` or `~/.zshrc` shell init file (the command `echo $SHELL` will report whether your shell is `sh`, `bash`, or `zsh` respectively, edit the apporiate file or create the file and add the one line if it doesn't already exist). For `.zshrc`, use ``eval `opam env` `` instead of `eval $(opam env)`.  Here is a one-liner to add this to your `~/.bashrc` if your shell is `bash`: 
+    ```sh
+    echo 'eval $(opam env)' >> ~/.bashrc
+    ```
+
     5. Once you have the basics installed, run the following shell command to install additional necessary packages used in the class:
 ```bash
 opam install merlin ocp-indent menhir utop ppx_deriving ounit2
