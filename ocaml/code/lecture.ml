@@ -183,29 +183,27 @@ copyodd [1;2;3;4;5;6;7;8;9;10];;
 copyeven [1;2;3;4;5;6;7;8;9;10];;
 
 let copyodd ll =
-    ( let rec
-     copyoddlocal l = match l with
-      |  [] -> []
-      | hd :: tl ->  hd::(copyevenlocal tl)
-    and
-     copyevenlocal l = match l with
+  let rec copyoddlocal l = match l with
+    |  [] -> []
+    | hd :: tl ->  hd::(copyevenlocal tl)
+  and
+    copyevenlocal l = match l with
     |        [] -> []
     | x :: xs -> copyoddlocal xs
   in
-   copyoddlocal ll
-    );;
+  copyoddlocal ll;;
 
 assert(copyodd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 
 let rec appendgobblelist l =
   match l with
-    []    -> []
+  | [] -> []
   | hd::tl -> (hd ^"gobble") :: appendgobblelist tl;;
 
 appendgobblelist ["have";"a";"good";"day"];;
 ("have" ^"gobble") :: ("a"^"gobble") :: appendgobblelist ["good";"day"];;
 
-let rec map f l =  (* Notice function f is an ARGUMENT here *)
+let rec map f l =  (* function f is an argument here *)
   match l with
   |  [] -> []
   | hd::tl -> (f hd) :: map f tl;;
@@ -216,21 +214,13 @@ middle ["have";"a";"good";"day"];;
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
 
-(* compose_list [f1;..;fn] v = f1 (... (fn v) ... ) *)
-let rec compose_list lf v =
-  match lf with
-  | [] -> v
-  | hd :: tl -> hd(compose_list tl v);;
-
-compose_list flist 0;;
-
 let rec fold_left f v l = match l with
     | []   -> v
-    | hd::tl -> fold_left f (f v hd) tl (* pass down f v hd as new "v" -- accumulating *)
+    | hd::tl -> fold_left f (f v hd) tl (* pass down f v hd as "the new v" -- accumulating *)
     ;;
 
 fold_left (fun elt -> fun accum -> elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) - 0 on LEFT *)
-fold_left (+) 0 [1;2;3];; (* equivalent to previous - built-in operator in parens is function *)
+fold_left (+) 0 [1;2;3];; (* equivalent to previous *)
 
 let rec summate accum l = match l with
     | []   -> accum
@@ -245,7 +235,7 @@ let rec fold_right f l v = match l with
   | [] -> v
   | hd::tl -> f hd (fold_right f tl v) (* v not changing on recursion here *)
 ;;
-fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - 0 on right *)
+fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
 
 fold_left (fun elt -> fun accum -> "("^elt^"+"^accum^")") "0" ["1";"2";"3"] ;; 
 fold_right (fun accum -> fun elt -> "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;; 
@@ -255,7 +245,7 @@ let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
 let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum) [] l ;; (* notice how this reverses *)
 
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
-let rev_slow l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* can also fold_right rev with @ *)
+let rev l = List.fold_right (@) l [];;
 
 let nth_end l n = List.nth (List.rev l) n;;
 
@@ -278,13 +268,10 @@ addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
 let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
 
 let addC = fun x -> (fun y -> x + y);;
-(* yet another identical way .. *)
+(* and, yet another identical way .. *)
 let addC x = fun y -> x + y;;
-
-(addC 1) 2;; (* same result as above *)
-
-let addCagain = (+);;
-(addCagain 1) 2;; (* same result as above *)
+(* Yet one more, this is the built-in (+) *)
+(+);;
 
 let addNC p =
     match p with (x,y) -> x+y;;
@@ -292,7 +279,7 @@ let addNC p =
 let addNC (x, y) = x + y;;
 
 addNC (3, 4);;
-addNC 3;; (* will error, need all or no arguments supplied *)
+addNC 3;; (* errors, need all or no arguments supplied *)
 
 let curry fNC = fun x -> fun y -> fNC (x, y);;
 let uncurry fC = fun (x, y) -> fC x y;;
@@ -326,30 +313,6 @@ let f (p : intpair) = match p with
 f (2, 3);; (* still, can pass it to the function expecting an intpair *)
 ((2,3):intpair);; (* can also explicitly tag data with its type *)
 
-let rec compose_funs lf =
-  match lf with
-    [] -> (function x -> x)
-  | f :: fs -> (function x -> (compose_funs fs) (f x))
-;;
-
-let rec compose_funs lf =
-  function x ->
-    (match lf with
-      [] -> x
-    | f :: fs -> (compose_funs fs) (f x)
-    )
-;;
-
-let rec compose_funs lf x =
-    match lf with
-      [] -> x
-    | f :: fs -> (compose_funs fs) (f x)
-;;
-
-let composeexample = compose_funs [(function x -> x+1); (function x -> x-1);
-                 (function x -> x*3); (function x -> x-1)];;
-assert(composeexample 5 = 14);;
-
 let toUpperChar c =
   let c_code = Char.code c in
   if c_code >= 97 && c_code <= 122 then
@@ -368,21 +331,6 @@ assert(toUpperCase ['a'; 'q'; 'B'; 'Z'; ';'; '!'] = ['A'; 'Q'; 'B'; 'Z'; ';'; '!
 let toUpperCase l = List.map toUpperChar l ;;
 
 let toUpperCase = List.map toUpperChar ;;
-
-let rec nth l n =
-  match l with
-  |  [] -> failwith "list too short"
-  | x :: xs ->
-      if n = 0 then
-        x
-      else
-        nth xs (n - 1) (* eureka *)
-;;
-
-assert(nth [1;2;3] 0 = 1);;
-nth [1;2;3] 1;; (* should return 2 *)
-nth [1;2;3] (-1);; (* should raise exception *)
-nth [1;2;3] 3;; (* should raise exception *)
 
 let rec partition p l =
   match l with
@@ -597,11 +545,10 @@ f ();;
 
 exception Bar;;
 
-let g _ = 
-  (try
-    f ()
-  with
-    Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
+let g _ = (* aside: "_" notates a variable that can never be accessed *)
+  (try f ()
+   with  
+     Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
 g ();;
 
 exception Goo of string;;
@@ -623,196 +570,5 @@ g ();;
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
 
-List.map (fun x -> x ^"gobble")["Have";"a";"good";"day"];;
-
-module FSet = (* Module names must start with a Capital Letter *)
-struct (* keyword stands for "structure" *)
-  exception NotFound (* any top-level definable can be included in a module *)
-
-  type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-
-  let emptyset : 'a set = []
-
-  let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
-
-  let rec remove x (s: 'a set) =
-   match s with
-    | [] -> raise NotFound
-    | hd :: tl ->
-     if hd = x then (tl: 'a set)
-     else hd :: remove x tl
-
-  let rec contains x (s: 'a set) =
-   match s with
-   | [] -> false
-   | hd :: tl ->
-     if x = hd then true else contains x tl
-end
-;;
-
-let mySet = FSet.add 5 [];;
-let myNextSet = FSet.add 22 mySet;;
-FSet.contains 22 mySet;;
-FSet.remove 5 myNextSet;;
-
-open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shadow existing names *)
-
-add "a" ["b"];;
-contains "a" ["a"; "b"];;
-
-module type GROWINGSET = (* define a module type (signature) with no remove; not very useful *)
-  sig
-    exception NotFound
-    type 'a set = 'a list
-    val emptyset : 'a set
-    val add : 'a -> 'a set -> 'a set
-    val contains : 'a -> 'a set -> bool
-  end
-;;
-
-module GrowingSet = (FSet: GROWINGSET);; (* constrain a structure to have that signature *)
-GrowingSet.add "a" ["b"];;
-
-(* GrowingSet.remove;; *) (* Error: remove in struct but not in signature! *)
-
-FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making GrowingSet *)
-
-module type HIDDENSET =
-  sig
-    type 'a set (* hide the type 'a list here by not giving 'a set definition in signature *)
-    val emptyset : 'a set
-    val add: 'a -> 'a set -> 'a set
-    val remove : 'a -> 'a set -> 'a set
-    val contains: 'a -> 'a set -> bool
-  end
-;;
-
-module HiddenSet = (FSet: HIDDENSET);;
-
-HiddenSet.add 3 [];; (* Errors: [] not a set since we HID the fact that sets are really lists *)
-
-let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
-HiddenSet.contains 5 hs;;
-
-module HFSet :
-  sig
-    type 'a set
-    val emptyset : 'a set
-    val add: 'a -> 'a set -> 'a set
-    val remove : 'a -> 'a set -> 'a set
-    val contains: 'a -> 'a set -> bool
-  end =
-struct
-exception NotFound (* any top-level definable can be included in a module *)
-
-type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-
-let emptyset : 'a set = []
-
-let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
-
-let rec remove x (s: 'a set) =
-  match s with
-  | [] -> raise NotFound
-  | hd :: tl ->
-    if hd = x then (tl: 'a set)
-    else hd :: remove x tl
-
-let rec contains x (s: 'a set) =
-  match s with
-  | [] -> false
-  | hd :: tl ->
-    if x = hd then true else contains x tl
-end
-;;
-
-let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* same use as before *)
-
-module FSet: sig (* contents of file fSet.mli *) end
-          = struct (* contents of file fSet.ml *) end;;
-
-module Main: sig (* contents of main.mli *) end
-           = struct (* contents of main.ml *) end;;
-
-#load "fSet.cmo";;
 FSet.emptyset;;
-
-module type ORDERED_TYPE =
-  sig
-    type t
-    val compare: t -> t -> comparison
-  end;;
-
-module FSetFunctor =
-  functor (Elt: ORDERED_TYPE) ->
-  struct
-    type element = Elt.t (* import the type of elements from the structure *)
-    type set = element list
-
-    let empty = []
-
-    let rec add x s =
-      match s with
-        [] -> [x]
-      | hd::tl ->
-          match Elt.compare x hd with
-            EqualTo   -> s
-          | LessThan    -> x :: s
-          | GreaterThan -> hd :: add x tl
-
-    let rec contains x s =
-      match s with
-        [] -> false
-      | hd::tl ->
-          match Elt.compare x hd with
-            EqualTo   -> true
-          | LessThan    -> false
-          | GreaterThan -> contains x tl
-  end;;
-
-module OrderedInt =
-  struct
-    type t = int
-    let compare x y =
-      if x = y then
-    EqualTo
-      else
-    if x < y then
-      LessThan
-    else
-      GreaterThan
-  end;;
-
-module OrderedIntSet = FSetFunctor(OrderedInt);; (* note how this looks like a function application *)
-
-let myOrderedIntSet = OrderedIntSet.add 5 OrderedIntSet.empty;;
-OrderedIntSet.contains 3 myOrderedIntSet;;
-
-module OrderedString =
-struct
-  type t = string
-  let compare x y =
-    if x = y then EqualTo
-    else if x < y then LessThan
-    else GreaterThan
-end;;
-
-module OrderedStringSet = FSetFunctor(OrderedString);; (* a DIFFERENT instantiation of same *)
-
-let myOrderedStringSet = OrderedStringSet.add "abc" OrderedStringSet.empty;;
-
-module type SETFUNCTOR = (* below is the syntax for a signature of a functor *)
-    functor (Elt: ORDERED_TYPE) ->
-  sig
-    type element = Elt.t      (* concrete *)
-    type set                  (* abstract *)
-    val empty : set
-    val add : element -> set -> set
-    val contains : element -> set -> bool
-  end;;
-
-module AbstractSet = (FSetFunctor : SETFUNCTOR);; (* slap that sig on a functor *)
-module AbstractIntSet = AbstractSet(OrderedInt);;
-
-AbstractIntSet.add 5 AbstractIntSet.empty;;
 
