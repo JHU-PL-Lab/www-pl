@@ -505,34 +505,39 @@ This completes the induction step.</p>
   <li>But can be confusing when shadowing (re-definition) happens</li>
 </ul>
 
+<p>Consider the following sequence of inputs into the top loop:</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;;</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;;</span>
+<span class="k">let</span> <span class="n">f</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">z</span><span class="p">;;</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span><span class="p">;;</span> <span class="c">(* this is a shadowing re-definition, not an assignment! *)</span>
+<span class="n">f</span> <span class="n">y</span><span class="p">;;</span> <span class="c">(* 3 + 3 or 5 + 3 - ??   Answer: the latter. *)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>To understand the above, realize that the top loop is conceptually an open-ended series of let-ins which never close:</li>
+</ul>
+
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">3</span> <span class="k">in</span>
-  <span class="p">(</span> <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">in</span>
-    <span class="p">(</span> <span class="k">let</span> <span class="n">f</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">z</span> <span class="k">in</span>
-      <span class="p">(</span> <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="k">in</span>  <span class="c">(* this is a re-definition of x, NOT an assignment *)</span>
-        <span class="p">(</span><span class="n">f</span> <span class="p">(</span><span class="n">y</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span> <span class="o">+</span> <span class="n">x</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
-    <span class="p">)(</span><span class="o">*</span> <span class="n">x</span> <span class="n">is</span> <span class="nc">STILL</span> <span class="mi">5</span> <span class="k">in</span> <span class="n">the</span> <span class="k">function</span> <span class="n">body</span> <span class="o">-</span> <span class="n">thats</span> <span class="n">what</span> <span class="n">x</span> <span class="n">was</span> <span class="k">when</span> <span class="n">f</span> <span class="n">defined</span> <span class="o">*</span><span class="p">)</span>
+ <span class="p">(</span> <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span> <span class="k">in</span>
+   <span class="p">(</span> <span class="k">let</span> <span class="n">f</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">z</span> <span class="k">in</span>
+     <span class="p">(</span> <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="k">in</span>  <span class="c">(* this is a shadowing re-definition of x, NOT an assignment *)</span>
+       <span class="p">(</span><span class="n">f</span> <span class="n">y</span><span class="p">)</span>
+     <span class="p">)</span>
+   <span class="p">)</span>
+ <span class="p">)</span>
 <span class="p">)</span>
 <span class="p">;;</span>
 </code></pre></div></div>
 
-<p>This is in the spirit of this C pseudo-code:</p>
+<p>The above might make more sense if you consider similar-in-spirit C pseudo-code:</p>
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="p">{</span> <span class="kt">int</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;</span>
    <span class="p">{</span> <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;</span>
      <span class="p">{</span> <span class="kt">int</span> <span class="p">(</span><span class="kt">int</span><span class="p">)</span> <span class="n">f</span> <span class="o">=</span> <span class="n">z</span> <span class="o">-&gt;</span> <span class="k">return</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="n">z</span><span class="p">);</span> <span class="p">(</span><span class="o">*</span> <span class="n">imagining</span> <span class="n">higher</span><span class="o">-</span><span class="n">order</span> <span class="n">functions</span> <span class="n">in</span> <span class="n">C</span> <span class="o">*</span><span class="p">)</span>
        <span class="p">{</span> <span class="kt">int</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span><span class="p">;</span> <span class="p">(</span><span class="o">*</span> <span class="n">shadows</span> <span class="n">previous</span> <span class="n">x</span> <span class="n">in</span> <span class="n">C</span> <span class="o">*</span><span class="p">)</span>
-         <span class="k">return</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span><span class="p">);</span> 
+         <span class="k">return</span><span class="p">(</span><span class="n">f</span><span class="p">(</span><span class="n">y</span><span class="p">));</span> 
   <span class="p">}}}})</span>
 </code></pre></div></div>
 
-<p>The top loop is conceptually an open-ended series of let-ins which never close:</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">3</span><span class="p">;;</span>
-<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">5</span><span class="p">;;</span>
-<span class="k">let</span> <span class="n">f</span> <span class="n">z</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">z</span><span class="p">;;</span>
-<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span><span class="p">;;</span> <span class="c">(* as in previous example, this is a nested definition, not assignment! *)</span>
-<span class="n">f</span> <span class="p">(</span><span class="n">y</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">x</span><span class="p">;;</span>
-</code></pre></div></div>
 <p>Function definitions are similar, you can’t mutate an existing definition.</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">f</span> <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span>
@@ -541,12 +546,8 @@ This completes the induction step.</p>
 <span class="c">(* lets "change" f, say we made an error in its definition above *)</span>
 <span class="k">let</span> <span class="n">f</span> <span class="n">x</span> <span class="o">=</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">then</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span>
 <span class="n">g</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">);;</span> <span class="c">(* g still refers to the initial f - !! *)</span>
-
-<span class="k">assert</span><span class="p">(</span> <span class="n">g</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);;</span> <span class="c">(* example of built-in assert in action - returns () if holds, exception if not *)</span>
-
 <span class="k">let</span> <span class="n">g</span> <span class="n">x</span> <span class="o">=</span> <span class="n">f</span> <span class="p">(</span><span class="n">f</span> <span class="n">x</span><span class="p">);;</span> <span class="c">(* FIX to get new f: resubmit (identical) g code *)</span>
-
-<span class="k">assert</span><span class="p">(</span><span class="n">g</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">)</span> <span class="o">=</span> <span class="mi">0</span><span class="p">);;</span> <span class="c">(* now it works as we initially expected *)</span>
+<span class="n">g</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">);;</span> <span class="c">(* works now *)</span>
 </code></pre></div></div>
 
 <ul>
@@ -606,13 +607,17 @@ This completes the induction step.</p>
 <span class="k">assert</span><span class="p">(</span><span class="n">copyodd</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">6</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">8</span><span class="p">;</span><span class="mi">9</span><span class="p">;</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">9</span><span class="p">]);;</span>
 </code></pre></div></div>
 
+<ul>
+  <li>If functions are <em>only</em> used locally, use this syntax to define them locally and avoid polluting rest of code.</li>
+</ul>
+
 <h3 id="higher-order-functions">Higher Order Functions</h3>
 
 <p>Higher order functions are functions that either</p>
 <ul>
   <li>take other functions as arguments</li>
   <li>or return functions as results</li>
-  <li>or both of the above</li>
+  <li>or both</li>
 </ul>
 
 <p>Why?</p>
@@ -635,10 +640,11 @@ This completes the induction step.</p>
 
 <ul>
   <li>Lets pull out the “append gobble” action as a function parameter, make it code we can plug in</li>
-  <li>The resulting function is called <code>map</code> (note it is also available as <code>List.map</code>):
+  <li>At a high level, the common pattern is “apply a given operation to every list element”</li>
+  <li>The resulting function is called <code>map</code> (note it is built-in as <code>List.map</code>):
     <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">map</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span>  <span class="c">(* function f is an argument here *)</span>
 <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-<span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
+<span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
 <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">hd</span><span class="p">)</span> <span class="o">::</span> <span class="n">map</span> <span class="n">f</span> <span class="n">tl</span><span class="p">;;</span>
 </code></pre></div>    </div>
   </li>
@@ -659,8 +665,7 @@ This completes the induction step.</p>
 <h3 id="folds">Folds</h3>
 
 <ul>
-  <li>fold_left/right are classic operators on lists</li>
-  <li>combines a vector of data like the reduce of map/reduce</li>
+  <li>fold_left/right use a binary function to merge list elements to a single value</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">fold_left</span> <span class="n">f</span> <span class="n">v</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
@@ -674,7 +679,7 @@ This completes the induction step.</p>
 <span class="n">fold_left</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* equivalent to previous *)</span>
 </code></pre></div></div>
 
-<p>Compare to this manual summate - pulled out the combining operator <code>+</code> and zero <code>0</code></p>
+<p>Compare to this a recursive <code>summate</code> - we pulled out the combining operator <code>+</code> and zero <code>0</code></p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">summate</span> <span class="n">accum</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
     <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">accum</span>
@@ -683,14 +688,14 @@ This completes the induction step.</p>
 <span class="n">summate</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span>
 </code></pre></div></div>
 
-<p>More examples.  Note this is <code>List.fold_left</code> in OCaml library</p>
+<p>More <code>fold_left</code> examples.  Note this is <code>List.fold_left</code> in OCaml standard library</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">length</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">0</span> <span class="n">l</span><span class="p">;;</span> <span class="c">(* adds accum, ignores elt *)</span>
 <span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="n">elt</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="bp">[]</span> <span class="n">l</span><span class="p">;;</span> <span class="c">(* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)</span>
 </code></pre></div></div>
 <ul>
   <li>Right fold is similar but f is applied “on the way out” of recursion, not “on the way down” like in left fold above.</li>
-  <li>also in List.fold_right.</li>
+  <li>Also available as List.fold_right.</li>
   <li>Args are swapped compared to fold_left, be careful !</li>
 </ul>
 
@@ -711,11 +716,7 @@ This completes the induction step.</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">map</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">elt</span><span class="p">)</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Another example of left vs right - left’s accumulating maps and reverses</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">map_and_rev</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">elt</span><span class="p">)</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="bp">[]</span> <span class="n">l</span> <span class="p">;;</span> <span class="c">(* notice how this reverses *)</span>
-</code></pre></div></div>
-
-<p>More operations</p>
+<p>More operations definable with folding</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">filter</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">f</span> <span class="n">elt</span> <span class="k">then</span> <span class="n">elt</span><span class="o">::</span><span class="n">accum</span> <span class="k">else</span> <span class="n">accum</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span> 
 <span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="o">@</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span>
 </code></pre></div></div>
@@ -774,37 +775,37 @@ This completes the induction step.</p>
   <li>First lets recall how multi-argument functions work in OCaml</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">addC</span> <span class="n">x</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
-<span class="n">addC</span> <span class="mi">1</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* recall this is the same as '(addC 1) 2' *)</span>
-<span class="k">let</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">addC</span> <span class="mi">1</span> <span class="k">in</span> <span class="n">tmp</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* the partial application of arguments - result is a function *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_c</span> <span class="n">x</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
+<span class="n">add_c</span> <span class="mi">1</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* recall this is the same as '(add_c 1) 2' *)</span>
+<span class="k">let</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">add_c</span> <span class="mi">1</span> <span class="k">in</span> <span class="n">tmp</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* the partial application of arguments - result is a function *)</span>
 </code></pre></div></div>
 
-<p>An equivalent way to define <code>addC</code>, clarifying what the above means:</p>
+<p>An equivalent way to define <code>add_c</code>, clarifying what the above means:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">addC</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="k">fun</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">);;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_c</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="k">fun</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">);;</span>
 <span class="c">(* and, yet another identical way .. *)</span>
-<span class="k">let</span> <span class="n">addC</span> <span class="n">x</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
+<span class="k">let</span> <span class="n">add_c</span> <span class="n">x</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
 <span class="c">(* Yet one more, this is the built-in (+) *)</span>
 <span class="p">(</span><span class="o">+</span><span class="p">);;</span>
 </code></pre></div></div>
 
 <p>Here is the so-called non-Curried version: use a <em>pair of arguments</em> instead</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">addNC</span> <span class="n">p</span> <span class="o">=</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_nc</span> <span class="n">p</span> <span class="o">=</span>
     <span class="k">match</span> <span class="n">p</span> <span class="k">with</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;;</span>
 </code></pre></div></div>
 
 <p>Here is an equivalent OCaml syntax which looks like a standard C function</p>
 <ul>
   <li>This is a one-argument function, but you can pattern match in the argument position in OCaml!
-    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">addNC</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_nc</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
 </code></pre></div>    </div>
   </li>
 </ul>
 
-<p>Notice how the type of the above differs from addC’s type: <code>int * int -&gt; int</code> vs <code>int -&gt; int -&gt; int</code>.</p>
+<p>Notice how the type of the above differs from add_c’s type: <code>int * int -&gt; int</code> vs <code>int -&gt; int -&gt; int</code>.</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">addNC</span> <span class="p">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="p">);;</span>
-<span class="n">addNC</span> <span class="mi">3</span><span class="p">;;</span> <span class="c">(* errors, need all or no arguments supplied *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">add_nc</span> <span class="p">(</span><span class="mi">3</span><span class="o">,</span> <span class="mi">4</span><span class="p">);;</span>
+<span class="n">add_nc</span> <span class="mi">3</span><span class="p">;;</span> <span class="c">(* errors, need all or no arguments supplied *)</span>
 </code></pre></div></div>
 <ul>
   <li>Fact: these two approaches to defining a 2-argument function are isomorphic:<br />
@@ -820,13 +821,13 @@ This completes the induction step.</p>
 
 <p>Since we can then go back and forth between the two reps, they are <strong>ISOMORPHIC</strong></p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">curry</span> <span class="n">fNC</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">fNC</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="p">);;</span>
-<span class="k">let</span> <span class="n">uncurry</span> <span class="n">fC</span> <span class="o">=</span> <span class="k">fun</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fC</span> <span class="n">x</span> <span class="n">y</span><span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">curry</span> <span class="n">fnc</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">fnc</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="p">);;</span>
+<span class="k">let</span> <span class="n">uncurry</span> <span class="n">fc</span> <span class="o">=</span> <span class="k">fun</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">fc</span> <span class="n">x</span> <span class="n">y</span><span class="p">;;</span>
 
-<span class="k">let</span> <span class="n">newaddNC</span> <span class="o">=</span> <span class="n">uncurry</span> <span class="n">addC</span><span class="p">;;</span>
-<span class="n">newaddNC</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="p">);;</span>
-<span class="k">let</span> <span class="n">newaddC</span>  <span class="o">=</span> <span class="n">curry</span>   <span class="n">addNC</span><span class="p">;;</span>
-<span class="n">newaddC</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">;;</span>
+<span class="k">let</span> <span class="n">new_add_nc</span> <span class="o">=</span> <span class="n">uncurry</span> <span class="n">add_c</span><span class="p">;;</span>
+<span class="n">new_add_nc</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="p">);;</span>
+<span class="k">let</span> <span class="n">new_add_c</span>  <span class="o">=</span> <span class="n">curry</span>   <span class="n">add_nc</span><span class="p">;;</span>
+<span class="n">new_add_c</span> <span class="mi">2</span> <span class="mi">3</span><span class="p">;;</span>
 </code></pre></div></div>
 
 <p>Observe the types themselves pretty much specify the behavior</p>
@@ -834,8 +835,8 @@ This completes the induction step.</p>
 <span class="n">uncurry</span> <span class="o">:</span> <span class="p">(</span><span class="k">'</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">c</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">a</span> <span class="o">*</span> <span class="k">'</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">c</span>
 </code></pre></div></div>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">noop1</span> <span class="o">=</span> <span class="n">curry</span> <span class="p">(</span><span class="n">uncurry</span> <span class="n">addC</span><span class="p">);;</span> <span class="c">(* a no-op *)</span>
-<span class="k">let</span> <span class="n">noop2</span> <span class="o">=</span> <span class="n">uncurry</span> <span class="p">(</span><span class="n">curry</span> <span class="n">addNC</span><span class="p">);;</span> <span class="c">(* another no-op; noop1 &amp; noop2 together show isomorphism *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">noop1</span> <span class="o">=</span> <span class="n">curry</span> <span class="p">(</span><span class="n">uncurry</span> <span class="n">add_c</span><span class="p">);;</span> <span class="c">(* a no-op *)</span>
+<span class="k">let</span> <span class="n">noop2</span> <span class="o">=</span> <span class="n">uncurry</span> <span class="p">(</span><span class="n">curry</span> <span class="n">add_nc</span><span class="p">);;</span> <span class="c">(* another no-op; noop1 &amp; noop2 together show isomorphism *)</span>
 </code></pre></div></div>
 <h3 id="misc-ocaml">Misc OCaml</h3>
 
@@ -875,10 +876,12 @@ This completes the induction step.</p>
 <span class="p">((</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="p">)</span><span class="o">:</span><span class="n">intpair</span><span class="p">);;</span> <span class="c">(* can also explicitly tag data with its type *)</span>
 </code></pre></div></div>
 
-<h3 id="time-out-to-solve-some-simple-problems">Time-out to solve some simple problems</h3>
-<p>Lets work through some simple programming problems to get experience with writing simple functional OCaml programs</p>
+<h3 id="solving-some-simple-problems">Solving some simple problems</h3>
+
+<p>Some practice problems and their solutions which we may or may not have time to cover in lecture.</p>
+
 <ol>
-  <li>Write a function ‘toUpperCase’ which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).</li>
+  <li>Write a function <code>to_upper_case</code> which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).</li>
 </ol>
 
 <p>Notes: <br />
@@ -897,39 +900,39 @@ a. Assume that the capital of characters other than alphabets<br />
 <p>b. You can only use <code>Char.code</code> and <code>Char.chr</code> library functions. You <strong>cannot</strong> use <code>Char.uppercase</code>.</p>
 
 <p><strong>Answer:</strong></p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">toUpperChar</span> <span class="n">c</span> <span class="o">=</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">to_upper_char</span> <span class="n">c</span> <span class="o">=</span>
   <span class="k">let</span> <span class="n">c_code</span> <span class="o">=</span> <span class="nn">Char</span><span class="p">.</span><span class="n">code</span> <span class="n">c</span> <span class="k">in</span>
   <span class="k">if</span> <span class="n">c_code</span> <span class="o">&gt;=</span> <span class="mi">97</span> <span class="o">&amp;&amp;</span> <span class="n">c_code</span> <span class="o">&lt;=</span> <span class="mi">122</span> <span class="k">then</span>
     <span class="nn">Char</span><span class="p">.</span><span class="n">chr</span> <span class="p">(</span><span class="n">c_code</span> <span class="o">-</span> <span class="mi">32</span><span class="p">)</span>
   <span class="k">else</span> <span class="n">c</span><span class="p">;;</span>
 
 
-<span class="k">let</span> <span class="k">rec</span> <span class="n">toUpperCase</span> <span class="n">l</span> <span class="o">=</span>
+<span class="k">let</span> <span class="k">rec</span> <span class="n">to_upper_case</span> <span class="n">l</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
     <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
-  <span class="o">|</span> <span class="n">c</span> <span class="o">::</span> <span class="n">cs</span> <span class="o">-&gt;</span> <span class="n">toUpperChar</span> <span class="n">c</span> <span class="o">::</span> <span class="n">toUpperCase</span> <span class="n">cs</span>
+  <span class="o">|</span> <span class="n">c</span> <span class="o">::</span> <span class="n">cs</span> <span class="o">-&gt;</span> <span class="n">to_upper_char</span> <span class="n">c</span> <span class="o">::</span> <span class="n">to_upper_case</span> <span class="n">cs</span>
 <span class="p">;;</span>
 </code></pre></div></div>
 
 <p>Test</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span><span class="p">(</span><span class="n">toUpperCase</span> <span class="p">[</span><span class="k">'</span><span class="n">a'</span><span class="p">;</span> <span class="k">'</span><span class="n">q'</span><span class="p">;</span> <span class="k">'</span><span class="nc">B'</span><span class="p">;</span> <span class="k">'</span><span class="nc">Z'</span><span class="p">;</span> <span class="k">'</span><span class="p">;</span><span class="k">'</span><span class="p">;</span> <span class="k">'</span><span class="o">!</span><span class="k">'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="k">'</span><span class="nc">A'</span><span class="p">;</span> <span class="k">'</span><span class="nc">Q'</span><span class="p">;</span> <span class="k">'</span><span class="nc">B'</span><span class="p">;</span> <span class="k">'</span><span class="nc">Z'</span><span class="p">;</span> <span class="k">'</span><span class="p">;</span><span class="k">'</span><span class="p">;</span> <span class="k">'</span><span class="o">!</span><span class="k">'</span><span class="p">]);;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span><span class="p">(</span><span class="n">to_upper_case</span> <span class="p">[</span><span class="k">'</span><span class="n">a'</span><span class="p">;</span> <span class="k">'</span><span class="n">q'</span><span class="p">;</span> <span class="k">'</span><span class="nc">B'</span><span class="p">;</span> <span class="k">'</span><span class="nc">Z'</span><span class="p">;</span> <span class="k">'</span><span class="p">;</span><span class="k">'</span><span class="p">;</span> <span class="k">'</span><span class="o">!</span><span class="k">'</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="k">'</span><span class="nc">A'</span><span class="p">;</span> <span class="k">'</span><span class="nc">Q'</span><span class="p">;</span> <span class="k">'</span><span class="nc">B'</span><span class="p">;</span> <span class="k">'</span><span class="nc">Z'</span><span class="p">;</span> <span class="k">'</span><span class="p">;</span><span class="k">'</span><span class="p">;</span> <span class="k">'</span><span class="o">!</span><span class="k">'</span><span class="p">]);;</span>
 </code></pre></div></div>
 
 <p>Could have used map instead (note map is built in as <code>List.map</code>):</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">toUpperCase</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">toUpperChar</span> <span class="n">l</span> <span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">to_upper_case</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">to_upper_char</span> <span class="n">l</span> <span class="p">;;</span>
 </code></pre></div></div>
 
 <p>Could have also defined it even more simply - partly apply the Curried map:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">toUpperCase</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">toUpperChar</span> <span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">to_upper_case</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">map</span> <span class="n">to_upper_char</span> <span class="p">;;</span>
 </code></pre></div></div>
 
 <ol>
-  <li>Write a function ‘partition’ which takes a predicate (p) and a list (l) as arguments  and returns a tuple (l1, l2) such that l1 is the list of all the elements of l that satisfy the predicate p and l2 is the list of all the elements of l that do NOT satisfy p. The order of the elements in the input list (l) should be preserved.</li>
+  <li>Write a function <code>partition</code> which takes a predicate (<code>p</code>) and a list (<code>l</code>) as arguments  and returns a tuple <code>(l1, l2)</code> such that <code>l1</code> is the list of all the elements of <code>l</code> that satisfy the predicate p and l2 is the list of all the elements of <code>l</code> that do NOT satisfy <code>p</code>. The order of the elements in the input list (<code>l</code>) should be preserved.</li>
 </ol>
 
-<p>Note: A predicate is any function which returns a boolean. e.g. let isPositive n = (n &gt; 0);;</p>
+<p>Note: A predicate is any function which returns a boolean. e.g. <code>let is_positive n = (n &gt; 0);;</code></p>
 
 <p><strong>Answer:</strong></p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">partition</span> <span class="n">p</span> <span class="n">l</span> <span class="o">=</span>
@@ -945,7 +948,7 @@ a. Assume that the capital of characters other than alphabets<br />
 </code></pre></div></div>
 <p>Test</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">isPositive</span> <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">in</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">is_positive</span> <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">in</span>
 <span class="k">assert</span><span class="p">(</span><span class="n">partition</span> <span class="n">isPositive</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span> <span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]</span><span class="o">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">3</span><span class="p">]))</span>
 </code></pre></div></div>
 
@@ -1356,6 +1359,8 @@ First just int lists</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">failwith</span> <span class="s2">"Oops"</span><span class="p">;;</span> <span class="c">(* Generic code failure - exception is named Failure *)</span>
 <span class="n">invalid_arg</span> <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="c">(* Invalid_argument exception *)</span>
 </code></pre></div></div>
+
+<p><a name="v"></a></p>
 <h3 id="ocaml-lecture-v-modules">OCaml Lecture V: Modules</h3>
 
 <p>Modules in programming languages</p>
@@ -1389,9 +1394,9 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
 <h3 id="modules-in-ocaml">Modules in OCaml</h3>
 
 <ul>
-  <li>We already saw OCaml modules in action earlier,</li>
+  <li>We already saw OCaml modules in action</li>
   <li>Example: <code>List.map</code>, this is an invocation of the map function in the built-in <code>List</code> module.</li>
-  <li>Now, lets study how we can build our own OCaml modules</li>
+  <li>Now, lets study how we can build and use our own OCaml modules</li>
   <li>We focus here on building modules via files, but there are other methods we skip</li>
 </ul>
 
@@ -1421,15 +1426,21 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
 
 <ul>
   <li>See <a href="http://pl.cs.jhu.edu/pl/ocaml/code/set-example.zip">set-example.zip</a> for the example we cover in lecture.</li>
-  <li>We will follow <a href="http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt">readme.txt</a> in particular.</li>
-  <li>See the ocaml manual Chapter 8 for the full documentation</li>
-  <li>For this example we can use <code>dune utop</code> to load it into the <code>utop</code></li>
+</ul>
+
+<h3 id="playing-with-the-simple_set-module">Playing with the Simple_set module</h3>
+<ul>
+  <li>For this example we can use terminal command <code>dune utop</code> to load the module into a fresh <code>utop</code></li>
 </ul>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dune utop
 </code></pre></div></div>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">FSet</span><span class="p">.</span><span class="n">emptyset</span><span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">Simple_set</span><span class="p">.</span><span class="n">emptyset</span><span class="p">;;</span> <span class="c">(* simple_set.ml's binary is loaded as module Simple_set *)</span>
+<span class="k">open</span> <span class="nc">Simple_set</span><span class="p">;;</span>     <span class="c">(* open makes `emptyset` etc in module available without typing `Simple_set.` *)</span>
+<span class="k">let</span> <span class="n">aset</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="nn">Fun</span><span class="p">.</span><span class="n">flip</span> <span class="n">add</span><span class="p">)</span> <span class="n">emptyset</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">]</span> <span class="p">;;</span>
+<span class="n">contains</span> <span class="mi">3</span> <span class="n">aset</span> <span class="p">;;</span>
 </code></pre></div></div>
+
       
           </section>
         </div>

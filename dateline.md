@@ -65,7 +65,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html">OCaml III: higher-order functions</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#iii">OCaml III: higher-order functions</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
@@ -83,7 +83,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html">OCaml IV: variants,
+        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#iv">OCaml IV: variants,
     type inference, records, refs, arrays, exceptions</a></div>
       </td>
       <td width="22%"> 
@@ -101,7 +101,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html">OCaml V: Modules</a>, ocamlc <a href="ocaml/code/sep.zip">(zipfile)</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#v">OCaml V: Modules</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a

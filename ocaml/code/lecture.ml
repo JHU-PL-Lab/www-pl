@@ -134,22 +134,22 @@ match tuple with
 (* shorthand for the above - only one pattern, can use let syntax *)
 let (f, s, th) = tuple in s;;
 
-(let y = 3 in
-  ( let x = 5 in
-    ( let f z = x + z in
-      ( let x = y in  (* this is a re-definition of x, NOT an assignment *)
-        (f (y - 1)) + x
-            )
-        )
-    )(* x is STILL 5 in the function body - thats what x was when f defined *)
-)
-;;
-
 let y = 3;;
 let x = 5;;
 let f z = x + z;;
-let x = y;; (* as in previous example, this is a nested definition, not assignment! *)
-f (y-1) + x;;
+let x = y;; (* this is a shadowing re-definition, not an assignment! *)
+f y;; (* 3 + 3 or 5 + 3 - ??   Answer: the latter. *)
+
+(let y = 3 in
+ ( let x = 5 in
+   ( let f z = x + z in
+     ( let x = y in  (* this is a shadowing re-definition of x, NOT an assignment *)
+       (f y)
+     )
+   )
+ )
+)
+;;
 
 let f x = x + 1;;
 let g x = f (f x);;
@@ -157,12 +157,8 @@ let shad = f;; (* make a new name for f above *)
 (* lets "change" f, say we made an error in its definition above *)
 let f x = if x <= 0 then 0 else x + 1;;
 g (-5);; (* g still refers to the initial f - !! *)
-
-assert( g (-5) = 0);; (* example of built-in assert in action - returns () if holds, exception if not *)
-
 let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
-
-assert(g (-5) = 0);; (* now it works as we initially expected *)
+g (-5);; (* works now *)
 
 let rec copy l =
   match l with
@@ -205,7 +201,7 @@ appendgobblelist ["have";"a";"good";"day"];;
 
 let rec map f l =  (* function f is an argument here *)
   match l with
-  |  [] -> []
+  | [] -> []
   | hd::tl -> (f hd) :: map f tl;;
 
 let middle = map (function s -> s^"gobble");;
@@ -242,8 +238,6 @@ fold_right (fun accum -> fun elt -> "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;;
 
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
 
-let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum) [] l ;; (* notice how this reverses *)
-
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
 let rev l = List.fold_right (@) l [];;
 
@@ -263,37 +257,37 @@ compose (fun x -> x+3) (fun x -> x*2) 10;;
 let compose g f x =  g (f x);;
 let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 
-let addC x y = x + y;;
-addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
-let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
+let add_c x y = x + y;;
+add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
+let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - result is a function *)
 
-let addC = fun x -> (fun y -> x + y);;
+let add_c = fun x -> (fun y -> x + y);;
 (* and, yet another identical way .. *)
-let addC x = fun y -> x + y;;
+let add_c x = fun y -> x + y;;
 (* Yet one more, this is the built-in (+) *)
 (+);;
 
-let addNC p =
+let add_nc p =
     match p with (x,y) -> x+y;;
 
-let addNC (x, y) = x + y;;
+let add_nc (x, y) = x + y;;
 
-addNC (3, 4);;
-addNC 3;; (* errors, need all or no arguments supplied *)
+add_nc (3, 4);;
+add_nc 3;; (* errors, need all or no arguments supplied *)
 
-let curry fNC = fun x -> fun y -> fNC (x, y);;
-let uncurry fC = fun (x, y) -> fC x y;;
+let curry fnc = fun x -> fun y -> fnc (x, y);;
+let uncurry fc = fun (x, y) -> fc x y;;
 
-let newaddNC = uncurry addC;;
-newaddNC (2,3);;
-let newaddC  = curry   addNC;;
-newaddC 2 3;;
+let new_add_nc = uncurry add_c;;
+new_add_nc (2,3);;
+let new_add_c  = curry   add_nc;;
+new_add_c 2 3;;
 
 curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c
 uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c
 
-let noop1 = curry (uncurry addC);; (* a no-op *)
-let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together show isomorphism *)
+let noop1 = curry (uncurry add_c);; (* a no-op *)
+let noop2 = uncurry (curry add_nc);; (* another no-op; noop1 & noop2 together show isomorphism *)
 
 print_string ("hi\n");;
 
@@ -313,24 +307,24 @@ let f (p : intpair) = match p with
 f (2, 3);; (* still, can pass it to the function expecting an intpair *)
 ((2,3):intpair);; (* can also explicitly tag data with its type *)
 
-let toUpperChar c =
+let to_upper_char c =
   let c_code = Char.code c in
   if c_code >= 97 && c_code <= 122 then
     Char.chr (c_code - 32)
   else c;;
 
 
-let rec toUpperCase l =
+let rec to_upper_case l =
   match l with
     [] -> []
-  | c :: cs -> toUpperChar c :: toUpperCase cs
+  | c :: cs -> to_upper_char c :: to_upper_case cs
 ;;
 
-assert(toUpperCase ['a'; 'q'; 'B'; 'Z'; ';'; '!'] = ['A'; 'Q'; 'B'; 'Z'; ';'; '!']);;
+assert(to_upper_case ['a'; 'q'; 'B'; 'Z'; ';'; '!'] = ['A'; 'Q'; 'B'; 'Z'; ';'; '!']);;
 
-let toUpperCase l = List.map toUpperChar l ;;
+let to_upper_case l = List.map to_upper_char l ;;
 
-let toUpperCase = List.map toUpperChar ;;
+let to_upper_case = List.map to_upper_char ;;
 
 let rec partition p l =
   match l with
@@ -343,7 +337,7 @@ let rec partition p l =
     else
       (posl,hd::negl);;
 
-let isPositive n = n > 0 in
+let is_positive n = n > 0 in
 assert(partition isPositive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
 
 let rec contains x l =
@@ -570,5 +564,8 @@ g ();;
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
 
-FSet.emptyset;;
+Simple_set.emptyset;; (* simple_set.ml's binary is loaded as module Simple_set *)
+open Simple_set;;     (* open makes `emptyset` etc in module available without typing `Simple_set.` *)
+let aset = List.fold_left (Fun.flip add) emptyset [1;2;3;4] ;;
+contains 3 aset ;;
 

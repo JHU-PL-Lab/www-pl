@@ -1,5 +1,7 @@
-(* simple_set.ml  
-   Defines the module Simple_set which is a simple functional multiset data structure.
+(* 
+  File simple_set.ml  
+  * This file defines the module Simple_set which is a simple functional multiset data structure.
+  * Each item (function or type decl) in the file can be accessed as Simple_set.item outside of the module
 *)
 
 (* This type declaration is the data structure storing the actual sets (just a list here) 

@@ -397,37 +397,41 @@ let (f, s, th) = tuple in s;;
  * Helps in reasoning about programs, we know the variable's value is fixed
  * But can be confusing when shadowing (re-definition) happens
 
+Consider the following sequence of inputs into the top loop:
+```ocaml
+let y = 3;;
+let x = 5;;
+let f z = x + z;;
+let x = y;; (* this is a shadowing re-definition, not an assignment! *)
+f y;; (* 3 + 3 or 5 + 3 - ??   Answer: the latter. *)
+```
+
+* To understand the above, realize that the top loop is conceptually an open-ended series of let-ins which never close:
+
 ```ocaml
 (let y = 3 in
-  ( let x = 5 in
-    ( let f z = x + z in
-      ( let x = y in  (* this is a re-definition of x, NOT an assignment *)
-        (f (y - 1)) + x
-            )
-        )
-    )(* x is STILL 5 in the function body - thats what x was when f defined *)
+ ( let x = 5 in
+   ( let f z = x + z in
+     ( let x = y in  (* this is a shadowing re-definition of x, NOT an assignment *)
+       (f y)
+     )
+   )
+ )
 )
 ;;
 ```
 
-This is in the spirit of this C pseudo-code:
+The above might make more sense if you consider similar-in-spirit C pseudo-code:
 ```c
  { int y = 3;
    { int x = 5;
      { int (int) f = z -> return(x + z); (* imagining higher-order functions in C *)
        { int x = y; (* shadows previous x in C *)
-         return(f(y-1) + x); 
+         return(f(y)); 
   }}}})
 ```
 
-The top loop is conceptually an open-ended series of let-ins which never close:
-```ocaml
-let y = 3;;
-let x = 5;;
-let f z = x + z;;
-let x = y;; (* as in previous example, this is a nested definition, not assignment! *)
-f (y-1) + x;;
-```
+
 Function definitions are similar, you can't mutate an existing definition.
 
 ```ocaml
@@ -437,12 +441,8 @@ let shad = f;; (* make a new name for f above *)
 (* lets "change" f, say we made an error in its definition above *)
 let f x = if x <= 0 then 0 else x + 1;;
 g (-5);; (* g still refers to the initial f - !! *)
-
-assert( g (-5) = 0);; (* example of built-in assert in action - returns () if holds, exception if not *)
-
 let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
-
-assert(g (-5) = 0);; (* now it works as we initially expected *)
+g (-5);; (* works now *)
 ```
 
 * Moral: don't code (too much) directly in the top-loop since this behavior can cause anomalies
@@ -498,12 +498,14 @@ let copyodd ll =
 assert(copyodd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 ```
 
+* If functions are *only* used locally, use this syntax to define them locally and avoid polluting rest of code.
+
 ### Higher Order Functions
 
 Higher order functions are functions that either
  * take other functions as arguments
  * or return functions as results
- * or both of the above
+ * or both
 
 Why?
  * "pluggable" programming by passing in and out chunks of code
@@ -523,11 +525,12 @@ appendgobblelist ["have";"a";"good";"day"];;
 ```
 
 * Lets pull out the "append gobble" action as a function parameter, make it code we can plug in
-* The resulting function is called `map` (note it is also available as `List.map`):
+* At a high level, the common pattern is "apply a given operation to every list element"
+* The resulting function is called `map` (note it is built-in as `List.map`):
 ```ocaml
 let rec map f l =  (* function f is an argument here *)
   match l with
-  |  [] -> []
+  | [] -> []
   | hd::tl -> (f hd) :: map f tl;;
 ```
 
@@ -545,8 +548,7 @@ let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functio
 
 ### Folds
 
- * fold_left/right are classic operators on lists 
- * combines a vector of data like the reduce of map/reduce
+ * fold_left/right use a binary function to merge list elements to a single value
 
 ```ocaml
 let rec fold_left f v l = match l with
@@ -561,7 +563,7 @@ fold_left (fun elt -> fun accum -> elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) -
 fold_left (+) 0 [1;2;3];; (* equivalent to previous *)
 ```
 
-Compare to this manual summate - pulled out the combining operator `+` and zero `0`
+Compare to this a recursive `summate` - we pulled out the combining operator `+` and zero `0`
 
 ```ocaml
 let rec summate accum l = match l with
@@ -571,14 +573,14 @@ let rec summate accum l = match l with
 summate 0 [1;2;3];;
 ```
 
-More examples.  Note this is `List.fold_left` in OCaml library
+More `fold_left` examples.  Note this is `List.fold_left` in OCaml standard library
 
 ```ocaml
 let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
 ```
 * Right fold is similar but f is applied "on the way out" of recursion, not "on the way down" like in left fold above.
-* also in List.fold_right.
+* Also available as List.fold_right.
 * Args are swapped compared to fold_left, be careful !
 
 ```ocaml
@@ -601,12 +603,7 @@ fold_right (fun accum -> fun elt -> "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;;
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
 ```
 
-Another example of left vs right - left's accumulating maps and reverses
-```ocaml
-let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum) [] l ;; (* notice how this reverses *)
-```
-
-More operations
+More operations definable with folding
 ```ocaml
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
 let rev l = List.fold_right (@) l [];;
@@ -660,39 +657,39 @@ let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 * First lets recall how multi-argument functions work in OCaml
 
 ```ocaml
-let addC x y = x + y;;
-addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
-let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
+let add_c x y = x + y;;
+add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
+let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - result is a function *)
 ```
 
-An equivalent way to define `addC`, clarifying what the above means:
+An equivalent way to define `add_c`, clarifying what the above means:
 
 ```ocaml
-let addC = fun x -> (fun y -> x + y);;
+let add_c = fun x -> (fun y -> x + y);;
 (* and, yet another identical way .. *)
-let addC x = fun y -> x + y;;
+let add_c x = fun y -> x + y;;
 (* Yet one more, this is the built-in (+) *)
 (+);;
 ```
 
 Here is the so-called non-Curried version: use a *pair of arguments* instead
 ```ocaml
-let addNC p =
+let add_nc p =
     match p with (x,y) -> x+y;;
 ```
 
 Here is an equivalent OCaml syntax which looks like a standard C function
   - This is a one-argument function, but you can pattern match in the argument position in OCaml!
 ```ocaml
-let addNC (x, y) = x + y;;
+let add_nc (x, y) = x + y;;
 ```
 
 
-Notice how the type of the above differs from addC's type: `int * int -> int` vs `int -> int -> int`.
+Notice how the type of the above differs from add_c's type: `int * int -> int` vs `int -> int -> int`.
 
 ```ocaml
-addNC (3, 4);;
-addNC 3;; (* errors, need all or no arguments supplied *)
+add_nc (3, 4);;
+add_nc 3;; (* errors, need all or no arguments supplied *)
 ```
 * Fact: these two approaches to defining a 2-argument function are isomorphic:
 `'a * 'b -> 'c` ~= `'a -> 'b -> 'c`
@@ -705,13 +702,13 @@ We now define two cool higher-order functions:
 Since we can then go back and forth between the two reps, they are **ISOMORPHIC**
 
 ```ocaml
-let curry fNC = fun x -> fun y -> fNC (x, y);;
-let uncurry fC = fun (x, y) -> fC x y;;
+let curry fnc = fun x -> fun y -> fnc (x, y);;
+let uncurry fc = fun (x, y) -> fc x y;;
 
-let newaddNC = uncurry addC;;
-newaddNC (2,3);;
-let newaddC  = curry   addNC;;
-newaddC 2 3;;
+let new_add_nc = uncurry add_c;;
+new_add_nc (2,3);;
+let new_add_c  = curry   add_nc;;
+new_add_c 2 3;;
 ```
 
 Observe the types themselves pretty much specify the behavior
@@ -721,8 +718,8 @@ uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c
 ```
 
 ```ocaml
-let noop1 = curry (uncurry addC);; (* a no-op *)
-let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together show isomorphism *)
+let noop1 = curry (uncurry add_c);; (* a no-op *)
+let noop2 = uncurry (curry add_nc);; (* another no-op; noop1 & noop2 together show isomorphism *)
 ```
 ### Misc OCaml
 
@@ -765,9 +762,11 @@ f (2, 3);; (* still, can pass it to the function expecting an intpair *)
 ((2,3):intpair);; (* can also explicitly tag data with its type *)
 ```
 
-### Time-out to solve some simple problems
-Lets work through some simple programming problems to get experience with writing simple functional OCaml programs
-1. Write a function 'toUpperCase' which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).
+### Solving some simple problems
+
+Some practice problems and their solutions which we may or may not have time to cover in lecture.
+
+1. Write a function `to_upper_case` which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).
 
 Notes: 
 a. Assume that the capital of characters other than alphabets
@@ -787,40 +786,40 @@ b. You can only use `Char.code` and `Char.chr` library functions. You **cannot**
 
 **Answer:**
 ```ocaml
-let toUpperChar c =
+let to_upper_char c =
   let c_code = Char.code c in
   if c_code >= 97 && c_code <= 122 then
     Char.chr (c_code - 32)
   else c;;
 
 
-let rec toUpperCase l =
+let rec to_upper_case l =
   match l with
     [] -> []
-  | c :: cs -> toUpperChar c :: toUpperCase cs
+  | c :: cs -> to_upper_char c :: to_upper_case cs
 ;;
 ```
 
 Test
 ```ocaml
-assert(toUpperCase ['a'; 'q'; 'B'; 'Z'; ';'; '!'] = ['A'; 'Q'; 'B'; 'Z'; ';'; '!']);;
+assert(to_upper_case ['a'; 'q'; 'B'; 'Z'; ';'; '!'] = ['A'; 'Q'; 'B'; 'Z'; ';'; '!']);;
 ```
 
 Could have used map instead (note map is built in as `List.map`):
 
 ```ocaml
-let toUpperCase l = List.map toUpperChar l ;;
+let to_upper_case l = List.map to_upper_char l ;;
 ```
 
 Could have also defined it even more simply - partly apply the Curried map:
 
 ```ocaml
-let toUpperCase = List.map toUpperChar ;;
+let to_upper_case = List.map to_upper_char ;;
 ```
 
-2. Write a function 'partition' which takes a predicate (p) and a list (l) as arguments  and returns a tuple (l1, l2) such that l1 is the list of all the elements of l that satisfy the predicate p and l2 is the list of all the elements of l that do NOT satisfy p. The order of the elements in the input list (l) should be preserved.
+2. Write a function `partition` which takes a predicate (`p`) and a list (`l`) as arguments  and returns a tuple `(l1, l2)` such that `l1` is the list of all the elements of `l` that satisfy the predicate p and l2 is the list of all the elements of `l` that do NOT satisfy `p`. The order of the elements in the input list (`l`) should be preserved.
 
-Note: A predicate is any function which returns a boolean. e.g. let isPositive n = (n > 0);;
+Note: A predicate is any function which returns a boolean. e.g. `let is_positive n = (n > 0);;`
 
 **Answer:**
 ```ocaml
@@ -838,7 +837,7 @@ let rec partition p l =
 Test
 
 ```ocaml
-let isPositive n = n > 0 in
+let is_positive n = n > 0 in
 assert(partition isPositive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
 ```
 
@@ -1249,6 +1248,8 @@ There are a few built-in exceptions we mentioned previously:
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
 ```
+
+<a name="v"></a>
 ###  OCaml Lecture V: Modules
 
 Modules in programming languages
@@ -1274,9 +1275,9 @@ Most modern languages have a module system solving most of these problems.
 
 ### Modules in OCaml
 
-* We already saw OCaml modules in action earlier, 
+* We already saw OCaml modules in action
 * Example: `List.map`, this is an invocation of the map function in the built-in `List` module.
-* Now, lets study how we can build our own OCaml modules
+* Now, lets study how we can build and use our own OCaml modules
 * We focus here on building modules via files, but there are other methods we skip
 
 #### Making a module
@@ -1297,13 +1298,18 @@ Most modern languages have a module system solving most of these problems.
 ### An example of a separately-compiled OCaml program
 
 * See [set-example.zip](http://pl.cs.jhu.edu/pl/ocaml/code/set-example.zip) for the example we cover in lecture.
-* We will follow [readme.txt](http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt) in particular.
-* See the ocaml manual Chapter 8 for the full documentation
-* For this example we can use `dune utop` to load it into the `utop`
+
+
+### Playing with the Simple_set module
+* For this example we can use terminal command `dune utop` to load the module into a fresh `utop`
 
 ```sh
 dune utop
 ```
 ```ocaml
-FSet.emptyset;;
+Simple_set.emptyset;; (* simple_set.ml's binary is loaded as module Simple_set *)
+open Simple_set;;     (* open makes `emptyset` etc in module available without typing `Simple_set.` *)
+let aset = List.fold_left (Fun.flip add) emptyset [1;2;3;4] ;;
+contains 3 aset ;;
 ```
+
