@@ -1,0 +1,14 @@
+(library
+ (name simple_set)
+ (modules simple_set))
+
+(executable
+ (name set_main)
+ (libraries simple_set)
+ (modules set_main) 
+)
+; To load libraries in a fresh utop top loop use command line
+; `dune utop`
+
+
+

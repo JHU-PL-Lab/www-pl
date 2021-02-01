@@ -368,10 +368,12 @@ This completes the induction step.
 
 QED.    
 
+<a name="iii"></a>
+###  OCaml Lecture III
 
 ### Tuples
 
-Tuples are fixed length lists, but types of each element CAN differ, unlike lists *)
+Think of tuples as fixed length lists, where the types of each element can differ, unlike lists
 
 ```ocaml
 (2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
@@ -389,12 +391,11 @@ match tuple with
 let (f, s, th) = tuple in s;;
 ```
 
+#### Consequences of immutable variable declarations on the top loop
 
-###  OCaml Lecture III
-
-Subtle property of immutable declarations
  * All variable declarations in OCaml are **immutable** -- value will never change
- * helps in reasoning about programs, we know the variable's value is fixed
+ * Helps in reasoning about programs, we know the variable's value is fixed
+ * But can be confusing when shadowing (re-definition) happens
 
 ```ocaml
 (let y = 3 in
@@ -445,7 +446,7 @@ assert(g (-5) = 0);; (* now it works as we initially expected *)
 ```
 
 * Moral: don't code (too much) directly in the top-loop since this behavior can cause anomalies
-* For Homework one, you will be able to say `dune test` in the terminal to run tests on your code, and `dune utop` will load it all into `utop` so you can then play with your functions.
+* For Assignment 1, you will be able to say `dune test` in the terminal to run tests on your code, and `dune utop` will load it all into `utop` so you can then play with your functions.
 
 #### Mutually recursive functions
 
@@ -459,8 +460,9 @@ let rec copy l =
 
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 ```
-
-List copy is in fact useless because lists are immutable - can share instead
+* Argue by induction that this will copy the input list `l`.
+* (List copy is in fact useless because lists are immutable - compiler can *share*)
+  - This property is a form of *referential transparency*
 
 Refine copy to flip back and forth between copying and not
 
@@ -483,17 +485,15 @@ Here is a version that hides the `copyeven` function -- make both internal and e
 
 ```ocaml
 let copyodd ll =
-    ( let rec
-     copyoddlocal l = match l with
-      |  [] -> []
-      | hd :: tl ->  hd::(copyevenlocal tl)
-    and
-     copyevenlocal l = match l with
+  let rec copyoddlocal l = match l with
+    |  [] -> []
+    | hd :: tl ->  hd::(copyevenlocal tl)
+  and
+    copyevenlocal l = match l with
     |        [] -> []
     | x :: xs -> copyoddlocal xs
   in
-   copyoddlocal ll
-    );;
+  copyoddlocal ll;;
 
 assert(copyodd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 ```
@@ -508,25 +508,24 @@ Higher order functions are functions that either
 Why?
  * "pluggable" programming by passing in and out chunks of code
  * greatly increases reusability of code since any varying code can be pulled out as a function to pass in
+ * Lets show the power by extracting out some pluggable code
 
-Lets show the power by extracting out some pluggable code
-
-Example: append gobble to a list of words
+Example: append `"gobble"` to each word in a list of strings
 
 ```ocaml
 let rec appendgobblelist l =
   match l with
-    []    -> []
+  | [] -> []
   | hd::tl -> (hd ^"gobble") :: appendgobblelist tl;;
 
 appendgobblelist ["have";"a";"good";"day"];;
 ("have" ^"gobble") :: ("a"^"gobble") :: appendgobblelist ["good";"day"];;
 ```
 
-* Lets pull out the "append gobble" as a function parameter, make it code we can plug in
-* The resulting function is called `map` (it is also built-in as `List.map`):
+* Lets pull out the "append gobble" action as a function parameter, make it code we can plug in
+* The resulting function is called `map` (note it is also available as `List.map`):
 ```ocaml
-let rec map f l =  (* Notice function f is an ARGUMENT here *)
+let rec map f l =  (* function f is an argument here *)
   match l with
   |  [] -> []
   | hd::tl -> (f hd) :: map f tl;;
@@ -537,24 +536,12 @@ let middle = map (function s -> s^"gobble");;
 middle ["have";"a";"good";"day"];;
 ```
 
-Mapping on lists of pairs - shows in and out lists can be different types.
+Mapping on lists of pairs - in and out lists can be different types.
 ```ocaml
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
 ```
 * This aligns with the type of `map`, `('a -> 'b) -> 'a list -> 'b list ` - `'a` and `'b` can differ.
-
-What can you do with a list of functions?  e.g. compose them
-
-```ocaml
-(* compose_list [f1;..;fn] v = f1 (... (fn v) ... ) *)
-let rec compose_list lf v =
-  match lf with
-  | [] -> v
-  | hd :: tl -> hd(compose_list tl v);;
-
-compose_list flist 0;;
-```
 
 ### Folds
 
@@ -564,17 +551,17 @@ compose_list flist 0;;
 ```ocaml
 let rec fold_left f v l = match l with
     | []   -> v
-    | hd::tl -> fold_left f (f v hd) tl (* pass down f v hd as new "v" -- accumulating *)
+    | hd::tl -> fold_left f (f v hd) tl (* pass down f v hd as "the new v" -- accumulating *)
     ;;
 ```
 
 Summing elements of a list can now be succinctly coded:
 ```ocaml
 fold_left (fun elt -> fun accum -> elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) - 0 on LEFT *)
-fold_left (+) 0 [1;2;3];; (* equivalent to previous - built-in operator in parens is function *)
+fold_left (+) 0 [1;2;3];; (* equivalent to previous *)
 ```
 
-Compare to manual summate - pulled out the combining operator and zero
+Compare to this manual summate - pulled out the combining operator `+` and zero `0`
 
 ```ocaml
 let rec summate accum l = match l with
@@ -599,10 +586,10 @@ let rec fold_right f l v = match l with
   | [] -> v
   | hd::tl -> f hd (fold_right f tl v) (* v not changing on recursion here *)
 ;;
-fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - 0 on right *)
+fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
 ```
 
-Example where left and right folds produce different result:
+Example where left and right folds produce a different result:
 
 ```ocaml
 fold_left (fun elt -> fun accum -> "("^elt^"+"^accum^")") "0" ["1";"2";"3"] ;; 
@@ -622,7 +609,7 @@ let map_and_rev f l = List.fold_left (fun accum elt -> (f elt)::accum) [] l ;; (
 More operations
 ```ocaml
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
-let rev_slow l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* can also fold_right rev with @ *)
+let rev l = List.fold_right (@) l [];;
 ```
 
 ### Pipeling and composition
@@ -634,15 +621,18 @@ Obvious version:
 let nth_end l n = List.nth (List.rev l) n;;
 ```
 
-But, from the analogy of shell pipes `|`, we are "piping" the output of `rev` into `nth` for some fixed n.  Here is an equivalent way to code that.
+* But, from the analogy of shell pipes `|`, we are "piping" the output of `rev` into `nth` for some fixed n.  
+* Here is an equivalent way to code that using OCaml pipe notation, `|>`
 
 ```ocaml
 let nth_end l n = l |> List.rev |> (Fun.flip(List.nth) n);;
 ```
 * All `[1;2] |> List.rev` in fact does is apply the second argument to the first - very simple!
-* The `Fun.flip` is needed to put the list argument second, not first; it is another interesting higher-order function, it has type `('a -> 'b -> 'c) -> 'b -> 'a -> 'c`.
+* The type gives it away: `(|>)` has type `'a -> ('a -> 'b) -> 'b`
+* The `Fun.flip` is needed to put the list argument second, not first
+  - it is another interesting higher-order function, with type `('a -> 'b -> 'c) -> 'b -> 'a -> 'c`.
 
-#### Function Composition
+#### Function Composition: functions in, functions out
 
 Composition function g o f: take two functions, return their composition
 ```ocaml
@@ -656,7 +646,8 @@ times2plus3 10;;
 compose (fun x -> x+3) (fun x -> x*2) 10;;
 ```
 
-Equivalent notations for compose
+* Equivalent ways to write the `compose` funtion in OCaml syntax
+* Work on interconverting between these equivalent forms in your head
 
 ```ocaml
 let compose g f x =  g (f x);;
@@ -665,10 +656,8 @@ let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 
 ### Currying
 
-* One topic left in higher-order functions.
-* Currying - idea due to logician Haskell Curry
-
-First lets recall how functions allow incremental arguments to be passed
+* An idea due to logician Haskell Curry
+* First lets recall how multi-argument functions work in OCaml
 
 ```ocaml
 let addC x y = x + y;;
@@ -676,43 +665,38 @@ addC 1 2;; (* recall this is the same as '(addC 1) 2' *)
 let tmp = addC 1 in tmp 2;; (* the partial application of arguments - result is a function *)
 ```
 
-An equivalent way to define addC, clarifying what the above means:
+An equivalent way to define `addC`, clarifying what the above means:
 
 ```ocaml
 let addC = fun x -> (fun y -> x + y);;
-(* yet another identical way .. *)
+(* and, yet another identical way .. *)
 let addC x = fun y -> x + y;;
-
-(addC 1) 2;; (* same result as above *)
+(* Yet one more, this is the built-in (+) *)
+(+);;
 ```
 
-Its also the type of the built-in + -- put parens around to see as a fun
-
-```ocaml
-let addCagain = (+);;
-(addCagain 1) 2;; (* same result as above *)
-```
-
-Here is the so-called non-Curried version: use a pair of arguments instead
+Here is the so-called non-Curried version: use a *pair of arguments* instead
 ```ocaml
 let addNC p =
     match p with (x,y) -> x+y;;
 ```
 
-Here is an equivalent abbreviation which looks like a standard C function
+Here is an equivalent OCaml syntax which looks like a standard C function
+  - This is a one-argument function, but you can pattern match in the argument position in OCaml!
 ```ocaml
 let addNC (x, y) = x + y;;
 ```
 
 
-Notice how the type of the above differs from addC's type
+Notice how the type of the above differs from addC's type: `int * int -> int` vs `int -> int -> int`.
+
 ```ocaml
 addNC (3, 4);;
-addNC 3;; (* will error, need all or no arguments supplied *)
+addNC 3;; (* errors, need all or no arguments supplied *)
 ```
-Fact: these two approaches to a 2-argument function are isomorphic:
-
-`'a * 'b -> 'c` === `'a -> 'b -> 'c`
+* Fact: these two approaches to defining a 2-argument function are isomorphic:
+`'a * 'b -> 'c` ~= `'a -> 'b -> 'c`
+* (This isomorphism also holds in set theory, you may have already seen it)
 
 We now define two cool higher-order functions:
 * `curry`   - takes in non-curry'ing 2-arg function and returns a curry'ing version
@@ -742,9 +726,9 @@ let noop2 = uncurry (curry addNC);; (* another no-op; noop1 & noop2 together sho
 ```
 ### Misc OCaml
 
-See [Stdlib](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Stdlib.html) for various functions available in the OCaml top-level like `+`, `^` (string append), `print_int` (print an integer), etc.
+See [module Stdlib](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Stdlib.html) for various functions available in the OCaml top-level like `+`, `^` (string append), `print_int` (print an integer), etc.
 
-See [stdlib](http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html) for modules of functions for lists, strings, integers, as well as sets, trees, etc structures.
+See [the Standard Library](http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html) for modules of functions for `List`s, `String`s, `Int`egers, as well as `Set`s, `Map`s, etc, etc.
 
 ```ocaml
 print_string ("hi\n");;
@@ -755,13 +739,14 @@ Some `Stdlib` built-in exception generating functions (more on exceptions later)
 (failwith "BOOM!") + 3 ;;
 ```
 
-Invalid argument exception built-in:
+Invalid argument exception `invalid_arg`:
 ```ocaml
 let f x = if x <= 0 then invalid_arg "Let's be positive, please!" else x + 1;;
 f (-5);;
 ```
 
-You CAN also declare types, anywhere in fact
+* OCaml infers types most of the time
+* But, you can optionally declare types on any expression
  - Put parens around any such declaration or it won't parse
 
 ```ocaml
@@ -782,48 +767,7 @@ f (2, 3);; (* still, can pass it to the function expecting an intpair *)
 
 ### Time-out to solve some simple problems
 Lets work through some simple programming problems to get experience with writing simple functional OCaml programs
-
-1. Write a function 'compose_funs' which takes a list of functions `[f1; ...; fn]` and returns a function representing the composition `fn o .. o f1 of all of these.`
-
-**Answer:**
-```ocaml
-let rec compose_funs lf =
-  match lf with
-    [] -> (function x -> x)
-  | f :: fs -> (function x -> (compose_funs fs) (f x))
-;;
-```
-
-Equivalent alternate version - refactor to hoist out the "function x"
-
-```ocaml
-let rec compose_funs lf =
-  function x ->
-    (match lf with
-      [] -> x
-    | f :: fs -> (compose_funs fs) (f x)
-    )
-;;
-```
-
-Yet another equivalent alternative - hoist x up one more level
-```ocaml
-let rec compose_funs lf x =
-    match lf with
-      [] -> x
-    | f :: fs -> (compose_funs fs) (f x)
-;;
-```
-
-Tests
-
-```ocaml
-let composeexample = compose_funs [(function x -> x+1); (function x -> x-1);
-                 (function x -> x*3); (function x -> x-1)];;
-assert(composeexample 5 = 14);;
-```
-
-2. Write a function 'toUpperCase' which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).
+1. Write a function 'toUpperCase' which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).
 
 Notes: 
 a. Assume that the capital of characters other than alphabets
@@ -874,32 +818,7 @@ Could have also defined it even more simply - partly apply the Curried map:
 let toUpperCase = List.map toUpperChar ;;
 ```
 
-3. Write a function 'nth' which takes a list (l) and index (n) and returns the nth element of the list. If n is an invalid index i.e. n is negative or l has less then (n + 1) elements then fail.
-
-Note: indices start with 0 for the head of the list, 1 for the next element and so on (similar to arrays).
-
-**Answer:**
-```ocaml
-let rec nth l n =
-  match l with
-  |  [] -> failwith "list too short"
-  | x :: xs ->
-      if n = 0 then
-        x
-      else
-        nth xs (n - 1) (* eureka *)
-;;
-```
-
-Tests
-```ocaml
-assert(nth [1;2;3] 0 = 1);;
-nth [1;2;3] 1;; (* should return 2 *)
-nth [1;2;3] (-1);; (* should raise exception *)
-nth [1;2;3] 3;; (* should raise exception *)
-```
-
-4. Write a function 'partition' which takes a predicate (p) and a list (l) as arguments  and returns a tuple (l1, l2) such that l1 is the list of all the elements of l that satisfy the predicate p and l2 is the list of all the elements of l that do NOT satisfy p. The order of the elements in the input list (l) should be preserved.
+2. Write a function 'partition' which takes a predicate (p) and a list (l) as arguments  and returns a tuple (l1, l2) such that l1 is the list of all the elements of l that satisfy the predicate p and l2 is the list of all the elements of l that do NOT satisfy p. The order of the elements in the input list (l) should be preserved.
 
 Note: A predicate is any function which returns a boolean. e.g. let isPositive n = (n > 0);;
 
@@ -923,7 +842,7 @@ let isPositive n = n > 0 in
 assert(partition isPositive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
 ```
 
-5. Write a function `diff` which takes in two lists l1 and l2 and returns a list containing all elements in l1 not in l2.
+3. Write a function `diff` which takes in two lists l1 and l2 and returns a list containing all elements in l1 not in l2.
 
 Note: You will need to write another function `contains x l` which checks  whether an element `x` is contained in a list `l` or not.
 
@@ -954,16 +873,17 @@ assert(diff [1;2;3] [3;4;5] = [1; 2])
 assert(diff [1;2] [1;2;3] = [])
 ```
 
-### OCaml Lecture IV: Variants & records
+<a name="iv"></a>
+### OCaml Lecture IV: Variants, records, mutution, exceptions, modules
 
 We saw a simple examples of variants above, the `option` type; now we go into the full possibilities
-  - related to union types in C or enums in Java: "this OR that OR theother"
+  - related to `union` types in C or `enum`s in Java: "this OR that OR theother"
   - like OCamls lists/tuples they are IMMMUTABLE data structures
   - each case of the union is identified by a name called 'Constructor' which serves for both
-      - Constructing values of the variant type
+      - constructing values of the variant type
       - inspecting them by pattern matching
-      - Constructors must start with Capital Letter to distinguish from variables
-      - type declarations needed but once they are in place type inference on them works
+      - constructors must start with Capital Letter to distinguish from variables
+      - type declarations are needed but once they are in place type inference on them works
 
 
 Example variant type for doing mixed arithmetic (integers and floats)
@@ -1000,7 +920,7 @@ let add_num n1 n2 =
 add_num (Fixed 123) (Floating 3.14159);;
 ```
 
-Multiple data items in a single clause?  Use the pre-existing tuple types
+Multiple data items in a single clause?  Use tuple types
 
 ```ocaml
 type complex = CZero | Nonzero of float * float;;
@@ -1012,8 +932,8 @@ let zer = CZero;;
 #### Recursive data structures 
   - A key use of variant types
   - Functional programming is fantastic for computing over tree-structured data
-  - recursive types can refer to themselves in their own definition
-  - similar in spirit to how C structs can be recursive (but, no pointer needed here)
+  - Recursive types can refer to themselves in their own definition
+  - Similar in spirit to how C structs can be recursive (but, no pointer needed here)
 
 Warm-up: homebrew lists - built-in list type not needed
 First just int lists
@@ -1126,9 +1046,8 @@ let gooobt = insert "slacker " goobt;; (* thread in the most recent tree *)
   - the types must be declared just like OCaml variants.
   - can be used in pattern matches as well.
   - again the fields are immutable by default
-  - not used as often as structs of C, most data is a variant with tupled multiple arguments
 
-Record type to represent rational numbers
+Example: a record type to represent rational numbers
 
 ```ocaml
 type ratio = {num: int; denom: int};;
@@ -1174,11 +1093,11 @@ Solution in event of shadowing: pattern match on full record
 ```ocaml
 fun {num = n; denom = _} -> n;;
 ```
-OCaml programmers often use tuples instead of records for conciseness
 
-* End of pure functional programming in OCaml, on to side effects
+#### End of Pure Functional programming in OCaml
+* On to side effects
 * But before heading there, remember to stay OUT of side effects unless *really* needed - that is the happy path in OCaml coding
-* For interpreters and typecheckers side effects are not helpful at all
+* The autograder may let you get away with side effects on assignment 1 but you will get a manual ding by the CAs.
 
 ### State
  *   Variables in OCaml are NEVER directly mutable themselves; only (indirectly) mutable if they hold a
@@ -1253,7 +1172,7 @@ let x = ref 6;; (* shadowing previous x definition, NOT an assignment to x !! *)
 f ();;
 ```
 
-Yes, we can even use ";" and with it write a while loop !
+Yes, OCaml has our old friend `;` and with it we can write an imperative `while` loop
 ```ocaml
 let x = ref 1 in
     while !x < 10 do
@@ -1267,13 +1186,12 @@ Fact: while loops are useless without mutation: either never loop or infinitely 
 
 Why is immutability good?
  - programmer can depend on the fact that something will never be mutated when writing code: permanent like mathematical definitions
- - ML still lets you express mutation, but its only use it when its really needed
- - Haskell has an even stronger separation of mutation, its all strictly "on top".
+ - OCaml lets you express mutation if it is critically needed
 
 ### Arrays
- - fairly self-explanatory
- - have to be initialized before using
- - in general there is no such thing as "uninitialized" in OCaml.
+ - Fairly self-explanatory, we will just flash over this in lecture
+ - Have to be initialized before using
+   - in general there is no such thing as "uninitialized"/"null" in OCaml
 
 
 ```ocaml
@@ -1285,8 +1203,11 @@ arr;;
 ```
 
 ### Exceptions
-* Pretty standard and mostly Java-like
-* Unfortunately types do not include what exceptions a function will raise - outdated aspect of ML.
+* OCaml has a standard (e.g. Java-like) notion of exception
+* Unfortunately types do not include what exceptions a function will raise - an outdated aspect of OCaml.
+* Modern OCaml coding style is to *minimize* the use of exceptions
+  - Causes action-at-a-distance, hard to debug
+  - Instead follow the old C approach of bubbling up error codes
 
 ```ocaml
 exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
@@ -1296,11 +1217,10 @@ f ();;
 
 exception Bar;;
 
-let g _ = 
-  (try
-    f ()
-  with
-    Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
+let g _ = (* aside: "_" notates a variable that can never be accessed *)
+  (try f ()
+   with  
+     Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
 g ();;
 ```
 
@@ -1323,15 +1243,13 @@ let g () =
 g ();;
 ```
 
-There are a few built-in exceptions we already saw
+There are a few built-in exceptions we mentioned previously:
 
 ```ocaml
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
 ```
-###  OCaml Lecture V
-
-### Modules - structures and functors
+###  OCaml Lecture V: Modules
 
 Modules in programming languages
    - a module is a larger level of program abstraction: functional units or library.
@@ -1354,329 +1272,38 @@ Some principles of modules:
 
 Most modern languages have a module system solving most of these problems.
 
-For example the Java module system: **packages**
-  - File system directory is explicitly a package; supports nested packages
-  - Implicit export via public classes/methods
-  - private/protected for hiding internals from outside users
-  - Separate namespace for each package avoids name clashes
-
- The C "module" system is a historical garbage pit
-   - Informal use of files and filesystem directories as modules
-   - .h file declaring what is externally visible for a module
-   - There is a global space of function names, so there can be name clashes
-   - There is no strict relation enforced between the `.c` and `.h`  files
-       * bad programmers can write really ugly code
-   - C++ fixed this (eventually) with namespaces
-
-
 ### Modules in OCaml
 
-We already saw OCaml modules in action earlier, e.g. with `List.map`.  This is an invocation of the map function in the system `List module`.
+* We already saw OCaml modules in action earlier, 
+* Example: `List.map`, this is an invocation of the map function in the built-in `List` module.
+* Now, lets study how we can build our own OCaml modules
+* We focus here on building modules via files, but there are other methods we skip
 
-```ocaml
-List.map (fun x -> x ^"gobble")["Have";"a";"good";"day"];;
-```
-See the [standard library documentation](http://caml.inria.fr/pub/docs/manual-ocaml/stdlib.html) to see all the operations possible with List, and for all the other built-in modules
+#### Making a module
 
-Now, lets look into how we can build our own OCaml modules
-
-OCaml module definitions are called **structures**
-    - collections of related definitions (functions, types, other structures, exceptions, values, ...) given a name
-
-Lets make a simple functional set module in OCaml
-
-```ocaml
-module FSet = (* Module names must start with a Capital Letter *)
-struct (* keyword stands for "structure" *)
-  exception NotFound (* any top-level definable can be included in a module *)
-
-  type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-
-  let emptyset : 'a set = []
-
-  let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
-
-  let rec remove x (s: 'a set) =
-   match s with
-    | [] -> raise NotFound
-    | hd :: tl ->
-     if hd = x then (tl: 'a set)
-     else hd :: remove x tl
-
-  let rec contains x (s: 'a set) =
-   match s with
-   | [] -> false
-   | hd :: tl ->
-     if x = hd then true else contains x tl
-end
-;;
-```
-
-Observe what is printed in the top loop when the above is entered: a module *signature* is inferred
-
-- The types of structs are called signatures
-  - they are the interfaces for structures, something like Java interfaces
-  - signatures can be used to hide some things from outside users
-
-
-Use modules via dot notation, like `List.map` above
-
-```ocaml
-let mySet = FSet.add 5 [];;
-let myNextSet = FSet.add 22 mySet;;
-FSet.contains 22 mySet;;
-FSet.remove 5 myNextSet;;
-
-open FSet;; (* puts an implicit "FSet." in front of all things in FSet; may shadow existing names *)
-
-add "a" ["b"];;
-contains "a" ["a"; "b"];;
-```
-
-OCaml's module signatures and using them for information hiding
-
-```ocaml
-module type GROWINGSET = (* define a module type (signature) with no remove; not very useful *)
-  sig
-    exception NotFound
-    type 'a set = 'a list
-    val emptyset : 'a set
-    val add : 'a -> 'a set -> 'a set
-    val contains : 'a -> 'a set -> bool
-  end
-;;
-
-module GrowingSet = (FSet: GROWINGSET);; (* constrain a structure to have that signature *)
-GrowingSet.add "a" ["b"];;
-
-(* GrowingSet.remove;; *) (* Error: remove in struct but not in signature! *)
-
-FSet.remove;;  (* This is still fine, remember we are not mutating FSet when making GrowingSet *)
-```
-
-Now lets do some useful hiding.  Hiding types is possible and allows "black box" data structures
-   - can be good software engineering practice to enforce hiding of internals
-
-```ocaml
-module type HIDDENSET =
-  sig
-    type 'a set (* hide the type 'a list here by not giving 'a set definition in signature *)
-    val emptyset : 'a set
-    val add: 'a -> 'a set -> 'a set
-    val remove : 'a -> 'a set -> 'a set
-    val contains: 'a -> 'a set -> bool
-  end
-;;
-
-module HiddenSet = (FSet: HIDDENSET);;
-
-HiddenSet.add 3 [];; (* Errors: [] not a set since we HID the fact that sets are really lists *)
-
-let hs = HiddenSet.add 5 (HiddenSet.add 3 HiddenSet.emptyset);; (* now it works - <abstr> result means type is abstract *)
-HiddenSet.contains 5 hs;;
-```
-
-Also can declare signature along with module
-
-```ocaml
-module HFSet :
-  sig
-    type 'a set
-    val emptyset : 'a set
-    val add: 'a -> 'a set -> 'a set
-    val remove : 'a -> 'a set -> 'a set
-    val contains: 'a -> 'a set -> bool
-  end =
-struct
-exception NotFound (* any top-level definable can be included in a module *)
-
-type 'a set = 'a list (* sets are just lists but make a new type to keep them distinct *)
-
-let emptyset : 'a set = []
-
-let rec add x (s: 'a set) = ((x :: s) : ('a set)) (* observe this is a FUNCTIONAL set - RETURN new *)
-
-let rec remove x (s: 'a set) =
-  match s with
-  | [] -> raise NotFound
-  | hd :: tl ->
-    if hd = x then (tl: 'a set)
-    else hd :: remove x tl
-
-let rec contains x (s: 'a set) =
-  match s with
-  | [] -> false
-  | hd :: tl ->
-    if x = hd then true else contains x tl
-end
-;;
-
-let hs = HFSet.add 5 (HFSet.add 3 HFSet.emptyset);; (* same use as before *)
-```
+* Assignment 1 requires you to fill out a file `assignment.ml`
+* This is in fact creating a *module* `Assignment` (notice the first letter (only) is capped)
+* `dune utop` will load your module in the top loop
+* You then need to write `Assignment.factorial 5;;` etc to access the functions in the module's namespace
+* Or, use `open Assignment;;` to make all the functions in the module available at the top level.
 
 ### Separate Compilation with OCaml
 
-- We can program OCaml in a cc / javac like way - use ocamlc instead of ocaml.
-- Key invariant: each OCaml module is a separate .ml file
-- Syntax of module **body** is identical
-- No header "module XX = struct .. end" is included in .ml module file
-- Name of module is capped name of file: fSet.ml defines module FSet
-- File fSet.mli holds the signature of module FSet if there is no file set.mli thats OK; you have nothing hidden
-- Use ocamlc to compile and link to an executable: similar to C/C++
-- main program that starts running is any non-values defined in the module(s)
-- Also need to compile the .mli files! (unlike .h files)
+* File-based modules are also compiled separately, there is no top loop needed.
+* This is the traditional `javac`/`cc`/etc style of coding
+* The underlying compiler for OCaml is `ocamlc`, but in this course we will give you build files
+  - just use `dune build` to invoke the compiler on all the files
 
-Here is how the ocamlc compiler makes object files
+### An example of a separately-compiled OCaml program
 
-      .ml -- ocamlc -c --> .cmo
-      .mli -- ocamlc -c --> .cmi
-
-Then to make the binary
-
-      .cmo's -- ocamlc -o mybinary --> mybinary
-
-You need any dependent .cmi's for modules you refer to before you can ocamlc -c them.
-
-
-Example of how file method of definition relates to top-loop: 
-
-```ocaml
-module FSet: sig (* contents of file fSet.mli *) end
-          = struct (* contents of file fSet.ml *) end;;
-
-module Main: sig (* contents of main.mli *) end
-           = struct (* contents of main.ml *) end;;
-```
-
-* See [sep.zip](http://pl.cs.jhu.edu/pl/ocaml/code/sep.zip) for the example we cover in lecture.
+* See [set-example.zip](http://pl.cs.jhu.edu/pl/ocaml/code/set-example.zip) for the example we cover in lecture.
 * We will follow [readme.txt](http://pl.cs.jhu.edu/pl/ocaml/code/sep_compile/readme.txt) in particular.
 * See the ocaml manual Chapter 8 for the full documentation
+* For this example we can use `dune utop` to load it into the `utop`
 
-
-#### Loading object file modules into the top loop
-
-It is possible to mix ocamlc and ocaml for debugging: load .cmo files into top loop.
-
-For the following to work need to first `#cd` to `sep_compile/`.  My computer's version: 
+```sh
+dune utop
 ```
-#cd "/Users/scott/pl/ocaml/code/sep_compile";;
-```
-Note you can use `#pwd` to see what directory you are in now in OCaml.
-
-
 ```ocaml
-#load "fSet.cmo";;
 FSet.emptyset;;
-```
-### Functors
- * A "function" from structures to structures
- * Allows a module to be parameterized and so instantiated in multiple ways
-    - think of it as the ability to "plug in" a code module
- * In object-oriented languages, object polymorphism gives you much of this ability
-    - the "Animal" variable can have a Dog, Cat, Fish, etc plugged in to it
-    - But, OCaml has no object polymorphism and something is needed to support this
-    - General functors are found only in a few languages
-
-Recall this type above: `type comparison = LessThan | EqualTo | GreaterThan`
-
-Here is a kind of struct that we can take as a parameter; in Java we would just use an interface Comparable
-
-```ocaml
-module type ORDERED_TYPE =
-  sig
-    type t
-    val compare: t -> t -> comparison
-  end;;
-```
-Here is a functor version of a set, you feed in a struct with the set element ordering defined on it
-
-```ocaml
-module FSetFunctor =
-  functor (Elt: ORDERED_TYPE) ->
-  struct
-    type element = Elt.t (* import the type of elements from the structure *)
-    type set = element list
-
-    let empty = []
-
-    let rec add x s =
-      match s with
-        [] -> [x]
-      | hd::tl ->
-          match Elt.compare x hd with
-            EqualTo   -> s
-          | LessThan    -> x :: s
-          | GreaterThan -> hd :: add x tl
-
-    let rec contains x s =
-      match s with
-        [] -> false
-      | hd::tl ->
-          match Elt.compare x hd with
-            EqualTo   -> true
-          | LessThan    -> false
-          | GreaterThan -> contains x tl
-  end;;
-```
-
-Here is a concrete ordering we can feed in, one over ints
-
-```ocaml
-module OrderedInt =
-  struct
-    type t = int
-    let compare x y =
-      if x = y then
-    EqualTo
-      else
-    if x < y then
-      LessThan
-    else
-      GreaterThan
-  end;;
-```
-
-Here is how we feed it in, instantiating the functor to give a structure
-
-```ocaml
-module OrderedIntSet = FSetFunctor(OrderedInt);; (* note how this looks like a function application *)
-
-let myOrderedIntSet = OrderedIntSet.add 5 OrderedIntSet.empty;;
-OrderedIntSet.contains 3 myOrderedIntSet;;
-```
-
-We can do the same thing for a string comparison
-
-```ocaml
-module OrderedString =
-struct
-  type t = string
-  let compare x y =
-    if x = y then EqualTo
-    else if x < y then LessThan
-    else GreaterThan
-end;;
-
-module OrderedStringSet = FSetFunctor(OrderedString);; (* a DIFFERENT instantiation of same *)
-
-let myOrderedStringSet = OrderedStringSet.add "abc" OrderedStringSet.empty;;
-```
-
-Functors also have signatures; there can also be type abstraction in a functor signature
-
-```ocaml
-module type SETFUNCTOR = (* below is the syntax for a signature of a functor *)
-    functor (Elt: ORDERED_TYPE) ->
-  sig
-    type element = Elt.t      (* concrete *)
-    type set                  (* abstract *)
-    val empty : set
-    val add : element -> set -> set
-    val contains : element -> set -> bool
-  end;;
-
-module AbstractSet = (FSetFunctor : SETFUNCTOR);; (* slap that sig on a functor *)
-module AbstractIntSet = AbstractSet(OrderedInt);;
-
-AbstractIntSet.add 5 AbstractIntSet.empty;;
 ```
