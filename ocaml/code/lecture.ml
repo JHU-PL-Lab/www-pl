@@ -210,70 +210,63 @@ middle ["have";"a";"good";"day"];;
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
 
-let rec fold_left f v l = match l with
-    | []   -> v
-    | hd::tl -> fold_left f (f v hd) tl (* pass down f v hd as "the new v" -- accumulating *)
+let rec summate_right l init = match l with
+    | []   -> init
+    | hd::tl ->  (+) hd (summate init tl) (* assume by induction this will summate tl, add hd *)
     ;;
+summate_right [1;2;3] 0;;
 
-fold_left (fun elt -> fun accum -> elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) - 0 on LEFT *)
-fold_left (+) 0 [1;2;3];; (* equivalent to previous *)
+let rec fold_right f l init = match l with
+  | [] -> init
+  | hd::tl -> f hd (fold_right f tl init) (* same code as above just extracting (+) as a parameter *)
+;;
+let summate_right' = fold_right (+);;
+fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
 
-let rec summate accum l = match l with
+let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
+let rev l = List.fold_right (@) l [];;
+let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
+
+let rec summate_left accum l = match l with
     | []   -> accum
-    | hd::tl -> summate (accum + hd) tl (* pass down f v hd as new "v" -- accumulating *)
+    | hd::tl -> summate_left ((+) accum hd) tl (* pass down accum + hd as new "accum" -- accumulating *)
     ;;
-summate 0 [1;2;3];;
+summate_left 0 [1;2;3];; (* = summate_left (0+1) [2;3] = summate_left (1+2) [3] = summate_left (3+3) [] = 6 *)
+
+let rec fold_left f accum l = match l with
+    | []   -> accum
+    | hd::tl -> fold_left f (f accum hd) tl
+    ;;
+
+fold_left (+) 0 [1;2;3];;
 
 let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
 
-let rec fold_right f l v = match l with
-  | [] -> v
-  | hd::tl -> f hd (fold_right f tl v) (* v not changing on recursion here *)
-;;
-fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
-
 fold_left (fun elt -> fun accum -> "("^elt^"+"^accum^")") "0" ["1";"2";"3"] ;; 
 fold_right (fun accum -> fun elt -> "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;; 
-
-let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
-
-let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
-let rev l = List.fold_right (@) l [];;
 
 let nth_end l n = List.nth (List.rev l) n;;
 
 let nth_end l n = l |> List.rev |> (Fun.flip(List.nth) n);;
 
 let compose g f = (fun x -> g (f x));;
-
-let plus3 x = x+3;;
-let times2 x = x*2;;
-let times2plus3 = compose plus3 times2;;
-times2plus3 10;;
-(* equivalent but with anonymous functions: *)
 compose (fun x -> x+3) (fun x -> x*2) 10;;
-
-let compose g f x =  g (f x);;
-let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 
 let add_c x y = x + y;;
 add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
-let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - result is a function *)
-
+let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - tmp is a function *)
+(* An equivalent way to define `add_c`, clarifying what the above means *)
 let add_c = fun x -> (fun y -> x + y);;
 (* and, yet another identical way .. *)
-let add_c x = fun y -> x + y;;
-(* Yet one more, this is the built-in (+) *)
+let add_c = fun x y -> x + y;;
+(* yet one more, the built-in (+) *)
 (+);;
 
 let add_nc p =
     match p with (x,y) -> x+y;;
 
 let add_nc (x, y) = x + y;;
-
-add_nc (3, 4);;
-add_nc 3;; (* errors, need all or no arguments supplied *)
 
 let curry fnc = fun x -> fun y -> fnc (x, y);;
 let uncurry fc = fun (x, y) -> fc x y;;
@@ -297,7 +290,7 @@ let f x = if x <= 0 then invalid_arg "Let's be positive, please!" else x + 1;;
 f (-5);;
 
 let add (x: float) (y: float) = x +. y;;
-let add (x: int) (y: int) = (((x:int) + y) : int);;
+let add (x: int) (y: int) = (((x: int) + y) : int);;
 
 type intpair = int * int;;
 let f (p : intpair) = match p with
@@ -366,12 +359,12 @@ type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
 Fixed(5);; (* tag 5 as a Fixed *)
 Floating 4.0;; (* tag 4.0 as a Floating *)
 
-let pullout_int x =
+let ff_as_int x =
     match x with
     | Fixed n -> n    (* variants fit well into pattern matching syntax *)
-    | Floating z -> int_of_float z;;
+    | Floating z -> float z;;
 
-pullout_int (Fixed 5);;
+ff_as_int (Fixed 5);;
 
 let add_num n1 n2 =
    match (n1, n2) with    (* note use of pair here to parallel-match on two variables  *)
@@ -393,14 +386,14 @@ let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent to [3;5;7] *)
 
 type 'a mylist = Mt | Cons of 'a * ('a mylist);;
 
-let mylisteg = Cons(3.,Cons(5.,Cons(7.,Mt)));;
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
 
-let rec double_list_elts ml =
+let rec map ml f =
   match ml with
-    | Mt -> Mt (* vs [] -> [] *)
-    | Cons(hd,tl) -> Cons(hd *. 2.,double_list_elts tl);; (* vs hd :: tl -> .. *)
+    | Mt -> Mt
+    | Cons(hd,tl) -> Cons(f hd,map tl ~f)
 
-double_list_elts mylisteg;;
+let map_eg = map hb_eg (fun x -> x - 1) mylisteg
 
 type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 
@@ -484,6 +477,7 @@ type newratio = {num: int; coeff: float};; (* shadows ratio's label num *)
 fun x -> x.num;; (* x is a newratio, the most recent num field defined *)
 
 fun {num = n; denom = _} -> n;;
+fun {num; _} -> num;; (* equivalent shorthand - can pun on record name and variable *)
 
 let x = ref 4;;    (* always have to declare initial value when creating a reference *)
 

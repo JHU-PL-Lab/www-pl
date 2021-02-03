@@ -81,7 +81,8 @@ anon_add1 3;;
 ```
 
 <a name="ii"></a>
-## Basic OCaml II
+
+## OCaml Lecture II
 
 * Multiple arguments - just leave s p a c e s between multiple arguments in both definitions and uses
 
@@ -369,7 +370,8 @@ This completes the induction step.
 QED.    
 
 <a name="iii"></a>
-###  OCaml Lecture III
+
+##  OCaml Lecture III
 
 ### Tuples
 
@@ -546,49 +548,81 @@ let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functio
 ```
 * This aligns with the type of `map`, `('a -> 'b) -> 'a list -> 'b list ` - `'a` and `'b` can differ.
 
+<a name="iv"></a>
+
+## OCaml Lecture IV
+
 ### Folds
 
- * fold_left/right use a binary function to merge list elements to a single value
+ * fold_left/right use a binary function to combine list elements
+ * As with `map` let us first write a concrete combiner and then pull out the particular combination code as a parameter
+
+
+#### Folding right
 
 ```ocaml
-let rec fold_left f v l = match l with
-    | []   -> v
-    | hd::tl -> fold_left f (f v hd) tl (* pass down f v hd as "the new v" -- accumulating *)
+let rec summate_right l init = match l with
+    | []   -> init
+    | hd::tl ->  (+) hd (summate init tl) (* assume by induction this will summate tl, add hd *)
+    ;;
+summate_right [1;2;3] 0;;
+```
+
+```ocaml
+let rec fold_right f l init = match l with
+  | [] -> init
+  | hd::tl -> f hd (fold_right f tl init) (* same code as above just extracting (+) as a parameter *)
+;;
+let summate_right' = fold_right (+);;
+fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
+```
+
+* Many functions on lists have this common skeleton and can be written succinctly with `fold_right`
+* (It is so important that it is in the standard library as well, as `List.fold_right`)
+
+```ocaml
+let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
+let rev l = List.fold_right (@) l [];;
+let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
+```
+
+
+#### Folding left
+
+* `fold_left` accumulates "on the way down" (we pass down the accumulated value), whereas `fold_right` accumulated "on the way up"
+* It is a little less intuitive at first so let us again do a concrete case and extract the general one.
+* In `fold_right` we kept passing down the same `init` value; in the left approach we instead pass down the currently accumulated *result*, `accum`.
+* List and value arguments are swapped compared to `fold_right`, be careful !
+
+```ocaml
+let rec summate_left accum l = match l with
+    | []   -> accum
+    | hd::tl -> summate_left ((+) accum hd) tl (* pass down accum + hd as new "accum" -- accumulating *)
+    ;;
+summate_left 0 [1;2;3];; (* = summate_left (0+1) [2;3] = summate_left (1+2) [3] = summate_left (3+3) [] = 6 *)
+```
+
+* Again let us extract the `(+)` as a new parameter `f` to get a general template for this
+
+```ocaml
+let rec fold_left f accum l = match l with
+    | []   -> accum
+    | hd::tl -> fold_left f (f accum hd) tl
     ;;
 ```
+
+* Type is `('a -> 'b -> 'a) -> 'a -> 'b list -> 'a` which parenthesizes as `('a -> 'b -> 'a) -> ('a -> ('b list -> 'a))`
 
 Summing elements of a list can now be succinctly coded:
 ```ocaml
-fold_left (fun elt -> fun accum -> elt + accum) 0 [1;2;3];; (* = (((0+1)+2)+3) - 0 on LEFT *)
-fold_left (+) 0 [1;2;3];; (* equivalent to previous *)
+fold_left (+) 0 [1;2;3];;
 ```
 
-Compare to this a recursive `summate` - we pulled out the combining operator `+` and zero `0`
-
-```ocaml
-let rec summate accum l = match l with
-    | []   -> accum
-    | hd::tl -> summate (accum + hd) tl (* pass down f v hd as new "v" -- accumulating *)
-    ;;
-summate 0 [1;2;3];;
-```
-
-More `fold_left` examples.  Note this is `List.fold_left` in OCaml standard library
+* As with `fold_right` this skeleton lets us plug in different `f` to make many natural functions on lists.
 
 ```ocaml
 let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
-```
-* Right fold is similar but f is applied "on the way out" of recursion, not "on the way down" like in left fold above.
-* Also available as List.fold_right.
-* Args are swapped compared to fold_left, be careful !
-
-```ocaml
-let rec fold_right f l v = match l with
-  | [] -> v
-  | hd::tl -> f hd (fold_right f tl v) (* v not changing on recursion here *)
-;;
-fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
 ```
 
 Example where left and right folds produce a different result:
@@ -598,16 +632,6 @@ fold_left (fun elt -> fun accum -> "("^elt^"+"^accum^")") "0" ["1";"2";"3"] ;;
 fold_right (fun accum -> fun elt -> "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;; 
 ```
 
-`map` is a simple right fold - the fold does the recursion work.
-```ocaml
-let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
-```
-
-More operations definable with folding
-```ocaml
-let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
-let rev l = List.fold_right (@) l [];;
-```
 
 ### Pipeling and composition
 
@@ -634,41 +658,24 @@ let nth_end l n = l |> List.rev |> (Fun.flip(List.nth) n);;
 Composition function g o f: take two functions, return their composition
 ```ocaml
 let compose g f = (fun x -> g (f x));;
-
-let plus3 x = x+3;;
-let times2 x = x*2;;
-let times2plus3 = compose plus3 times2;;
-times2plus3 10;;
-(* equivalent but with anonymous functions: *)
 compose (fun x -> x+3) (fun x -> x*2) 10;;
-```
-
-* Equivalent ways to write the `compose` funtion in OCaml syntax
-* Work on interconverting between these equivalent forms in your head
-
-```ocaml
-let compose g f x =  g (f x);;
-let compose = (fun g -> (fun f -> (fun x -> g(f x))));;
 ```
 
 ### Currying
 
-* An idea due to logician Haskell Curry
+* Names the way multi-argument functions work in OCaml
+* Logician Haskell Curry originally came up with the idea in the 1930's
 * First lets recall how multi-argument functions work in OCaml
 
 ```ocaml
 let add_c x y = x + y;;
 add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
-let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - result is a function *)
-```
-
-An equivalent way to define `add_c`, clarifying what the above means:
-
-```ocaml
+let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - tmp is a function *)
+(* An equivalent way to define `add_c`, clarifying what the above means *)
 let add_c = fun x -> (fun y -> x + y);;
 (* and, yet another identical way .. *)
-let add_c x = fun y -> x + y;;
-(* Yet one more, this is the built-in (+) *)
+let add_c = fun x y -> x + y;;
+(* yet one more, the built-in (+) *)
 (+);;
 ```
 
@@ -679,27 +686,22 @@ let add_nc p =
 ```
 
 Here is an equivalent OCaml syntax which looks like a standard C function
-  - This is a one-argument function, but you can pattern match in the argument position in OCaml!
+  - This is *still* a one-argument function, but you can pattern match in a function parameter
 ```ocaml
 let add_nc (x, y) = x + y;;
 ```
 
 
-Notice how the type of the above differs from add_c's type: `int * int -> int` vs `int -> int -> int`.
-
-```ocaml
-add_nc (3, 4);;
-add_nc 3;; (* errors, need all or no arguments supplied *)
-```
+* Notice how the type of `add_nc` differs from `add_c`: `int * int -> int` vs `int -> int -> int`.
 * Fact: these two approaches to defining a 2-argument function are isomorphic:
 `'a * 'b -> 'c` ~= `'a -> 'b -> 'c`
 * (This isomorphism also holds in set theory, you may have already seen it)
 
-We now define two cool higher-order functions:
+To "prove" this we make functions to convert from one form to the other
 * `curry`   - takes in non-curry'ing 2-arg function and returns a curry'ing version
 * `uncurry` - takes in curry'ing 2-arg function and returns an non-curry'ing version
 
-Since we can then go back and forth between the two reps, they are **ISOMORPHIC**
+Since we can then go back and forth between the two representations, they are **isomorphic**.
 
 ```ocaml
 let curry fnc = fun x -> fun y -> fnc (x, y);;
@@ -744,14 +746,15 @@ f (-5);;
 
 * OCaml infers types most of the time
 * But, you can optionally declare types on any expression
- - Put parens around any such declaration or it won't parse
+* Put parens around any such declaration as in the examples
+* It is good practice to paste in the inferred types in your code to have types as documentation
 
 ```ocaml
 let add (x: float) (y: float) = x +. y;;
-let add (x: int) (y: int) = (((x:int) + y) : int);;
+let add (x: int) (y: int) = (((x: int) + y) : int);;
 ```
 
-Type abbreviations are also possible via `type `
+Type abbreviations are also possible via keyword `type`
 ```ocaml
 type intpair = int * int;;
 let f (p : intpair) = match p with
@@ -764,7 +767,7 @@ f (2, 3);; (* still, can pass it to the function expecting an intpair *)
 
 ### Solving some simple problems
 
-Some practice problems and their solutions which we may or may not have time to cover in lecture.
+Some practice problems and their solutions which will not have time to cover in lecture.
 
 1. Write a function `to_upper_case` which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).
 
@@ -872,20 +875,21 @@ assert(diff [1;2;3] [3;4;5] = [1; 2])
 assert(diff [1;2] [1;2;3] = [])
 ```
 
-<a name="iv"></a>
-### OCaml Lecture IV: Variants, records, mutution, exceptions, modules
+
+### Variants
 
 We saw a simple examples of variants above, the `option` type; now we go into the full possibilities
-  - related to `union` types in C or `enum`s in Java: "this OR that OR theother"
-  - like OCamls lists/tuples they are IMMMUTABLE data structures
-  - each case of the union is identified by a name called 'Constructor' which serves for both
+  - Related to `union` types in C or `enum`s in Java: "this OR that OR theother"
+  - Like OCamls lists/tuples they are **immutable** data structures
+  - Each case of the union is identified by a name called a 'Constructor' which serves for both
       - constructing values of the variant type
-      - inspecting them by pattern matching
-      - constructors must start with Capital Letter to distinguish from variables
-      - type declarations are needed but once they are in place type inference on them works
+      - destructing them by pattern matching
+  - Constructors must start with Capital Letter to distinguish from variables
+  - The `of` indicates what type is under the wrapper
+  - Type declarations are needed but once they are in place type inference on them works
 
 
-Example variant type for doing mixed arithmetic (integers and floats)
+Example of how to declare a new variant type for doing mixed arithmetic (integers and floats)
 
 ```ocaml
 type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
@@ -894,18 +898,20 @@ Fixed(5);; (* tag 5 as a Fixed *)
 Floating 4.0;; (* tag 4.0 as a Floating *)
 ```
 
-Note constructors look like functions but they are **not** -- you always need to give argument
+Note constructors look like functions but they are **not** -- you always need to give the argument
+
+Destruct variants by pattern matching like we did for `Some/None` option type values:
 
 ```ocaml
-let pullout_int x =
+let ff_as_int x =
     match x with
     | Fixed n -> n    (* variants fit well into pattern matching syntax *)
-    | Floating z -> int_of_float z;;
+    | Floating z -> float z;;
 
-pullout_int (Fixed 5);;
+ff_as_int (Fixed 5);;
 ```
 
-A non-trivial function using the above variant type
+A non-trivial function using the above variant
 
 ```ocaml
 let add_num n1 n2 =
@@ -919,7 +925,7 @@ let add_num n1 n2 =
 add_num (Fixed 123) (Floating 3.14159);;
 ```
 
-Multiple data items in a single clause?  Use tuple types
+Multiple data items in a single variant case?  Use tuple types
 
 ```ocaml
 type complex = CZero | Nonzero of float * float;;
@@ -946,22 +952,28 @@ Let us extend the above to be just like built-in polymorphic lists
 ```ocaml
 type 'a mylist = Mt | Cons of 'a * ('a mylist);;
 ```
-Observe how above type takes a (prefix) argument, 'a -- "mylist" is a type function
+* Observe how above type takes a (prefix) argument, `'a` -- `mylist` is a type function
+* Perhaps better syntax would have been `type mylist(t) = Mt | Cons of t * (mylist(t))`
+* This `'a` is not the same as the generic type `'a` - can be confusing
 
 ```ocaml
-let mylisteg = Cons(3.,Cons(5.,Cons(7.,Mt)));;
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
 ```
-
+ Coding is very similar to built-in lists
 ```ocaml
-let rec double_list_elts ml =
+let rec map ml f =
   match ml with
-    | Mt -> Mt (* vs [] -> [] *)
-    | Cons(hd,tl) -> Cons(hd *. 2.,double_list_elts tl);; (* vs hd :: tl -> .. *)
+    | Mt -> Mt
+    | Cons(hd,tl) -> Cons(f hd,map tl ~f)
 
-double_list_elts mylisteg;;
+let map_eg = map hb_eg (fun x -> x - 1) mylisteg
 ```
 
-Binary trees, like lists but two self-referential sub-structures not one
+#### Trees
+
+* Binary trees are like lists but with two self-referential sub-structures not one
+* Here is one tree definition; note the data is (only) in the nodes here
+* n-ary trees are a direct generalization of this pattern
 
 ```ocaml
 type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
@@ -1000,7 +1012,7 @@ let rec add_gobble binstringtree =
        Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
 ```
-(Remember, this is not mutating the tree, its building a new one)
+(Remember, as with lists this is not mutating the tree, its building a new one)
 
 ```ocaml
 let rec lookup x bintree =
@@ -1019,6 +1031,7 @@ lookup "whack!" bt;;
 lookup "flack" bt;;
 ```
 
+Let us now define how to add elements to a tree
 ```ocaml
 let rec insert x bintree =
    match bintree with
@@ -1031,7 +1044,9 @@ let rec insert x bintree =
 ;;
 ```
 
-This is also NOT MUTATING -- returns a whole new tree instead.
+* This is also **not mutating** -- it returns a whole "new tree" 
+  - well, the compiler can in fact share all subtrees along the spine to the new node 
+  - referential transparency at work
 
 ```ocaml
 let goobt = insert "goober " bt;;
@@ -1091,7 +1106,12 @@ Solution in event of shadowing: pattern match on full record
 
 ```ocaml
 fun {num = n; denom = _} -> n;;
+fun {num; _} -> num;; (* equivalent shorthand - can pun on record name and variable *)
 ```
+
+<a name="v"></a>
+
+##  OCaml Lecture V
 
 #### End of Pure Functional programming in OCaml
 * On to side effects
@@ -1248,9 +1268,7 @@ There are a few built-in exceptions we mentioned previously:
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
 ```
-
-<a name="v"></a>
-###  OCaml Lecture V: Modules
+### Modules
 
 Modules in programming languages
    - a module is a larger level of program abstraction: functional units or library.
