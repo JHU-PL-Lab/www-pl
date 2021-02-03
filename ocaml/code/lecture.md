@@ -563,7 +563,7 @@ let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functio
 ```ocaml
 let rec summate_right l init = match l with
     | []   -> init
-    | hd::tl ->  (+) hd (summate init tl) (* assume by induction this will summate tl, add hd *)
+    | hd::tl ->  (+) hd (summate_right tl init) (* assume by induction this will summate tl, add hd *)
     ;;
 summate_right [1;2;3] 0;;
 ```
@@ -906,7 +906,7 @@ Destruct variants by pattern matching like we did for `Some/None` option type va
 let ff_as_int x =
     match x with
     | Fixed n -> n    (* variants fit well into pattern matching syntax *)
-    | Floating z -> float z;;
+    | Floating z -> int_of_float z;;
 
 ff_as_int (Fixed 5);;
 ```
