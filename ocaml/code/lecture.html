@@ -1180,6 +1180,17 @@ First just int lists</p>
   </li>
 </ul>
 
+<h3 id="end-core-ocaml-used-in-the-course">End Core OCaml used in the course</h3>
+
+<ul>
+  <li>The bulk of the assignments only use what we covered above</li>
+  <li>We now will quickly cover a few more features which we will not use nearly as much
+    <ul>
+      <li>(they will also not be covered in assignment 2)</li>
+    </ul>
+  </li>
+</ul>
+
 <h3 id="records">Records</h3>
 <ul>
   <li>Like tuples but with labels on fields.</li>
@@ -1319,6 +1330,8 @@ First just int lists</p>
   </li>
 </ul>
 
+<p>Here is a tiny example of how to declare and use exceptions</p>
+
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Goo</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span>
 
 <span class="k">let</span> <span class="n">f</span> <span class="n">_</span> <span class="o">=</span> <span class="k">raise</span> <span class="p">(</span><span class="nc">Goo</span> <span class="s2">"keyboard on fire"</span><span class="p">);;</span>
@@ -1340,6 +1353,7 @@ First just int lists</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">failwith</span> <span class="s2">"Oops"</span><span class="p">;;</span> <span class="c">(* Generic code failure - exception is named Failure *)</span>
 <span class="n">invalid_arg</span> <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="c">(* Invalid_argument exception *)</span>
 </code></pre></div></div>
+
 <h3 id="modules">Modules</h3>
 
 <p>Modules in programming languages</p>
@@ -1397,7 +1411,7 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
 <h3 id="separate-compilation-with-ocaml">Separate Compilation with OCaml</h3>
 
 <ul>
-  <li>File-based modules are also compiled separately, there is no top loop needed.</li>
+  <li>File-based modules such as <code>assignment.ml</code> are compiled separately.</li>
   <li>This is the traditional <code>javac</code>/<code>cc</code>/etc style of coding</li>
   <li>Also in the C/Java spirit it is how you write a standalone app in OCaml</li>
   <li>The underlying compiler for OCaml is <code>ocamlc</code> (or <code>ocamlopt</code>), but in this course we will give you <code>dune</code> build files
@@ -1427,6 +1441,12 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
 <span class="n">contains</span> <span class="mi">3</span> <span class="n">aset</span> <span class="p">;;</span>
 </code></pre></div></div>
 
+<h3 id="end-of-ocaml">End of OCaml!</h3>
+
+<ul>
+  <li>If you want to learn more about software engineering in OCaml, consider taking <a href="https://pl.cs.jhu.edu/fpse">Functional Progamming in Software Engineering</a> in the fall</li>
+  <li>Or, just click on the above course link for good resources to teach it to yourself.</li>
+</ul>
       
           </section>
         </div>

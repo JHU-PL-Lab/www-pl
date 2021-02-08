@@ -1065,6 +1065,12 @@ let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four"] (
    - but, the compiler can in fact share all subtrees along the spine to the new node - log n cost
    - referential transparency at work
 
+### End Core OCaml used in the course
+
+* The bulk of the assignments only use what we covered above
+* We now will quickly cover a few more features which we will not use nearly as much
+  - (they will also not be covered in assignment 2)
+
 ### Records
   - Like tuples but with labels on fields.
   - Similar to the structs of C/C++.
@@ -1188,6 +1194,8 @@ arr;;
     - return `Some/None` and make the caller explicitly handle the `None` (error) case.
     - Better yet use `Ok/Error`, similar to `Some/None` but designed for error handling.
 
+Here is a tiny example of how to declare and use exceptions
+
 ```ocaml
 exception Goo of string;;
 
@@ -1211,6 +1219,7 @@ There are a few built-in exceptions we mentioned previously:
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
 ```
+
 ### Modules
 
 Modules in programming languages
@@ -1250,7 +1259,7 @@ Some general principles of modules across language designs:
 
 ### Separate Compilation with OCaml
 
-* File-based modules are also compiled separately, there is no top loop needed.
+* File-based modules such as `assignment.ml` are compiled separately.
 * This is the traditional `javac`/`cc`/etc style of coding
 * Also in the C/Java spirit it is how you write a standalone app in OCaml
 * The underlying compiler for OCaml is `ocamlc` (or `ocamlopt`), but in this course we will give you `dune` build files
@@ -1260,7 +1269,6 @@ Some general principles of modules across language designs:
 ### An example of a separately-compiled OCaml program
 
 * See [set-example.zip](http://pl.cs.jhu.edu/pl/ocaml/code/set-example.zip) for the example we cover in lecture.
-
 
 ### Playing with the Simple_set module
 * For this example we can use terminal command `dune utop` to load the module into a fresh `utop`
@@ -1275,3 +1283,7 @@ let aset = List.fold_left (Fun.flip add) emptyset [1;2;3;4] ;;
 contains 3 aset ;;
 ```
 
+### End of OCaml!
+
+* If you want to learn more about software engineering in OCaml, consider taking [Functional Progamming in Software Engineering](https://pl.cs.jhu.edu/fpse) in the fall
+* Or, just click on the above course link for good resources to teach it to yourself.
