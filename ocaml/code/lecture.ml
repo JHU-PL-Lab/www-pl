@@ -450,41 +450,37 @@ let rec insert x bintree =
 
 let goobt = insert "goober " bt;;
 bt;; (* observe bt did not change after the insert *)
-let gooobt = insert "slacker " goobt;; (* thread in the most recent tree *)
+let gooobt = insert "slacker " goobt;; (* pass in goobt to accumulate both additions *)
+let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four"] (* folding helps *)
 
 type ratio = {num: int; denom: int};;
 let q = {num = 53; denom = 6};;
-q.num;;
-q.denom;;
 
 let rattoint r =
  match r with
    {num = n; denom = d} -> n / d;;
 
-let rattoint {num = n; denom = d}  =
-   n / d;;
+let rat_to_int {num = n; denom = d} =  n / d;;
 
-let rattoint r  =
+let unhappy_rat_to_int r  =
    r.num / r.denom;;
-rattoint q;;
 
-let add_ratio r1 r2 = {num = r1.num * r2.denom + r2.num * r1.denom; 
-                      denom = r1.denom * r2.denom};;
-add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
+let unhappy_add_ratio r1 r2 = 
+  {num = r1.num * r2.denom + r2.num * r1.denom; 
+   denom = r1.denom * r2.denom};;
 
-type newratio = {num: int; coeff: float};; (* shadows ratio's label num *)
+unhappy_add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
-fun x -> x.num;; (* x is a newratio, the most recent num field defined *)
-
-fun {num = n; denom = _} -> n;;
-fun {num; _} -> num;; (* equivalent shorthand - can pun on record name and variable *)
+let happy_add_ratio {num = n1; denom = d1} {num = n2; denom = d2} = 
+  {num = n1 * d2 + n2 * d1; denom = d1 * d2};;
 
 let x = ref 4;;    (* always have to declare initial value when creating a reference *)
 
 x + 1;; (* a type error ! *)
-!x + 1;; (* need !x to get out the value; parallels *x in C *)
+!x + 1;; (* need `!x` to get out the value; parallels `*x` in C *)
 x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
-!x + 1;; (* Mutation happened to contents of cell x *)
+!x;; (* Mutation happened to contents of cell x *)
+let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definition *)
 
 let x = { contents = 4};; (* identical to x's definition above *)
 x := 6;;
@@ -502,24 +498,10 @@ let mypoint = { x = 0.0; y = 0.0 };;
 translate mypoint 1.0 2.0;;
 mypoint;;
 
-let arrhi = Array.make 100 "";; (* size and initial value are the params here *)
-let arr = [| 4; 3; 2 |];; (* another way to make an array *)
+let arr = [| 4; 3; 2 |];; (* one way to make an array *)
 arr.(0);; (* access (unfortunately already used [] for lists in the syntax) *)
-arr.(0) <- 55;; (* update *)
+arr.(0) <- 5;; (* update *)
 arr;;
-
-exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
-
-let f () = raise Foo;; (* note no "raises Foo" in the type as in Java *)
-f ();;
-
-exception Bar;;
-
-let g _ = (* aside: "_" notates a variable that can never be accessed *)
-  (try f ()
-   with  
-     Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
-g ();;
 
 exception Goo of string;;
 
@@ -530,8 +512,7 @@ let g () =
   try
     f ()
   with
-      Foo -> ()
-        | Goo s ->
+      Goo s ->
       (print_string("exception raised: ");
        print_string(s);print_string("\n"))
 ;;

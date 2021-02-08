@@ -1159,18 +1159,26 @@ First just int lists</p>
 </code></pre></div></div>
 
 <ul>
-  <li>This is also <strong>not mutating</strong> – it returns a whole “new tree”
-    <ul>
-      <li>(well, the compiler can in fact share all subtrees along the spine to the new node)</li>
-      <li>(referential transparency at work)</li>
-    </ul>
-  </li>
+  <li>This is also <strong>not mutating</strong> – it returns a whole new tree - !</li>
+  <li>If you then want to insert another element you need to pass the result from the previous call.</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">goobt</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"goober "</span> <span class="n">bt</span><span class="p">;;</span>
 <span class="n">bt</span><span class="p">;;</span> <span class="c">(* observe bt did not change after the insert *)</span>
-<span class="k">let</span> <span class="n">gooobt</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"slacker "</span> <span class="n">goobt</span><span class="p">;;</span> <span class="c">(* thread in the most recent tree *)</span>
+<span class="k">let</span> <span class="n">gooobt</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"slacker "</span> <span class="n">goobt</span><span class="p">;;</span> <span class="c">(* pass in goobt to accumulate both additions *)</span>
+<span class="k">let</span> <span class="n">manyt</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="nn">Fun</span><span class="p">.</span><span class="n">flip</span> <span class="n">insert</span><span class="p">)</span> <span class="nc">Leaf</span> <span class="p">[</span><span class="s2">"one"</span><span class="p">;</span><span class="s2">"two"</span><span class="p">;</span><span class="s2">"three"</span><span class="p">;</span><span class="s2">"four"</span><span class="p">]</span> <span class="c">(* folding helps *)</span>
 </code></pre></div></div>
+
+<ul>
+  <li>You have already seen a bit of programming with functional data structures with lists</li>
+  <li>For trees you are probably used to mutating to insert, delete, etc so takes some getting used to</li>
+  <li>It looks really inefficient since an insertion is making a “totally new tree”
+    <ul>
+      <li>but, the compiler can in fact share all subtrees along the spine to the new node - log n cost</li>
+      <li>referential transparency at work</li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="records">Records</h3>
 <ul>
@@ -1178,48 +1186,39 @@ First just int lists</p>
   <li>Similar to the structs of C/C++.</li>
   <li>The types must be declared just like OCaml variants.</li>
   <li>Can be used in pattern matches as well.</li>
-  <li>Again the fields are immutable by default</li>
+  <li>Again the fields are <strong>immutable</strong> by default, so not like Python/Javascript dictionaries</li>
 </ul>
 
 <p>Example: a record type to represent rational numbers</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">ratio</span> <span class="o">=</span> <span class="p">{</span><span class="n">num</span><span class="o">:</span> <span class="kt">int</span><span class="p">;</span> <span class="n">denom</span><span class="o">:</span> <span class="kt">int</span><span class="p">};;</span>
 <span class="k">let</span> <span class="n">q</span> <span class="o">=</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="mi">53</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="mi">6</span><span class="p">};;</span>
-<span class="n">q</span><span class="o">.</span><span class="n">num</span><span class="p">;;</span>
-<span class="n">q</span><span class="o">.</span><span class="n">denom</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Pattern matching works of course</p>
+<p>Destructing records via pattern matching:</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rattoint</span> <span class="n">r</span> <span class="o">=</span>
  <span class="k">match</span> <span class="n">r</span> <span class="k">with</span>
    <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">d</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">/</span> <span class="n">d</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Only one pattern matched so can again inline pattern in functions and lets</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rattoint</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">d</span><span class="p">}</span>  <span class="o">=</span>
-   <span class="n">n</span> <span class="o">/</span> <span class="n">d</span><span class="p">;;</span>
+<p>Only one pattern matched so can again inline pattern in function’s/let’s</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rat_to_int</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">d</span><span class="p">}</span> <span class="o">=</span>  <span class="n">n</span> <span class="o">/</span> <span class="n">d</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Equivalently can use dot projections, but happy path is usually patterns</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rattoint</span> <span class="n">r</span>  <span class="o">=</span>
+<p>Equivalently could use dot projections, but happy path in OCaml is usually patterns</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">unhappy_rat_to_int</span> <span class="n">r</span>  <span class="o">=</span>
    <span class="n">r</span><span class="o">.</span><span class="n">num</span> <span class="o">/</span> <span class="n">r</span><span class="o">.</span><span class="n">denom</span><span class="p">;;</span>
-<span class="n">rattoint</span> <span class="n">q</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_ratio</span> <span class="n">r1</span> <span class="n">r2</span> <span class="o">=</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">num</span> <span class="o">*</span> <span class="n">r2</span><span class="o">.</span><span class="n">denom</span> <span class="o">+</span> <span class="n">r2</span><span class="o">.</span><span class="n">num</span> <span class="o">*</span> <span class="n">r1</span><span class="o">.</span><span class="n">denom</span><span class="p">;</span> 
-                      <span class="n">denom</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">denom</span> <span class="o">*</span> <span class="n">r2</span><span class="o">.</span><span class="n">denom</span><span class="p">};;</span>
-<span class="n">add_ratio</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="mi">3</span><span class="p">}</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="mi">5</span><span class="p">};;</span>
-</code></pre></div></div>
+<p>One more example function with records</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">unhappy_add_ratio</span> <span class="n">r1</span> <span class="n">r2</span> <span class="o">=</span> 
+  <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">num</span> <span class="o">*</span> <span class="n">r2</span><span class="o">.</span><span class="n">denom</span> <span class="o">+</span> <span class="n">r2</span><span class="o">.</span><span class="n">num</span> <span class="o">*</span> <span class="n">r1</span><span class="o">.</span><span class="n">denom</span><span class="p">;</span> 
+   <span class="n">denom</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">denom</span> <span class="o">*</span> <span class="n">r2</span><span class="o">.</span><span class="n">denom</span><span class="p">};;</span>
 
-<p>Annoying shadowing issue: there is one global namespace of record labels</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">newratio</span> <span class="o">=</span> <span class="p">{</span><span class="n">num</span><span class="o">:</span> <span class="kt">int</span><span class="p">;</span> <span class="n">coeff</span><span class="o">:</span> <span class="kt">float</span><span class="p">};;</span> <span class="c">(* shadows ratio's label num *)</span>
+<span class="n">unhappy_add_ratio</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="mi">3</span><span class="p">}</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="mi">5</span><span class="p">};;</span>
 
-<span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">.</span><span class="n">num</span><span class="p">;;</span> <span class="c">(* x is a newratio, the most recent num field defined *)</span>
-</code></pre></div></div>
-<p>Solution in event of shadowing: pattern match on full record</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">fun</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">_</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="n">n</span><span class="p">;;</span>
-<span class="k">fun</span> <span class="p">{</span><span class="n">num</span><span class="p">;</span> <span class="n">_</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="n">num</span><span class="p">;;</span> <span class="c">(* equivalent shorthand - can pun on record name and variable *)</span>
+<span class="k">let</span> <span class="n">happy_add_ratio</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">n1</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">d1</span><span class="p">}</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">n2</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">d2</span><span class="p">}</span> <span class="o">=</span> 
+  <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">n1</span> <span class="o">*</span> <span class="n">d2</span> <span class="o">+</span> <span class="n">n2</span> <span class="o">*</span> <span class="n">d1</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">d1</span> <span class="o">*</span> <span class="n">d2</span><span class="p">};;</span>
 </code></pre></div></div>
 
 <h4 id="end-of-pure-functional-programming-in-ocaml">End of Pure Functional programming in OCaml</h4>
@@ -1253,9 +1252,10 @@ First just int lists</p>
 <p>Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The <strong>contents</strong> of that fixed call can change, but not x.</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* a type error ! *)</span>
-<span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* need !x to get out the value; parallels *x in C *)</span>
+<span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* need `!x` to get out the value; parallels `*x` in C *)</span>
 <span class="n">x</span> <span class="o">:=</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* assignment - x must be a ref cell.  Returns () - goal is side effect *)</span>
-<span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* Mutation happened to contents of cell x *)</span>
+<span class="o">!</span><span class="n">x</span><span class="p">;;</span> <span class="c">(* Mutation happened to contents of cell x *)</span>
+<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="s2">"hi"</span><span class="p">;;</span> <span class="c">(* does NOT mutate x above, instead another shadowing definition *)</span>
 </code></pre></div></div>
 
 <ul>
@@ -1296,10 +1296,9 @@ First just int lists</p>
   </li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">arrhi</span> <span class="o">=</span> <span class="nn">Array</span><span class="p">.</span><span class="n">make</span> <span class="mi">100</span> <span class="s2">""</span><span class="p">;;</span> <span class="c">(* size and initial value are the params here *)</span>
-<span class="k">let</span> <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="o">|</span> <span class="mi">4</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span> <span class="mi">2</span> <span class="o">|</span><span class="p">];;</span> <span class="c">(* another way to make an array *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="o">|</span> <span class="mi">4</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span> <span class="mi">2</span> <span class="o">|</span><span class="p">];;</span> <span class="c">(* one way to make an array *)</span>
 <span class="n">arr</span><span class="o">.</span><span class="p">(</span><span class="mi">0</span><span class="p">);;</span> <span class="c">(* access (unfortunately already used [] for lists in the syntax) *)</span>
-<span class="n">arr</span><span class="o">.</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="mi">55</span><span class="p">;;</span> <span class="c">(* update *)</span>
+<span class="n">arr</span><span class="o">.</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="mi">5</span><span class="p">;;</span> <span class="c">(* update *)</span>
 <span class="n">arr</span><span class="p">;;</span>
 </code></pre></div></div>
 
@@ -1320,21 +1319,6 @@ First just int lists</p>
   </li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Foo</span><span class="p">;;</span>  <span class="c">(* This is a new form of top-level declaration, along with let, type *)</span>
-
-<span class="k">let</span> <span class="n">f</span> <span class="bp">()</span> <span class="o">=</span> <span class="k">raise</span> <span class="nc">Foo</span><span class="p">;;</span> <span class="c">(* note no "raises Foo" in the type as in Java *)</span>
-<span class="n">f</span> <span class="bp">()</span><span class="p">;;</span>
-
-<span class="k">exception</span> <span class="nc">Bar</span><span class="p">;;</span>
-
-<span class="k">let</span> <span class="n">g</span> <span class="n">_</span> <span class="o">=</span> <span class="c">(* aside: "_" notates a variable that can never be accessed *)</span>
-  <span class="p">(</span><span class="k">try</span> <span class="n">f</span> <span class="bp">()</span>
-   <span class="k">with</span>  
-     <span class="nc">Foo</span> <span class="o">-&gt;</span>  <span class="mi">5</span> <span class="o">|</span> <span class="nc">Bar</span> <span class="o">-&gt;</span> <span class="mi">3</span><span class="p">)</span> <span class="o">+</span> <span class="mi">4</span><span class="p">;;</span> <span class="c">(* Use power of pattern matching in handlers *)</span>
-<span class="n">g</span> <span class="bp">()</span><span class="p">;;</span>
-</code></pre></div></div>
-
-<p>Exceptions with a parameter - syntax is like a variant</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Goo</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span>
 
 <span class="k">let</span> <span class="n">f</span> <span class="n">_</span> <span class="o">=</span> <span class="k">raise</span> <span class="p">(</span><span class="nc">Goo</span> <span class="s2">"keyboard on fire"</span><span class="p">);;</span>
@@ -1344,8 +1328,7 @@ First just int lists</p>
   <span class="k">try</span>
     <span class="n">f</span> <span class="bp">()</span>
   <span class="k">with</span>
-      <span class="nc">Foo</span> <span class="o">-&gt;</span> <span class="bp">()</span>
-        <span class="o">|</span> <span class="nc">Goo</span> <span class="n">s</span> <span class="o">-&gt;</span>
+      <span class="nc">Goo</span> <span class="n">s</span> <span class="o">-&gt;</span>
       <span class="p">(</span><span class="n">print_string</span><span class="p">(</span><span class="s2">"exception raised: "</span><span class="p">);</span>
        <span class="n">print_string</span><span class="p">(</span><span class="n">s</span><span class="p">);</span><span class="n">print_string</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">))</span>
 <span class="p">;;</span>
@@ -1366,17 +1349,21 @@ First just int lists</p>
   <li>needed for all but very small programs: imagine a file system without directories/folders as analogy to a PL without modules - YUCK!</li>
 </ul>
 
-<p>Some principles of modules:</p>
+<p>Some general principles of modules across language designs:</p>
 <ul>
   <li>Modules have names they can be referenced by.</li>
-  <li>A module contains code declarations: functions, classes,  types, etc.</li>
-  <li>They often are file-based: one module per file, module name is file name</li>
-  <li>The module has a way to
+  <li>A module is a container of code: functions, classes,  types, etc.</li>
+  <li>Modules can be file-based: one module per file, module name is file name</li>
+  <li>The module needs a way to
     <ul>
-      <li>import things (e.g. other modules) from the outside and</li>
+      <li>import things (e.g. other modules) from the outside;</li>
       <li>export some (or all) things it has declared for outsiders to use;</li>
-      <li>it may <strong>hide</strong> some things for internal use only<br />
- – hiding is a key feature, don’t overwhelm users</li>
+      <li>it may <strong>hide</strong> some things for internal use only
+        <ul>
+          <li>allows module users to operate at a higher level of abstraction</li>
+          <li>avoids users mucking with internals and messing things up</li>
+        </ul>
+      </li>
       <li>Separate name spaces, so e.g. the Window’s reset() won’t clash<br />
 with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()</code></li>
       <li>Nested name spaces for ever larger software: <code>Window.Init.reset()</code></li>
@@ -1385,21 +1372,22 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
   </li>
 </ul>
 
-<p>Most modern languages have a module system solving most of these problems.</p>
-
 <h3 id="modules-in-ocaml">Modules in OCaml</h3>
 
 <ul>
-  <li>We already saw OCaml modules in action</li>
-  <li>Example: <code>List.map</code>, this is an invocation of the map function in the built-in <code>List</code> module.</li>
+  <li>We already saw OCaml modules in action
+    <ul>
+      <li>Example: <code>List.map</code> is an invocation of the map function in the built-in <code>List</code> module.</li>
+    </ul>
+  </li>
   <li>Now, lets study how we can build and use our own OCaml modules</li>
-  <li>We focus here on building modules via files, but there are other methods we skip</li>
+  <li>(We focus here on building modules via files, but there are other methods in OCaml which we skip)</li>
 </ul>
 
 <h4 id="making-a-module">Making a module</h4>
 
 <ul>
-  <li>Assignment 1 requires you to fill out a file <code>assignment.ml</code></li>
+  <li>Assignment 1/2 require you to fill out a file <code>assignment.ml</code></li>
   <li>This is in fact creating a <em>module</em> <code>Assignment</code> (notice the first letter (only) is capped)</li>
   <li><code>dune utop</code> will load your module in the top loop</li>
   <li>You then need to write <code>Assignment.factorial 5;;</code> etc to access the functions in the module’s namespace</li>
@@ -1411,9 +1399,11 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
 <ul>
   <li>File-based modules are also compiled separately, there is no top loop needed.</li>
   <li>This is the traditional <code>javac</code>/<code>cc</code>/etc style of coding</li>
-  <li>The underlying compiler for OCaml is <code>ocamlc</code>, but in this course we will give you build files
+  <li>Also in the C/Java spirit it is how you write a standalone app in OCaml</li>
+  <li>The underlying compiler for OCaml is <code>ocamlc</code> (or <code>ocamlopt</code>), but in this course we will give you <code>dune</code> build files
     <ul>
       <li>just use <code>dune build</code> to invoke the OCaml compiler on all the files</li>
+      <li>if you are curious what actual compiler calls are happening, add <code>--verbose</code> to the build command</li>
     </ul>
   </li>
 </ul>

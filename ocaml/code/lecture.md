@@ -1049,69 +1049,64 @@ let rec insert x bintree =
 ;;
 ```
 
-* This is also **not mutating** -- it returns a whole "new tree" 
-  - (well, the compiler can in fact share all subtrees along the spine to the new node)
-  - (referential transparency at work)
+* This is also **not mutating** -- it returns a whole new tree - !
+* If you then want to insert another element you need to pass the result from the previous call.
 
 ```ocaml
 let goobt = insert "goober " bt;;
 bt;; (* observe bt did not change after the insert *)
-let gooobt = insert "slacker " goobt;; (* thread in the most recent tree *)
+let gooobt = insert "slacker " goobt;; (* pass in goobt to accumulate both additions *)
+let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four"] (* folding helps *)
 ```
+
+* You have already seen a bit of programming with functional data structures with lists
+* For trees you are probably used to mutating to insert, delete, etc so takes some getting used to
+* It looks really inefficient since an insertion is making a "totally new tree"
+   - but, the compiler can in fact share all subtrees along the spine to the new node - log n cost
+   - referential transparency at work
 
 ### Records
   - Like tuples but with labels on fields.
   - Similar to the structs of C/C++.
   - The types must be declared just like OCaml variants.
   - Can be used in pattern matches as well.
-  - Again the fields are immutable by default
+  - Again the fields are **immutable** by default, so not like Python/Javascript dictionaries
 
 Example: a record type to represent rational numbers
 
 ```ocaml
 type ratio = {num: int; denom: int};;
 let q = {num = 53; denom = 6};;
-q.num;;
-q.denom;;
 ```
 
-Pattern matching works of course
+Destructing records via pattern matching:
 ```ocaml
 let rattoint r =
  match r with
    {num = n; denom = d} -> n / d;;
 ```
 
-Only one pattern matched so can again inline pattern in functions and lets
+Only one pattern matched so can again inline pattern in function's/let's
 ```ocaml
-let rattoint {num = n; denom = d}  =
-   n / d;;
+let rat_to_int {num = n; denom = d} =  n / d;;
 ```
 
-Equivalently can use dot projections, but happy path is usually patterns
+Equivalently could use dot projections, but happy path in OCaml is usually patterns
 ```ocaml
-let rattoint r  =
+let unhappy_rat_to_int r  =
    r.num / r.denom;;
-rattoint q;;
 ```
 
+One more example function with records
 ```ocaml
-let add_ratio r1 r2 = {num = r1.num * r2.denom + r2.num * r1.denom; 
-                      denom = r1.denom * r2.denom};;
-add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
-```
+let unhappy_add_ratio r1 r2 = 
+  {num = r1.num * r2.denom + r2.num * r1.denom; 
+   denom = r1.denom * r2.denom};;
 
-Annoying shadowing issue: there is one global namespace of record labels
-```ocaml
-type newratio = {num: int; coeff: float};; (* shadows ratio's label num *)
+unhappy_add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 
-fun x -> x.num;; (* x is a newratio, the most recent num field defined *)
-```
-Solution in event of shadowing: pattern match on full record
-
-```ocaml
-fun {num = n; denom = _} -> n;;
-fun {num; _} -> num;; (* equivalent shorthand - can pun on record name and variable *)
+let happy_add_ratio {num = n1; denom = d1} {num = n2; denom = d2} = 
+  {num = n1 * d2 + n2 * d1; denom = d1 * d2};;
 ```
 
 #### End of Pure Functional programming in OCaml
@@ -1138,9 +1133,10 @@ Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a f
 
 ```ocaml
 x + 1;; (* a type error ! *)
-!x + 1;; (* need !x to get out the value; parallels *x in C *)
+!x + 1;; (* need `!x` to get out the value; parallels `*x` in C *)
 x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
-!x + 1;; (* Mutation happened to contents of cell x *)
+!x;; (* Mutation happened to contents of cell x *)
+let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definition *)
 ```
 
 * `'a ref` is really implemented by a mutable record with one field, contents:
@@ -1176,12 +1172,10 @@ Observe: mypoint is immutable at the top level but it has two spots in it where 
  - Have to be initialized before using
    - in general there is no such thing as "uninitialized"/"null" in OCaml
 
-
 ```ocaml
-let arrhi = Array.make 100 "";; (* size and initial value are the params here *)
-let arr = [| 4; 3; 2 |];; (* another way to make an array *)
+let arr = [| 4; 3; 2 |];; (* one way to make an array *)
 arr.(0);; (* access (unfortunately already used [] for lists in the syntax) *)
-arr.(0) <- 55;; (* update *)
+arr.(0) <- 5;; (* update *)
 arr;;
 ```
 
@@ -1195,22 +1189,6 @@ arr;;
     - Better yet use `Ok/Error`, similar to `Some/None` but designed for error handling.
 
 ```ocaml
-exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
-
-let f () = raise Foo;; (* note no "raises Foo" in the type as in Java *)
-f ();;
-
-exception Bar;;
-
-let g _ = (* aside: "_" notates a variable that can never be accessed *)
-  (try f ()
-   with  
-     Foo ->  5 | Bar -> 3) + 4;; (* Use power of pattern matching in handlers *)
-g ();;
-```
-
-Exceptions with a parameter - syntax is like a variant
-```ocaml
 exception Goo of string;;
 
 let f _ = raise (Goo "keyboard on fire");;
@@ -1220,8 +1198,7 @@ let g () =
   try
     f ()
   with
-      Foo -> ()
-        | Goo s ->
+      Goo s ->
       (print_string("exception raised: ");
        print_string(s);print_string("\n"))
 ;;
@@ -1241,32 +1218,31 @@ Modules in programming languages
    - e.g. Java package, Python module, C directory, etc
    - needed for all but very small programs: imagine a file system without directories/folders as analogy to a PL without modules - YUCK!
 
-Some principles of modules:
+Some general principles of modules across language designs:
   -  Modules have names they can be referenced by.
-  -  A module contains code declarations: functions, classes,  types, etc.
-  - They often are file-based: one module per file, module name is file name
-  -  The module has a way to
-      * import things (e.g. other modules) from the outside and
+  -  A module is a container of code: functions, classes,  types, etc.
+  - Modules can be file-based: one module per file, module name is file name
+  -  The module needs a way to
+      * import things (e.g. other modules) from the outside;
       * export some (or all) things it has declared for outsiders to use;
       * it may **hide** some things for internal use only
-         -- hiding is a key feature, don't overwhelm users
+         - allows module users to operate at a higher level of abstraction
+         - avoids users mucking with internals and messing things up
       * Separate name spaces, so e.g. the Window's reset() won't clash
         with a File's reset(): use `Window.reset()` and `File.reset()`
       * Nested name spaces for ever larger software: `Window.Init.reset()`
       * Often modules can be compiled separately (for compiled languages)
 
-Most modern languages have a module system solving most of these problems.
-
 ### Modules in OCaml
 
 * We already saw OCaml modules in action
-* Example: `List.map`, this is an invocation of the map function in the built-in `List` module.
+    - Example: `List.map` is an invocation of the map function in the built-in `List` module.
 * Now, lets study how we can build and use our own OCaml modules
-* We focus here on building modules via files, but there are other methods we skip
+* (We focus here on building modules via files, but there are other methods in OCaml which we skip)
 
 #### Making a module
 
-* Assignment 1 requires you to fill out a file `assignment.ml`
+* Assignment 1/2 require you to fill out a file `assignment.ml`
 * This is in fact creating a *module* `Assignment` (notice the first letter (only) is capped)
 * `dune utop` will load your module in the top loop
 * You then need to write `Assignment.factorial 5;;` etc to access the functions in the module's namespace
@@ -1276,8 +1252,10 @@ Most modern languages have a module system solving most of these problems.
 
 * File-based modules are also compiled separately, there is no top loop needed.
 * This is the traditional `javac`/`cc`/etc style of coding
-* The underlying compiler for OCaml is `ocamlc`, but in this course we will give you build files
+* Also in the C/Java spirit it is how you write a standalone app in OCaml
+* The underlying compiler for OCaml is `ocamlc` (or `ocamlopt`), but in this course we will give you `dune` build files
   - just use `dune build` to invoke the OCaml compiler on all the files
+  - if you are curious what actual compiler calls are happening, add `--verbose` to the build command
 
 ### An example of a separately-compiled OCaml program
 

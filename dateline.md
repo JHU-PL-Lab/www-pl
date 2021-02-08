@@ -83,8 +83,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#iv">OCaml IV: variants,
-    type inference, records, refs, arrays, exceptions</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#iv">OCaml IV: higher-order functions, variants</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -101,7 +100,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#v">OCaml V: Modules</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#v">OCaml V: trees, records, effects, modules</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
