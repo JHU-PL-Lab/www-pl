@@ -413,7 +413,7 @@ let bt2 = Node("fiddly ",
                   Leaf,
                   Leaf)),
             whack);;
-(* Type error, like list, must have uniform type: *)
+(* Type error; like lists, tree data must have uniform type: *)
 Node("fiddly",Node(0,Leaf,Leaf),Leaf);;
 
 let rec add_gobble binstringtree =
@@ -424,15 +424,15 @@ let rec add_gobble binstringtree =
 ;;
 
 let rec lookup x bintree =
-   match bintree with
-     | Leaf -> false
-     | Node(y, left, right) ->
-       if x = y then
-          true
-       else if x < y then
-          lookup x left
-       else
-          lookup x right
+  match bintree with
+  | Leaf -> false
+  | Node(y, left, right) ->
+    if x = y then
+      true
+    else if x < y then
+      lookup x left
+    else
+      lookup x right
 ;;
 
 lookup "whack!" bt;;
@@ -502,24 +502,6 @@ let mypoint = { x = 0.0; y = 0.0 };;
 translate mypoint 1.0 2.0;;
 mypoint;;
 
-type mtree = MLeaf | MNode of int * mtree ref * mtree ref;;
-
-let x = ref 4;;
-let f () = !x;; (* This is syntax for a 0-argument function in OCaml - it only takes () as argument *)
-
-x := 234;;
-f();;
-
-let x = ref 6;; (* shadowing previous x definition, NOT an assignment to x !! *)
-f ();;
-
-let x = ref 1 in
-    while !x < 10 do
-      print_int !x;
-      print_string "\n";
-      x := !x + 1;
-    done;;
-
 let arrhi = Array.make 100 "";; (* size and initial value are the params here *)
 let arr = [| 4; 3; 2 |];; (* another way to make an array *)
 arr.(0);; (* access (unfortunately already used [] for lists in the syntax) *)
@@ -528,7 +510,7 @@ arr;;
 
 exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
 
-let f () = raise Foo;; (* note no need to "raises Foo" in the type as in Java *)
+let f () = raise Foo;; (* note no "raises Foo" in the type as in Java *)
 f ();;
 
 exception Bar;;

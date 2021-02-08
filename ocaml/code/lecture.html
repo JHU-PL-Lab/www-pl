@@ -1082,6 +1082,10 @@ First just int lists</p>
 <span class="k">let</span> <span class="n">map_eg</span> <span class="o">=</span> <span class="n">map</span> <span class="n">hb_eg</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="n">mylisteg</span>
 </code></pre></div></div>
 
+<p><a name="v"></a></p>
+
+<h2 id="ocaml-lecture-v">OCaml Lecture V</h2>
+
 <h4 id="trees">Trees</h4>
 
 <ul>
@@ -1111,7 +1115,7 @@ First just int lists</p>
                   <span class="nc">Leaf</span><span class="o">,</span>
                   <span class="nc">Leaf</span><span class="p">))</span><span class="o">,</span>
             <span class="n">whack</span><span class="p">);;</span>
-<span class="c">(* Type error, like list, must have uniform type: *)</span>
+<span class="c">(* Type error; like lists, tree data must have uniform type: *)</span>
 <span class="nc">Node</span><span class="p">(</span><span class="s2">"fiddly"</span><span class="o">,</span><span class="nc">Node</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span><span class="nc">Leaf</span><span class="o">,</span><span class="nc">Leaf</span><span class="p">)</span><span class="o">,</span><span class="nc">Leaf</span><span class="p">);;</span>
 </code></pre></div></div>
 
@@ -1124,25 +1128,25 @@ First just int lists</p>
        <span class="nc">Node</span><span class="p">(</span><span class="n">y</span><span class="o">^</span><span class="s2">"gobble"</span><span class="o">,</span><span class="n">add_gobble</span> <span class="n">left</span><span class="o">,</span><span class="n">add_gobble</span> <span class="n">right</span><span class="p">)</span>
 <span class="p">;;</span>
 </code></pre></div></div>
-<p>(Remember, as with lists this is not mutating the tree, its building a new one)</p>
+<p>(Remember, as with lists this is <em>not</em> mutating the tree, its building a new one)</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">bintree</span> <span class="o">=</span>
-   <span class="k">match</span> <span class="n">bintree</span> <span class="k">with</span>
-     <span class="o">|</span> <span class="nc">Leaf</span> <span class="o">-&gt;</span> <span class="bp">false</span>
-     <span class="o">|</span> <span class="nc">Node</span><span class="p">(</span><span class="n">y</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="p">)</span> <span class="o">-&gt;</span>
-       <span class="k">if</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="k">then</span>
-          <span class="bp">true</span>
-       <span class="k">else</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">y</span> <span class="k">then</span>
-          <span class="n">lookup</span> <span class="n">x</span> <span class="n">left</span>
-       <span class="k">else</span>
-          <span class="n">lookup</span> <span class="n">x</span> <span class="n">right</span>
+  <span class="k">match</span> <span class="n">bintree</span> <span class="k">with</span>
+  <span class="o">|</span> <span class="nc">Leaf</span> <span class="o">-&gt;</span> <span class="bp">false</span>
+  <span class="o">|</span> <span class="nc">Node</span><span class="p">(</span><span class="n">y</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="p">)</span> <span class="o">-&gt;</span>
+    <span class="k">if</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="k">then</span>
+      <span class="bp">true</span>
+    <span class="k">else</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">y</span> <span class="k">then</span>
+      <span class="n">lookup</span> <span class="n">x</span> <span class="n">left</span>
+    <span class="k">else</span>
+      <span class="n">lookup</span> <span class="n">x</span> <span class="n">right</span>
 <span class="p">;;</span>
 
 <span class="n">lookup</span> <span class="s2">"whack!"</span> <span class="n">bt</span><span class="p">;;</span>
 <span class="n">lookup</span> <span class="s2">"flack"</span> <span class="n">bt</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Let us now define how to add elements to a tree</p>
+<p>Let us now define how to insert an element in sorted order.</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">insert</span> <span class="n">x</span> <span class="n">bintree</span> <span class="o">=</span>
    <span class="k">match</span> <span class="n">bintree</span> <span class="k">with</span>
      <span class="nc">Leaf</span> <span class="o">-&gt;</span> <span class="nc">Node</span><span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="nc">Leaf</span><span class="o">,</span> <span class="nc">Leaf</span><span class="p">)</span>
@@ -1157,8 +1161,8 @@ First just int lists</p>
 <ul>
   <li>This is also <strong>not mutating</strong> – it returns a whole “new tree”
     <ul>
-      <li>well, the compiler can in fact share all subtrees along the spine to the new node</li>
-      <li>referential transparency at work</li>
+      <li>(well, the compiler can in fact share all subtrees along the spine to the new node)</li>
+      <li>(referential transparency at work)</li>
     </ul>
   </li>
 </ul>
@@ -1170,11 +1174,11 @@ First just int lists</p>
 
 <h3 id="records">Records</h3>
 <ul>
-  <li>like tuples but with labels on fields.</li>
-  <li>similar to the structs of C/C++.</li>
-  <li>the types must be declared just like OCaml variants.</li>
-  <li>can be used in pattern matches as well.</li>
-  <li>again the fields are immutable by default</li>
+  <li>Like tuples but with labels on fields.</li>
+  <li>Similar to the structs of C/C++.</li>
+  <li>The types must be declared just like OCaml variants.</li>
+  <li>Can be used in pattern matches as well.</li>
+  <li>Again the fields are immutable by default</li>
 </ul>
 
 <p>Example: a record type to represent rational numbers</p>
@@ -1218,15 +1222,11 @@ First just int lists</p>
 <span class="k">fun</span> <span class="p">{</span><span class="n">num</span><span class="p">;</span> <span class="n">_</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="n">num</span><span class="p">;;</span> <span class="c">(* equivalent shorthand - can pun on record name and variable *)</span>
 </code></pre></div></div>
 
-<p><a name="v"></a></p>
-
-<h2 id="ocaml-lecture-v">OCaml Lecture V</h2>
-
 <h4 id="end-of-pure-functional-programming-in-ocaml">End of Pure Functional programming in OCaml</h4>
 <ul>
   <li>On to side effects</li>
   <li>But before heading there, remember to stay OUT of side effects unless <em>really</em> needed - that is the happy path in OCaml coding</li>
-  <li>The autograder may let you get away with side effects on assignment 1 but you will get a manual ding by the CAs.</li>
+  <li>The autograder may let you get away with side effects on assignment 1/2 but you will get a manual ding by the CAs.</li>
 </ul>
 
 <h3 id="state">State</h3>
@@ -1286,44 +1286,6 @@ First just int lists</p>
 
 <p>Observe: mypoint is immutable at the top level but it has two spots in it where we can mutate</p>
 
-<p>Tree with mutable nodes</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">mtree</span> <span class="o">=</span> <span class="nc">MLeaf</span> <span class="o">|</span> <span class="nc">MNode</span> <span class="k">of</span> <span class="kt">int</span> <span class="o">*</span> <span class="n">mtree</span> <span class="n">ref</span> <span class="o">*</span> <span class="n">mtree</span> <span class="n">ref</span><span class="p">;;</span>
-</code></pre></div></div>
-
-<ul>
-  <li>ONLY ref typed variables or mutable records may be assigned to</li>
-  <li>The notion of immutable variables is one of the great strengths of OCaml.</li>
-  <li>Note: <code>let</code> doesn’t turn into a mutation operator with <code>ref</code>:</li>
-</ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="mi">4</span><span class="p">;;</span>
-<span class="k">let</span> <span class="n">f</span> <span class="bp">()</span> <span class="o">=</span> <span class="o">!</span><span class="n">x</span><span class="p">;;</span> <span class="c">(* This is syntax for a 0-argument function in OCaml - it only takes () as argument *)</span>
-
-<span class="n">x</span> <span class="o">:=</span> <span class="mi">234</span><span class="p">;;</span>
-<span class="n">f</span><span class="bp">()</span><span class="p">;;</span>
-
-<span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* shadowing previous x definition, NOT an assignment to x !! *)</span>
-<span class="n">f</span> <span class="bp">()</span><span class="p">;;</span>
-</code></pre></div></div>
-
-<p>Yes, OCaml has our old friend <code>;</code> and with it we can write an imperative <code>while</code> loop</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="mi">1</span> <span class="k">in</span>
-    <span class="k">while</span> <span class="o">!</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">10</span> <span class="k">do</span>
-      <span class="n">print_int</span> <span class="o">!</span><span class="n">x</span><span class="p">;</span>
-      <span class="n">print_string</span> <span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">;</span>
-      <span class="n">x</span> <span class="o">:=</span> <span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
-    <span class="k">done</span><span class="p">;;</span>
-</code></pre></div></div>
-
-<p>Fact: while loops are useless without mutation: either never loop or infinitely loop</p>
-
-<p>Why is immutability good?</p>
-<ul>
-  <li>programmer can depend on the fact that something will never be mutated when writing code: permanent like mathematical definitions</li>
-  <li>OCaml lets you express mutation if it is critically needed</li>
-</ul>
-
 <h3 id="arrays">Arrays</h3>
 <ul>
   <li>Fairly self-explanatory, we will just flash over this in lecture</li>
@@ -1348,14 +1310,19 @@ First just int lists</p>
   <li>Modern OCaml coding style is to <em>minimize</em> the use of exceptions
     <ul>
       <li>Causes action-at-a-distance, hard to debug</li>
-      <li>Instead follow the old C approach of bubbling up error codes</li>
+      <li>Instead follow the old C approach of bubbling up error codes:
+        <ul>
+          <li>return <code>Some/None</code> and make the caller explicitly handle the <code>None</code> (error) case.</li>
+          <li>Better yet use <code>Ok/Error</code>, similar to <code>Some/None</code> but designed for error handling.</li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Foo</span><span class="p">;;</span>  <span class="c">(* This is a new form of top-level declaration, along with let, type *)</span>
 
-<span class="k">let</span> <span class="n">f</span> <span class="bp">()</span> <span class="o">=</span> <span class="k">raise</span> <span class="nc">Foo</span><span class="p">;;</span> <span class="c">(* note no need to "raises Foo" in the type as in Java *)</span>
+<span class="k">let</span> <span class="n">f</span> <span class="bp">()</span> <span class="o">=</span> <span class="k">raise</span> <span class="nc">Foo</span><span class="p">;;</span> <span class="c">(* note no "raises Foo" in the type as in Java *)</span>
 <span class="n">f</span> <span class="bp">()</span><span class="p">;;</span>
 
 <span class="k">exception</span> <span class="nc">Bar</span><span class="p">;;</span>
@@ -1446,7 +1413,7 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
   <li>This is the traditional <code>javac</code>/<code>cc</code>/etc style of coding</li>
   <li>The underlying compiler for OCaml is <code>ocamlc</code>, but in this course we will give you build files
     <ul>
-      <li>just use <code>dune build</code> to invoke the compiler on all the files</li>
+      <li>just use <code>dune build</code> to invoke the OCaml compiler on all the files</li>
     </ul>
   </li>
 </ul>

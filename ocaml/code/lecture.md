@@ -969,6 +969,11 @@ let rec map ml f =
 let map_eg = map hb_eg (fun x -> x - 1) mylisteg
 ```
 
+
+<a name="v"></a>
+
+##  OCaml Lecture V
+
 #### Trees
 
 * Binary trees are like lists but with two self-referential sub-structures not one
@@ -998,7 +1003,7 @@ let bt2 = Node("fiddly ",
                   Leaf,
                   Leaf)),
             whack);;
-(* Type error, like list, must have uniform type: *)
+(* Type error; like lists, tree data must have uniform type: *)
 Node("fiddly",Node(0,Leaf,Leaf),Leaf);;
 ```
 
@@ -1012,26 +1017,26 @@ let rec add_gobble binstringtree =
        Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
 ```
-(Remember, as with lists this is not mutating the tree, its building a new one)
+(Remember, as with lists this is *not* mutating the tree, its building a new one)
 
 ```ocaml
 let rec lookup x bintree =
-   match bintree with
-     | Leaf -> false
-     | Node(y, left, right) ->
-       if x = y then
-          true
-       else if x < y then
-          lookup x left
-       else
-          lookup x right
+  match bintree with
+  | Leaf -> false
+  | Node(y, left, right) ->
+    if x = y then
+      true
+    else if x < y then
+      lookup x left
+    else
+      lookup x right
 ;;
 
 lookup "whack!" bt;;
 lookup "flack" bt;;
 ```
 
-Let us now define how to add elements to a tree
+Let us now define how to insert an element in sorted order.
 ```ocaml
 let rec insert x bintree =
    match bintree with
@@ -1045,8 +1050,8 @@ let rec insert x bintree =
 ```
 
 * This is also **not mutating** -- it returns a whole "new tree" 
-  - well, the compiler can in fact share all subtrees along the spine to the new node 
-  - referential transparency at work
+  - (well, the compiler can in fact share all subtrees along the spine to the new node)
+  - (referential transparency at work)
 
 ```ocaml
 let goobt = insert "goober " bt;;
@@ -1055,11 +1060,11 @@ let gooobt = insert "slacker " goobt;; (* thread in the most recent tree *)
 ```
 
 ### Records
-  - like tuples but with labels on fields.
-  - similar to the structs of C/C++.
-  - the types must be declared just like OCaml variants.
-  - can be used in pattern matches as well.
-  - again the fields are immutable by default
+  - Like tuples but with labels on fields.
+  - Similar to the structs of C/C++.
+  - The types must be declared just like OCaml variants.
+  - Can be used in pattern matches as well.
+  - Again the fields are immutable by default
 
 Example: a record type to represent rational numbers
 
@@ -1109,14 +1114,10 @@ fun {num = n; denom = _} -> n;;
 fun {num; _} -> num;; (* equivalent shorthand - can pun on record name and variable *)
 ```
 
-<a name="v"></a>
-
-##  OCaml Lecture V
-
 #### End of Pure Functional programming in OCaml
 * On to side effects
 * But before heading there, remember to stay OUT of side effects unless *really* needed - that is the happy path in OCaml coding
-* The autograder may let you get away with side effects on assignment 1 but you will get a manual ding by the CAs.
+* The autograder may let you get away with side effects on assignment 1/2 but you will get a manual ding by the CAs.
 
 ### State
  *   Variables in OCaml are NEVER directly mutable themselves; only (indirectly) mutable if they hold a
@@ -1170,43 +1171,6 @@ mypoint;;
 
 Observe: mypoint is immutable at the top level but it has two spots in it where we can mutate
 
-Tree with mutable nodes
-
-```ocaml
-type mtree = MLeaf | MNode of int * mtree ref * mtree ref;;
-```
-
-- ONLY ref typed variables or mutable records may be assigned to
-- The notion of immutable variables is one of the great strengths of OCaml.
-- Note: `let` doesn't turn into a mutation operator with `ref`:
-
-```ocaml
-let x = ref 4;;
-let f () = !x;; (* This is syntax for a 0-argument function in OCaml - it only takes () as argument *)
-
-x := 234;;
-f();;
-
-let x = ref 6;; (* shadowing previous x definition, NOT an assignment to x !! *)
-f ();;
-```
-
-Yes, OCaml has our old friend `;` and with it we can write an imperative `while` loop
-```ocaml
-let x = ref 1 in
-    while !x < 10 do
-      print_int !x;
-      print_string "\n";
-      x := !x + 1;
-    done;;
-```
-
-Fact: while loops are useless without mutation: either never loop or infinitely loop
-
-Why is immutability good?
- - programmer can depend on the fact that something will never be mutated when writing code: permanent like mathematical definitions
- - OCaml lets you express mutation if it is critically needed
-
 ### Arrays
  - Fairly self-explanatory, we will just flash over this in lecture
  - Have to be initialized before using
@@ -1226,12 +1190,14 @@ arr;;
 * Unfortunately types do not include what exceptions a function will raise - an outdated aspect of OCaml.
 * Modern OCaml coding style is to *minimize* the use of exceptions
   - Causes action-at-a-distance, hard to debug
-  - Instead follow the old C approach of bubbling up error codes
+  - Instead follow the old C approach of bubbling up error codes: 
+    - return `Some/None` and make the caller explicitly handle the `None` (error) case.
+    - Better yet use `Ok/Error`, similar to `Some/None` but designed for error handling.
 
 ```ocaml
 exception Foo;;  (* This is a new form of top-level declaration, along with let, type *)
 
-let f () = raise Foo;; (* note no need to "raises Foo" in the type as in Java *)
+let f () = raise Foo;; (* note no "raises Foo" in the type as in Java *)
 f ();;
 
 exception Bar;;
@@ -1311,7 +1277,7 @@ Most modern languages have a module system solving most of these problems.
 * File-based modules are also compiled separately, there is no top loop needed.
 * This is the traditional `javac`/`cc`/etc style of coding
 * The underlying compiler for OCaml is `ocamlc`, but in this course we will give you build files
-  - just use `dune build` to invoke the compiler on all the files
+  - just use `dune build` to invoke the OCaml compiler on all the files
 
 ### An example of a separately-compiled OCaml program
 
