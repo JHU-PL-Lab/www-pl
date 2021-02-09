@@ -582,7 +582,7 @@ fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
 
 ```ocaml
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
-let rev l = fold_right (fun elt accum -> accum @ [elt]) l [];;
+let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];;
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
 ```
 
