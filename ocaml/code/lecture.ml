@@ -224,7 +224,7 @@ let summate_right' = fold_right (+);;
 fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
 
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
-let rev l = List.fold_right (@) l [];;
+let rev l = fold_right (fun elt accum -> accum @ [elt]) l [];;
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
 
 let rec summate_left accum l = match l with
@@ -507,11 +507,12 @@ exception Goo of string;;
 
 let f _ = raise (Goo "keyboard on fire");;
 f ();;
+(f ()) + 1;; (* recall that exceptions blow away the context *)
 
 let g () =
   try
     f ()
-  with
+  with (* "catch" in Java *)
       Goo s ->
       (print_string("exception raised: ");
        print_string(s);print_string("\n"))
