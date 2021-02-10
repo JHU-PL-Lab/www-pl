@@ -56,25 +56,26 @@ for example to interactively debug or test your `Fb` interpreter, run:
 
 The compiled OCaml objects will be loaded into your toploop
 session and you will be able to use the types and functions defined in your
-source code. You will need to access the bindings from the correct module to use them, or
-make sure they are visible in scope, for example by doing:
+source code.  To make `eval` as well as several other functions available,
+open the module `Debugutils`:
     
     # open Debugutils;;
 
-or just by referencing the name:
-
-    # Debugutils.parse "1 + 2";;
-
 If you have opened the module, you will have the following operations available:
+
+- `eval`
+
+    This is your evaluator from your `..interp.ml` file.  It is in fact just an alias, for `Fbdk.Interpreter.eval` which is your code.
+   
 - `parse` / `unparse`
 
-    These allow conversion between strings and Fbdk expressions.
+    These allow conversion back and forth between strings and ASTs in the 
+    form of `Fbdk.Ast.expr` - typed values.
     
 - `parse_eval`
 
-    This both parses an expression from a string, and evaluates it
-    according to the currently loaded interpreter. The result is
-    the evaluated Fbdk expression value.
+    This first parses an expression from a string, and then evaluates it
+    with `eval`.
 
 - `parse_eval_unparse` / `peu`
 
@@ -89,10 +90,12 @@ If you have opened the module, you will have the following operations available:
     This is the the core operation which the interpreters perform when they are
     run outside of utop.
 
-If you want to build Fbdk expressions in their AST form explicitly, then
-you will probably want to add:
+You will probably also want to do a
 
     # open Fbdk.Ast;;
+
+so the type `Fbdk.Ast.expr` will get the shorthand name `expr` for easier reading.
+
 
 Good luck!
 
