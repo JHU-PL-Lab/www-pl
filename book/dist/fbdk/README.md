@@ -3,13 +3,13 @@ FbDK
 
 This is a distribution of the Fb ("F-flat") development kit (FbDK).  The FbDK is
 a tool for learning programming language theory through the development of
-interpreters and type systems.  It contains all of the implementation of
-interpreters and typecheckers for several different programming languages,
-but lacks the "meaty part", the actual evaluation function and/or the actual type checking function -- those are left as exercises.
-
-The example commands listed here are intended to be run from the root of the folder you extracted your fbdk distribution zip file into.
+interpreters and type systems.  Your course instructor will indicate how the kit
+is to be used for class. The example commands listed here are intended to be run
+from the root of the folder you extracted your fbdk distribution zip file into,
+but can be generalized easily.
 
 Please see the `COPYING` file in this directory for licensing information.
+
 
 Prerequisites
 -------------
@@ -30,8 +30,7 @@ To compile the interpreters, it is sufficient to run
 
     # dune build
 
-from the top-level directory.  To force a rebuild, 
-running `dune clean` first will remove all artifacts
+To force a rebuild, running `dune clean` first will remove all artifacts
 so that dune does everything from scratch again.
 
 An individual interpreter may be compiled by naming it directly, e.g.
@@ -50,25 +49,15 @@ Running your FbDK Interpreter from the OCaml Toploop
 ----------------------------------------------------
 
 As you develop your interpreters, you may wish to interact with your `eval`
-function directly from the OCaml toploop. This is simple with `dune`.
-For example to interactively debug or test your `Fb` interpreter, run:
+function directly from the OCaml toploop. This is quite simple with `dune`,
+for example to interactively debug or test your `Fb` interpreter, run:
 
     $ dune utop ./Fb
 
-The compiled OCaml objects will be loaded into a toploop
-session as modules and you will be able to use the types and functions defined in your source code.  
+The compiled OCaml objects will be loaded into your toploop
+session and you will be able to use the types and functions defined in your
+source code.  Good luck!
 
-Here is an example:
-```ocaml
-$ dune utop ./Fb
-...
-utop # open Debugutils;;
-utop # let ast = parse "2+3";;
-val ast : Fbdk.Ast.expr = (Plus ((Int 2), (Int 3)))
-utop # let result = eval ast;;
-val result : Fbdk.Ast.expr = ((Int 5))
-```
-See the file `build_scripts/debugutils.ml` for the functions available in the `Debugutils` module.
 
 Precompiled Interpreters
 ------------------------
@@ -117,4 +106,4 @@ This will enter you into an environment identical to if you had run
 
     $ dune utop ./Fb
 
-...but with the reference, 'ground truth' implementation supplying the `eval` function.
+...but with the reference, 'ground truth' implementation supplying the definitions.
