@@ -56,7 +56,45 @@ for example to interactively debug or test your `Fb` interpreter, run:
 
 The compiled OCaml objects will be loaded into your toploop
 session and you will be able to use the types and functions defined in your
-source code.  Good luck!
+source code. You will need to access the bindings from the correct module to use them, or
+make sure they are visible in scope, for example by doing:
+    
+    # open Debugutils;;
+
+or just by referencing the name:
+
+    # Debugutils.parse "1 + 2";;
+
+If you have opened the module, you will have the following operations available:
+- `parse` / `unparse`
+
+    These allow conversion between strings and Fbdk expressions.
+    
+- `parse_eval`
+
+    This both parses an expression from a string, and evaluates it
+    according to the currently loaded interpreter. The result is
+    the evaluated Fbdk expression value.
+
+- `parse_eval_unparse` / `peu`
+
+    This performs parsing and evaluation as above, and finally converts
+    the expression back to a string so it can easily be read or printed.
+    The abbreviated form is for convenience, but is otherwise identical.
+
+- `parse_eval_print`
+
+    This performs parsing, evaluation, and then conversion back to a string,
+    and finally prints out the value in human-readable form. 
+    This is the the core operation which the interpreters perform when they are
+    run outside of utop.
+
+If you want to build Fbdk expressions in their AST form explicitly, then
+you will probably want to add:
+
+    # open Fbdk.Ast;;
+
+Good luck!
 
 
 Precompiled Interpreters
@@ -107,3 +145,4 @@ This will enter you into an environment identical to if you had run
     $ dune utop ./Fb
 
 ...but with the reference, 'ground truth' implementation supplying the definitions.
+The same Debugutils and Fbdk functions and modules are available.

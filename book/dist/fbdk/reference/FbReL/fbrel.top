@@ -13,6 +13,3 @@ Topdirs.dir_directory lib_dir;;
 #load "version.cmo"
 #load "fbdk.cmo"
 #load "debugutils.cmo"
-
-open Fbdk
-open Debugutils
