@@ -19,11 +19,7 @@ This is a short homework giving you some practice with operational semantics bef
 
     c.  `(Fun x -> (If x = 2 Then Fun x -> x Else 1)) 2 4`
 
-3.  [5 points] Recall that if it is impossible to to build a complete proof tree showing some `e => v` then the relation doesn't hold. So, show that
 
-    `(Fun q -> q = False) 0 => False`
-
-    fails to hold.
 
 ### Submission and Grading
 
