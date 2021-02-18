@@ -37,4 +37,6 @@ This is a short homework giving you some practice with operational semantics bef
 
 ### Submission and Grading
 
-Upload your homework as a pdf to Gradescope. Feel free to write by hand and scan it in, just verify your scan is fully legible before submitting!
+Upload your written homework to Gradescope. Feel free to use any format Gradescope accepts and which we can clearly read, e.g. text file, word processor, pdf, tablet image export, scan of paper answers, etc.  It looks like any non-pdf non-image will need to be converted to one of those two formats for Gradescope.. you probably know this routine by now.
+
+We have had problems in the past with unreadable paper scans due to out-of-focus etc, please make sure to verify you can yourself easily read the scan before uploading.
