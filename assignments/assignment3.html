@@ -85,26 +85,43 @@
     <p>This is a short homework giving you some practice with operational semantics before starting on writing your Fb interpreter. Please consult <a href="http://pl.cs.jhu.edu/pl/book/book.pdf">Chapter 2 of the book</a> for the full details on various definitions, and for more examples beyond those in lecture, if you have any questions.</p>
 
 <ol>
-  <li>[5 points] Compute the following substitutions. Note that the substitution function is defined formally in Section 2.3.2 of the book.<br />
-a.  <code>(Fun y -&gt; x + 1) [3/x]</code><br />
-b.  <code>(Fun x -&gt; Fun y -&gt; x And y) [True/z]</code><br />
-c.  <code>(Fun x -&gt; Fun z -&gt; x And y) [True/y]</code><br />
-d.  <code>(Fun z -&gt; Fun y -&gt; x And z) [True/z]</code><br />
-e.  <code>((Fun x -&gt; x) (Fun y -&gt; x)) [2/x]</code><br />
-f.  <code>(Let y = x + 1 In y + 2) [5/y]</code><br />
-g.  <code>(Let f = Fun z -&gt; z + 1 In f z) [5/z]</code></li>
+  <li>
+    <p>[5 points] Compute the following substitutions. Note that the substitution function is defined formally in Section 2.3.2 of the book.</p>
+
+    <p>a.  <code>(Fun y -&gt; x + 1) [3/x]</code></p>
+
+    <p>b.  <code>(Fun x -&gt; Fun y -&gt; x And y) [True/z]</code></p>
+
+    <p>c.  <code>(Fun x -&gt; Fun z -&gt; x And y) [True/y]</code></p>
+
+    <p>d.  <code>(Fun z -&gt; Fun y -&gt; x And z) [True/z]</code></p>
+
+    <p>e.  <code>((Fun x -&gt; x) (Fun y -&gt; x)) [2/x]</code></p>
+
+    <p>f.  <code>(Let y = x + 1 In y + 2) [5/y]</code></p>
+
+    <p>g.  <code>(Let f = Fun z -&gt; z + 1 In f z) [5/z]</code></p>
+  </li>
   <li>
     <p>[9 points] The following Fb proof trees contain errors.  Describe why the proof tree is not valid (i.e. why the last line is in fact not a theorem).</p>
 
     <p><img src="a3q2.png" width="500" /></p>
   </li>
   <li>
-    <p>[15 points] Write operational semantics proofs (i.e., proof trees) showing what the following expressions evaluate to in the Fb operational semantics. Please give the whole proof trees, using the rules in Chapter 2.  You may reference one proof tree in another like a “proof tree macro” to make your answer more readable if you want (in other words, you can re-use any one proof tree in another, just like how proofs of Lemmas can be used in Theorems in math).  Note it is not a bad idea to start by running them in the reference interpreter to make sure you are on the right path.<br />
-a.  <code>Let f = (Fun y -&gt; y + 1) In Fun z -&gt; (f z) + 1</code></p>
+    <p>[15 points] Write operational semantics proofs (i.e., proof trees) showing what the following expressions evaluate to in the Fb operational semantics. Please give the whole proof trees, using the rules in Chapter 2.  You may reference one proof tree in another like a “proof tree macro” to make your answer more readable if you want (in other words, you can re-use any one proof tree in another, just like how proofs of Lemmas can be used in Theorems in math).  Note it is not a bad idea to start by running them in the reference interpreter to make sure you are on the right path.</p>
+
+    <p>a.  <code>Let f = (Fun y -&gt; y + 1) In Fun z -&gt; (f z) + 1</code></p>
 
     <p>b.  <code>(Let f = (Fun y -&gt; y + 1) In Fun z -&gt; (f z) + 1) 4</code></p>
 
     <p>c.  <code>(Fun x -&gt; (If x = 2 Then Fun x -&gt; x Else 1)) 2 4</code></p>
+  </li>
+  <li>
+    <p>[10 points] Fb currently lacks multiplication and division.  For this question we are going to define a new language <strong>FbMD</strong> which adds infix multiplication <code>*</code> and division <code>/</code> to Fb.</p>
+
+    <p>a. Define the BNF for FbMD.  Note you can write “… Fb’s …” to indicate a copy/paste of the Fb clauses.</p>
+
+    <p>b. Write new proof rules, in the spirit of the existing <code>+</code> and <code>-</code> rules.  Make sure to make a clear definition for division by zero.</p>
   </li>
 </ol>
 
