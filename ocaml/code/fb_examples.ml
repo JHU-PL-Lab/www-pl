@@ -6,7 +6,7 @@
    This file contains a series of Fb example programs.  They are formatted
    as strings which can be parsed and evaluated using the debug utilities.
 
-   To run these examples in either your interpeter, type shell command
+   To run these examples in your interpeter, type shell command
 
    $ dune utop ./Fb
 
@@ -14,18 +14,38 @@
 
    $ ./reference/Fb/toplevel.exe
 
-   First we give some Fb examples from the book.
+   Once you have oen of these utop's running, to make functions visible type
+
+   open Debugutils;;
+   open Fbdk.Ast;;
+
 *)
 
-(* To evaluate the examples below first open the Fbdk and Debugutils modules.
-   This file does not perform the actual evaluations; some examples are in comments such as
+(* Note this file does not perform the actual evaluations; 
+   some example evaluations are in comments such as
    
    peu "3+2";;
    
-   -- the peu function abreviates unparse (eval (parse "3+2"))) - parse, run, and pretty print. *)
+   -- the peu function abreviates unparse (eval (parse "3+2"))) - parse, eval, and pretty print. 
+   
+   Also remember you can use parse, eval, and unparse 
+   individually on these examples to understand the underlying OCaml 
+   AST representations and to debug your code. 
 
-#open Fbdk;;
-#open Debugutils;;
+   Lastly, if you want to easily "copy/paste" all these examples in this file
+   into the top loop you can type
+
+   #use "fb_examples.ml";;
+
+   Assuming you launched utop in the directory where this file is.
+   If you are in the wrong directory you can use the usual Linux/Mac
+   directory path stuff to load the file.  Also utop has #cd and #pwd which 
+   work like the Linux/Mac terminal commands.
+
+*)
+
+open Fbdk;;
+open Debugutils;;
 
 let ex1 = "If Not(1 = 2) Then 3 Else 4";;
 
@@ -83,58 +103,84 @@ let combK = "Function x -> Function y -> x";;
 let combS = "Function x -> Function y -> Function z -> (x z) (y z)";;
 let combD = "Function x -> x x";;
 
-(* ************************************************************* *)
-(* ****** Simplistic Macros Using String Concatenation ********* *)
-(* ************************************************************* *)
+(* ************************************************************ *)
+(* ****** Simple Fb Macros Using String Concatenation ********* *)
+(* ************************************************************ *)
 
-(* Macros: like functions but "they are inlined before program runs" *)
-(* Hackish but effective version for Fb: use OCaml as the macro language *)
-(* Take the concrete syntax view and make macros as functions on strings *)
-(* (Could also do the AST version in OCaml but harder to read and write) *)
+(* 
+   * Macros are simply functions on *code*
+   * They are run (expanded) by a compiler preprocessor to produce the final code object which is then compiled
+   * They run like how our Fb evaluator runs: **substitute**
+   * In an actual macro system you can use the full language syntax; C:
 
-(* Pairs.   First lets hack some by hand, then do the general macro. *)
+   #define double(n) (n + n) /* Full C syntax on RHS of this C macro */
+
+   Simple version for Fb: use string-functions-in-OCaml as the macro language
+   No this is not ideal but it is very simple. 
+ *)
+
+let double n = "(" ^ n ^ ") + (" ^ n ^ ")"
+
+double "2 + 4";; (* "(2 + 4) + (2 + 4)" *)
+
+(* 
+   * Why didn't we just write n ^"+" ^ n above?? We need parens around all
+   macro parameters like the n to not change the parse order.
+   * Yes, this is a hackish notion of macros
+   * But it is very simple so we will use it.
+   * Notice also that macros do not do any evaluation -- 2+4 not 6 in the above.
+*)
+
+(* Macros can be used in code-strings by appending them in *)
+
+let quad = "Fun z -> (" ^ double "z" ^ ") + (" ^ double "z" ^ ")";;
+  
+  (* this returns "Fun z -> ((z) + (z)) + ((z) + (z))" *)
+
+(* Example of a BAD macro *)
+let apply_bad f x = f^" "^x;; (* sort of looks right here ... *)
+let apply_eg = apply_bad "Fun x ->x" "0";; (* oops! this is "Fun x ->x 0" *)
+let apply_fixed f x = "("^f^")("^x^")";;
+let apply_eg_fixed = apply_fixed "Fun x ->x" "0";; (* "(Fun x ->x)(0)" *)
+
+(* Using macros to encode features in Fb
+
+   Encoding Pairs in Fb 
+
+   First lets hack some by hand, then write a general macro. *)
 
 (* Fact: the following odd thing behaves a lot like OCaml's "(3,2)" *)
 
-let pair32 = "(Fun d -> d 3 2)";;
+let pair_eg = "Fun d -> d 3 2";;
 
-(* Proof: we can "get left side out" *)
+(* Proof: we can "get left side out" (and similarly for right) *)
 
-let getleft = "Let p = "^pair32^"In p (Fun x -> Fun y -> x)"
+let getleft = "Let p = ("^pair_eg^") In p (Fun x -> Fun y -> x)"
 
 (* Macro which makes an eager pair (pair of values). *)
 let pr c1 c2  = (* c1 and c2 are strings - think macro parameters *)
-  "(Let lft = "^c1^" In Let rgt = "^c2^" In
+  "(Let lft = ("^c1^") In Let rgt = ("^c2^") In
       Function x -> x lft rgt)";;
 
 let pc = pr "34+3" "45";;  (* construct a string representing the Fb program for this pair *)
 
-(* WARNING: in order to avoid parsing precedence problems, 
-   make sure when writing simple macros to put"("^param^")" parens 
-   around each parameter.  Or use Let as above.  If you don't do these 
-   things the parse precedence can change, creating difficult bugs.  *)
-
-(* Example of a bad macro *)
-let apply f x = f^" "^x;; (* sort of looks right here ... *)
-let applyeg = apply "Fun x ->x" "0";;
-(* peu applyeg;; (* oops! mis-parsed! *) *)
-(* fix .. *)
-let apply f x = "("^f^")( "^x^")";;
-
-
-(* Real macro systems today are not string-based so do not have this problem -
-   they work over the AST internally. *)
-
 (* Macros for extracting contents of pairs *)
 let left c =  "Let c = "^c^" In c (Function x -> Function y -> x)";;
 let right c =  "("^c^") (Function x -> Function y -> y)";;
-
 let use_pr = left pc;;
 
 (* peu use_pr;; *)
 
-(* Lists.  See the book section 2.3.4 for a discussion of why this
-   works. *)
+(* A use of pairs: an Fb function which takes a pair, adds up components 
+   High level idea is Fun p -> left p + right p, add ^'s and ()'s  
+   Since pair encoding is via macros you need to escape to OCaml to use them *)
+
+let pair_add = "Fun p -> ("^ left "p" ^ ") + (" ^ right "p" ^ ")";;
+let use_pair_add =  "(" ^ pair_add ^ ")(" ^ pc ^ ")";;
+
+(* Encoding Lists.  
+
+   See the book section 2.3.4 for a discussion of why this works. *)
 
 (* First lets just make lists as pairs of (head,tail), 
    which has a bug *)
@@ -144,7 +190,7 @@ let emptylist = pr "0" "0";; (* make something up here *)
 let head e = left e;;
 let tail e = right e;;
 
-let eglist = cons "0" (cons "4" (cons "2" emptylist));;
+let eglist = cons "0" (cons "4" (cons "2" emptylist));; (* [0;4;2] encoded *)
 let eghd = head eglist;;
  
 (* peu eghd;; *)
@@ -157,7 +203,8 @@ let eghdtl = head (tail eglist);;
 
 (* peu eghdtl;; *)
 
-(* All good so far, but can't test for empty list!  Think about it. *)
+(* All good so far, but can't test for empty list!
+   Seems like "tl l = 0" would work but if l is not empty it would get stuck. *)
 
 (* Solution: tag each element with a flag of emptylist or not *)
 (* Makes lists triples of (tag,head,tail) - lets make triple macros *)
