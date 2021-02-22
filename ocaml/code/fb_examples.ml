@@ -98,7 +98,7 @@ let ex15 = "Let Rec f x =
   In f" ;;
 
 
-let diverger = "(Function x -> x x)(Function x -> x x)" ;;
+let diverger = "(Fun x -> x x)(Fun x -> x x)" ;;
 
 let combI = "Function x -> x";;
 let combK = "Function x -> Function y -> x";;
@@ -155,11 +155,12 @@ let eg_quad = quad_ast (Int 5);;
 
 (* But, it is hard for humans to code in the above format *)
 
-(* Using macros to encode features in Fb
+(* ****** Using macros to encode features in Fb ********* *)
 
-   Encoding Pairs in Fb
 
-   First lets hack some by hand, then write a general macro. *)
+(* ****** Encoding Pairs in Fb ********* *)   
+
+(* First lets hack some by hand, then write a general macro. *)
 
 (* Fact: the following odd thing behaves a lot like OCaml's "(3,2)" *)
 
@@ -168,6 +169,11 @@ let pair_eg = "Fun d -> d 3 2";;
 (* Proof: we can "get left side out" (and similarly for right) *)
 
 let getleft = "Let p = ("^pair_eg^") In p (Fun x -> Fun y -> x)"
+
+(* overly simple pair *)
+
+let pr_simple c1 c2  =  "Fun d -> d ("^c1^") ("^c2^")";;
+
 
 (* Macro which makes an eager pair (pair of values). *)
 let pr c1 c2  = (* c1 and c2 are strings - think macro parameters *)
@@ -198,9 +204,9 @@ let use_pair_add =  "(" ^ pair_add ^ ")(" ^ pc ^ ")";;
 let pr_fb = "(Fun lft -> Fun rgt -> Function x -> x lft rgt)";;
 let pr_fb_eg = pr_fb ^ "4 5";;
 
-(* Encoding Lists.  
+(* ****** Encoding Lists ********* *)
 
-   See the book section 2.3.4. *)
+(* See the book section 2.3.4. *)
 
 (* First lets just make lists as pairs of (head,tail), 
    which has a bug *)
@@ -254,19 +260,27 @@ let eglength = "("^length^")("^eglist^")";;
 
 (* peu eglength;; (* 3 *) *)
 
-(* Freeze and thaw macros: stop and start evaluation explicitly. 
+(* ****** Freeze and thaw macros ********* *)
+
+(* Idea: stop and start evaluation explicitly. 
    These can be used to encode lazy data structures including infinite lists *)
+
+(* Before making the macro, it is nothing but a dummy function *)
+let fr = "(Fun _ -> 5 + 2 + 10922)";;
+(* peu fr;; -- observe how evaluating this does nothing - don't evaluate function body *)
+let thaw_fr = fr ^ "304949";; (* any application will "thaw" it. *) 
+
+(* Now let us make a macro for this simple operation *)
 
 let freeze e = "(Fun x -> ("^e^"))";; (* the Fun blocks the evaluator from e *)
 let thaw e = "(("^e^") 0)";; (* the 0 here is arbitrary *)
 
 (* Using Freeze and Thaw *)
 
-let lazy_num = freeze "5+2+10922";;
+let lazy_num = freeze "5 + 2 + 10922";;
 (* peu lazy_num (* notice no arithmetic evaluation is taking place *) *)
 let lazy_double = "(Fun nl -> "^thaw "nl"^" + "^thaw "nl"^")";;
 let using_lazy = "Let f = "^lazy_double^" In f "^lazy_num;;
-
 (* peu using_lazy;; *)
 
 (* Freeze above has a bug if x occurs free in expression e. *)
@@ -278,6 +292,8 @@ let thaw_bad = thaw bad_freeze_use;; (* should be 6 but returns 1 *)
 let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* a hack; really should find a variable not in e *)
 (* This issue is called a _hygiene condition_ and real-world macro systems need to address this *)
 
+(* ****** Encoding Let as function application ********* *)
+
 (* Let is built-in but it is also easy to define as a macro: it is just a function call.
 *)
 
@@ -286,9 +302,9 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* Let z = 2 + 3 In z + 
 
 (* peu let_ex;; *)
 
-(* ************************************* *)
-(* *** Y Combinator ******************** *)
-(* ************************************* *)
+(* ***************************************** *)
+(* ********* The Y Combinator ************** *)
+(* ***************************************** *)
 
 (* Recursion in Fb a la Python explicit chaining of self as an argument *)
 
