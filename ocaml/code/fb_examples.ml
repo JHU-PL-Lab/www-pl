@@ -170,17 +170,22 @@ let pair_eg = "Fun d -> d 3 2";;
 
 let getleft = "Let p = ("^pair_eg^") In p (Fun x -> Fun y -> x)"
 
-(* overly simple pair *)
+(* An overly simple pair macro reflecting what we did above *)
 
 let pr_simple c1 c2  =  "Fun d -> d ("^c1^") ("^c2^")";;
+let pair_eg_again = pr_simple "3" "2";;
 
+(* pr_simple works for the above, but it makes a *lazy* pair, the components are not evaluated *)
 
-(* Macro which makes an eager pair (pair of values). *)
-let pr c1 c2  = (* c1 and c2 are strings - think macro parameters *)
-  "(Let lft = ("^c1^") In Let rgt = ("^c2^") In
+let lazy_pair_eg = pr_simple "2+3" "3";; 
+(* peu lazy_pair_eg  -- does not compute the 2+3 --> LAZY pair, not what OCaml does *)
+
+(* Macro which makes an eager pair, which is the OCaml form *)
+let pr l r  =
+  "(Let lft = ("^l^") In Let rgt = ("^r^") In
       Function x -> x lft rgt)";;
 
-let pc = pr "34+3" "45";;  (* construct a string representing the Fb program for this pair *)
+let pc = pr "34+3" "45";; (* peu pc is "Function x -> x 37 45" -- eager pair that we wanted *)
 
 (* Macros for extracting contents of pairs *)
 let left c =  "Let c = "^c^" In c (Function x -> Function y -> x)";;
@@ -296,6 +301,11 @@ let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* a hack; really should find a va
 
 (* Let is built-in but it is also easy to define as a macro: it is just a function call.
 *)
+
+(* Here is a concrete example of this encoding *)
+
+let let_eg = "Let x = 3+4 In x - 44";;
+let let_as_application =  "(Fun x -> x - 44) (3+4)";; (* has exact same effect as previous Let *)
 
 let fblet x e1 e2 = "(Fun "^x^" -> "^e2^")("^e1^")";;
 let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* Let z = 2 + 3 In z + z *)
