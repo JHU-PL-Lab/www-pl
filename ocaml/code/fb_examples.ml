@@ -44,7 +44,7 @@
 
 *)
 
-open Fbdk;;
+open Fbdk.Ast;;
 open Debugutils;;
 
 let ex1 = "If Not(1 = 2) Then 3 Else 4";;
@@ -71,6 +71,8 @@ let ex8 =
           x1 (x2 - 1)
   In x1 100";;
 
+(* Here is a pretty printer for strings that are programs *)
+let pp s = s |> parse |> unparse |> print_string |> print_newline;;
 
 let ex9 = "If 3 = 4 Then 5 Else 4 + 2" ;;
 
@@ -119,7 +121,7 @@ let combD = "Function x -> x x";;
    No this is not ideal but it is very simple. 
  *)
 
-let double n = "(" ^ n ^ ") + (" ^ n ^ ")"
+let double n = "(" ^ n ^ ") + (" ^ n ^ ")";;
 
 double "2 + 4";; (* "(2 + 4) + (2 + 4)" *)
 
@@ -137,15 +139,25 @@ let quad = "Fun z -> (" ^ double "z" ^ ") + (" ^ double "z" ^ ")";;
   
   (* this returns "Fun z -> ((z) + (z)) + ((z) + (z))" *)
 
-(* Example of a BAD macro *)
+
+(* Example of a bad string-based macro *)
 let apply_bad f x = f^" "^x;; (* sort of looks right here ... *)
 let apply_eg = apply_bad "Fun x ->x" "0";; (* oops! this is "Fun x ->x 0" *)
 let apply_fixed f x = "("^f^")("^x^")";;
 let apply_eg_fixed = apply_fixed "Fun x ->x" "0";; (* "(Fun x ->x)(0)" *)
 
+
+(* A less hackish way to write macros would be to use ASTs as input and output to macros *)
+
+let double_ast n = Plus(n,n);;
+let quad_ast n = Plus(double_ast n, double_ast n);;
+let eg_quad = quad_ast (Int 5);;
+
+(* But, it is hard for humans to code in the above format *)
+
 (* Using macros to encode features in Fb
 
-   Encoding Pairs in Fb 
+   Encoding Pairs in Fb
 
    First lets hack some by hand, then write a general macro. *)
 
@@ -178,28 +190,30 @@ let use_pr = left pc;;
 let pair_add = "Fun p -> ("^ left "p" ^ ") + (" ^ right "p" ^ ")";;
 let use_pair_add =  "(" ^ pair_add ^ ")(" ^ pc ^ ")";;
 
+
+(* Note we could have instead directly made pr a 2-argument Fb function.
+   In fact in a way this is easier since Fb makes sure the components were evaluated
+*)
+
+let pr_fb = "(Fun lft -> Fun rgt -> Function x -> x lft rgt)";;
+let pr_fb_eg = pr_fb ^ "4 5";;
+
 (* Encoding Lists.  
 
-   See the book section 2.3.4 for a discussion of why this works. *)
+   See the book section 2.3.4. *)
 
 (* First lets just make lists as pairs of (head,tail), 
    which has a bug *)
 
-let cons e1 e2 = pr e1 e2;; (* use the above pair macro in cons (::) macro *)
-let emptylist = pr "0" "0";; (* make something up here *)
-let head e = left e;;
-let tail e = right e;;
+let cons_buggy e1 e2 = pr e1 e2;; (* use the above pair macro in cons (::) macro *)
+let emptylist_buggy = pr "0" "0";; (* make something up here *)
+let head_buggy e = left e;;
+let tail_buggy e = right e;;
 
-let eglist = cons "0" (cons "4" (cons "2" emptylist));; (* [0;4;2] encoded *)
-let eghd = head eglist;;
- 
-(* peu eghd;; *)
-
-let egtl = tail eglist;;
-
-(* peu egtl;; *)
-
-let eghdtl = head (tail eglist);;
+let eglist = cons_buggy "0" (cons_buggy "4" (cons_buggy "2" emptylist_buggy));; (* [0;4;2] encoded *)
+let eghd = head_buggy eglist;; (* evals to 0 *)
+let egtl = tail_buggy eglist;;
+let eghdtl = head_buggy (tail_buggy eglist);; (* evals to 4 *)
 
 (* peu eghdtl;; *)
 
@@ -209,7 +223,7 @@ let eghdtl = head (tail eglist);;
 (* Solution: tag each element with a flag of emptylist or not *)
 (* Makes lists triples of (tag,head,tail) - lets make triple macros *)
 
-let triple a b c = pr (pr a b) c;; (* triples in terms of pairs *)
+let triple a b c = pr (pr a b) c;; (* triples in terms of pairs (could have also made triples directly) *)
 let tfirst t = left (left t);;
 let tsecond t = right (left t);;
 let tthird t = (right t);;
@@ -220,19 +234,13 @@ let tail e = tthird e;;
 let isempty e = tfirst e;; (* Pull out the tag: True -> empty list, False -> not *)
 
 let eglist = cons("0",cons("4",cons("2",emptylist)));;
+(* This is in OCaml-triples is something like (false, (0, (false, 4, (false, 2, (true, 0, 0)))))
+   - doesn't work in OCaml since type of each list is different but fine in Fb *)
 let eghd = head eglist;;
-
-(* peu eghd;; *)
-
 let egtl = tail eglist;;
-
-(* peu egtl;; *)
-
 let eghdtl = head (tail eglist);;
 
-(* peu eghdtl;; *)
-
-(* Now for a real program: length of a list *)
+(* Now for a real program: compute the length of a list *)
 
 let length =
  "Let Rec len l =
@@ -242,11 +250,12 @@ let length =
           1 + len ("^tail "l"^")
    In len";;
 
-let eglength = "Let len = "^length^" In len ("^eglist^")";;
+let eglength = "("^length^")("^eglist^")";;
 
-(* peu eglength;; *)
+(* peu eglength;; (* 3 *) *)
 
-(* Freeze and thaw macros: stop and start evaluation explicitly. *)
+(* Freeze and thaw macros: stop and start evaluation explicitly. 
+   These can be used to encode lazy data structures including infinite lists *)
 
 let freeze e = "(Fun x -> ("^e^"))";; (* the Fun blocks the evaluator from e *)
 let thaw e = "(("^e^") 0)";; (* the 0 here is arbitrary *)
@@ -265,8 +274,8 @@ let using_lazy = "Let f = "^lazy_double^" In f "^lazy_num;;
 let bad_freeze_use = "Let x = 5 In ("^freeze "1 + x"^")"
 let thaw_bad = thaw bad_freeze_use;; (* should be 6 but returns 1 *)
 
-(* fix hack *)
-let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* a hack; really should find a var not in e *)
+(* A somewhat-fix *)
+let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* a hack; really should find a variable not in e *)
 (* This issue is called a _hygiene condition_ and real-world macro systems need to address this *)
 
 (* Let is built-in but it is also easy to define as a macro: it is just a function call.
