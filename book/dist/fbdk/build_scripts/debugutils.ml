@@ -19,3 +19,4 @@ let parse_eval_print s =
   Format.printf "==> %a\n" Fbdk.Pp.pp_expr 
     (Fbdk.Interpreter.eval @@ parse s)
 
+let pp s = s |> parse |> unparse |> print_string |> print_newline;;

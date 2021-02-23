@@ -126,6 +126,14 @@ $ ./reference/Fb/interpreter.exe
 
 Pressing Ctrl+C or Ctrl+D will exit the toploop.
 
+Apple computers now have a new security "feature" which disallows binaries from third parties.  You will get an error message if you try running the reference interpreter `reference/interpreter.exe`.  Here is how to whitelist `interpreter.exe` so the above will work:
+
+  0. Try to open it, get an error message (need to do this), close the dialog.
+  1. Open System Preferences, click Security & Privacy, then click General.
+  2. Click on the lock icon to unlock the pane, enter admin password.
+  3. There will be a button you can click to approve `interpreter.exe`, click it.
+  4. `interpreter.exe` should work as described above now.
+
 The interpreters may also be used to run files directly rather than through a
 toploop.  The interpreter may take a filename as an argument:
 
