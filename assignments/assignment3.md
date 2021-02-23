@@ -1,3 +1,5 @@
+## Assignment 3: Operational Semantics
+
 This is a short homework giving you some practice with operational semantics before starting on writing your Fb interpreter. Please consult [Chapter 2 of the book](http://pl.cs.jhu.edu/pl/book/book.pdf) for the full details on various definitions, and for more examples beyond those in lecture, if you have any questions.
 
 1.  [5 points] Compute the following substitutions. Note that the substitution function is defined formally in Section 2.3.2 of the book.
