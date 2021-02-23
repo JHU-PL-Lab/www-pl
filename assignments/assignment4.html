@@ -84,8 +84,6 @@
 <meta charset="utf-8" />
     <h2 id="assignment-4-f-interpreter-and-programming-in-f">Assignment 4: F♭ Interpreter and Programming in F♭</h2>
 
-<h2 id="draft-only-at-this-point-we-will-be-adding-testing-and-part-2-questions--the-part-1-assignment-is-complete-below">DRAFT only at this point, we will be adding testing and part 2. questions.  The part 1. assignment is complete below.</h2>
-
 <p>This assignment has two parts.</p>
 
 <ol>
@@ -124,6 +122,10 @@
   <li>There are many implementations of interpreters for functional languages out there, but you need to hedge closely to the given operational semantics rules in your implementation. For example make sure you are using substitution for function application, etc. We will look over your code to verify this.</li>
   <li>Typing <code>Printexc.record_backtrace true;;</code> into <code>utop</code> will enable a stack trace to be dumped if your interpreter has a run-time error.  If you start the standalone F♭ interpreter with the command line argument <code>--show-backtrace</code> it will accomplish the same thing.</li>
 </ol>
+
+<h3 id="testing">Testing</h3>
+
+<p>You can test your code against the reference interpreter on the examples in the <code>fb_examples.ml</code> file.  We also plan on putting up a <code>dune</code> test harness soon to add some automated testing capability.</p>
 
 <h3 id="submission">Submission</h3>
 

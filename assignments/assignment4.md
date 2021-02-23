@@ -1,7 +1,5 @@
 ## Assignment 4: F♭ Interpreter and Programming in F♭
 
-## DRAFT only at this point, we will be adding testing and part 2. questions.  The part 1. assignment is complete below.
-
 This assignment has two parts.
 
 1.  Write an interpreter for F♭ as defined in the book. You need to implement all features **except** for `Let Rec` (if you implement `Let Rec` you can get 5 points extra credit).
@@ -31,6 +29,10 @@ We have provided you with the FbDK to make your job easier.
     3.  `check_closed`, a function which determines whether or not an expression is closed.  Remember that you must raise an exception if you are provided an expression which is not closed, such as `Function x -> y`.
 6.  There are many implementations of interpreters for functional languages out there, but you need to hedge closely to the given operational semantics rules in your implementation. For example make sure you are using substitution for function application, etc. We will look over your code to verify this.
 7.  Typing `Printexc.record_backtrace true;;` into `utop` will enable a stack trace to be dumped if your interpreter has a run-time error.  If you start the standalone F♭ interpreter with the command line argument `--show-backtrace` it will accomplish the same thing.
+
+### Testing
+
+You can test your code against the reference interpreter on the examples in the `fb_examples.ml` file.  We also plan on putting up a `dune` test harness soon to add some automated testing capability.
 
 ### Submission
 
