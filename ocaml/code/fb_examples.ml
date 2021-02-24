@@ -345,11 +345,17 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
 let summate0 = "(Fun self -> Fun arg ->
     If arg = 0 Then 0 Else arg + self self (arg - 1))";;
 
-let summate = (summate0 ^ summate0)
-
 let summate0test = (summate0 ^ summate0 ^ "5");;
 
-(* The above works!  In general can write arbitrary recursive programs with self-passing.
+(* The above works!  In general can write arbitrary recursive programs with self-passing. *)
+
+(* Here is summate as an independent function *)
+
+let summate = (summate0 ^ summate0)
+
+let summate0test' = (summate ^ "5");;
+
+(*
 
   Let us *just* apply the first argument of the two above to see what is going on:
 
