@@ -308,13 +308,37 @@ let let_eg = "Let x = 3+4 In x - 44";;
 let let_as_application =  "(Fun x -> x - 44) (3+4)";; (* has exact same effect as previous Let *)
 
 let fblet x e1 e2 = "(Fun "^x^" -> "^e2^")("^e1^")";;
-let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* Let z = 2 + 3 In z + z *)
+let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 3 In z + z" *)
+(* pp let_ex;; - returns `(Function z -> z + z) (2 + 3)` *)
+(* peu let_ex;; - returns "10" *)
 
-(* peu let_ex;; *)
+(* *********************** Equivalence ************************* *)
 
-(* ***************************************** *)
+(* Observe that the application and the let form are *equivalent* 
+    - replace a Let with a macro-let or vice-versa and get same answers 
+
+   Formally, we can say the Let-version and the macro version are always equivalent:
+      Let x = e in e'   ~=   (Fun x -> e')(e)   for any possible expressions e and e' and any variable x 
+
+      -- the ~= relation is called *operational equivalence*, we will define later.
+      -- it is an equivalence relation and lets us do "algebra on programs"
+      -- we will informally use it below to help our understanding.
+*)
+
+(* Here are some classic equivalences from 90+ years ago:
+
+  alpha-equivalence: rename parameter
+      Fun x -> x ~= Fun y -> y   
+      (and in general can rename any parameter with alpha, just change all uses as well)
+  eta-equivalence: forward
+      Fun x -> e x ~= e      if e is a function
+  beta-equivalance: "inlining a function call anywhere preserves meaning"
+      (Fun x -> e) v ~= e[v/x] (with a subtle side-condition we skip for now)
+
+  Also  ~= is transitive, reflexive, symmetric, and we can always "substitute ~= for ~="
+*)
+
 (* ********* The Y Combinator ************** *)
-(* ***************************************** *)
 
 (* Recursion in Fb a la Python explicit chaining of self as an argument *)
 
@@ -323,10 +347,31 @@ let summate0 = "(Fun self -> Fun arg ->
 
 let summate0test = (summate0 ^ summate0 ^ "5");;
 
-(* The above works!  In general can write arbitrary recursive programs.
+(* The above works!  In general can write arbitrary recursive programs with self-passing.
 
-  But, lets make this a more user-friendly macro:
-  1) get rid of explicit self parameter in recursive calls ( the `self self`) and     
+  Let us *just* apply the first argument of the two above to see what is going on:
+
+  pp @@ peu (summate0^summate0);; -- returns:
+  Function arg ->
+    If arg = 0 Then
+        0
+    Else
+        arg + (Function self ->
+                   Function arg ->
+                       If arg = 0 Then 0 Else arg + self self (arg - 1)) 
+
+              (Function self ->
+                   Function arg -> 
+                       If arg = 0 Then 0 Else arg + self self (arg - 1)) 
+                       
+              (arg - 1)
+
+  -- we can see the 2nd parameter `5` will come into the variable `arg` here 
+  -- and the inner pattern is like what we started with, two summage0's applied to 5-1 ~= 4
+  -- so, the pattern repeats.  Fortunately it stops when arg = 0, no infinite looping like paradoxes.
+
+  Now, lets make a more user-friendly macro for defining recursive functions.
+  1) get rid of extra self parameter in recursive calls ( the `self self`) and     
   2) get rid of the need to do the final line as a separate thing    
      -- lets make one master combinator to do all this. *)
 
@@ -335,7 +380,7 @@ let summate0test = (summate0 ^ summate0 ^ "5");;
 ycomb (Fun self -> Fun arg ->
     If arg = 0 Then 0 Else arg + self (arg - 1)) 5
 
-    computes to 15.
+    computes to 15.  This is not far from Python's `self` syntax.
 
 *)
 
@@ -343,15 +388,15 @@ ycomb (Fun self -> Fun arg ->
    and using them to make a Y-combinator *)
 
 (* First a very basic and common functional programming refactoring:
-   Extract out an operation as a (function) parameter.
+   Extract out a concrete operation as a (function) parameter.
 
-   Consider this start program:
+   Consider this starting program:
 *)
 
 let bump = "(Fun x -> If x = 0 Then 1 Else 0)";;
 
 (* Suppose we wanted to convert this to code where the    
-   equivalence relation was a parameter, `eq`, not just "="
+   equivalence relation `=` was instead a parameter, `eq`
       -- makes for more general code *)
 
 let bump_general = "(Fun eq -> Fun x -> If eq x 0 Then 1 Else 0)";;
@@ -368,6 +413,8 @@ let test1 = bump^"4";;
 let test2 = new_bump^"4";;
 (* peu test2;; *)
 
+(* In general, we have bump ~= new_bump -- in *any* scenario we can replace one with the other safely *)
+
 (* Warm-up for a particular refactoring neeed to make ycomb: 
 
   Suppose we wanted `x + x` to appear in multiple places in some 
@@ -379,13 +426,18 @@ let test2 = new_bump^"4";;
 (* Suppose programmer writes this: *)
 let code = "(Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1)";; 
 
- (* And we want to convert to this: *)
+ (* And we want to convert to this just with Fb code: *)
 let goal_code =
    "(Fun x -> Fun y -> If y = 1 Then (x + x) Else (x + x) + 1)";;
 
-(* Here is a converter that will do it: its just a function
+(* Here is converter Fb code that will do it: its just a function
    taking original code as argument *)
 let cvrt = "(Fun code -> Fun x -> Fun y -> code (x + x) y)";;
+
+(* Observe how it 
+    -- replaces the Fun xpx parameter with Fun x, 
+    -- keeps the Fun y parameter 
+    -- passes code `x + x` and `y`, meaning y just forwarded, x doubled and forwarded *)
 
 (* Applying the converter to our code *)
 let converted_code = "("^cvrt^")("^code^")";;
@@ -404,10 +456,12 @@ Function x ->
         (Function xpx -> Function y -> If y = 1 Then xpx Else xpx + 1) (x + x) y 
 *)
 
-(* Note the above is not identical to goal_code, but it is *equivalent*
-   -- the evaluator stopped by Fun x before it could plug in (x + x). 
-   -- we will define a formal notion of equivalence on programs later;
-   -- for now we can informally say e1 ~= e1 means e1&e2 "have the same behavior".
+(* Note the above is not identical to goal_code, but it is *equivalent*:
+
+   converted_code ~= goal_code
+
+   Why ~=?  Informally, the evaluator stopped by Fun x before it could plug in (x + x), 
+   but when x & y are applied the x+x will get run.
 *)
 
 (* Now back to Y above.. lets do the same trick, but
@@ -456,13 +510,22 @@ let goy0 = ycomb0^code^" 5";;
 
 (* The above works fine but we can simplify it a bit:
    inline variable code for repl's parameter f in ycomb0  
-   to get ycomb that is in the book*)
+   to get ycomb that is in the book 
+   -- this is an example of the beta ~= law mentioned above *)
 
 let ycomb = 
    "(Fun code -> 
-     Let repl = Fun self -> Fun x -> code (self self) x 
-     In repl repl)";;
+       Let repl = Fun self -> Fun x -> code (self self) x 
+       In repl repl)";;
 
 (* Again lets verify this works *)
 let goy = ycomb^code^" 5";;
 (* peu goy;; *)
+
+(* Equivalent way with Fb names for things via `Let` .. 
+   for HW4 part 2 this way may be easier to make sense of. *)
+let goy' = 
+"Let yy = "^ycomb^" In 
+Let cc = "^code^" In 
+Let summate = yy cc In
+summate 5";;
