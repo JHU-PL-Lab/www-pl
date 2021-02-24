@@ -323,9 +323,11 @@ let summate0 = "(Fun self -> Fun arg ->
 
 let summate0test = (summate0 ^ summate0 ^ "5");;
 
-(* The above works but lets 
-  1) get rid of explicit self parameter in recursive calls and     
-  2) get rid of the need to do the final line with one function    
+(* The above works!  In general can write arbitrary recursive programs.
+
+  But, lets make this a more user-friendly macro:
+  1) get rid of explicit self parameter in recursive calls ( the `self self`) and     
+  2) get rid of the need to do the final line as a separate thing    
      -- lets make one master combinator to do all this. *)
 
 (* So, our goal is to make a function ycomb such that:
@@ -337,37 +339,40 @@ ycomb (Fun self -> Fun arg ->
 
 *)
 
-
 (* Background: refactorings in Fb code 
    and using them to make a Y-combinator *)
 
-(* Very simple refactoring to start with, consider: *)
+(* First a very basic and common functional programming refactoring:
+   Extract out an operation as a (function) parameter.
+
+   Consider this start program:
+*)
 
 let bump = "(Fun x -> If x = 0 Then 1 Else 0)";;
 
 (* Suppose we wanted to convert this to code where the    
-   equivalence relation was a parameter, not just "="
+   equivalence relation was a parameter, `eq`, not just "="
       -- makes for more general code *)
 
-let bumpgeneral = "(Fun eq -> Fun x -> If eq x 0 Then 1 Else 0)";;
+let bump_general = "(Fun eq -> Fun x -> If eq x 0 Then 1 Else 0)";;
 
 (* Now feed in a concrete function for equivalence *)
 
-let newbump = bumpgeneral^"(Fun n1 -> Fun n2 -> n1 = (n2 + 0))";;
+let new_bump = bump_general^"(Fun n1 -> Fun n2 -> n1 = (n2 + 0))";;
 
 (* The following two tests should give the same result *)
 
 let test1 = bump^"4";;
 (* peu test1;; *)
 
-let test2 = newbump^"4";;
+let test2 = new_bump^"4";;
 (* peu test2;; *)
 
 (* Warm-up for a particular refactoring neeed to make ycomb: 
 
-  Suppose we want x+x in multiple places in some code, 
-  but want the programmer to just write xpx, and rig 
-  a harness to pass in x+x in place of x. 
+  Suppose we wanted `x + x` to appear in multiple places in some 
+  code, but want the programmer to just write `xpx`, and rig 
+  a harness to pass in `x + x` in place of x. 
 
   This will be more clear from the example below. *)
 
@@ -375,49 +380,62 @@ let test2 = newbump^"4";;
 let code = "(Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1)";; 
 
  (* And we want to convert to this: *)
-let goalcode =
-   "(Fun x -> Fun y -> If y = 1 Then x+x Else x + x + 1)";;
+let goal_code =
+   "(Fun x -> Fun y -> If y = 1 Then (x + x) Else (x + x) + 1)";;
 
 (* Here is a converter that will do it: its just a function
    taking original code as argument *)
 let cvrt = "(Fun code -> Fun x -> Fun y -> code (x + x) y)";;
 
-(* Test to show it works *)
+(* Applying the converter to our code *)
+let converted_code = "("^cvrt^")("^code^")";;
 
+(* Now we can test to show it works *)
 (* First lets run the goal *)
-let run0 = goalcode^"5 2";;
-(* peu run0;; *)
-
-(* Lets show the converted code has the same value *)
-
-let convertedcode = "("^cvrt^")("^code^")";;
-let run = convertedcode^" 5 2";;
-(* peu run;; *)
+let run0 = goal_code^"5 2";;  (* peu run0;; *)
+(* The converted code has the same value *)
+let run = converted_code^" 5 2";; (* peu run;; *)
 
 (* We can see how we are doing code surgery if we just apply code argument: *)
 
-(* peu convertedcode;; (* shows how we plugged in the x+x; this returns
-Fun x -> Fun y -> ((Fun xpx -> Fun y -> If y = 1 Then xpx
-                    Else xpx + 1) (x + x)) (y) *) *)
+(* pp @@ peu converted_code;; -- shows how we plugged in the x+x; this prints
+Function x ->
+    Function y ->
+        (Function xpx -> Function y -> If y = 1 Then xpx Else xpx + 1) (x + x) y 
+*)
 
-(* Note in the above is not identical to goalcode, but its equivalent
-   -- the evaluator stopped by Fun x before it could plug in x+x. *)
+(* Note the above is not identical to goal_code, but it is *equivalent*
+   -- the evaluator stopped by Fun x before it could plug in (x + x). 
+   -- we will define a formal notion of equivalence on programs later;
+   -- for now we can informally say e1 ~= e1 means e1&e2 "have the same behavior".
+*)
 
 (* Now back to Y above.. lets do the same trick, but
-   instead of replacing xpx with x+x lets replace
-   rec with self self to get something like summate0. *)
+   instead of replacing xpx with (x + x) lets replace
+   rec with (self self) to get something like summate0. *)
 
 (* Here is the code we would like to write *)
 let code = "(Fun rec -> Fun arg -> 
                If arg = 0 Then 0 Else arg + rec (arg - 1))"
 
-(* here is the replacer -- replace rec with self self in above
+(* here is the replacer -- replace rec with (self self) in above
    for f here we will pass in "code" above *)
 
 let repl = "(Fun f -> Fun self -> Fun x -> f (self self) x)";;
 
 (* Do the replacer -- should make something like summate0 *)
 let summate0again = "("^repl^code^")";;
+(* As with the above x + x case we get an *equivalent* but not *identical* program:
+pp @@ peu summate0again;; returns 
+Function self ->
+    Function x ->
+        (Function rec ->
+             Function arg -> If arg = 0 Then 0 Else arg + rec (arg - 1)) (self self) x
+
+   -- "in our heads" we can see that the (self self) will be passed in for rec giving the desired result
+   -- this is a bit subtle as recall our functions are call-by-value so it will in fact first compute
+        self to a value so it won't even exactly be (self self).. a bit ugly!
+*)
 let go = summate0again^summate0again^"(5)";;
 (* peu go;; (* verify it works *) *)
 
@@ -428,103 +446,23 @@ let go = summate0again^summate0again^"(5)";;
 
 let ycomb0 =
   "(Fun code -> 
-      Let repl = (Fun f -> Fun self -> 
-                            Fun x -> f (self self) x) 
+      Let repl = Fun f -> Fun self -> Fun x -> f (self self) x 
       In
-        (repl code)(repl code))";;
+        (repl code)(repl code))";; (* recall `(repl code)` is ~= summate0 so this is ~= summate0 summate0 *)
 
 (* Lets verify it works *)
 let goy0 = ycomb0^code^" 5";;
 (* peu goy0;; *)
 
-(* Notice we can simplify ycomb0:
+(* The above works fine but we can simplify it a bit:
    inline variable code for repl's parameter f in ycomb0  
-   to get ycomb that is in the book, the Y we need *)
+   to get ycomb that is in the book*)
 
-let ycomb = "(Fun code -> Let repl = Fun self -> Fun x -> code (self self) x In repl repl)";;
+let ycomb = 
+   "(Fun code -> 
+     Let repl = Fun self -> Fun x -> code (self self) x 
+     In repl repl)";;
 
 (* Again lets verify this works *)
 let goy = ycomb^code^" 5";;
 (* peu goy;; *)
-
-
-(* *********************************************************** *)
-(* Another version of Y derivation, based on whats in the book *)
-(* This is not covered in lecture, its "color commentary"      *)
-(* *********************************************************** *)
-
-(* Step one: lets write the function like we want to: *)
-
-let summate_bod =
-  "(Fun this -> Fun arg ->
-      If arg = 0 Then 0 Else arg + this (arg - 1))";;
-
-(* Step two: make a fancy *combinator* to turn summate_bod into summate0-like thing *)
-
-let this_to_thisthis =
-  "(Fun bod ->
-      Fun this -> Fun arg -> bod (this this) arg)";;
-
-let summate_bod_to_summate0 = "("^this_to_thisthis ^ summate_bod^")";;
-
-(* Now lets test to verify this refactoring worked. *)
-
-let summate_bod_test = (summate_bod_to_summate0 ^ summate_bod_to_summate0 ^ "93");;
-
-(* peu summate_bod_test;; *)
-
-(* Yes, it worked!  Now lets compose these two steps to build recursive function in one go. *)
-
-let combY =
-  "(Function body ->
-      Let this_to_thisthis = (Function this -> Function arg -> body (this this) arg)
-      In this_to_thisthis this_to_thisthis)
-   ";;
-
-let summate = combY^"(Function this -> Function arg ->
-    If arg = 0 Then 0 Else arg + this (arg - 1))";;
-
-(* peu (summate ^ "8");; *)
-
-(* Recursion via self passing -- "Encoding Recursion by Passing Self" in the book *)
-(* This is another way Y can be built, it may help you understand it better *)
-
-(* First, the paradox *)
-
-let paradox = "(Function x -> Not(x x))(Function x -> Not(x x))" ;;
-
-(* Next, freeze the "x x" so it doesn't chain forever
-   and repace Not with a macro parameter -- something we can plug in *)
-
-let makeFroFs cF = "(Function x -> ("^cF^")(Function _ -> x x)) (Function x -> ("^cF^")(Function _ -> x x))";;
-
-(* Observe cF is getting a parameter which is a frozen version of the cF generator *)
-
-(* A concrete functional we can plug in to do recursion *)
-let fF = "(Function froFs -> Function n ->
-If n = 0 Then 0 Else n + froFs 33 (n - 1))";;
-
-let fCall = "("^(makeFroFs fF)^") 5";;
-
-(* peu fCall;; *)  (* look ma, no Let Rec! *)
-
-(* The hard stuff is done, now we just clean things up *)
-
-(* replace dummy parameter _ with actual argument: pun *)
-
-let makeFs cF = "(Function x -> ("^cF^")(Function n -> (x x) n)) (Function x -> ("^cF^")(Function n -> (x x) n))"
-
-let fF' = "(Function fs -> Function n ->
-If n = 0 Then 0 Else n + fs (n - 1))";;
-
-let fCall' = "("^(makeFs fF')^") 5";;
-
-(* replace macro with a function call - embed the macro in PL *)
-
-let yY = "(Function cF -> (Function x -> cF (Function n -> (x x) n)) (Function x -> cF (Function n -> (x x) n)))"
-
-let yEg = yY^fF';;
-
-let fCall'' = "("^yEg^") 5";;
-
-(* peu fCall'';; *)
