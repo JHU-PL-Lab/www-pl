@@ -319,7 +319,7 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
 
    Formally, we can say the Let-version and the macro version are always equivalent:
       Let x = e in e'   ~=   (Fun x -> e')(e)   for any possible expressions e and e' and any variable x 
-
+      e.g. Let x = 3+4 In x - 44 ~= (Fun x -> x - 44) (3+4) by above
       -- the ~= relation is called *operational equivalence*, we will define later.
       -- it is an equivalence relation and lets us do "algebra on programs"
       -- we will informally use it below to help our understanding.
@@ -344,6 +344,8 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
 
 let summate0 = "(Fun self -> Fun arg ->
     If arg = 0 Then 0 Else arg + self self (arg - 1))";;
+
+let summate = (summate0 ^ summate0)
 
 let summate0test = (summate0 ^ summate0 ^ "5");;
 
@@ -433,6 +435,8 @@ let goal_code =
 (* Here is converter Fb code that will do it: its just a function
    taking original code as argument *)
 let cvrt = "(Fun code -> Fun x -> Fun y -> code (x + x) y)";;
+
+(* Note: this turns code into goal_code!! *)
 
 (* Observe how it 
     -- replaces the Fun xpx parameter with Fun x, 
