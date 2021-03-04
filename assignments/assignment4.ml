@@ -85,11 +85,11 @@ let test_dict =
   "Let da = ("^ add_dict ^")("^ empty ^") 1 11 
    In ("^ add_dict ^") da 2 12";;
 let get_test = "("^ get_dict ^")("^ test_dict ^") 1" ;; 
-(* assert (peu get_test == "11");; *)
+(* assert (peu get_test = "11");; *)
 let get_test_nonexistent = "("^ get_dict ^")("^ test_dict ^") 99" ;; 
 (* raises exception *)
 let removed_dict = "("^ remove_dict ^")("^ test_dict ^") 1";;
 let get_test_removed = "("^ get_dict ^")("^ removed_dict ^") 1" ;; 
 (* also should exception *)
 let get_test_not_removed = "("^ get_dict ^")("^ removed_dict ^") 2" ;; 
-(* assert (peu get_test_not_removed == "12");; *)
+(* assert (peu get_test_not_removed = "12");; *)
