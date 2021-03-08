@@ -225,10 +225,10 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Tuples, Records, Variants</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment5.html">5 - Y/Opsem/Records/Variants</a></div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">4p1 (4p2 Friday)</div>
+        <div align="center" class="body">4p1 (4p2 Sun)</div>
       </td>
     </tr>
     <tr> 
@@ -242,7 +242,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;State</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body"><a href="assignments/assignment5.html">5 - Y/Opsem/Records/Variants</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -262,7 +262,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">5 (Fri)</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
       </tr>
       <tr> 
@@ -290,7 +290,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">5</div>
       </td>
     </tr>
     <tr> 
@@ -301,13 +301,13 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Midterm</div>
+        <div align="left" class="body">&nbsp;Midterm out, no lecture</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a></div>
+        <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a> (Fri)</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">Midterm (Sat)</div>
       </td>
     </tr>
     <tr> 
