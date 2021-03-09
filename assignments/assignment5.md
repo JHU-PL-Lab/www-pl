@@ -8,9 +8,9 @@
 
 2.  (30 points) Let us consider **FbPp**, **Fb** extended to have pairs.  This is similar to the **FbR** language as covered in lecture, pairs are like the 2-ary records but there are no field names so they are a bit simpler.  The book contains a language **FbP** in Section 3.1; here we are studying a minor variation **FbPp** which has *pattern matching* to destruct the data instead of the `Left`/`Right` projections in the book.  Here is the syntax of **FbPp**:
 
-     _e_ ::= ( .. Fb grammar .. ) | `Let` `(`x`,`x`) = `*e* `In `*e* | `(`*e*`,`*e*`)`
+     _e_ ::= ( .. Fb grammar .. ) `|` `Let` `(`x`,`x`) = `*e* `In `*e* `|` `(`*e*`,`*e*`)`
 
-     _v_ ::= ( .. Fb grammar .. ) | `(`*v*`,`*v*`)`
+     _v_ ::= ( .. Fb grammar .. ) `|` `(`*v*`,`*v*`)`
 
     The `Let` on pairs syntax here follows OCaml's, it takes apart a pair into its components.  For example `Let (a,b) = (1,2) In a + 3` will evaluate to `4`.
 

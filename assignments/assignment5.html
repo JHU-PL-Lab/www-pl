@@ -95,24 +95,9 @@
   <li>
     <p>(30 points) Let us consider <strong>FbPp</strong>, <strong>Fb</strong> extended to have pairs.  This is similar to the <strong>FbR</strong> language as covered in lecture, pairs are like the 2-ary records but there are no field names so they are a bit simpler.  The book contains a language <strong>FbP</strong> in Section 3.1; here we are studying a minor variation <strong>FbPp</strong> which has <em>pattern matching</em> to destruct the data instead of the <code>Left</code>/<code>Right</code> projections in the book.  Here is the syntax of <strong>FbPp</strong>:</p>
 
-    <table>
-      <tbody>
-        <tr>
-          <td><em>e</em> ::= ( .. Fb grammar .. )</td>
-          <td><code>Let</code> <code>(</code>x<code>,</code>x<code>) = </code><em>e</em> <code>In </code><em>e</em></td>
-          <td><code>(</code><em>e</em><code>,</code><em>e</em><code>)</code></td>
-        </tr>
-      </tbody>
-    </table>
+    <p><em>e</em> ::= ( .. Fb grammar .. ) <code>|</code> <code>Let</code> <code>(</code>x<code>,</code>x<code>) = </code><em>e</em> <code>In </code><em>e</em> <code>|</code> <code>(</code><em>e</em><code>,</code><em>e</em><code>)</code></p>
 
-    <table>
-      <tbody>
-        <tr>
-          <td><em>v</em> ::= ( .. Fb grammar .. )</td>
-          <td><code>(</code><em>v</em><code>,</code><em>v</em><code>)</code></td>
-        </tr>
-      </tbody>
-    </table>
+    <p><em>v</em> ::= ( .. Fb grammar .. ) <code>|</code> <code>(</code><em>v</em><code>,</code><em>v</em><code>)</code></p>
 
     <p>The <code>Let</code> on pairs syntax here follows OCaml’s, it takes apart a pair into its components.  For example <code>Let (a,b) = (1,2) In a + 3</code> will evaluate to <code>4</code>.</p>
 
