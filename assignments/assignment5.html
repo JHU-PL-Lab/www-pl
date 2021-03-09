@@ -1,0 +1,159 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://campuswire.com/c/G9E051068">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assignment-5-operational-equivalance-records-variants">Assignment 5: Operational Equivalance, Records, Variants</h2>
+
+<ol>
+  <li>
+    <p>(10 points)  For each of the <strong>FbR</strong> programs prove it has a value (by building the operational semantics proof tree) <strong>or</strong> argue that the program has no value.  (Note that <strong>FbR</strong> includes records with 0,1,2,3,.. fields but we will here stick to the 2-field records covered in lecture)</p>
+
+    <p>a. <code>Let r = { w = 5; h = True} In If r.h Then 0 else 1</code></p>
+
+    <p>b. <code>Let r = { w = 5; h = True} In Let r = { w = 7; p = True} In r.h</code></p>
+  </li>
+  <li>
+    <p>(30 points) Let us consider <strong>FbPp</strong>, <strong>Fb</strong> extended to have pairs.  This is similar to the <strong>FbR</strong> language as covered in lecture, pairs are like the 2-ary records but there are no field names so they are a bit simpler.  The book contains a language <strong>FbP</strong> in Section 3.1; here we are studying a minor variation <strong>FbPp</strong> which has <em>pattern matching</em> to destruct the data instead of the <code>Left</code>/<code>Right</code> projections in the book.  Here is the syntax of <strong>FbPp</strong>:</p>
+
+    <table>
+      <tbody>
+        <tr>
+          <td><em>e</em> ::= ( .. Fb grammar .. )</td>
+          <td><code>Let</code> <code>(</code>x<code>,</code>x<code>) = </code><em>e</em> <code>In </code><em>e</em></td>
+          <td><code>(</code><em>e</em><code>,</code><em>e</em><code>)</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table>
+      <tbody>
+        <tr>
+          <td><em>v</em> ::= ( .. Fb grammar .. )</td>
+          <td><code>(</code><em>v</em><code>,</code><em>v</em><code>)</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>The <code>Let</code> on pairs syntax here follows OCaml’s, it takes apart a pair into its components.  For example <code>Let (a,b) = (1,2) In a + 3</code> will evaluate to <code>4</code>.</p>
+
+    <p>a.  Write the operational semantics rules for <strong>FbPp</strong>. These rules must directly define the meaning, don’t encode pairs in terms of records or functions.  You can just write “..Fb’s rules..” to insert all of Fb’s rules in your rules.</p>
+
+    <p>b.  Write out the full proof derivation showing <code>(Fun p -&gt; Let (x,y) = p in x)(2,3)</code> ⇒ <code>2</code></p>
+
+    <p>c.  It turns out <strong>FbP</strong> and <strong>FbPp</strong> are of equivalent expressive power: (1) write <strong>FbPp</strong> macros for <strong>FbP</strong>’s <code>Left</code> and <code>Right</code> pair projections, and (2) write an <strong>FbP</strong> macro for the <strong>FbPp</strong> pattern matching syntax.</p>
+  </li>
+  <li>
+    <p>(10 points) Write an <strong>Fb</strong> function <code>cheapY</code> which works like the <code>Y</code>-combinator but only supports ten levels deep of recursive call. So for example</p>
+
+    <p><code>cheapY (Function this -&gt; Function x -&gt; If x = 1 then 1 Else x + this (x-1)) 10</code></p>
+
+    <p>returns <code>55</code> but if the <code>10</code> was replaced with <code>11</code> it diverges since the recursion tried to go 11 levels deep. This behavior is the same as a recursive function invocation with a runtime stack depth of at most 10 in e.g. the C language. Hint: you don’t actually need a counter to count the number of recursive calls, it is easier than that.</p>
+  </li>
+  <li>
+    <p>(20 points) For each of the following potential operational equivalences for Fb, either state that it holds, or present a counterexample context C invalidating it.  Make sure to carefully review the definition of <code>~=</code> as presented in lecture and the book before starting.</p>
+
+    <ol>
+      <li><code>x - y</code> =~ <code>y - x</code> (<code>x</code> and <code>y</code> are Fb variables here)</li>
+      <li><code>x + y</code> =~ <code>y + x</code> (<code>x</code> and <code>y</code> are Fb variables here)</li>
+      <li><em>e1</em> ` + ` <em>e2</em> =~ <em>e2</em> ` + ` <em>e1</em> (<em>e1</em> and <em>e2</em> are arbitrary expressions; it holds for <em>any</em> <em>e1</em> and <em>e2</em>)</li>
+      <li><em>e</em> ` + 0` =~ <em>e</em> (where <em>e</em> is any arbitrary expression)</li>
+      <li><code>Let x = f 0 In 0</code> ~= <code>0</code></li>
+      <li><code>(0 0)</code> ~= <code>(1 1)</code></li>
+    </ol>
+  </li>
+</ol>
+
+<p>Note that when you fill in the hole in a context <em>C</em>[<em>e</em>], you can assume you are not going to change the parse precedence; in other words, you can just as well think of it as <em>C</em>[<code>(</code><em>e</em><code>)</code>]</p>
+
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>

@@ -242,7 +242,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;State</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment5.html">5 - Y/Opsem/Records/Variants</a></div>
+        <div align="center" class="body"><a href="assignments/assignment5.html">5 - Y/Opeq/Records/Variants</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
