@@ -31,7 +31,7 @@
 
      1. `x - y` =~ `y - x` (`x` and `y` are Fb variables here)
      2.  `x + y` =~ `y + x` (`x` and `y` are Fb variables here)
-     3.  *e1* `+` *e2* =~ *e2* `+  *e1* (*e1* and *e2* are arbitrary expressions; it holds for *any* *e1* and *e2*)
+     3.  *e1* `+` *e2* =~ *e2* `+`  *e1* (*e1* and *e2* are arbitrary expressions; it holds for *any* *e1* and *e2*)
      4.  *e* `+ 0` =~ *e* (where *e* is any arbitrary expression)
      5. `Let x = f 0 In 0` ~= `0`
      6. `(0 0)` ~= `(1 1)`
