@@ -7,7 +7,6 @@ This assignment has two parts.
 
 ### The F♭ Development Kit (FbDK)
 
-
 We have provided you with the FbDK to make your job easier.
 
 *  The FbDK distribution is [here](http://pl.cs.jhu.edu/pl/book/dist), download the zip file.
