@@ -2,7 +2,7 @@
 
 1.  (10 points)  For each of the **FbR** programs prove it has a value (by building the operational semantics proof tree) **or** argue that the program has no value.  (Note that **FbR** includes records with 0,1,2,3,.. fields but we will here stick to the 2-field records covered in lecture)
 
-     a. `Let r = { w = 5; h = True} In If r.h Then 0 else 1`
+     a. `Let r = { w = 5; h = True} In If r.h Then 0 Else 1`
 
      b. `Let r = { w = 5; h = True} In Let r = { w = 7; p = True} In r.h`
 
