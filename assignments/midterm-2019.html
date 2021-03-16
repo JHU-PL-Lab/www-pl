@@ -53,17 +53,13 @@ You can phrase all of these as extensions of the existing items, liberal use of 
     Suppose some hackers figured out how to subvert the <tt>=</tt> operation in <strong>Fb</strong> in a way that if a program ever compared for <tt>0 = 0</tt> the CPU would overheat and melt and possibly burst into flames. More generally, any comparison <tt>e1 = e2</tt> for both <tt>e1</tt> and <tt>e2</tt> evaluating to <tt>0</tt> would cause melt-down.<br>
     
 For this question, your goal is to patch existing code so CPUs will not melt.  Show how you could write a replacement operation <tt>FixEq</tt> for <tt>e1 = e2</tt>, a 2-argument <strong>Fb</strong> function, such that given a Fb expression e, if you replaced all the <tt>e1 = e2</tt> in it with <tt>FixEq (e1) (e2)</tt> the program would produce the same results as the original program would have on an un-hacked machine.  In other words, your <tt>FixEq</tt> needs to check for equality but it needs to somehow never check for <tt>0=0</tt>.  Unlike the previous question you can still use integer constants, <tt>=</tt>, etc, just make sure you don't melt the machine.
-      <p style="page-break-after:always;"></p>
-  
 
+<li>Appendix: operational equivalence.  Either prove these fail by constructing a context C, or use the principles in the book to prove they hold.
 
-(Blank page one, if you run out of room on any question say "see blank one" and write here)
- 
-      <p style="page-break-after:always;"></p>
-  
-
-
-(Blank page two, if you run out of room on any question say "see blank two" and write here)
- 
-    
+<ul>
+  <li> <tt>(Function x -> Function y -> y) e1 e2 =~ e2</tt>
+  <li> <tt>(Function x -> y) =~ (Function y -> x)</tt>
+  <li> <tt>If x Then True Else False =~ x</tt> 
+  <li> <tt>e1 + x =~ x + e1</tt> 
+  </ul>
     </body> </html>
