@@ -304,7 +304,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Midterm review</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a> (Fri)</div>
+        <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a> (Mon)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">Midterm (Sat)</div>
@@ -341,7 +341,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">6</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
     <tr> 
@@ -358,7 +358,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">6</div>
       </td>
     </tr>
     <tr> 
