@@ -301,7 +301,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Midterm review</div>
+        <div align="left" class="body">&nbsp;<a href="assignments/midterm-2019.html">Midterm review session</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a> (Mon)</div>
