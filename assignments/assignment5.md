@@ -16,7 +16,7 @@
 
     a.  Write the operational semantics rules for **FbPp**. These rules must directly define the meaning, don't encode pairs in terms of records or functions.  You can just write "..Fb's rules.." to insert all of Fb's rules in your rules.
 
-    b.  Write out the full proof derivation showing `(Fun p -> Let (x,y) = p in x)(2,3)` ⇒ `2`
+    b.  Write out the full proof derivation showing `(Fun p -> Let (x,y) = p In x)(2,3)` ⇒ `2`
 
     c.  It turns out **FbP** and **FbPp** are of equivalent expressive power: (1) write **FbPp** macros for **FbP**'s `Left` and `Right` pair projections, and (2) write an **FbP** macro for the **FbPp** pattern matching syntax.
 
