@@ -284,7 +284,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Objects</div>
+        <div align="left" class="body">&nbsp;Proving Equivalences</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -301,7 +301,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Midterm out, no lecture</div>
+        <div align="left" class="body">&nbsp;Midterm review</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a> (Fri)</div>
@@ -318,7 +318,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Concurrency I</div>
+        <div align="left" class="body">&nbsp;Objects</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -335,7 +335,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Concurrency II</div>
+        <div align="left" class="body">&nbsp;Concurrency I</div>
       </td>  
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -352,10 +352,10 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Types I: TFb</div>
+        <div align="left" class="body">&nbsp;Concurrency I</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency and Types</a></div>
+        <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -369,7 +369,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
+        <div align="left" class="body">&nbsp;Types I: TFb</div>
       </td>	
       <td width="22%"> 
         <div align="center" class="body"></div>
@@ -386,7 +386,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Types III: Subtyping</div>
+        <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -403,7 +403,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
+        <div align="left" class="body">&nbsp;Types III: Subtyping</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment8.html">8 - Type Systems</a>
@@ -421,7 +421,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;make-up</div>
+        <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
