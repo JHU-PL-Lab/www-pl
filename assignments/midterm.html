@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://campuswire.com/c/G9E051068">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="midterm-2021">Midterm 2021</h2>
+
+<p>You are to work without the consultation of any individuals other than Prof/CAs on this exam.  This includes posting questions on the Internet (other than our Campuswire), etc. Please include at the top of your exam</p>
+
+<blockquote>
+  <p>I pledge I worked without consultation with any individuals other than Prof/CAs on this exam</p>
+</blockquote>
+
+<p>certifying this.  You are free to use any non-human resources, e.g. the course text, lectures, Wikipedia, etc.</p>
+
+<p>You are free to ask questions on Campuswire or in office hours, but please ask all Campuswire questions to “TAs and instructors only”.  If it is a good issue to clarify we will make your question public.</p>
+
+<ol>
+  <li>
+    <p>(15 points)  Recall <strong>FbV</strong> from lecture and Section 3.3 of the book.  For each of these <strong>FbV</strong> programs prove it has a value (by building the operational semantics proof tree) <strong>or</strong> argue that the program has no value.  The <strong>FbV</strong> operational semantics rules are in the book and are an extension of the <strong>Fb</strong> rules.</p>
+
+    <p>a. <code>(Fun yn -&gt; Match yn With `Yes(x) -&gt; 3 | `No(y) -&gt; y) (`No(3))</code></p>
+
+    <p>b. <code>If 0 = 1 Then Not(0) Else Not(False)</code> (note this program is in fact just an <strong>Fb</strong> program)</p>
+
+    <p>c. <code>Match `Yes(3) With `No(z) -&gt; z - 1</code></p>
+  </li>
+  <li>
+    <p>(20 points) This question also concerns <strong>FbV</strong>.</p>
+
+    <p>a. We only defined substitution <em>e</em>[<em>v</em>/<em>x</em>] in the book for <strong>Fb</strong> in Definition 2.10.  Make a similar definition for substitution for <strong>FbV</strong>.  You don’t need to repeat the clauses of <strong>Fb</strong>, just give the clauses for the new <strong>FbV</strong> syntax not found in <strong>FbV</strong>.  Note you must give a mathematical definition of substitution, not OCaml code.</p>
+
+    <p>b. The book contains the operational semantics rules for <strong>FbV</strong> but does not outline how an interpreter for <strong>FbV</strong> would be implemented. For this question outline the OCaml <code>eval</code> function for <strong>FbV</strong>.  Since this extension is pure functional you only need to give the new clauses not in the <strong>Fb</strong> <code>eval</code> function.  You don’t need to write the complete code, just the new OCaml <code>match</code> clauses, and you can also assume there is a substitution function which implements the <em>e</em>[<em>v</em>/<em>x</em>] specified in part a. above.  If you are not sure what we mean by “just the new clauses”, see Section 3.1 of the book which extends the <strong>Fb</strong> <code>eval</code> for pairs, that is the idea of what you need to do.</p>
+
+    <p>(Note: if you want to be super duper sure you are right you are welcome to implement the full <code>eval</code> for <strong>FbV</strong>.  Use the <code>AFbV/</code> directory in the FbDK in place of <code>Fb/</code>, and code <code>eval</code> in <code>afbvinterp.ml</code>.  The <strong>AFbV</strong> AST (in <code>AFbV/afbvast.ml</code>) contains many other features besides variants in the AST, just <code>failwith "unimplemented"</code> on those.  You can also use the solution <strong>AFbV</strong> interpreter in the FbDK to test how <strong>FbV</strong>’s <code>Match</code> etc should work.)</p>
+  </li>
+  <li>
+    <p>(15+2 points) For each of the following potential operational equivalences for <strong>Fb</strong>, either state that it holds, or present a counterexample context C invalidating it.  If it holds, either give a proof using the principles found in the book (make sure to download a fresh copy of the book as a few principles were recently added), or state that more principles are needed to prove it (even though it is true).</p>
+
+    <p>a. <code>Let x = x In x ~= Let y = y In y</code></p>
+
+    <p>b. <code>Let x = y In x ~= Let y = y In y</code></p>
+
+    <p>c. <code>((Fun b -&gt; If b Then (Fun x -&gt; x + z) Else (Fun x -&gt; x - z)) True) 1 ~= 1 + z</code></p>
+
+    <p>d. (harder bonus question, +2) <code>(ycomb f) ~= f (ycomb f)</code> where <code>f</code> here is a variable and <code>ycomb</code> is the Y combinator defined in the book and in the <code>fb_examples.ml</code> file.</p>
+  </li>
+  <li>
+    <p>(15 points) The <strong>Fb</strong> operational semantics defines a relation <em>e</em> =&gt; <em>v</em> over proof <em>trees</em>.  Consider a very similar definition of a relation <em>e</em> ≡&gt; <em>v</em> which has the rules as Fb just replacing =&gt; with ≡&gt;, and <em>in addition</em> has one more rule, the alias rule:</p>
+  </li>
+
+
+<pre>
+  -------------
+      e ≡&gt; v
+</pre>
+
+<p>This rule it first glance looks like anything is provable, but ≡&gt; <em>also</em> has a different definition of a valid proof tree: it is the same as the Fb proof trees, but the alias rule can <em>only</em> be used to prove e ≡&gt; v in the tree if on a <em>different path</em> in the tree there is a non-alias proof of e ≡&gt; v.  Intuitively, the idea of an alias is you already proved it somewhere else in the tree so no need to prove it again.</p>
+
+<p>For example here is a proof tree showing <code>(3 + 2) + (3 + 2) ≡&gt; 10</code>:</p>
+
+<pre>
+ (value) -------  ------ (value)
+         3 ≡&gt; 3  2 ≡&gt; 2  
+(plus) ------------------      -------------- (alias)
+         3 + 2 ≡&gt; 5              3 + 2 ≡&gt; 5
+---------------------------------------------------
+              (3 + 2) + (3 + 2) ≡&gt; 10
+</pre>
+
+<p>– We already proved <code>3 + 2 ≡&gt; 5</code> in the left subtree and the alias rule lets us re-use that proof in the right subtree.  What you <em>cannot</em> do is</p>
+<pre>
+   ---------------------------------- (alias)
+      (Fun x -&gt; x x)(Fun x -&gt; x x) ≡&gt; 727
+  ------------------------------------------ (application (cheap version for simplicity here))
+     (Fun x -&gt; x x)(Fun x -&gt; x x) ≡&gt; 727
+</pre>
+
+<p>– this uses alias on the same tree path.  Obviously you can see why that is a bad thing, it proves a diverging program returns 727!</p>
+
+<p>a. Argue that <em>e</em> =&gt; <em>v</em> if and only if <em>e</em> ≡&gt; <em>v</em> – we did not change the underlying <strong>Fb</strong> semantics with ≡&gt;.  You don’t need to give a formal proof but give a convincing line of reasoning.</p>
+
+<p>b. The alias rule could be implemented in a variation on <code>eval</code> function for <strong>Fb</strong> which would also avoid repeating the same computations, e.g. on the above example it would only need to add <code>3</code> and <code>2</code> once (this is a simple example but it would e.g. make an exponential fibbonici run in polynomial time).  Describe how such an <code>eval</code> would be implemented.  You don’t need to give a full implementation, just high-level pseudo-code.</p>
+</ol>      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
