@@ -31,9 +31,9 @@ This is an OCaml "coding" homework but for simplicity we are only asking for out
     <pre>    Let pointC = Fun ix -> Fun iy ->
         { x = ix;
           y = iy;
-          mag = Fun this -> Fun _ -> sqrt (sqr(this.x) + sqr(this.y));
-          iszero = Fun this -> Fun _ -> this.mag this { }
-        } In Let p = pointC 0 10 In p.iszero p { }
+          mag = Fun this -> sqrt (sqr(this.x) + sqr(this.y));
+          iszero = Fun this -> (this.mag this = 0)
+        } In Let p = pointC 0 10 In p.iszero p
       </pre>
 
     This encoding is slightly different than the one in class in that it uses immutable fields, there is no "Ref" around the ix or iy values like in lecture. (We also have a null argument on the methods, and sqr and sqrt are squaring and square root functions not shown here; if you want to run the code you can assume they are identity functions).

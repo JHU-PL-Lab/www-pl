@@ -119,9 +119,9 @@ type expr = (* ... Fb stuff, elided, see file *)
     <pre>    Let pointC = Fun ix -&gt; Fun iy -&gt;
     { x = ix;
       y = iy;
-      mag = Fun this -&gt; Fun _ -&gt; sqrt (sqr(this.x) + sqr(this.y));
-      iszero = Fun this -&gt; Fun _ -&gt; this.mag this { }
-    } In Let p = pointC 0 10 In p.iszero p { }
+      mag = Fun this -&gt; sqrt (sqr(this.x) + sqr(this.y));
+      iszero = Fun this -&gt; (this.mag this = 0)
+    } In Let p = pointC 0 10 In p.iszero p
   </pre>
 
     <p>This encoding is slightly different than the one in class in that it uses immutable fields, there is no “Ref” around the ix or iy values like in lecture. (We also have a null argument on the methods, and sqr and sqrt are squaring and square root functions not shown here; if you want to run the code you can assume they are identity functions).</p>
