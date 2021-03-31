@@ -54,6 +54,41 @@ actor <- `doit(3)"
 (* Note that parsing precedence is even worse in AFbV compared to previous languages!
    Moral: use many parentheses!! *)
 
+(* To close the loop, here is actual code for something like the a1/a2 example we worked in class.  
+   Recall the way it went:
+
+   1) in the bootstrap code we created actors a1 and a2 and send a1 the message `hi(7)
+   2) a1 handled the `hi(7) message, sending `ho(0) to a2
+   3) a2 then replied `ok(0) to a1.
+
+   Note that both a1 and a2 need to know each others' addresses; we can't in fact do that in the syntax
+   of AFbV (it is a mutual self-reference) - !  So, here we do a minor variation where the bootstrap code
+   makes a1 and send the `hi(7) message, and a1 then BOTH creates a2 and sends it a `ho(0) message.
+*)   
+let lecture_example = 
+  "Let a1_behavior = 
+      Let a2_behavior = Fun me -> Fun a1 -> Fun msg ->
+         Match msg With
+           `ho(n) -> 
+               (Print \"DEBUG: a2 received ho\");
+               (a1 <- `ok(0)); 
+               (Fun msg -> 0) 
+      In
+      Fun me -> Fun data -> Fun msg ->
+         Match msg With
+           `hi(n) -> 
+               (Print \"DEBUG: a1 received hi\");
+               Let a2 = Create(a2_behavior, me) In  (* a1 creates a2 *)
+               (a2 <- `ho(0)); 
+               Fun msg -> (Print \"DEBUG: a1 received ok\"); (Fun msg -> 0)
+   In
+   Let a1 = Create(a1_behavior,0) In
+   a1 <- `hi(7)"
+    ;;
+    
+
+
+
 (* Note if we send multiple messages to the above one_message_behavior actor 
    it will only process the first one: *)
 
