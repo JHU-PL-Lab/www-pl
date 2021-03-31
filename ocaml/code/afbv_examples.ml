@@ -35,7 +35,7 @@
    the bootstrap code needs to create at least one actor and send it at least one message. 
 *)
 
-let onemsg = "Let one_message_actor =
+let onemsg = "Let one_message_behavior =
   Fun me -> (* First parameter is by contract the address of this actor *)
   Fun data -> (* Second parameter is the initial state value in Create, 2 here *)
   Fun msg -> (* Third parameter is .. finally .. the message packet coming in *)
@@ -43,7 +43,7 @@ let onemsg = "Let one_message_actor =
        `doit(n) -> (Print \"OUTPUT: \"; (Print (n + data)); Print \"\n\");
                    Fun x -> x (* ignore this line for now, will explain later *)
      In
-Let actor = Create(one_message_actor,2) In
+Let actor = Create(one_message_behavior,2) In
 actor <- `doit(3)"
 ;;
 
@@ -52,35 +52,42 @@ actor <- `doit(3)"
 (* Note that parsing precedence is even worse in AFbV compared to previous languages!
    Moral: use many parentheses!! *)
 
-(* Note if we send multiple messages to the above one_message_actor actor 
+(* Note if we send multiple messages to the above one_message_behavior actor 
    it will only process the first one: *)
 
-let multbad = "Let one_message_actor = Fun me -> Fun data -> Fun msg ->
+let multbad = "Let one_message_behavior = Fun me -> Fun data -> Fun msg ->
      Match msg With
        `doit(n) -> (Print \"OUTPUT: \"; (Print (n + data)); Print \"\n\");
                    Fun x -> x (* ignore this for now, it prevents an error message *)
      In
-Let actor = Create(one_message_actor,2) In
+Let actor = Create(one_message_behavior,2) In
 actor <- `doit(3);
 actor <- `doit(7) (* will not be received - no code to process it *)"
 ;;
 
 
 (* Why did the above fail?  Because the contract is: when the actor is finished processing,
-   it needs to return what code will use to process the next message.  It doesn't just
-   use the same code over and over like in object-oriented programming.
+   it needs to return what code will use to process the next message.
+
+   * This is similar to the hand-over-fist programming idiom for functional trees, lists, etc
+   * But, it is not data state here, it is **code state**
+   * In other words, the code you are setting is the future code for the actor
+     - The technical term for "the rest of the code" is the **continuation**
+     - So, each actor after processing one message needs to set its continuation before going back to sleep.
+     - This is the same as how in JavaScript for asynchronous requests you need to set up the callback code
+       -- the callback function is exactly the "next thing" the code needs to do, the **continuation**
 *)
    
 (* Here is an example which processes multiple messages: 
   after the first message we return code to process the second.  *)
 
-let twomsg = "Let two_message_actor =
+let twomsg = "Let two_message_behavior =
   Fun me -> Fun data -> Fun msg ->
      Match msg With
        `doit(n) -> (Print \"OUTPUT: \"; (Print (n + data)); Print \"\n\");
-     Fun msg -> ((Print \"DONE!\n\"); (Fun msg -> 0))
+     Fun msg -> ((Print \"DONE!\n\"); (Fun msg -> 0)) (* this return result will be code handling next message *)
     In
-Let actor = Create(two_message_actor,2) In
+Let actor = Create(two_message_behavior,2) In
 actor <- `doit(3);
 actor <- `doit(7) (* will run the DONE printing code *)"
 ;;
@@ -89,44 +96,45 @@ actor <- `doit(7) (* will run the DONE printing code *)"
 
 (* A variation where we instead send one message to ourself using the special me variable *)
 
-let twome = "Let self_messaging_actor =
+let twome = "Let self_messaging_behavior =
   Fun me -> Fun data -> Fun msg ->
      Match msg With
        `doit(_) ->
 	   (Print \"OUTPUT: \"; (Print 0); Print \"\n\");
-           (me <- (`onemoretime (0)));
+           (me <- (`onemoretime (1)));
 	   (* here is the function return value which sets the next behavior *)
-           (Fun msg -> (Match msg With `onemoretime (_) -> (Print data); (Fun msg -> 0))) In
-Let actor = Create(self_messaging_actor, 5) In
+           (Fun msg -> (Match msg With `onemoretime (one) -> (Print \"MORE OUTPUT: \"; Print one); (Fun msg -> 0))) In
+Let actor = Create(self_messaging_behavior, 5) In
 actor <- `doit (0)"
 ;;
 
 
-(* Now, the above idea blows up if we want to process unbounded messages.
+(* Now, the above approach of inlining next code fails if we want to process unbounded messages.
    Solution: use recursion to set the next code to 'this' code ! *)
 
 (* Counting down example *)
 (* Key compared to above is use Y combinator to name 'this code' *)
    
-let count_down_actor = " 
+let count_down = " 
 Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
-Let count_down_actor = Fun me ->  Fun data -> y (Fun this -> Fun msg ->
-                                    Match msg With
-                                        `count(n) ->
-                                            (Print \"OUTPUT: \"; (Print n); Print \"\n\");
-                                            (If n = 0 Then 0 Else (me <- (`count (n-1))));
-                                            (this) (* key line - set next code to this *)
-                               ) In
-Let actor = Create(count_down_actor, 0) In
+Let count_down_behavior = Fun me ->  Fun data -> 
+   y (Fun this -> Fun msg -> 
+      Match msg With
+      | `count(n) ->
+         (Print \"OUTPUT: \"; (Print n); Print \"\n\");
+         (If n = 0 Then 0 Else (me <- (`count (n-1))));
+         (this) (* key line - set next code to this *)
+     ) In
+Let actor = Create(count_down_behavior, 0) In
 actor <- `count 4"
 ;;
 
-(* Internal state example: count_down_actor where the actor internally keeps the count 
+(* Internal state example: count_down_behavior where the actor internally keeps the count 
    Actors can be stateful in this manner: stateless during message processing but
    stateful between each message -- a hybrid of functional and imperative *)
    
 let internal_count =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
-   Let self_messaging_actor =
+   Let self_messaging_behavior =
 
 (* Observe how here the 'data' parameter is now under the Y - it is not just a global parameter,
    each recursion also needs to be fed data, and that will allow us to propagate state *)
@@ -137,7 +145,7 @@ let internal_count =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In 
            (Print \"OUTPUT: \"; (Print data); Print \"\n\");
            (If data = 0 Then 0 Else (me <- (`count (_))));
            (this (data-1))) In
-Let actor = Create(self_messaging_actor, 4) In
+Let actor = Create(self_messaging_behavior, 4) In
 actor <- `count (0)"
 ;;
 
@@ -146,18 +154,18 @@ actor <- `count (0)"
 
 let ping_pong = "
 Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
-Let pong_actor =
+Let pong_behavior =
   Fun me -> y (Fun this -> Fun data -> Fun msg ->
      Match msg With
        `pong(n) ->
           (data <- (`ping (n+1))); (* invariant: data is pinger *)
           this data (* Use the same behavior for the next message received *)
                                ) In
-Let ping_actor =
+Let ping_behavior =
   Fun me -> Fun dummy -> Fun msg0 ->
  (* First message should be `init; create pong actor and get it going *)
      Match msg0 With
-      `init(n) -> Let a2 = Create(pong_actor, me) In (* tell ponger about me when its made *)
+      `init(n) -> Let a2 = Create(pong_behavior, me) In (* tell ponger about me when its made *)
 	 (a2 <- `pong(n)); (* send pong an n-ball to start the game *)
          (* Now set behavior for rest of ping/pong game: get a ping, send a pong *)
          (y (Fun this -> Fun msg ->
@@ -166,7 +174,7 @@ Let ping_actor =
               (If n = 0 Then 0 Else (a2 <- (`pong (n-2))));
               this 
             )) In
-Let a1 = Create(ping_actor, 0) In
+Let a1 = Create(ping_behavior, 0) In
 a1 <- `init(4)"
 ;;
 
