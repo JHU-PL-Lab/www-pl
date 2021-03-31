@@ -99,6 +99,9 @@ end
 
 module Options: sig
   val options: (Arg.key * Arg.spec * Arg.doc) list
+  val show_messages : bool ref
+  val show_states : bool ref
+  val deterministic_delivery : bool ref
 end
 
 module Version: sig

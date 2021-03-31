@@ -1,16 +1,33 @@
-(* AFbV Actor programming by example *)
+
+(* ************************************** *)
+(* ****** Programming In AFbV *********** *)
+(* ************************************** *)
+
+(*   
+   This file contains a series of Fb example programs.  They are formatted
+   as strings which can be parsed and evaluated using the debug utilities.
+
+   To run these examples in the reference interpreter, type
+
+   $ ./reference/AFbV/toplevel.exe
+
+   open Debugutils;;
+   open Fbdk.Ast;;
+   open Fbdk.Options;;
+
+*)
 
 (* uncomment the following line to show messages as they are delivered; 
    this is the same as flag --show-messages on the binary. *)
-(* Afbvoptions.show_messages := true;; *)
+(* show_messages := true;; *)
 
 (* uncomment the following line to show the global state of the actor system as it evolves; 
    this is the same as flag --show-state on the binary. Actor names are @1 @2 etc here*)
-(* Afbvoptions.show_states := true;; *)
+(* show_states := true;; *)
 
 (* uncomment the following line to force messages to be delivered in the order sent;
    this is the same as --deterministic on the binary. *)
-(* Afbvoptions.deterministic_delivery := true;; *)
+(* deterministic_delivery := true;; *)
 
 (* Here is a very simple actor system: only one actor receiving one message *)
 
@@ -26,7 +43,7 @@ Let actor = Create(oneMessage,2) In
 actor <- `doit(3)"
 ;;
 
-(* will print OUTPUT: 5 *)
+(* peu onemsg will print OUTPUT: 5 *)
 
 (* Note that parsing precedence is even worse in AFbV compared to previous languages!
    Moral: use many parentheses!! *)
