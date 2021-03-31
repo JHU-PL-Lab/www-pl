@@ -15,6 +15,8 @@
    open Fbdk.Ast;;
    open Fbdk.Options;;
 
+   then type `peu <example>` to run the example <example>.
+
 *)
 
 (* uncomment the following line to show messages as they are delivered; 
@@ -131,7 +133,7 @@ actor <- `count 4"
 
 (* Internal state example: count_down_behavior where the actor internally keeps the count 
    Actors can be stateful in this manner: stateless during message processing but
-   stateful between each message -- a hybrid of functional and imperative *)
+   stateful between each message *)
    
 let internal_count =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
    Let self_messaging_behavior =
@@ -155,17 +157,17 @@ actor <- `count (0)"
 let ping_pong = "
 Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
 Let pong_behavior =
-  Fun me -> y (Fun this -> Fun data -> Fun msg ->
+  Fun me -> y (Fun this -> Fun pinger -> Fun msg ->
      Match msg With
        `pong(n) ->
-          (data <- (`ping (n+1))); (* invariant: data is pinger *)
-          this data (* Use the same behavior for the next message received *)
+          (pinger <- (`ping (n+1))); (* invariant: pinger variable is pinger actor address *)
+          this pinger (* Use the same behavior for the next message received *)
                                ) In
 Let ping_behavior =
   Fun me -> Fun dummy -> Fun msg0 ->
  (* First message should be `init; create pong actor and get it going *)
      Match msg0 With
-      `init(n) -> Let a2 = Create(pong_behavior, me) In (* tell ponger about me when its made *)
+      `init(n) -> Let a2 = Create(pong_behavior, me) In (* tell ponger about me (pinger) when its made *)
 	 (a2 <- `pong(n)); (* send pong an n-ball to start the game *)
          (* Now set behavior for rest of ping/pong game: get a ping, send a pong *)
          (y (Fun this -> Fun msg ->
