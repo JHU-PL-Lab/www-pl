@@ -352,7 +352,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Concurrency I</div>
+        <div align="left" class="body">&nbsp;Concurrency II; <a href="ocaml/code/afbv_examples.ml">AFbV code examples</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency</a></div>
