@@ -88,7 +88,7 @@
 
 <ol>
   <li>
-    <p>In the Actors lecture a simple example was used which included two actors and three messages.  After lecture I wrote out <strong>AFbV</strong> code for that example which is called <code>lecture_example</code> in <a href="../ocaml/code/afbv_examples.ml"><code>afbv_examples.ml</code></a>.  Unfortunately, the example I gave in lecture proved to be not exactly programmable in <strong>AFbV</strong> – it required actors <code>a1</code> and <code>a2</code> to each know about each other at the start, but this is something like mutual recursion: recall how in OCaml you cannot define mutual recursion without the special <code>.. and ..</code> syntax.</p>
+    <p>(20 points) In the Actors lecture a simple example was used which included two actors and three messages.  After lecture I wrote out <strong>AFbV</strong> code for that example which is called <code>lecture_example</code> in <a href="../ocaml/code/afbv_examples.ml"><code>afbv_examples.ml</code></a>.  Unfortunately, the example I gave in lecture proved to be not exactly programmable in <strong>AFbV</strong> – it required actors <code>a1</code> and <code>a2</code> to each know about each other at the start, but this is something like mutual recursion: recall how in OCaml you cannot define mutual recursion without the special <code>.. and ..</code> syntax.</p>
 
     <p>So, the <code>lecture_example</code> is <em>nearly</em> the same as the example in class, but when <code>a1</code> receives its first message it <em>both</em> creates <code>a2</code> and sends it a message.</p>
 
@@ -96,19 +96,42 @@
 Hint: if you load in the AFbV interpreter into <code>utop</code> and set <code>show_states := true;;</code> and run <code>peu lecture_example;;</code> the debug information is mostly the answer to this question, just put it in set form in the book’s notation.</p>
   </li>
   <li>
-    <p>For this question, again for the same example you are to elaborate on how the operational semantics rules works for when <code>a1</code> receives and processes the <code>a1 &lt;- `hi(7)</code> message – this is the step from <em>G0</em> to <em>G1</em>.  Concretely, give the details of this step in terms of what <code>e =S=&gt; v</code> is computed, giving the <code>e</code>, the <code>v</code>, and the <code>S</code>.  You don’t need to write out the whole proof tree, it is large.</p>
+    <p>(10 points) For this question, again for the same example you are to elaborate on how the operational semantics rules works for when <code>a1</code> receives and processes the <code>a1 &lt;- `hi(7)</code> message – this is the step from <em>G0</em> to <em>G1</em>.  Concretely, give the details of this step in terms of what <code>e =S=&gt; v</code> is computed, giving the <code>e</code>, the <code>v</code>, and the <code>S</code>.  You don’t need to write out the whole proof tree, it is large.</p>
   </li>
   <li>
-    <p>For this question we are going to develop some improved syntax (and semantics) to solve the  problem of mutual reference between actors.</p>
+    <p>(25 points) One issue with actor messaging is it is <em>asynchronous</em> – there is no waiting for a reply.  So, if you in fact needed the answer before proceeding, you would instead operate under a protocol where the receiver would send a <code>`return(..)</code> message back to you which was “just another message”, and you would subsequently handle that.  And, in order for the receiving actor to know who to <code>`return</code> to, we must pass that actor name in the message itself; this name is called the “customer” in actor-speak.</p>
 
-    <p>Consider an extension to <strong>AFbV</strong> called <strong>AFbV2</strong> which adds the new syntax <code>Create2(e1,e2; e1',e2')</code> that is similar to the existing <code>Create(e1,e2)</code> to create an actor with code <code>e1</code> and initial data <code>e2</code>, but it is creating <em>two</em> actors instead of one: <code>e1</code> and <code>e1'</code> are the code portions of the two actors, and <code>e2</code> and <code>e2'</code> are their initial data values.  And, to allow mutual reference each actor will get passed <em>both</em> its own address (as with the current <code>Create</code>) <em>and</em> the <em>other</em> actor’s address for the pair.</p>
+    <p>a. We first specify the behavior of a stack actor, and show how it is to be used.  Your job is then to define the stack actor behavior.</p>
 
-    <p>First, write out a proposed operational semantics rule for <code>Create2</code> which can be added to the existing <strong>AFbV</strong> rules to make the <strong>AFbV2</strong> rules.  Note that <strong>AFbV</strong> as implemented includes pairs, and you are welcome to use those pairs as part of your new operational semantics: pairing <code>(e1, e2)</code> and operations <code>Fst(e)</code> and <code>Snd(e)</code> to get out the first and second components of a pair.</p>
+    <p>The stack actor has a behavior (code) <code>stack_behavior</code> which is what you will need to write.  It needs to operate under the following protocol:</p>
 
-    <p>Then, copy the <code>lecture_example</code> code from the file and re-write it so that the boostrap code <code>Let a1 = Create(a1_behavior,0)</code> is replaced with code using <code>Create2</code> that creates <em>both</em> <code>a1</code> and <code>a2</code> who will know about each other, meaning that <code>a1</code> no longer needs to create <code>a2</code>.  (Note that you will not be able to run it since <code>Create2</code> is not implemented.)</p>
+    <ul>
+      <li><code>Create(stack_behavior,...)</code> will create a new stack actor with an empty stack; the <code>...</code> can be anything, it is ignored.</li>
+      <li>
+        <p>If <code>as</code> was the result returned by the above <code>Create</code>, we can send it the following stack messages:</p>
+
+        <p><code>as &lt;- push(a,v)</code> is customer <code>a</code> asking to push v on the <code>as</code> stack.  Note <code>(a,v)</code> is a pair which is legal syntax of <strong>AFbV</strong> (<code>Fst(e)</code> and <code>Snd(e)</code> access the first and second components).  The <code>as</code> should push value <code>v</code> on it’s internal stack, and reply <code>a &lt;- `return(..anything..)</code> – the customer needs to know the stack push is finished.</p>
+
+        <p><code>as &lt;- is_empty(a)</code> will reply <code>a &lt;- True</code> to the customer <code>a</code> if the stack is empty, and <code>a &lt;- False</code> otherwise.</p>
+
+        <p><code>as &lt;- pop(a)</code> will pop the top element <code>v</code> from its stack, and will return <code>`some(v)</code> if the stack was not empty, and <code>`none(0)</code> otherwise.</p>
+      </li>
+    </ul>
+
+    <p>In order to make life easier for you, we have made a test harness which will push a few items on the stack and verify they come off.  See file <a href="assignment7-q3.ml"><code>assignment7-q3.ml</code></a> for this test.  You will also put your answer in the indicated spot in this file, and we will put up a separate code upload of this question for the autograder.</p>
+  </li>
+  <li>
+    <p>(10 points) In the test harness code in the <a href="assignment7-q3.ml"><code>assignment7-q3.ml</code></a> file it awaited a reply before sending the next stack message.  Describe in terms of the actor system evolution why if we instead had the simpler test body below why this would not be an appropriate test.  You can use the <strong>AFbV</strong> interpreter to help you answer this question but your answer needs to be a <em>G0 -&gt; G1 -&gt; ..</em>  evolution as in question 1 above which will print “Fail”.</p>
   </li>
 </ol>
 
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="nc">Let</span> <span class="k">as</span> <span class="o">=</span> <span class="nc">Create</span><span class="p">(</span><span class="n">stack_behavior</span><span class="o">,</span><span class="mi">0</span><span class="p">)</span> <span class="nc">In</span>
+    <span class="p">(</span><span class="k">as</span> <span class="o">&lt;-</span> <span class="nt">`push</span><span class="p">(</span><span class="mi">32</span><span class="o">,</span><span class="n">me</span><span class="p">));</span>
+    <span class="p">(</span><span class="k">as</span> <span class="o">&lt;-</span> <span class="nt">`push</span><span class="p">(</span><span class="mi">22</span><span class="o">,</span><span class="n">me</span><span class="p">));</span>
+    <span class="p">(</span><span class="k">as</span> <span class="o">&lt;-</span> <span class="nt">`pop</span><span class="p">(</span><span class="n">me</span><span class="p">));</span>
+    <span class="p">(</span><span class="nc">Fun</span> <span class="n">msg</span> <span class="o">-&gt;</span> <span class="nc">Match</span> <span class="n">msg</span> <span class="nc">With</span>
+           <span class="nt">`some</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">If</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">22</span> <span class="nc">Then</span> <span class="nc">Print</span> <span class="err">\</span><span class="s2">"Success</span><span class="se">\"</span><span class="s2"> Else Print </span><span class="se">\"</span><span class="s2">Fail</span><span class="se">\"</span><span class="s2">) In..
+</span></code></pre></div></div>
       
           </section>
         </div>
