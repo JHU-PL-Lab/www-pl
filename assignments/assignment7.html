@@ -1,0 +1,123 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://campuswire.com/c/G9E051068">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assigment-7---actors">Assigment 7 - Actors</h2>
+
+<p>For this assignment you will want to consult the book chapter 7 and the <a href="../ocaml/code/afbv_examples.ml"><code>afbv_examples.ml</code></a> file of <strong>AFbV</strong> examples we ran during lecture.  (Note that the actor debug flags did not work correctly on the FbDK until recently, so grab a fresh copy of the zip file to run the <strong>AFbV</strong> interpreter with debug information.  The examples file contains instructions on how to run <strong>AFbV</strong>.)</p>
+
+<ol>
+  <li>
+    <p>In the Actors lecture a simple example was used which included two actors and three messages.  After lecture I wrote out <strong>AFbV</strong> code for that example which is called <code>lecture_example</code> in <a href="../ocaml/code/afbv_examples.ml"><code>afbv_examples.ml</code></a>.  Unfortunately, the example I gave in lecture proved to be not exactly programmable in <strong>AFbV</strong> – it required actors <code>a1</code> and <code>a2</code> to each know about each other at the start, but this is something like mutual recursion: recall how in OCaml you cannot define mutual recursion without the special <code>.. and ..</code> syntax.</p>
+
+    <p>So, the <code>lecture_example</code> is <em>nearly</em> the same as the example in class, but when <code>a1</code> receives its first message it <em>both</em> creates <code>a2</code> and sends it a message.</p>
+
+    <p>a. Show the global progression of the actor system bootstrapped by <code>lecture_example</code> in the mathematical notation used in the book:  Give the <em>G0</em>-<em>G3</em> such that <em>G0 -&gt; G1 -&gt; G2 -&gt; G3</em> where each <em>Gi</em> is a global set of actors and messages.  Note you don’t need give the complete actor code in the set, you can write something like <code>&lt;a1,Fun msg -&gt; ... &gt;</code> where you can use  <code>...</code> instead of writing out all the code.<br />
+Hint: if you load in the AFbV interpreter into <code>utop</code> and set <code>show_states := true;;</code> and run <code>peu lecture_example;;</code> the debug information is mostly the answer to this question, just put it in set form in the book’s notation.</p>
+  </li>
+  <li>
+    <p>For this question, again for the same example you are to elaborate on how the operational semantics rules works for when <code>a1</code> receives and processes the <code>a1 &lt;- `hi(7)</code> message – this is the step from <em>G0</em> to <em>G1</em>.  Concretely, give the details of this step in terms of what <code>e =S=&gt; v</code> is computed, giving the <code>e</code>, the <code>v</code>, and the <code>S</code>.  You don’t need to write out the whole proof tree, it is large.</p>
+  </li>
+  <li>
+    <p>For this question we are going to develop some improved syntax (and semantics) to solve the  problem of mutual reference between actors.</p>
+
+    <p>Consider an extension to <strong>AFbV</strong> called <strong>AFbV2</strong> which adds the new syntax <code>Create2(e1,e2; e1',e2')</code> that is similar to the existing <code>Create(e1,e2)</code> to create an actor with code <code>e1</code> and initial data <code>e2</code>, but it is creating <em>two</em> actors instead of one: <code>e1</code> and <code>e1'</code> are the code portions of the two actors, and <code>e2</code> and <code>e2'</code> are their initial data values.  And, to allow mutual reference each actor will get passed <em>both</em> its own address (as with the current <code>Create</code>) <em>and</em> the <em>other</em> actor’s address for the pair.</p>
+
+    <p>First, write out a proposed operational semantics rule for <code>Create2</code> which can be added to the existing <strong>AFbV</strong> rules to make the <strong>AFbV2</strong> rules.  Note that <strong>AFbV</strong> as implemented includes pairs, and you are welcome to use those pairs as part of your new operational semantics: pairing <code>(e1, e2)</code> and operations <code>Fst(e)</code> and <code>Snd(e)</code> to get out the first and second components of a pair.</p>
+
+    <p>Then, copy the <code>lecture_example</code> code from the file and re-write it so that the boostrap code <code>Let a1 = Create(a1_behavior,0)</code> is replaced with code using <code>Create2</code> that creates <em>both</em> <code>a1</code> and <code>a2</code> who will know about each other, meaning that <code>a1</code> no longer needs to create <code>a2</code>.  (Note that you will not be able to run it since <code>Create2</code> is not implemented.)</p>
+  </li>
+</ol>
+
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
