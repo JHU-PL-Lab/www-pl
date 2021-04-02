@@ -28,5 +28,7 @@ Let stack_exercizer_behavior =
 Let a = Create(stack_exercizer_behavior,0) In a <- `anymessage(0)
 "
 
+(* Note that AFbV has list syntax built in which you may find convenient, you can write [1;2], Head l, Tail l, and test for empty with l = [].  There is no list pattern matching however. *)
+
 (* `peu stack_tester` to test it.  Make sure to not include anything more than string definitions
         in this file for the autograder. *)
