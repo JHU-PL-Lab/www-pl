@@ -7,23 +7,26 @@ let paren_if cond pp fmt e =
     ff fmt "(%a)" pp e
   else
     ff fmt "%a" pp e
+	
+let rec is_list = function
+	| EmptyList -> true 
+	| Cons(e1, e2) -> is_list e2 
+	| _ -> false
 
 let is_compound_expr = 
   function
-	| Bool(_) | Int(_) | Var(_) | String(_) 
-	| EmptyList | Cons(_,_) -> false
+	| Bool(_) | Int(_) | Var(_) | String(_) | EmptyList -> false
+	| Cons(_,tl) -> not (is_list tl)
   | _ -> true
-
 
 let rec pp_expr fmt =
 	let pp_parens = paren_if is_compound_expr pp_expr in
   function
-  | Var(Ident(x)) -> 
-      ff fmt "%s" x
-  | Int(x)      -> ff fmt "%d" x
-  | Bool(true)  -> ff fmt "True"
-  | Bool(false) -> ff fmt "False"
-	| String(s) -> ff fmt "%S" s
+  | Var(Ident(x)) -> ff fmt "%s" x
+  | Int(x)        -> ff fmt "%d" x
+  | Bool(true)    -> ff fmt "True"
+  | Bool(false)   -> ff fmt "False"
+	| String(s)     -> ff fmt "%S" s
 
   | Plus(e1, e2) ->
       ff fmt "%a + %a" pp_expr e1 pp_expr e2
@@ -75,7 +78,11 @@ let rec pp_expr fmt =
 	| EmptyList ->
 			ff fmt "[]"
 	| Cons(e_hd, e_tl) -> 
-			ff fmt "[@[<hv>@;<0 4>%a%a" pp_expr e_hd pp_list_tail e_tl
+			if is_list e_tl then	
+				ff fmt "[@[<hv>@;<0 4>%a%a" pp_expr e_hd pp_list_tail e_tl
+			else
+				ff fmt "%a :: %a" (paren_if is_compound_expr pp_expr) e_hd pp_expr e_tl
+
 	| Head(e1) ->
 			ff fmt "Head %a" pp_parens e1
 	| Tail(e1) ->
@@ -102,7 +109,7 @@ and pp_list_tail fmt =
 	function
 	| EmptyList -> ff fmt "@,@]]"
 	| Cons(e_hd, e_tl) -> ff fmt ";@;<1 4>%a%a" pp_expr e_hd pp_list_tail e_tl 
-	| e -> ff fmt "; non-well-terminated list: %a]" pp_expr e
+	| _ -> failwith "Impossible"
 
 
 let pp_fbtype fmt Untyped =
