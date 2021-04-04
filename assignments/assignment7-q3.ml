@@ -11,7 +11,7 @@ In this file you will give your AFbV code for stack_behavior as an OCaml string.
 let stack_behavior = "(0 0)" (* fill in *)
 
 let stack_tester = "
-Let stack_behavior = "^stack_behavior^" In
+Let stack_behavior = ("^stack_behavior^") In
 Let stack_exercizer_behavior = 
   Fun me -> Fun _ -> Fun _ ->
     Let as = Create(stack_behavior,0) In

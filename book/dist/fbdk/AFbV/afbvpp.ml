@@ -102,7 +102,7 @@ and pp_list_tail fmt =
 	function
 	| EmptyList -> ff fmt "@,@]]"
 	| Cons(e_hd, e_tl) -> ff fmt ";@;<1 4>%a%a" pp_expr e_hd pp_list_tail e_tl 
-	| _ -> failwith "impossible"
+	| e -> ff fmt "Print %a" pp_expr e
 
 
 let pp_fbtype fmt Untyped =
