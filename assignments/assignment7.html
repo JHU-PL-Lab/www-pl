@@ -110,7 +110,7 @@ Hint: if you load in the AFbV interpreter into <code>utop</code> and set <code>s
       <li>
         <p>If <code>as</code> was the result returned by the above <code>Create</code>, we can send it the following stack messages:</p>
 
-        <p><code>as &lt;- push(a,v)</code> is customer <code>a</code> asking to push v on the <code>as</code> stack.  Note <code>(a,v)</code> is a pair which is legal syntax of <strong>AFbV</strong> (<code>Fst(e)</code> and <code>Snd(e)</code> access the first and second components).  The <code>as</code> should push value <code>v</code> on it’s internal stack, and reply <code>a &lt;- `return(..anything..)</code> – the customer needs to know the stack push is finished.</p>
+        <p><code>as &lt;- push(v,a)</code> is customer <code>a</code> asking to push v on the <code>as</code> stack.  Note <code>(v,a)</code> is a pair which is legal syntax of <strong>AFbV</strong> (<code>Fst(e)</code> and <code>Snd(e)</code> access the first and second components).  The <code>as</code> should push value <code>v</code> on it’s internal stack, and reply <code>a &lt;- `return(..anything..)</code> – the customer needs to know the stack push is finished.</p>
 
         <p><code>as &lt;- is_empty(a)</code> will reply <code>a &lt;- True</code> to the customer <code>a</code> if the stack is empty, and <code>a &lt;- False</code> otherwise.</p>
 

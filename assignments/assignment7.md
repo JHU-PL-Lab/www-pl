@@ -21,7 +21,7 @@ For this assignment you will want to consult the book chapter 7 and the [`afbv_e
    - `Create(stack_behavior,...)` will create a new stack actor with an empty stack; the `...` can be anything, it is ignored.
    - If `as` was the result returned by the above `Create`, we can send it the following stack messages:
 
-      `as <- push(a,v)` is customer `a` asking to push v on the `as` stack.  Note `(a,v)` is a pair which is legal syntax of **AFbV** (`Fst(e)` and `Snd(e)` access the first and second components).  The `as` should push value `v` on it's internal stack, and reply `` a <- `return(..anything..)`` -- the customer needs to know the stack push is finished.
+      `as <- push(v,a)` is customer `a` asking to push v on the `as` stack.  Note `(v,a)` is a pair which is legal syntax of **AFbV** (`Fst(e)` and `Snd(e)` access the first and second components).  The `as` should push value `v` on it's internal stack, and reply `` a <- `return(..anything..)`` -- the customer needs to know the stack push is finished.
 
       `as <- is_empty(a)` will reply `a <- True` to the customer `a` if the stack is empty, and `a <- False` otherwise.
 
