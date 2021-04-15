@@ -9,7 +9,7 @@ For this part, you should turn in your `fbtype.ml` file and nothing else. Do not
 
 You can directly invoke the typechecker function `typecheck` in the top loop, either your own or the reference depending on whether you did a `dune utop ./Fb` or a `./reference/Fb/toplevel.exe`:
 
-<pre>
+```ocaml
 $ `./reference/Fb/toplevel.exe
 ...
 # open Fbdk;;
@@ -22,11 +22,13 @@ $ `./reference/Fb/toplevel.exe
 # let tc  s = show_fbtype @@ typecheck @@ parse s;;
 val tc : string -> string = <fun>
 # tc "Fun x -> x";;
-- : string = "a -> a"</pre>
+- : string = "a -> a"
+```
 
 The `Fb` reference binary also supports typechecking. You can turn it on by passing `--typecheck` to it. As an example, a correctly working interpreter should behave as follows:
 
-<pre>$ ./Fb/reference/interpreter.exe --typecheck
+```ocaml
+$ ./Fb/reference/interpreter.exe --typecheck
 Fb version 1.23         (typechecker enabled)
 
 # (Function x -> Function y -> x + y) 4;;
@@ -39,7 +41,7 @@ Fb version 1.23         (typechecker enabled)
 x
 # True + 1;;
 Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
-</pre>
+```
 
 
 Note also that the exception which is raised by a type error is defined in the `fbtype.ml` module; you must define your own exception(s) to throw when the expression cannot be assigned a type.

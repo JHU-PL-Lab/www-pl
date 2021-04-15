@@ -93,56 +93,59 @@
 
 <p>You can directly invoke the typechecker function <code>typecheck</code> in the top loop, either your own or the reference depending on whether you did a <code>dune utop ./Fb</code> or a <code>./reference/Fb/toplevel.exe</code>:</p>
 
-<pre>
-$ `./reference/Fb/toplevel.exe
-...
-# open Fbdk;;
-# open Ast;;
-# open Typechecker;;
-# open Pp;
-# open Debugutils;;
-# typecheck @@ parse "Fun x -&gt; x";;
-- : fbtype = TArrow (TVar "a", TVar "a")
-# let tc  s = show_fbtype @@ typecheck @@ parse s;;
-val tc : string -&gt; string = <fun>
-# tc "Fun x -&gt; x";;
-- : string = "a -&gt; a"&lt;/pre&gt;
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">$</span> <span class="err">`</span><span class="o">./</span><span class="n">reference</span><span class="o">/</span><span class="nc">Fb</span><span class="o">/</span><span class="n">toplevel</span><span class="o">.</span><span class="n">exe</span>
+<span class="o">...</span>
+<span class="o">#</span> <span class="k">open</span> <span class="nc">Fbdk</span><span class="p">;;</span>
+<span class="o">#</span> <span class="k">open</span> <span class="nc">Ast</span><span class="p">;;</span>
+<span class="o">#</span> <span class="k">open</span> <span class="nc">Typechecker</span><span class="p">;;</span>
+<span class="o">#</span> <span class="k">open</span> <span class="nc">Pp</span><span class="p">;</span>
+<span class="o">#</span> <span class="k">open</span> <span class="nc">Debugutils</span><span class="p">;;</span>
+<span class="o">#</span> <span class="n">typecheck</span> <span class="o">@@</span> <span class="n">parse</span> <span class="s2">"Fun x -&gt; x"</span><span class="p">;;</span>
+<span class="o">-</span> <span class="o">:</span> <span class="n">fbtype</span> <span class="o">=</span> <span class="nc">TArrow</span> <span class="p">(</span><span class="nc">TVar</span> <span class="s2">"a"</span><span class="o">,</span> <span class="nc">TVar</span> <span class="s2">"a"</span><span class="p">)</span>
+<span class="o">#</span> <span class="k">let</span> <span class="n">tc</span>  <span class="n">s</span> <span class="o">=</span> <span class="n">show_fbtype</span> <span class="o">@@</span> <span class="n">typecheck</span> <span class="o">@@</span> <span class="n">parse</span> <span class="n">s</span><span class="p">;;</span>
+<span class="k">val</span> <span class="n">tc</span> <span class="o">:</span> <span class="kt">string</span> <span class="o">-&gt;</span> <span class="kt">string</span> <span class="o">=</span> <span class="o">&lt;</span><span class="k">fun</span><span class="o">&gt;</span>
+<span class="o">#</span> <span class="n">tc</span> <span class="s2">"Fun x -&gt; x"</span><span class="p">;;</span>
+<span class="o">-</span> <span class="o">:</span> <span class="kt">string</span> <span class="o">=</span> <span class="s2">"a -&gt; a"</span>
+</code></pre></div></div>
 
-The `Fb` reference binary also supports typechecking. You can turn it on by passing `--typecheck` to it. As an example, a correctly working interpreter should behave as follows:
+<p>The <code>Fb</code> reference binary also supports typechecking. You can turn it on by passing <code>--typecheck</code> to it. As an example, a correctly working interpreter should behave as follows:</p>
 
-<pre>$ ./Fb/reference/interpreter.exe --typecheck
-Fb version 1.23         (typechecker enabled)
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">$</span> <span class="o">./</span><span class="nc">Fb</span><span class="o">/</span><span class="n">reference</span><span class="o">/</span><span class="n">interpreter</span><span class="o">.</span><span class="n">exe</span> <span class="o">--</span><span class="n">typecheck</span>
+<span class="nc">Fb</span> <span class="n">version</span> <span class="mi">1</span><span class="o">.</span><span class="mi">23</span>         <span class="p">(</span><span class="n">typechecker</span> <span class="n">enabled</span><span class="p">)</span>
 
-# (Function x -&gt; Function y -&gt; x + y) 4;;
-: Int -&gt; Int
-==&gt; Function y -&gt;
-4 + y
-# Function x -&gt; x;;    
-: 'a -&gt; 'a
-==&gt; Function x -&gt;
-x
-# True + 1;;
-Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
-</pre>
+<span class="o">#</span> <span class="p">(</span><span class="nc">Function</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="nc">Function</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="mi">4</span><span class="p">;;</span>
+<span class="o">:</span> <span class="nc">Int</span> <span class="o">-&gt;</span> <span class="nc">Int</span>
+<span class="o">==&gt;</span> <span class="nc">Function</span> <span class="n">y</span> <span class="o">-&gt;</span>
+<span class="mi">4</span> <span class="o">+</span> <span class="n">y</span>
+<span class="o">#</span> <span class="nc">Function</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="p">;;</span>    
+<span class="o">:</span> <span class="k">'</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">a</span>
+<span class="o">==&gt;</span> <span class="nc">Function</span> <span class="n">x</span> <span class="o">-&gt;</span>
+<span class="n">x</span>
+<span class="o">#</span> <span class="nc">True</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span>
+<span class="nc">Exception</span><span class="o">:</span> <span class="nn">Fbtype</span><span class="p">.</span><span class="nc">TypeInferenceFailure</span><span class="p">(</span><span class="s2">"immediately inconsistent types"</span><span class="p">)</span>
+</code></pre></div></div>
 
+<p>Note also that the exception which is raised by a type error is defined in the <code>fbtype.ml</code> module; you must define your own exception(s) to throw when the expression cannot be assigned a type.</p>
 
-Note also that the exception which is raised by a type error is defined in the `fbtype.ml` module; you must define your own exception(s) to throw when the expression cannot be assigned a type.
+<p>You need to implement the full algorithm <em>except</em> you do not need to implement the cycle detection algorithm - your checker can loop forever on programs with cyclic constraints (but only on such programs). Extra credit will be given for implementing cycle detection. Also, you don’t need to include the let-polymorphism of <strong>PEFb</strong>.</p>
 
-You need to implement the full algorithm _except_ you do not need to implement the cycle detection algorithm - your checker can loop forever on programs with cyclic constraints (but only on such programs). Extra credit will be given for implementing cycle detection. Also, you don't need to include the let-polymorphism of **PEFb**.
+<p>Here are some suggestions:</p>
 
-Here are some suggestions:
-
-*   Break down your implementation into the same phases as in lecture and the book:
-    1.  Generate the type `τ \ E` using the ideas in the type system (and also following the typechecker for `TFb` in the book),
-    2.  Perform the closure on `E`,
-    3.  Check the closure for immediate inconsistencies, and
-    4.  Substitute equations of `E` into `τ` to solve.
-*   The `E` is a set of pairs (the type equations τ = τ'); built-in Caml types such as `Set` or `Map` may prove useful in your implementation of this data structure. You can use any of the built-in libraries but the auto-grader cannot install any extra packages to run your type checker.
-*   In the closure outlined in the book, we assumed = was symmetric; in your implementation, one easy (but inefficient) method to achieve this to add an additional closure step: every time you add τ = τ' to the closure, also add τ' = τ.
-*   The "substitute to solve" phase is the same idea as your substitution function you wrote on terms; just do it on types.
-*   During testing, it may be useful to run your interpreter with the `--show-backtrace`. This will give you a stack trace for any exceptions that occur. Unfortunately this feature works only on the compiled binary and not in the interpreter.
-*   Don't worry about efficiency. **Do** worry about correctness.
-</fun></pre>
+<ul>
+  <li>Break down your implementation into the same phases as in lecture and the book:
+    <ol>
+      <li>Generate the type <code>τ \ E</code> using the ideas in the type system (and also following the typechecker for <code>TFb</code> in the book),</li>
+      <li>Perform the closure on <code>E</code>,</li>
+      <li>Check the closure for immediate inconsistencies, and</li>
+      <li>Substitute equations of <code>E</code> into <code>τ</code> to solve.</li>
+    </ol>
+  </li>
+  <li>The <code>E</code> is a set of pairs (the type equations τ = τ’); built-in Caml types such as <code>Set</code> or <code>Map</code> may prove useful in your implementation of this data structure. You can use any of the built-in libraries but the auto-grader cannot install any extra packages to run your type checker.</li>
+  <li>In the closure outlined in the book, we assumed = was symmetric; in your implementation, one easy (but inefficient) method to achieve this to add an additional closure step: every time you add τ = τ’ to the closure, also add τ’ = τ.</li>
+  <li>The “substitute to solve” phase is the same idea as your substitution function you wrote on terms; just do it on types.</li>
+  <li>During testing, it may be useful to run your interpreter with the <code>--show-backtrace</code>. This will give you a stack trace for any exceptions that occur. Unfortunately this feature works only on the compiled binary and not in the interpreter.</li>
+  <li>Don’t worry about efficiency. <strong>Do</strong> worry about correctness.</li>
+</ul>
       
           </section>
         </div>
