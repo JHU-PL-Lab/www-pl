@@ -424,7 +424,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body"><a href="assignments/assignment9.html">9 - Type Inferencer</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -458,7 +458,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Special Topics II</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment9.html">9 - Type Inferencer</a></div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">8</div>
