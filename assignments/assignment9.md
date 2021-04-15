@@ -10,7 +10,7 @@ For this part, you should turn in your `fbtype.ml` file and nothing else. Do not
 You can directly invoke the typechecker function `typecheck` in the top loop, either your own or the reference depending on whether you did a `dune utop ./Fb` or a `./reference/Fb/toplevel.exe`:
 
 ```ocaml
-$ `./reference/Fb/toplevel.exe
+$ ./reference/Fb/toplevel.exe
 ...
 # open Fbdk;;
 # open Ast;;
@@ -29,8 +29,7 @@ The `Fb` reference binary also supports typechecking. You can turn it on by pass
 
 ```ocaml
 $ ./Fb/reference/interpreter.exe --typecheck
-Fb version 1.23         (typechecker enabled)
-
+        Fb version 1.4.0                (typechecker enabled)
 # (Function x -> Function y -> x + y) 4;;
 : Int -> Int
 ==> Function y ->

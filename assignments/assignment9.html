@@ -93,7 +93,7 @@
 
 <p>You can directly invoke the typechecker function <code>typecheck</code> in the top loop, either your own or the reference depending on whether you did a <code>dune utop ./Fb</code> or a <code>./reference/Fb/toplevel.exe</code>:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">$</span> <span class="err">`</span><span class="o">./</span><span class="n">reference</span><span class="o">/</span><span class="nc">Fb</span><span class="o">/</span><span class="n">toplevel</span><span class="o">.</span><span class="n">exe</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">$</span> <span class="o">./</span><span class="n">reference</span><span class="o">/</span><span class="nc">Fb</span><span class="o">/</span><span class="n">toplevel</span><span class="o">.</span><span class="n">exe</span>
 <span class="o">...</span>
 <span class="o">#</span> <span class="k">open</span> <span class="nc">Fbdk</span><span class="p">;;</span>
 <span class="o">#</span> <span class="k">open</span> <span class="nc">Ast</span><span class="p">;;</span>
@@ -111,8 +111,7 @@
 <p>The <code>Fb</code> reference binary also supports typechecking. You can turn it on by passing <code>--typecheck</code> to it. As an example, a correctly working interpreter should behave as follows:</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">$</span> <span class="o">./</span><span class="nc">Fb</span><span class="o">/</span><span class="n">reference</span><span class="o">/</span><span class="n">interpreter</span><span class="o">.</span><span class="n">exe</span> <span class="o">--</span><span class="n">typecheck</span>
-<span class="nc">Fb</span> <span class="n">version</span> <span class="mi">1</span><span class="o">.</span><span class="mi">23</span>         <span class="p">(</span><span class="n">typechecker</span> <span class="n">enabled</span><span class="p">)</span>
-
+        <span class="nc">Fb</span> <span class="n">version</span> <span class="mi">1</span><span class="o">.</span><span class="mi">4</span><span class="o">.</span><span class="mi">0</span>                <span class="p">(</span><span class="n">typechecker</span> <span class="n">enabled</span><span class="p">)</span>
 <span class="o">#</span> <span class="p">(</span><span class="nc">Function</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="nc">Function</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="mi">4</span><span class="p">;;</span>
 <span class="o">:</span> <span class="nc">Int</span> <span class="o">-&gt;</span> <span class="nc">Int</span>
 <span class="o">==&gt;</span> <span class="nc">Function</span> <span class="n">y</span> <span class="o">-&gt;</span>
