@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://campuswire.com/c/G9E051068">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assigment-9---type-inferencer-implementation">Assigment 9 - Type Inferencer Implementation</h2>
+<h2 id="draft--final-assignment-may-differ">DRAFT!  Final assignment may differ!!</h2>
+
+<p>The FbDK has been designed to be extensible with typechecking. It is just turned off by default. For Part-I of the homework, use the FbDK to implement the type inference algorithm for <strong>EFb</strong> in OCaml. Your implementation is expected to handle all of <strong>EFb</strong> with the exception of <code>Let Rec</code>.</p>
+
+<p>To complete this assignment, you will need to edit <code>fbtype.ml</code> in the <code>Fb/</code> directory and implement the <code>typecheck</code> function which in the dist is just raising an exception. This function must return the type of that expression as specified by the <strong>EFb</strong> algorithm; you should use the <code>fbtype</code> data type which appears in <code>fbast.ml</code>. You also should set <code>typecheck_default_enabled</code> to <code>true</code> in <code>fbtype.ml</code> so the typechecker will run.</p>
+
+<p>For this part, you should turn in your <code>fbtype.ml</code> file and nothing else. Do not change <code>fbast.ml</code> or similar files, since your code will be auto-graded by dropping your <code>fbtype.ml</code> file into a correct implementation of <strong>Fb</strong>.</p>
+
+<p>You can directly invoke the typechecker function <code>typecheck</code> in the top loop, either your own or the reference depending on whether you did a <code>dune utop ./Fb</code> or a <code>./reference/Fb/toplevel.exe</code>:</p>
+
+<pre>
+$ `./reference/Fb/toplevel.exe
+...
+# open Fbdk;;
+# open Ast;;
+# open Typechecker;;
+# open Pp;
+# open Debugutils;;
+# typecheck @@ parse "Fun x -&gt; x";;
+- : fbtype = TArrow (TVar "a", TVar "a")
+# let tc  s = show_fbtype @@ typecheck @@ parse s;;
+val tc : string -&gt; string = <fun>
+# tc "Fun x -&gt; x";;
+- : string = "a -&gt; a"&lt;/pre&gt;
+
+The `Fb` reference binary also supports typechecking. You can turn it on by passing `--typecheck` to it. As an example, a correctly working interpreter should behave as follows:
+
+<pre>$ ./Fb/reference/interpreter.exe --typecheck
+Fb version 1.23         (typechecker enabled)
+
+# (Function x -&gt; Function y -&gt; x + y) 4;;
+: Int -&gt; Int
+==&gt; Function y -&gt;
+4 + y
+# Function x -&gt; x;;    
+: 'a -&gt; 'a
+==&gt; Function x -&gt;
+x
+# True + 1;;
+Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
+</pre>
+
+
+Note also that the exception which is raised by a type error is defined in the `fbtype.ml` module; you must define your own exception(s) to throw when the expression cannot be assigned a type.
+
+You need to implement the full algorithm _except_ you do not need to implement the cycle detection algorithm - your checker can loop forever on programs with cyclic constraints (but only on such programs). Extra credit will be given for implementing cycle detection. Also, you don't need to include the let-polymorphism of **PEFb**.
+
+Here are some suggestions:
+
+*   Break down your implementation into the same phases as in lecture and the book:
+    1.  Generate the type `τ \ E` using the ideas in the type system (and also following the typechecker for `TFb` in the book),
+    2.  Perform the closure on `E`,
+    3.  Check the closure for immediate inconsistencies, and
+    4.  Substitute equations of `E` into `τ` to solve.
+*   The `E` is a set of pairs (the type equations τ = τ'); built-in Caml types such as `Set` or `Map` may prove useful in your implementation of this data structure. You can use any of the built-in libraries but the auto-grader cannot install any extra packages to run your type checker.
+*   In the closure outlined in the book, we assumed = was symmetric; in your implementation, one easy (but inefficient) method to achieve this to add an additional closure step: every time you add τ = τ' to the closure, also add τ' = τ.
+*   The "substitute to solve" phase is the same idea as your substitution function you wrote on terms; just do it on types.
+*   During testing, it may be useful to run your interpreter with the `--show-backtrace`. This will give you a stack trace for any exceptions that occur. Unfortunately this feature works only on the compiled binary and not in the interpreter.
+*   Don't worry about efficiency. **Do** worry about correctness.
+</fun></pre>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
