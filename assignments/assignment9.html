@@ -83,7 +83,6 @@
 <link rel="stylesheet" href="/pl/css/friendly.css" />
 <meta charset="utf-8" />
     <h2 id="assigment-9---type-inferencer-implementation">Assigment 9 - Type Inferencer Implementation</h2>
-<h2 id="draft--final-assignment-may-differ">DRAFT!  Final assignment may differ!!</h2>
 
 <p>The FbDK has been designed to be extensible with typechecking. It is just turned off by default. For Part-I of the homework, use the FbDK to implement the type inference algorithm for <strong>EFb</strong> in OCaml. Your implementation is expected to handle all of <strong>EFb</strong> with the exception of <code>Let Rec</code>.</p>
 
@@ -124,26 +123,24 @@
 <span class="nc">Exception</span><span class="o">:</span> <span class="nn">Fbtype</span><span class="p">.</span><span class="nc">TypeInferenceFailure</span><span class="p">(</span><span class="s2">"immediately inconsistent types"</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>Note also that the exception which is raised by a type error is defined in the <code>fbtype.ml</code> module; you must define your own exception(s) to throw when the expression cannot be assigned a type.</p>
+<p>Note also that the exception which is raised by a type error is defined in the <code>fbtype.ml</code> module; you must define your own exception <code>NotTypable</code> to throw when the expression cannot be assigned a type.</p>
 
-<p>You need to implement the full algorithm <em>except</em> you do not need to implement the cycle detection algorithm - your checker can loop forever on programs with cyclic constraints (but only on such programs). Extra credit will be given for implementing cycle detection. Also, you don’t need to include the let-polymorphism of <strong>PEFb</strong>.</p>
+<p>You need to implement the full algorithm <em>except</em> you do not need to implement the cycle detection algorithm - your checker can loop forever on programs with cyclic constraints (but only on such programs). Extra credit will be given for implementing cycle detection. Throw a <code>CyclicalConstraints</code> exception in this case.  Also, note that you don’t need to include the let-polymorphism of <strong>PEFb</strong>, we are implementing <strong>EFb</strong> only.</p>
 
 <p>Here are some suggestions:</p>
 
 <ul>
   <li>Break down your implementation into the same phases as in lecture and the book:
     <ol>
-      <li>Generate the type <code>τ \ E</code> using the ideas in the type system (and also following the typechecker for <code>TFb</code> in the book),</li>
+      <li>Generate the type <code>τ \ E</code> using the ideas in the type system,</li>
       <li>Perform the closure on <code>E</code>,</li>
       <li>Check the closure for immediate inconsistencies, and</li>
-      <li>Substitute equations of <code>E</code> into <code>τ</code> to solve.</li>
+      <li>Substitute equations of <code>E</code> into <code>τ</code> to give a printable type.</li>
     </ol>
   </li>
   <li>The <code>E</code> is a set of pairs (the type equations τ = τ’); built-in Caml types such as <code>Set</code> or <code>Map</code> may prove useful in your implementation of this data structure. You can use any of the built-in libraries but the auto-grader cannot install any extra packages to run your type checker.</li>
   <li>In the closure outlined in the book, we assumed = was symmetric; in your implementation, one easy (but inefficient) method to achieve this to add an additional closure step: every time you add τ = τ’ to the closure, also add τ’ = τ.</li>
-  <li>The “substitute to solve” phase is the same idea as your substitution function you wrote on terms; just do it on types.</li>
-  <li>During testing, it may be useful to run your interpreter with the <code>--show-backtrace</code>. This will give you a stack trace for any exceptions that occur. Unfortunately this feature works only on the compiled binary and not in the interpreter.</li>
-  <li>Don’t worry about efficiency. <strong>Do</strong> worry about correctness.</li>
+  <li>The “substitute to solve” phase is the same idea as your substitution function you wrote for <strong>Fb</strong> expressions in the <code>eval</code> function; just do it here on types.</li>
 </ul>
       
           </section>

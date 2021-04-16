@@ -1,5 +1,4 @@
 ## Assigment 9 - Type Inferencer Implementation
-## DRAFT!  Final assignment may differ!!
 
 The FbDK has been designed to be extensible with typechecking. It is just turned off by default. For Part-I of the homework, use the FbDK to implement the type inference algorithm for **EFb** in OCaml. Your implementation is expected to handle all of **EFb** with the exception of `Let Rec`.
 
@@ -43,19 +42,17 @@ Exception: Fbtype.TypeInferenceFailure("immediately inconsistent types")
 ```
 
 
-Note also that the exception which is raised by a type error is defined in the `fbtype.ml` module; you must define your own exception(s) to throw when the expression cannot be assigned a type.
+Note also that the exception which is raised by a type error is defined in the `fbtype.ml` module; you must define your own exception `NotTypable` to throw when the expression cannot be assigned a type.
 
-You need to implement the full algorithm _except_ you do not need to implement the cycle detection algorithm - your checker can loop forever on programs with cyclic constraints (but only on such programs). Extra credit will be given for implementing cycle detection. Also, you don't need to include the let-polymorphism of **PEFb**.
+You need to implement the full algorithm _except_ you do not need to implement the cycle detection algorithm - your checker can loop forever on programs with cyclic constraints (but only on such programs). Extra credit will be given for implementing cycle detection. Throw a `CyclicalConstraints` exception in this case.  Also, note that you don't need to include the let-polymorphism of **PEFb**, we are implementing **EFb** only.
 
 Here are some suggestions:
 
 *   Break down your implementation into the same phases as in lecture and the book:
-    1.  Generate the type `τ \ E` using the ideas in the type system (and also following the typechecker for `TFb` in the book),
+    1.  Generate the type `τ \ E` using the ideas in the type system,
     2.  Perform the closure on `E`,
     3.  Check the closure for immediate inconsistencies, and
-    4.  Substitute equations of `E` into `τ` to solve.
+    4.  Substitute equations of `E` into `τ` to give a printable type.
 *   The `E` is a set of pairs (the type equations τ = τ'); built-in Caml types such as `Set` or `Map` may prove useful in your implementation of this data structure. You can use any of the built-in libraries but the auto-grader cannot install any extra packages to run your type checker.
 *   In the closure outlined in the book, we assumed = was symmetric; in your implementation, one easy (but inefficient) method to achieve this to add an additional closure step: every time you add τ = τ' to the closure, also add τ' = τ.
-*   The "substitute to solve" phase is the same idea as your substitution function you wrote on terms; just do it on types.
-*   During testing, it may be useful to run your interpreter with the `--show-backtrace`. This will give you a stack trace for any exceptions that occur. Unfortunately this feature works only on the compiled binary and not in the interpreter.
-*   Don't worry about efficiency. **Do** worry about correctness.
+*   The "substitute to solve" phase is the same idea as your substitution function you wrote for **Fb** expressions in the `eval` function; just do it here on types.
