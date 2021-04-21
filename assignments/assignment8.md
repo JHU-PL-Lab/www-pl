@@ -34,7 +34,7 @@
     b.  Show your rules work by proving the simple program
 
     ```ocaml
-    (Fun goo ->  Match goo With `good(_) -> 0 | `bad(_) -> 1)(`good(0): `good(Int) | `bad(Bool))
+    (Fun goo : `good(Int) | `bad(Bool) ->  Match goo With `good(_) -> 0 | `bad(_) -> 1)(`good(0): `good(Int) | `bad(Bool))
     ```
 
     typechecks: construct the type tree for it using your rules.
