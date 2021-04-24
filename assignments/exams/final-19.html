@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>PL Final 2019</title>
+</HEAD>
+<BODY LINK="#0000FF" VLINK="#800080" bgcolor="#F0FFF0">
+<h3> 601.426/626, Princples of Programming Languages
+<br> Spring 2019
+<br> Final Examination
+<br> 
+</h3>
+Your Name (please write neatly to help Gradescope recognize it): _________________________________<p>
+
+You can use one handwritten 8.5x11 notes sheet.  Please put your name on your sheet, and we will be collecting them at the end of the exam.
+<strong>Good Luck!</strong>
+<hr>
+<ol>
+
+  <li> [20 points] Consider the language <strong>Fb--</strong> which is
+    <strong>Fb</strong> with functions and application <em>only</em>.  This
+    language is also called the pure lambda calculus since all it has
+    is functions.
+
+    <ol type="a">
+      <li>Write out all of the operational semantics rules for <strong>Fb--</strong>.  Your cheat sheet could come in handy here :-)
+      <li>  Write a complete OCaml interpreter for <strong>Fb--</strong>, in the
+    form of a function <code>eval : expr -> expr</code>.  Since
+    this language is so tiny there are not many cases to consider and
+    the interpreter won't take that long to write out.
+    You can assume and use the following datatypes:
+    <pre>type ident = Ident of string
+
+type expr = 
+ Var of ident | Function of ident * expr | Appl of expr * expr </pre>
+      <li> Modify the <strong>Fb--</strong> operational semantics in your part a. answer to be <em>call-by-name</em>, making variant <strong>Fb--N</strong>: in call-by-name, function arguments are only evaluated when they are needed, not right when the function is called.  An example in <strong>FbN</strong> is <tt>(Fun x -> x + x)(1 + 2)</tt> which would compute by computing <tt>(1 + 2) + (1 + 2)</tt>, whereas in the <strong>Fb</strong> interpreter this would compute by computing <tt>3 + 3</tt>, the argument <tt>(1 + 2)</tt> is first evaluated before the function is called.  One test that you got your rule correct is diverging function arguments should pose no problem if they are never used: for example, <pre>(Fun x -> Fun y -> y)((Fun z -> z z)(Fun z -> z z)) ==> Fun y -> y</pre>  in <strong>Fb--N</strong>, whereas in <strong>Fb--</strong> it would not compute to any value.
+      <li>Consider a similar shrinking of <strong>TFb</strong> to <strong>TFb--</strong>.  Since integers and booleans are removed the type grammar would be just
+	<pre> &tau; ::= &tau; -> &tau; </pre>
+	    but this completely fails in a really bad way; why?
+	    <li>OK, let us fix this by making the type grammar include type variables like in the inferencer:
+	<pre> &tau; ::= &tau; -> &tau; | 'a </pre>
+	     An example typing would be program <tt>|- (Fun x : 'a -> x)(Fun y : 'b -> y) : 'a</tt>.  Write out all of the type rules for <strong>TFb--</strong>.
+	</ol>
+    <p style="page-break-after:always;"></p>
+
+
+(Blank page on which to finish question 1 if you need room)
+
+        <p style="page-break-after:always;"></p>
+  <li> [8 points] The <code>Abort</code> control
+      operator causes a program to immediately
+    terminate and return a value.  For this question we will add abort to the very simple language <strong>Fb--</strong> in question 1, giving a new language <strong>Fb--Ab</strong>.  It will include
+    a new syntax form
+      <code>Abort(e)</code> which when executed returns the value of
+      <code>e</code> and quits.  As an example, <pre>(Fun x -> (Fun z -> z))(Abort((Fun y -> y)) ==> Fun y -> y</pre>  If we extended abort to full <strong>FbAb</strong> we would also have an example like <tt>7 + Abort(1 + 3) ==> 4</tt>.
+      <p>For this question, write all of the operational semantics rules for <strong>Fb--Ab</strong>.  Feel free to include rules from your answer to question 1 by referring to them.
+    <p>
+
+  
+    <p style="page-break-after:always;"></p>
+    
+
+  <li>[9 points] Sorry, there will be no pull out the points game this year, all the points in the points-bank got used up in the last few years.  But as a consolation prize we will play a similar game, <em>pull out the difference</em>.  Concretely, for each pair of <strong>Fb</strong> expressions below, prove they are not operationally equivalent using the definition of operational equivalence.  Make sure to give the explicit context <tt>C</tt> which "pulls out the difference" as per the definition.  (Note: remember the context <tt>C</tt> hole filling can never change the parsing order; one way to guarantee this is to put <tt>( &bull; )</tt> instead of just <tt>&bull;</tt>.)
+  <ol type="a">
+    <li><tt>(Fun x -> y (x x))</tt> and <tt>(Fun x -> y (x y))</tt>
+    <li><tt>(Fun self -> Fun arg -> If arg = 0 Then 0 Else arg + self self (arg - 1))</tt> and
+        <tt>(Fun self -> Fun arg -> If arg = 0 Then 0 Else arg + self (arg - 1))</tt>
+      <li><tt>x + 0</tt> and <tt>x</tt>
+      </ol>
+
+    <p style="page-break-after:always;"></p>
+
+  <li>[8 points] Several homeworks concerned languages with a record append operation, <tt>@</tt>. For this question assume we also have such an operation in a hypothetical language <strong>FbR@</strong>.  An example use of it is
+<pre>Let r = {a = 5; c = 6} In Let rr = {b = 7; c = True } In Let rrr = r @ rr In rrr.c  ==> True</pre>
+Notice in particular from this example how if a field is in both records the appended record takes the field from the right record.  This is also a <em>functional</em> operation, neither <tt>r</tt> nor <tt>rr</tt> was changed by the <tt>@</tt> operation.
+    <p> For this question we are just going to explore some programming benefits of having such an append operation.
+With record append, it is much simpler to encode inheritance or even object extension. For this question, encode a simple <tt>Point</tt> object as a record with integer fields <tt>x, y</tt> and methods <tt>magnitude, isZero</tt> and then define an <em>extension</em>
+	      to it (its the same object but with more goodies added) called <tt>MorePoint</tt> which includes an additional method <tt>isNotZero</tt> which simply negates the result of calling <tt>isZero</tt> on the object.
+	      Concretely, the program
+	      <pre>Let Point = ... In Let MorePoint = ... (use @ and Point, don't repeat code here) ... In MorePoint.isNotZero MorePoint {}</pre> should appropriately execute.  All you need to write for your answer is how <tt>Point</tt> and <tt>MorePoint</tt> are defined.
+    <p>
+    <p style="page-break-after:always;"></p>
+
+	
+    
+  <li>[20 points] Recall the mutable records of OCaml: some fields may be declared <tt>mutable</tt> which means they can be mutated just like refs.  Here is an OCaml dialog as a refresher:
+<pre># type rt = {mutable a : int; mutable b : int};;
+type rt = { mutable a : int; mutable b : int; }
+# let r = { a = 5; b = 7};;
+val r : rt = {a = 5; b = 7}
+# r.b <- 4;;
+- : unit = ()
+# r;;
+- : rt = {a = 5; b = 4}
+# r.b;;
+- : int = 4
+	      </pre>
+
+For this question you are to define a language with mutable records, <strong>FbmR</strong>.   For simplicity, we will assume <em>all</em> fields in a record are mutable.  Compared to <strong>FbR</strong> you only need to support the additional field mutation syntax <tt>e.l <- e</tt> for <tt>l</tt> a record label.
+    <ol type="a">
+      <li>Give the operational semantics for <strong>FbmR</strong> which should follow the analogous OCaml behavior as shown in the OCaml top loop example above. Since there is mutation you will need a store <em>S</em> as in <strong>FbS</strong>; you can make the format of the store be whatever you want.  Also as with <strong>FbS</strong> you will need to redo all of the old <strong>Fb</strong> rules to thread the state.
+        Since that would take a lot of writing, for your answer here just show the revised <tt>+</tt> rule.  Do make sure to give rules for all of the record operations: record formation, projection (<tt>.</tt>) and field mutation (<tt>&lt;-</tt>).
+      <li>We can extend <strong>FbmR</strong> to a typed version <strong>TFbmR</strong>.  For this question give all type rules needed for any record operation.  You don't need to repeat any type rules of <strong>TFb</strong>, but do give all the record-related typing rules.
+      <li>Now consider <strong>STFbmR</strong> in which we add subtyping like we did in <strong>STFbR</strong>, but now the fields are potentially mutable.  You don't need to write out any rules, but think about what it should be.
+	Which direction is correct? <tt>{ a : Int;  b : Int } &lt;: { a : Int }</tt>, or  <tt>{ a : Int } &lt;: { a : Int; b : Int }</tt> Or, are both incorrect?  Briefly justify your answer. 
+      <li>Repeat the previous question, but for <tt>{ c : { a : Int;  b : Int }}</tt> and <tt>{c : { a : Int }}</tt>.
+</ol></li>
+
+    <p style="page-break-after:always;"></p>
+
+    (extra page to continue to answer question 5.)
+
+    <!--
+QQQp>    QQQh1>FODDERQQQ/h1>
+
+  QQQp style="page-break-after:always;">QQQ/p>
+
+    
+
+  QQQli>[10 points] QQQ/li>
+      The QQQstrong>FbSQQQ/strong> operational semantics in fact accumulates garbage in the state QQQem>SQQQ/em> that is never collected (and the QQQstrong>SbFRQQQ/strong> implementation we provide also doesn't collect garbage, so programs that could terminate may run out of memory just because our interpreter is not garbage collecting the heap).  Given an FbS state (e,S), describe a garbage collection algorithm over it.
+    
+
+	QQQli>
+	  QQQp>In AFbv, an actor can send messages to some other actors without blocking itself. In the semantics, we know there are a global soup, where actors can send and grab message in and from it.QQQ/p>
+
+QQQp>Imagine the universe of Fb, where lots of stars who have expressions to evaluatesQQQ/p>
+
+QQQp>e ::= ... | Universe(e, e, ...)QQQ/p>
+
+QQQp>QQQcode>Universe(e, e, ...)QQQ/code> can be treated as a list of multiple concurrent expressions in which each expression evaluates locally, if some expression get stuck, the other expression can still evaluate. We use QQQcode>DustQQQ/code> to indicate an obvious stuck computation or the proof tree exceeds the height of 42. (~~shiwei: the to avoid HALT problems)QQQ/p>
+
+QQQp>e.g.QQQ/p>
+
+QQQp>QQQcode>Universe[1, True, (0 0), (Fun x -&gt; x + 1) 1]QQQ/code> 
+==> QQQcode>Universe[1, True, Dust, 2]QQQ/code>QQQ/p>
+
+QQQp>(a)
+Q: Describe informally how QQQcode>Universe[e1, e2, ..., en]QQQ/code> evaluatesQQQ/p>
+
+QQQp>(b)
+Wormholes appear in the universe. It looks like thisQQQ/p>
+
+QQQp>v ::= ...| w (as the name of wormholes like cell names in the store)QQQ/p>
+
+QQQp>e ::= ...
+  | CreateWormhole
+  | Depart(w, e)
+  | Arrive(w)QQQ/p>
+
+QQQp>Unlike the message sending in actors, the QQQcode>Depart(w, e)QQQ/code> and QQQcode>Arrive(w)QQQ/code> will block each expressions solely until they appears simultaneously in the universe. At that moment, QQQcode>Depart(w, e)QQQ/code> becomes QQQcode>0QQQ/code> while QQQcode>Arrive(w)QQQ/code> becomes QQQcode>eQQQ/code>.QQQ/p>
+
+QQQp>A value come travel along a wormhole QQQcode>wQQQ/code> if there is exactly one Depart and one Arrive of it. If at any moment, that are more that one QQQcode>DepartQQQ/code> or QQQcode>ArriveQQQ/code>, the stars related to that wormhole becomes QQQcode>DustQQQ/code>.QQQ/p>
+
+QQQp>QQQpre>OCaml
+let w = CreateWormhole
+  in let e1 = 
+    let _ = Depart(w, 1) in 1
+  in let e2 = 
+    Arrive(w) + 1
+  in Universe[e1, e2]
+==&gt;
+  Universe[1, 2]
+QQQ/pre>QQQ/p>
+
+QQQp>Q: Write operational semantics of the new expressions of wormholes (the rules are used locally but you may need mention the universe in the rules).QQQ/p>
+
+QQQp>(c)
+FbWormhole can mimic actors.QQQ/p>
+
+QQQp>QQQpre>OCaml
+  let whEarth = CreateWormhole
+  in let whNepture = CreateWormhole
+  in 
+    (* FILL CODE HERE *)
+  in let threebody = Arrive(earth, 1); Arrive(neptune, 1); Arrive(earth, 0); Arrive(neptune, 0); 3 QQQbr />
+  in Universe [threebody, earth, neptune]
+QQQ/pre>QQQ/p>
+
+QQQp>Fill the code to make the universe to evaluate to QQQcode>Universe[3, 3, 3]QQQ/code>.
+Noting QQQcode>earthQQQ/code> cannot use QQQcode>whNeptureQQQ/code> and QQQcode>neptuneQQQ/code> cannot use QQQcode>whNeptureQQQ/code>.QQQ/p>
+
+      -->
+																																
+    <p style="page-break-after:always;"></p>
+
+(Blank page, if you run out of room on any question say "see blank" and write here)
+ 
+
+      </ol>
+
+
+    </body> </html>
