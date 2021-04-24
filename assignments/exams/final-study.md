@@ -10,4 +10,4 @@
 
 ### Old finals
 
-[2012](final-12-answers.html) with answers, [2013](final-13.html), [2014](final-14.html), [2015](final-15.html), [2016](final-16.html), [2017](final-17.html), [2018](final-18.html),  [2019](final-19.html).
+[2012](final-12-answers.html) with answers, [2015](final-15.html), [2016](final-16.html), [2017](final-17.html), [2018](final-18.html),  [2019](final-19.html).
