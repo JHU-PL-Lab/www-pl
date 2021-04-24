@@ -493,7 +493,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
-      href="assignments/finals/final-study.html">Study Guide</a></div>
+      href="assignments/exams/final-study.html">Study Guide</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
