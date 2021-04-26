@@ -84,16 +84,18 @@
 <meta charset="utf-8" />
     <h2 id="principles-behind-java">Principles Behind Java</h2>
 
-<p>Thesis: we could <em>encode</em> Java in <strong>PSTFbOB</strong></p>
-
 <ul>
-  <li><strong>FbOB</strong> (objects) plus <strong>STFb</strong> (subtyping) plus <strong>PEFb</strong> (the P for polymorphism/generics, and the E for type inference).</li>
+  <li>Java is close to “<strong>PSTFbOB</strong>”
+    <ul>
+      <li><strong>FbOB</strong> (objects) plus <strong>STFb</strong> (subtyping) plus <strong>PEFb</strong> (the P for polymorphism/generics, and the E for type inference).</li>
+    </ul>
+  </li>
   <li>There are a few cases arising from the interaction of these pieces which are tricky and we will cover.</li>
 </ul>
 
 <h3 id="encoding-typed-objects">Encoding Typed Objects</h3>
 
-<p>We encoded objects with records, but the encoding we gave does not lift perfectly to typed objects.</p>
+<p>We encoded <strong>FbOB</strong> objects with records, but the encoding we gave does not lift perfectly to typed objects.</p>
 
 <ul>
   <li>
@@ -112,7 +114,7 @@
 
     <pre>Let p1 : Point = aPoint In let p2 : Point = aColorPoint In p2.magnitude p1 {}</pre>
 
-    <p>would result in an attempt to look up p1’s color, a runtime error. Note we are abusing our encoding here by passing <tt>p1</tt> to <tt>p2</tt>, that is why the encoding in fact works.</p>
+    <p>would result in an attempt to look up p1’s color, a runtime error. Note we are abusing our encoding here by passing <tt>p1</tt> to <tt>p2</tt>.</p>
   </li>
   <li>
     <p>Solution: pre-package the <code>self</code> into objects when created so self need not be passed in at each message send and it won’t show up in object types.</p>
@@ -181,7 +183,7 @@ Let pointClass = {
       <li>Structural subtyping is more flexible: “use your own implicit interface without needing to declare it”.</li>
       <li>Nominal subtyping lets you think about subtyping in terms of names of things, not the details of whats inside  <br />
 – a helpful abstraction of detail in many cases.</li>
-      <li>Pretty much all major languages used nominal subtyping until TypeScript decided to take the structural approach. Good for them!</li>
+      <li>All major languages used nominal subtyping until TypeScript decided to take the structural approach.</li>
     </ul>
   </li>
 </ul>
@@ -192,11 +194,11 @@ Let pointClass = {
 
 <p>The <strong>PEFb</strong> language includes both type inference and polymorphism so it is the only language we studied with polymorphism. The main idea of how generic types are handled are expressed there, but in an inference context.</p>
 
-<p>Here are some comparisons with the <strong>PEFb</strong> or Caml-style parametric types that we studied:</p>
+<p>Here are some comparisons with the <strong>PEFb</strong> or OCaml-style parametric types that we studied:</p>
 
 <ul>
-  <li><tt>‘a list / int list</tt> from OCaml is <tt>List <T> / List <Integer>&lt;/tt&gt; in Java</Integer></T></tt></li>
-  <li>Caml/<strong>PEFb</strong> often <em>infers</em> generic types <code>'a</code> automatically; in Java, you need to declare them as <code>&lt;T&gt;</code>. But you can often just write <code>&lt;&gt;</code> to instantiate a generic type: the type will be inferred.</li>
+  <li><code>'a list / int list</code> from OCaml is <code>List &lt;T&gt; / List &lt;Integer&gt;</code> in Java</li>
+  <li>OCaml/<strong>PEFb</strong> often <em>infers</em> generic types <code>'a</code> automatically; in Java, you need to declare them as <code>&lt;T&gt;</code>. But you can often just write <code>&lt;&gt;</code> to instantiate a generic type: the type will be inferred.</li>
   <li>Java generics have <em>bounded subtyping</em>, the combination of polymorphism and subtyping (note, this doesn’t exist in OCaml and we didn’t cover the principles in class).</li>
 </ul>
 
@@ -230,7 +232,7 @@ Let pointClass = {
   <li>the “<code>&lt;T extends Comparable&lt;T&gt;&gt;</code>” means <code>T</code> can be any type which extends <code>Comparable&lt;T&gt;&gt;</code> – in other words, <code>T &lt;: Comparable&lt;T&gt;</code> in our subtyping terminology.  <br />
 – And, in English this means <code>T</code> can be compared with itself.</li>
   <li>This adds more flexibility, <code>T</code> need not be any type, but from a restricted range of types which gives added flexibility later.</li>
-  <li>In terms of type theory this is the theory of <em>bounded polymorphism</em>: there are subtype bounds on the parametric types. Its a <em>very</em> natural combination of polymorphism and subtyping.</li>
+  <li>In terms of type theory this is the theory of <em>bounded polymorphism</em>: there are subtype bounds on the parametric types. Its a natural combination of polymorphism and subtyping.</li>
 </ul>
 
 <h3 id="method-overloading"><a href="http://docs.oracle.com/javase/specs/jls/se14/html/jls-8.html#jls-8.4.9">Method Overloading</a></h3>
@@ -243,12 +245,12 @@ Let pointClass = {
 
 <h3 id="immutable-data">Immutable Data</h3>
 
-<p>One of the key lessons of Caml is the importance of immutable data.</p>
+<p>One of the key lessons of OCaml is the importance of immutable data.</p>
 
 <ul>
   <li>Java allows fields to not mutate if qualified with <code>final</code>; so, it is something like <code>let</code> in OCaml.</li>
   <li>As with OCaml, immutability is only shallow - the field could contain <em>components</em> that mutate.</li>
-  <li>Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior.</li>
+  <li>Unlike OCaml the default case is swapped and this has a huge impact on expected programmer behavior.</li>
   <li>One advantage of Java is no need for “<code>!</code>” when accessing mutable data.</li>
 </ul>
 
@@ -299,11 +301,11 @@ Note how `x` is a function parameter and is remembered in spite of function retu
   </li>
 </ul>
 
-<h3 id="other-points-of-comparison-between-java-and-caml--fb">Other points of comparison between Java and Caml / Fb</h3>
+<h3 id="other-points-of-comparison-between-java-and-ocaml--fb">Other points of comparison between Java and OCaml / Fb</h3>
 
 <ul>
   <li>Java has no variant types?!? – “Use subtyping and dynamic dispatch instead” (i.e. use the records side of the records/variants duality)</li>
-  <li>Java Exceptions – very similar to Caml or <strong>TFbX</strong> but Caml has no <code>throws</code> declarations in the types: less apparent what is being thrown in OCaml, arguably inferior.</li>
+  <li>Java Exceptions – very similar to OCaml or <strong>TFbX</strong> but OCaml has no <code>throws</code> declarations in the types: less apparent what is being thrown in OCaml, arguably inferior.</li>
 </ul>
 
 <h3 id="the-java-spin-offs-scala-kotlin-and-clojure">The Java spin-offs: Scala, Kotlin, and Clojure</h3>

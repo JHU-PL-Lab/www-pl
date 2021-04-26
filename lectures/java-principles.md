@@ -1,13 +1,14 @@
 ## Principles Behind Java
 
-Thesis: we could _encode_ Java in **PSTFbOB**
 
-*  **FbOB** (objects) plus **STFb** (subtyping) plus **PEFb** (the P for polymorphism/generics, and the E for type inference).
+
+* Java is close to "**PSTFbOB**"
+   -  **FbOB** (objects) plus **STFb** (subtyping) plus **PEFb** (the P for polymorphism/generics, and the E for type inference).
 * There are a few cases arising from the interaction of these pieces which are tricky and we will cover.
 
 ### Encoding Typed Objects
 
-We encoded objects with records, but the encoding we gave does not lift perfectly to typed objects.
+We encoded **FbOB** objects with records, but the encoding we gave does not lift perfectly to typed objects.
 
 *   `this` imposes some additional issues in object typing. Notice that
 
@@ -22,7 +23,7 @@ We encoded objects with records, but the encoding we gave does not lift perfectl
 
     <pre>Let p1 : Point = aPoint In let p2 : Point = aColorPoint In p2.magnitude p1 {}</pre>
 
-    would result in an attempt to look up p1's color, a runtime error. Note we are abusing our encoding here by passing <tt>p1</tt> to <tt>p2</tt>, that is why the encoding in fact works.
+    would result in an attempt to look up p1's color, a runtime error. Note we are abusing our encoding here by passing <tt>p1</tt> to <tt>p2</tt>.
 *   Solution: pre-package the `self` into objects when created so self need not be passed in at each message send and it won't show up in object types.
 
     <pre>Let point = .. point object as in book... In
@@ -80,7 +81,7 @@ Let pointClass = {
     *   Structural subtyping is more flexible: "use your own implicit interface without needing to declare it".
     *   Nominal subtyping lets you think about subtyping in terms of names of things, not the details of whats inside  
         -- a helpful abstraction of detail in many cases.
-    *   Pretty much all major languages used nominal subtyping until TypeScript decided to take the structural approach. Good for them!
+    *   All major languages used nominal subtyping until TypeScript decided to take the structural approach.
 
 ### [Generics](http://docs.oracle.com/javase/specs/jls/se14/html/jls-4.html#jls-4.4)
 
@@ -88,10 +89,10 @@ Generics are Java's version of parametric types. These notes assume familiarity 
 
 The **PEFb** language includes both type inference and polymorphism so it is the only language we studied with polymorphism. The main idea of how generic types are handled are expressed there, but in an inference context.
 
-Here are some comparisons with the **PEFb** or Caml-style parametric types that we studied:
+Here are some comparisons with the **PEFb** or OCaml-style parametric types that we studied:
 
-*   <tt>'a list / int list</tt> from OCaml is <tt>List <T> / List <Integer></tt> in Java
-*   Caml/**PEFb** often _infers_ generic types `'a` automatically; in Java, you need to declare them as `<T>`. But you can often just write `<>` to instantiate a generic type: the type will be inferred.
+*   ``'a list / int list`` from OCaml is ``List <T> / List <Integer>`` in Java
+*   OCaml/**PEFb** often _infers_ generic types `'a` automatically; in Java, you need to declare them as `<T>`. But you can often just write `<>` to instantiate a generic type: the type will be inferred.
 *   Java generics have _bounded subtyping_, the combination of polymorphism and subtyping (note, this doesn't exist in OCaml and we didn't cover the principles in class).
 
 #### Bounded subtyping
@@ -117,7 +118,7 @@ To get around this weakness, Java includes _bounded subtyping_
 *   the "`<T extends Comparable<T>>`" means `T` can be any type which extends `Comparable<T>>` -- in other words, `T <: Comparable<T>` in our subtyping terminology.  
     -- And, in English this means `T` can be compared with itself.
 *   This adds more flexibility, `T` need not be any type, but from a restricted range of types which gives added flexibility later.
-*   In terms of type theory this is the theory of _bounded polymorphism_: there are subtype bounds on the parametric types. Its a _very_ natural combination of polymorphism and subtyping.
+*   In terms of type theory this is the theory of _bounded polymorphism_: there are subtype bounds on the parametric types. Its a natural combination of polymorphism and subtyping.
 
 ### [Method Overloading](http://docs.oracle.com/javase/specs/jls/se14/html/jls-8.html#jls-8.4.9)
 
@@ -127,11 +128,11 @@ To get around this weakness, Java includes _bounded subtyping_
 
 ### Immutable Data
 
-One of the key lessons of Caml is the importance of immutable data.
+One of the key lessons of OCaml is the importance of immutable data.
 
 *   Java allows fields to not mutate if qualified with `final`; so, it is something like `let` in OCaml.
 *   As with OCaml, immutability is only shallow - the field could contain _components_ that mutate.
-*   Unlike Caml the default case is swapped and this has a huge impact on expected programmer behavior.
+*   Unlike OCaml the default case is swapped and this has a huge impact on expected programmer behavior.
 *   One advantage of Java is no need for "`!`" when accessing mutable data.
 
 ### Lambdas
@@ -170,10 +171,10 @@ Terminology aside: _closure_
 
     is legal and will infer <tt>first</tt> to be of type <tt>string</tt>.
 
-### Other points of comparison between Java and Caml / Fb
+### Other points of comparison between Java and OCaml / Fb
 
 *   Java has no variant types?!? -- "Use subtyping and dynamic dispatch instead" (i.e. use the records side of the records/variants duality)
-*   Java Exceptions -- very similar to Caml or **TFbX** but Caml has no `throws` declarations in the types: less apparent what is being thrown in OCaml, arguably inferior.
+*   Java Exceptions -- very similar to OCaml or **TFbX** but OCaml has no `throws` declarations in the types: less apparent what is being thrown in OCaml, arguably inferior.
 
 ### The Java spin-offs: Scala, Kotlin, and Clojure
 

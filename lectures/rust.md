@@ -1,77 +1,72 @@
 ## A Taste of Rust
 
 In a nutshell: "OCaml meets C++ for safe but efficient systems programming"  
-OCaml goodies:
+OCaml features borrowed:
 
-*   immutable by default with <tt>let</tt>-definition
-*   parametric polymorphism (with syntax like Java's, <tt><T></tt>)
+*   immutable by default with `let`-definition
+*   parametric polymorphism (with syntax like Java's, `<T>`)
 *   first-class functions
-*   tuples such as <tt>(1,2)</tt>
-*   algebraic data types - the <tt>type</tt> declarations in OCaml
+*   tuples such as `(1,2)`
+*   algebraic data types - the `type` declarations in OCaml
 *   pattern matching
 *   Hindley-Milner type inference (similar to OCaml and EFb)
 
-O-O goodies:
+O-O features:
 
-*   objects
-*   method call syntax
+*   objects (via traits, somewhat non-standard)
+*   standard method call syntax
 
-Systems programming goodies:
+Systems programming features:
 
-*   true pointer references you can get your hands on
-*   **no garbage collector!!** so no pausing problems for systems code, and also no manual freeing like in C++
-*   support for (efficient) stack allocation of data
-
-Key innovation: improved memory safety in spite of low-level memory model
-
-*   Invariant: memory is not touched after it’s deallocated
-*   Writes/reads are deterministic so concurrent data races are prevented
-
-How: _ownership_ of data, a concept we also covered in the concurrency lecture.
+*   true pointer references
+*   **no garbage collector** -- so no pausing problems for systems code, and also no manual freeing required
+*   support for (efficient) stack allocation of data folling C/C++.
 
 #### Ownership
 
-*   A function by default _owns_ values it defines or receives as parameters
-*   The owner of a value knows nobody else can be accessing it (no aliases to it or threads accessing it)
-*   Calling a function, by default means the caller must give up access to the value (but can give back by returning it)
-*   Similarly, assignment often means giving up access to the value
+Key innovation: **ownership** for improved heap memory safety without garbage collector
 
-We will look at some examples in the [documentation on ownership](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html) for details.
+*   Invariant: runtime variables "own" their heap data
+  - only one variable can alias a particular heap item (well, with a few exceptions)
+*   Concurrent data races are thus prevented since threads don't share variables
+*   Calling a function by default means the caller must give up access to the value (but can give back by returning it)
+*   Similarly, assignment by default means giving up access to the heap value
+*   No manual freeing - could free data still being used and thats bad!
+*   Instead, use the above invariant: Memory freed when owning variables' scope ends
+
+See the [documentation on ownership](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html) for details.
 
 #### Borrowing
 
-OK at this point Rust sounds nearly-useless given this rigidity. But there are weakenings possible.
+Up to now Rust is far too rigid to be useful. But there are weakenings available.
 
 *   A function can accept arguments by-value or by-reference
 *   by-value transfers ownership as we saw up to now
-*   by-reference _borrows_ ownership - !
+*   by-reference _borrows_ ownership
 
-We will look at the examples in the [documentation on borrowing](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html) for details.
+See the [documentation on borrowing](https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html) for details.
 
 #### Lifetimes
 
-*   Every value has a (statically known) _lifetime_, written <tt>'a</tt>
+*   Every value has a (statically known) _lifetime_, written `'a`
 *   Usually, this can be inferred, but can declare if inference is not working
 *   They are used to track borrowing and make sure references will not be dangling
 
-Again we will consult the [documentation on lifetimes](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html) for details.
+Again see the [documentation on lifetimes](https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html) for details.
 
 #### Efficiency
 
 Why all the pain compared to Java, python, etc? Efficiency while preserving safety!
 
 *   Static dispatch by default - like C++ non-virtual, very efficient
-*   No manual <tt>free</tt> required at runtime, and no garbage collection overhead
+*   No manual `free` required at runtime, and no garbage collection overhead
 *   Corollary: if you don't care about these issues don't use Rust, the pain is not worth it.
 *   Note that some Rust-ites would disagree with previous and point out how ownership preserves more referential transparency, etc. Yes, there are other benefits but the price is high.
 
-#### Freeing (finalizing) data
 
-*   No manual free - could free data still being used and thats bad!
-*   Key concept: Memory freed and destructor called when value leaves owner’s scope (in reverse order of initialization, due to dependencies)
-*   Particularly useful for resources like file handles, gets closed when scope over
+#### Big example showing many of the above features in one
 
-[Rust playground](https://play.rust-lang.org)
+Paste into [Rust playground](https://play.rust-lang.org) to run it
 
 <pre>struct HasDrop {z:i32}
 impl Drop for HasDrop {
@@ -109,8 +104,10 @@ Dropping 1!
 
 Rust up to now is reasonable for many programming tasks, but is still extremely annoying in a few cases; there are advanced tools to help.
 
-*   <tt>Rc<T></tt> types: allows multiple “owners”; reference couting is used to prevent too-early free
-*   <tt>Arc<T></tt>: atomic version of the above
-*   <tt>~*const T~</tt> and <tt>~*mut T~</tt>: raw pointers, aliasing is allowed, but dereferencing is unsafe.
-*   <tt>Cell<T></tt>: allow mutation from multiple sources
+*   `Rc<T>` types: allows multiple “owners”; reference couting is used to prevent too-early free
+*   `Arc<T>`: atomic version of the above
+*   `~*const T~` and `~*mut T~`: raw pointers, aliasing is allowed, but dereferencing is unsafe.
+*   `Cell<T>`: allow mutation from multiple sources
 *   Real corner cases may need unsafe escapes: Dereferencing raw pointers, violating “read XOR write” reference scope, unsafe typecasts
+*   Some studies of low-level systems code shows around 10-15% of the code may need unsafe hacks
+  - Bad but at least for 85-90% of the code it is clean
