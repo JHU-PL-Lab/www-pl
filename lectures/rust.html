@@ -1,0 +1,232 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://campuswire.com/c/G9E051068">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="a-taste-of-rust">A Taste of Rust</h2>
+
+<p>In a nutshell: “OCaml meets C++ for safe but efficient systems programming”  <br />
+OCaml goodies:</p>
+
+<ul>
+  <li>immutable by default with <tt>let</tt>-definition</li>
+  <li>parametric polymorphism (with syntax like Java’s, <tt><T>&lt;/tt&gt;)</T></tt></li>
+  <li>first-class functions</li>
+  <li>tuples such as <tt>(1,2)</tt></li>
+  <li>algebraic data types - the <tt>type</tt> declarations in OCaml</li>
+  <li>pattern matching</li>
+  <li>Hindley-Milner type inference (similar to OCaml and EFb)</li>
+</ul>
+
+<p>O-O goodies:</p>
+
+<ul>
+  <li>objects</li>
+  <li>method call syntax</li>
+</ul>
+
+<p>Systems programming goodies:</p>
+
+<ul>
+  <li>true pointer references you can get your hands on</li>
+  <li><strong>no garbage collector!!</strong> so no pausing problems for systems code, and also no manual freeing like in C++</li>
+  <li>support for (efficient) stack allocation of data</li>
+</ul>
+
+<p>Key innovation: improved memory safety in spite of low-level memory model</p>
+
+<ul>
+  <li>Invariant: memory is not touched after it’s deallocated</li>
+  <li>Writes/reads are deterministic so concurrent data races are prevented</li>
+</ul>
+
+<p>How: <em>ownership</em> of data, a concept we also covered in the concurrency lecture.</p>
+
+<h4 id="ownership">Ownership</h4>
+
+<ul>
+  <li>A function by default <em>owns</em> values it defines or receives as parameters</li>
+  <li>The owner of a value knows nobody else can be accessing it (no aliases to it or threads accessing it)</li>
+  <li>Calling a function, by default means the caller must give up access to the value (but can give back by returning it)</li>
+  <li>Similarly, assignment often means giving up access to the value</li>
+</ul>
+
+<p>We will look at some examples in the <a href="https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html">documentation on ownership</a> for details.</p>
+
+<h4 id="borrowing">Borrowing</h4>
+
+<p>OK at this point Rust sounds nearly-useless given this rigidity. But there are weakenings possible.</p>
+
+<ul>
+  <li>A function can accept arguments by-value or by-reference</li>
+  <li>by-value transfers ownership as we saw up to now</li>
+  <li>by-reference <em>borrows</em> ownership - !</li>
+</ul>
+
+<p>We will look at the examples in the <a href="https://doc.rust-lang.org/book/ch04-02-references-and-borrowing.html">documentation on borrowing</a> for details.</p>
+
+<h4 id="lifetimes">Lifetimes</h4>
+
+<ul>
+  <li>Every value has a (statically known) <em>lifetime</em>, written <tt>‘a</tt></li>
+  <li>Usually, this can be inferred, but can declare if inference is not working</li>
+  <li>They are used to track borrowing and make sure references will not be dangling</li>
+</ul>
+
+<p>Again we will consult the <a href="https://doc.rust-lang.org/book/ch10-03-lifetime-syntax.html">documentation on lifetimes</a> for details.</p>
+
+<h4 id="efficiency">Efficiency</h4>
+
+<p>Why all the pain compared to Java, python, etc? Efficiency while preserving safety!</p>
+
+<ul>
+  <li>Static dispatch by default - like C++ non-virtual, very efficient</li>
+  <li>No manual <tt>free</tt> required at runtime, and no garbage collection overhead</li>
+  <li>Corollary: if you don’t care about these issues don’t use Rust, the pain is not worth it.</li>
+  <li>Note that some Rust-ites would disagree with previous and point out how ownership preserves more referential transparency, etc. Yes, there are other benefits but the price is high.</li>
+</ul>
+
+<h4 id="freeing-finalizing-data">Freeing (finalizing) data</h4>
+
+<ul>
+  <li>No manual free - could free data still being used and thats bad!</li>
+  <li>Key concept: Memory freed and destructor called when value leaves owner’s scope (in reverse order of initialization, due to dependencies)</li>
+  <li>Particularly useful for resources like file handles, gets closed when scope over</li>
+</ul>
+
+<p><a href="https://play.rust-lang.org">Rust playground</a></p>
+
+<pre>struct HasDrop {z:i32}
+impl Drop for HasDrop {
+fn drop(&amp;mut self) {  // drop method in Drop trait called when scope exits
+        println!("Dropping {}!", self.z);
+    }
+}
+fn takes(x:HasDrop) {}        // value parameter, takes x
+fn borrows(x:&amp;HasDrop) {} // reference parameter, only borrows x
+fn main() {
+    let x1 = HasDrop{z:1};
+    let x2 = HasDrop{z:2};
+    {
+      let x3 = HasDrop{z:3};
+      let x4 = HasDrop{z:4};
+    }
+    let x5 = HasDrop{z:5};
+    takes(x5);
+    let x6 = HasDrop{z:6};
+    borrows(&amp;x6);
+    let x7 = HasDrop{z:7};
+}
+</pre>
+
+<pre>Dropping 4!
+Dropping 3!
+Dropping 5!
+Dropping 7!
+Dropping 6!
+Dropping 2!
+Dropping 1!
+</pre>
+
+<h4 id="relaxing-restrictions">Relaxing Restrictions</h4>
+
+<p>Rust up to now is reasonable for many programming tasks, but is still extremely annoying in a few cases; there are advanced tools to help.</p>
+
+<ul>
+  <li><tt>Rc<T>&lt;/tt&gt; types: allows multiple “owners”; reference couting is used to prevent too-early free</T></tt></li>
+  <li><tt>Arc<T>&lt;/tt&gt;: atomic version of the above</T></tt></li>
+  <li><tt>~*const T~</tt> and <tt>~*mut T~</tt>: raw pointers, aliasing is allowed, but dereferencing is unsafe.</li>
+  <li><tt>Cell<T>&lt;/tt&gt;: allow mutation from multiple sources</T></tt></li>
+  <li>Real corner cases may need unsafe escapes: Dereferencing raw pointers, violating “read XOR write” reference scope, unsafe typecasts</li>
+</ul>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
