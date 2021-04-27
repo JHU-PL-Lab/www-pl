@@ -503,7 +503,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">May 13, 6-9PM</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">Thurs</div>
       </td>
       <td width="30%"> 
         <div align="left" class="body">Final Exam</div>
