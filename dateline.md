@@ -438,7 +438,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Special Topics I</div>
+        <div align="left" class="body">&nbsp;Polymorphism; Special Topics I: Garbage collection</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -455,7 +455,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Special Topics II</div>
+        <div align="left" class="body">&nbsp;Special Topics II: <a href="lectures/rust.html">Rust</a>/<a href="lectures/java-principles.html">Java</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
