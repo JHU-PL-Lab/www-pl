@@ -1,6 +1,6 @@
 ## Assigment 9 - Type Inferencer Implementation
 
-The FbDK has been designed to be extensible with typechecking. It is just turned off by default. For Part-I of the homework, use the FbDK to implement the type inference algorithm for **EFb** in OCaml. Your implementation is expected to handle all of **EFb** with the exception of `Let Rec`.
+The FbDK has been designed to be extensible with typechecking. It is just turned off by default. For this homework you are to use the FbDK to implement the type inference algorithm for **EFb** in OCaml. Your implementation is expected to handle all of **EFb** with the exception of `Let Rec`.
 
 To complete this assignment, you will need to edit `fbtype.ml` in the `Fb/` directory and implement the `typecheck` function which in the dist is just raising an exception. This function must return the type of that expression as specified by the **EFb** algorithm; you should use the `fbtype` data type which appears in `fbast.ml`. You also should set `typecheck_default_enabled` to `true` in `fbtype.ml` so the typechecker will run. 
 
