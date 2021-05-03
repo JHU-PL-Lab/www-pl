@@ -195,10 +195,10 @@ Let pong_behavior =
   Fun me -> y (Fun this -> Fun pinger -> Fun msg ->
      Match msg With
        `pong(n) ->
-          (pinger <- (`ping (n+1))); (* invariant: pinger variable is pinger actor address *)
+          (pinger <- (`ping (n))); (* invariant: pinger variable is pinger actor address *)
           this pinger (* Use the same behavior for the next message received *)
                                ) In
-Let ping_behavior =
+Let ping_behavior = 
   Fun me -> Fun dummy -> Fun msg0 ->
  (* First message should be `init; create pong actor and get it going *)
      Match msg0 With

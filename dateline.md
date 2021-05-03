@@ -478,7 +478,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">9 (next Mon)</div>
+        <div align="center" class="body">9 (next Weds)</div>
       </td>
     </tr>    
     <tr> 
