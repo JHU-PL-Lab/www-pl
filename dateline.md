@@ -28,7 +28,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Introduction; <br> &nbsp;<a href="ocaml/code/lecture.html">OCaml I:
+        <div align="left" class="body">&nbsp;Introduction; <br> &nbsp;<a href="ocaml/lecture.html">OCaml I:
     basic data, lists, let</a></div>
       </td>
       <td width="22%"> 
@@ -47,7 +47,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#ii">OCaml II: tuples,
+        <div align="left" class="body">&nbsp;<a href="ocaml/lecture.html#ii">OCaml II: tuples,
     patterns, functions</a> </div> 
       </td>
       <td width="22%"> 
@@ -65,7 +65,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#iii">OCaml III: higher-order functions</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/lecture.html#iii">OCaml III: higher-order functions</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
@@ -83,7 +83,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#iv">OCaml IV: higher-order functions, variants</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/lecture.html#iv">OCaml IV: higher-order functions, variants</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -100,7 +100,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/lecture.html#v">OCaml V: trees, records, effects, modules</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/lecture.html#v">OCaml V: trees, records, effects, modules</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
@@ -170,7 +170,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/fb_examples.ml">Opsem IV: Fb Programming</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/fb_examples.ml">Opsem IV: Fb Programming</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment4.html">4 - Fb Interpreter</a>
@@ -188,7 +188,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/code/fb_examples.ml">Opsem V: The Y Combinator</a></div>
+        <div align="left" class="body">&nbsp;<a href="ocaml/fb_examples.ml">Opsem V: The Y Combinator</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -352,7 +352,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Concurrency II; <a href="ocaml/code/afbv_examples.ml">AFbV code examples</a></div>
+        <div align="left" class="body">&nbsp;Concurrency II; <a href="ocaml/afbv_examples.ml">AFbV code examples</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency</a></div>

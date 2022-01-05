@@ -1269,7 +1269,7 @@ Some general principles of modules across language designs:
 
 ### An example of a separately-compiled OCaml program
 
-* See [set-example.zip](http://pl.cs.jhu.edu/pl/ocaml/code/set-example.zip) for the example we cover in lecture.
+* See [set-example.zip](http://pl.cs.jhu.edu/pl/ocaml/set-example.zip) for the example we cover in lecture.
 
 ### Playing with the Simple_set module
 * For this example we can use terminal command `dune utop` to load the module into a fresh `utop`
