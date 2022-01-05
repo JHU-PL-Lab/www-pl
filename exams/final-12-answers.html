@@ -25,7 +25,7 @@ sides.  No printer output is allowed, it must all  be hand-written.<p>
 <li> <code>(Fun p -> p  (Fun d -> d 2 1) (Fun x -> Fun y -> x - y))</code><br>
 <strong>Answer:</strong> <code>* (Fun g -> Fun f -> Let k = g (Fun x -> Fun y -> f y x) In f (f (f (g f) k) k) k)</code>
 <li> <code>(Fun q -> q (Fun notthis -> Fun x -> If x = 0 Then 4 Else notthis notthis notthis (x - 1)) 0)</code><br>
-<strong>Answer:</strong> <code>* (Fun x -> x)(Fun x -> x) 0</code>
+<strong>Answer:</strong> <code>* (Function x -> Function y -> x x y)</code>
 </ol>
 
 <p>
