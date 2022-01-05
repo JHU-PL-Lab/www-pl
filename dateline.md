@@ -293,10 +293,10 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;<a href="assignments/midterm-2019.html">Midterm review session</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a> (Mon)</div>
+        <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">Midterm (Sat)</div>
+        <div align="center" class="body">Midterm (Fri)</div>
       </td>
     </tr>
     <tr>
@@ -478,7 +478,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">9 (next Weds)</div>
+        <div align="center" class="body">9 (next Mon)</div>
       </td>
     </tr>    
     <tr> 
