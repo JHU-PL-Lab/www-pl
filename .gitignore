@@ -91,4 +91,15 @@ full.ml
 results.json
 _results.json
 
+# specific directories
+calc
+exams
+pl-grading
+plbook
+resources
+fbdk
+Lecture-notes
 
+assignments/Archives/
+book/Archive
+ocaml/code/old-untracked/
