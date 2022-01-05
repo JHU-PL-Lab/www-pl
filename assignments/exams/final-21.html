@@ -1,0 +1,61 @@
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<h2 id="programming-languages-final-exam-2021">Programming Languages Final Exam 2021</h2>
+<p>For any <em>single</em> question below you can alternatively write “Freebie” as your answer and you will get 25 points on it. If you use no “Freebie” you will have all questions graded and will have a +5 bonus added to your final exam score.</p>
+
+<ol>
+  <li>(1 Point) Please write and sign this pledge at the top of your exam answer sheets:
+    <blockquote>
+      <p>I pledge I used no resources other than my handwritten cheat sheet for this exam.</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>(25 points) We primarily focused on operational equivalence for <strong>Fb</strong> during the course, but the definition naturally generalizes to other languages we studied (and even to JavaScript, Python, etc).  For example for <strong>FbR</strong>, the definition of ~= will read identically and the only difference is the contexts C will be <strong>FbR</strong> contexts not <strong>Fb</strong> contexts, and the ==&gt; evaluation relation will also be <strong>FbR</strong>’s.</p>
+
+    <p>a. For the theory of <strong>FbR</strong> operational equivalence, are there any equations on pure <strong>Fb</strong> programs which would fail if they were applied to <strong>FbR</strong> and its operational equivalence?  In other words are there an e1 and e2 in <strong>Fb</strong> such that e1 ~= e2, but viewing them as <strong>FbR</strong> programs (since <strong>FbR</strong> is a strict superset language) and using <strong>FbR</strong> ~=, that e1 ~= e2 would fail?  Either give an example or a sentence arguing why not.</p>
+
+    <p>b. For the theory of <strong>FbR</strong> operational equivalence, propose one useful ~= law to add to the <strong>Fb</strong> laws we had such as beta, etc.  Your law needs to deal with the new record syntax and should be a useful and general law, not something vacuous like <code>{} ~= {}</code>.</p>
+
+    <p>c. Use your new <strong>FbR</strong> law and the existing <strong>Fb</strong> laws to prove <br />
+    <code>Let r = { a = 5; b = (Fun x -&gt; x) } In (r.b) 5 ~= (Fun x -&gt; x) 5</code>.  Show your steps and name any laws used.</p>
+
+    <p>d. For languages with side effects such as <strong>FbS</strong> the same general notion of operational equivalence also can work, but the definition needs to be adapted slightly because <strong>FbS</strong> has a store, S, in its ==&gt; relation.  Write out what a reasonable definition of operational equivalence would be for <strong>FbS</strong>: “e1 ~= e2 in <strong>FbS</strong> if and only if …”</p>
+
+    <p>e. (This question is a repeat of a. but for <strong>FbS</strong>) For the theory of <strong>FbS</strong> operational equivalence, are there any equations on pure <strong>Fb</strong> programs which would fail if they were applied to <strong>FbS</strong> and its operational equivalence?  In other words are there an e1 and e2 in <strong>Fb</strong> such that e1 ~= e2, but viewing them as <strong>FbS</strong> programs (since <strong>FbS</strong> is a strict superset language) and using <strong>FbS</strong> ~=, that e1 ~= e2 would fail?  Either give an example or a sentence arguing why not.</p>
+  </li>
+  <li>
+    <p>(25 points) In lecture we covered how variants and records could be encoded in each other.  For this question we are going to look at how variants can be encoded in records.  In order to make things simpler, we will only encode a simple <code>Some/None</code> variant and not all variants.</p>
+
+    <p>a. First let us define a brand-new language <strong>FbSN</strong> which just has just these simple variants.  The new grammar elements are <code>Some(e)</code>, <code>None</code>, and <code>Unwrap e Default e</code>.  The first two are just like in OCaml <code>option</code> type; the meaning of this unwrapper should be clear from a couple examples: <code>Unwrap Some(1) Default 5</code> returns <code>1</code>, whereas <code>Unwrap None Default 5</code> has no <code>Some</code> to unwrap so returns <code>5</code>, the default.  <code>Unwrap 33 Default 5</code> gets stuck, only <code>Some/None</code> can be unwrapped.  And, <code>Unwrap Some(0) Default (0 0)</code> returns <code>0</code>, the default case can be completely ignored here.</p>
+
+    <p>For this part, give the novel operational semantics rules for <strong>FbSN</strong>, in particular for the three new syntax elements.</p>
+
+    <p>b.  Now we would like to encode the <strong>FbSN</strong> behavior in <strong>FbR</strong>.  For this part, we will just hack it up aka use the design pattern of records.  Concretely, for the following <strong>FbSN</strong> example show how the similar behavior could be encoded in records:</p>
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Let</span> <span class="n">f</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">sn</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nc">Unwrap</span> <span class="n">sn</span> <span class="nc">Default</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span> <span class="nc">In</span> <span class="n">f</span> <span class="p">(</span><span class="nc">Some</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span> <span class="o">+</span> <span class="n">f</span> <span class="nc">None</span>
+</code></pre></div>    </div>
+    <p>(Hint: recall from the encoding of variants in records that each variant name corresponds to a record field name, and definitions and uses swap so a use of a variant is a definition of a record, and a definition of a variant is a use of a record.)</p>
+
+    <p>c. Now take the informal intuitions of the previous question and use it to define a general translation function FbSNtoFBR(e) which translates any <strong>FbSN</strong> program e to an equivalent-behaving <strong>FbR</strong> program.  You can write your function either as math or as informal OCaml, as long as it is clear what you mean.</p>
+  </li>
+  <li>
+    <p>(25 points) This question concerns records, subtyping, and <strong>STFbR</strong>.</p>
+
+    <p>a. For a warm-up, give the <strong>TFbR</strong> rules for typing records and record projections.</p>
+
+    <p>b. Now, give the <strong>STFbR</strong> subtyping rule for records and the subsumption type rule.</p>
+
+    <p>c. With the rules above, show how records can have types with fewer fields in the type than is in the record: write a complete type derivation for <code>|- {a = 5; b = False} : {b : Bool}</code></p>
+
+    <p>d. An informal intuition we gave about records with subtyping is the type (such as <code>{b : Bool}</code>) means any records in this type <em>must</em> have a boolean <code>b</code> field, but also <em>may</em> have any other fields of any type.  On the other hand, in just <strong>TFbR</strong> records must have <em>all</em> of the declared fields, <em>and no more</em>.  For this part, consider an <em>opposite</em> notion from <strong>STFbR</strong>, where a record type such as <code>{a : Int; b : Bool}</code> means only that it <em>may</em> have these fields, and if so at the indicated types, <em>and</em> that it can have no other fields.  So for example <code>|- {a = 5} : {a : Int; b : Bool}</code> would hold – it doesn’t have to have a <code>b</code> field.  <code>|- {a = 5} : {a : Bool; b : Bool}</code> would fail (<code>a</code>’s type conflicts) as would <code>|- {a = 5; b = False} : {b : Bool}</code> (record has more fields than is in the type).  Call this new language <strong>OSTFbR</strong>, the O for “Opposite”.  Keep all the <strong>STFbR</strong> rules except for the record subtyping rule, and suggest a new verion of that rule for which these examples would typecheck (or not) appropriately.</p>
+
+    <p>e. Discuss briefly the viability of <strong>OSTFbR</strong> as a programming language.  Would it be sensible/sound/usable/etc?</p>
+  </li>
+  <li>
+    <p>(25 points) <strong>AFbV</strong> had a somewhat odd property that messages may not arrive in the order sent.  so for example if one actor <code>a</code> executed code <code>(b &lt;- 5); (b &lt;- 7)</code> where <code>b</code> was some other actor’s address, <code>b</code> could receive the <code>7</code> message <em>before</em> the <code>5</code> message.</p>
+
+    <p>For this question, you are going to fix this oddity and make a modified operational <strong>AFbV</strong> semantics which preserves message ordering: messages will always arrive in the order sent.</p>
+
+    <p>Here are a few hints on how to do this.  The local actor computation relation <code>e =S=&gt; v</code> produces a <em>set</em> <code>S</code> of new messages and new actors; this clearly will not work as that would cause the two messages in the example above to be put in the set and their sequence order be lost.  So the <code>S</code> must be changed.  Additionally, in the global soup G it is currently also a set and it would instead need to also preserve message order.  You don’t need to give every last rule, but do show the revised message send rule and the revised global stepping rule.</p>
+  </li>
+</ol>
+

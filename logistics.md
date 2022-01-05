@@ -1,16 +1,16 @@
 ## Course Logistics
 
-### Class Times
+### Class Time and location
 
-We will meet 1:30-2:45PM on Mondays and Wednesdays in Hodson 110, and in parallel on Zoom.  lectures will also be recorded and uploaded to Panopto.
+We will meet 1:30-2:45PM on Mondays and Wednesdays in Hodson 213.  You are normally expected to attend in-person, but if there are reasons you cannot attend such as being quarantined, sick, travelling, etc we have backup options including live streaming of all lectures on Zoom, and recording and uploading them to Panopto.
 
 ### Q&amp;A
 
-We will be using [CampusWire](https://campuswire.com/c/G9E051068) for announcements and Q&amp;A. You must register for CampusWire via the link you should have been emailed.  If you added the course late, see the course Blackboard site for the link.  We won't be using Blackboard for anything else.
+We plan on testing a new tool, Courselore, for announcements and Q&amp;A. Stay tuned for details on how to sign up, we will put them here.
 
 ### Zoom and Panopto Locations
 
-See the CampusWire site for those links.  They are also posted on the course Blackboard site.
+See the Q&amp;A site for those links. 
 
 ### The Book
 
@@ -38,7 +38,7 @@ You will be given the same number of "late days" as there are assignments, which
 
 ### Office Hours
 
-Office hours will be pinned on CampusWire where the Zoom rooms for office hours will also be listed.
+Office hours and locations will be pinned on the Q&amp;A board.
 
 ### Exams
 
