@@ -93,7 +93,7 @@
 
 <p>We will use <a href="http://ocaml.org">OCaml</a>, version 4.13.1.</p>
 
-<h3 id="installing-ocaml-4131">Installing OCaml 4.13.1</h3>
+<h3 id="installing-ocaml-4131">Installing OCaml 4.13.1=</h3>
 
 <p>We require that you use the <a href="https://opam.ocaml.org">opam packaging system</a> for installing OCaml and its extensions.  Once you get <code>opam</code> installed and working, everything else should be easy to install .. so the only hard part is the first step.</p>
 
@@ -113,9 +113,12 @@
       <li>Also add the very same line, <code>eval $(opam env)</code>, to your<code>.profile</code>/<code>.bashrc</code> shell init file as you would need to do that in every new terminal window otherwise. (for <code>.zshrc</code> on macs, add line <code>eval `opam env`</code> instead)</li>
     </ol>
   </li>
+  <li>
+    <p>If you already have an earlier version of OCaml installed via <code>opam</code>, start on step 2. above to update to 4.13.1.  Make sure to do the <code>opam update</code> step first or your install won’t know that 4.13.1 even exists.</p>
+  </li>
   <li>Windows Windows Windows.. the OCaml toolchain is unfortunately not good in straight Windows.
     <ul>
-      <li>If you are running a recent Windows install, we recommend installing <a href="https://docs.microsoft.com/en-us/windows/wsl/">WSL 2</a> which once you have set up will allow you to follow the Linux Ubuntu install instructions to get <code>opam</code>.</li>
+      <li>If you are running a recent Windows install, we recommend installing <a href="https://docs.microsoft.com/en-us/windows/wsl/">WSL 2</a> which once you have set up will allow you to follow the Linux Ubuntu install instructions above to get <code>opam</code>.</li>
       <li>Note that your Ubuntu needs the C compiler and tools for the <code>opam</code> install to work; the following Linux shell command will get you those: <code>sudo apt install make m4 gcc unzip</code>.</li>
       <li><a href="https://www.cs.princeton.edu/courses/archive/fall20/cos326/WindowsSemiNative.php">More WSL2 for OCaml tips here</a>.</li>
       <li>Option 2 is to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, <a href="https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098">here is one of them</a>.  Once your virtual Linux box is set up, you can follow the <code>opam</code> Linux install instructions.</li>
@@ -125,7 +128,7 @@
 
 <h3 id="configuring-ocaml">Configuring OCaml</h3>
 
-<p>Once you have the basics installed, run the following shell command to install additional necessary packages used in the class:</p>
+<p>Once you have OCaml 4.13.1 installed, run the following <code>opam</code> command in the terminal to install additional necessary packages used in the class:</p>
 <pre><code class="language-bash">opam install merlin ocp-indent menhir utop ppx_deriving ounit2
 </code></pre>
 
@@ -161,7 +164,7 @@
 
 <ul>
   <li><a href="https://opam.ocaml.org"><code>opam</code></a> is the package management system.  See above for install and setup instructions.</li>
-  <li><a href="http://caml.inria.fr/pub/docs/manual-ocaml/comp.html"><code>ocamlc</code></a> is the standalone compiler which we will be invoking via the <code>dune</code> build tool.</li>
+  <li><a href="http://caml.inria.fr/pub/docs/manual-ocaml/comp.html"><code>ocamlc</code></a> is the standalone compiler which we will be invoking via the <code>dune</code> build tool.  You don’t really need to know much about it as you will not need to invoke it directly.</li>
   <li><a href="https://opam.ocaml.org/blog/about-utop/"><code>utop</code></a> is the read/eval/print loop we will be using.  It is a replacement for the original <a href="http://caml.inria.fr/pub/docs/manual-ocaml/toplevel.html"><code>ocaml</code></a> command, with many more features such as command history, replay, etc.</li>
   <li><a href="https://dune.build"><code>dune</code></a> is the build tool (think <code>make</code>) that we will be using.</li>
   <li><a href="https://github.com/gildor478/ounit">OUnit</a> is the unit tester for OCaml.  The opam package is called <code>ounit2</code> for obscure reasons.</li>
@@ -169,24 +172,22 @@
 
 <h3 id="development-environments-for-ocaml">Development Environments for OCaml</h3>
 
-<p>We recommend VSCode since it has OCaml-specific features such as syntax highlighting, auto-indent, and lint analysis to make the coding process much smoother.</p>
-
 <p><strong><a href="https://code.visualstudio.com">Visual Studio Code</a></strong></p>
 
 <p>VSCode has very good OCaml support and is the “officially recommended editor”.</p>
 
 <ul>
   <li>
-    <p>We recommend you use the plugin called <strong>OCaml Platform</strong> for OCaml support in VSCode.   To install it, first run <code>opam install ocaml-lsp-server</code> from your shell.  Then from the <code>View</code> menu select <code>Extensions</code>, then type in OCaml in the search box and this extension will show up: select <strong>OCaml Platform</strong> from the list.</p>
+    <p>We recommend you use the plugin called <strong>OCaml Platform</strong> for OCaml support in VSCode.   To install it, first run <code>opam install ocaml-lsp-server</code> from a terminal.  Then from the <code>View</code> menu in VSCode select <code>Extensions</code>, then type in OCaml in the search box and this extension will show up: select <strong>OCaml Platform</strong> from the list.</p>
   </li>
   <li>
-    <p>(If you are having problems with installing OCaml Platform you could try to install the <strong>OCaml and Reason IDE</strong> extension instead (it is outdated however): from the <code>View</code> menu select <code>Extensions</code>, then type in OCaml in the search box and this extension will show up; install it.)</p>
+    <p>(If you are having problems with installing OCaml Platform you could try to install the <strong>OCaml and Reason IDE</strong> extension instead (it has fewer features however): from the <code>View</code> menu select <code>Extensions</code>, then type in OCaml in the search box and this extension will show up; install it.)</p>
   </li>
   <li>
-    <p>You can easily run a <code>utop</code> shell from within VSCode, just open up a shell from the <code>Terminal</code> menu and type <code>utop</code>.</p>
+    <p>You can easily run a <code>utop</code> shell from within VSCode, just open up a new terminal from the <code>Terminal</code> menu and type <code>utop</code>.</p>
   </li>
   <li>
-    <p>If you are on Windows and using WSL2, to run Visual Studio “in WSL2 space” so you get OCaml syntax highlighting and other nice features; see <a href="https://code.visualstudio.com/blogs/2019/09/03/wsl2">this blog post</a> for how you can set it up.</p>
+    <p>If you are on Windows and using WSL2, you should run Visual Studio “in WSL2 space” so you get OCaml syntax highlighting and other nice features; see <a href="https://code.visualstudio.com/blogs/2019/09/03/wsl2">this blog post</a> for how you can set it up.</p>
   </li>
 </ul>
 
@@ -204,7 +205,7 @@
 <p>Looking at other people’s code is a good way to learn good coding practices.</p>
 
 <ul>
-  <li><a href="https://exercism.io/tracks/ocaml/exercises">Exercism OCaml Track</a> has a large set of programming problems to solve which have solutions by many other programmers as well.  We will reference some of these examples in lecture.</li>
+  <li><a href="https://exercism.io/tracks/ocaml/exercises">Exercism OCaml Track</a> has a large set of programming problems to solve which have solutions by many other programmers as well.</li>
   <li><a href="https://ocaml.org/learn/tutorials/99problems.html">99 problems</a> solves 99 basic OCaml tasks.</li>
   <li><a href="https://ocaml-sf.org/learn-ocaml-public/#activity%3Dexercises">Learn OCaml</a> has a large number of exercises to solve.  The <a href="https://github.com/ocaml-sf/learn-ocaml-corpus/tree/master/exercises">solutions are online</a>.</li>
 </ul>
