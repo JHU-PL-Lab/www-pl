@@ -248,7 +248,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
-     <tr>      
+    <tr>      
     <td width="8%"> 
         <div align="center" class="body">Mar 9</div>
       </td>
@@ -299,6 +299,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Midterm (Sat)</div>
       </td>
     </tr>
+    <tr>
     <td width="8%" height="2"> 
         <div align="center" class="body">Mar 16-20</div>
       </td>
@@ -509,7 +510,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a
-      href="assignments/exams/final-study.html">Study Guide</a></div>
+      href="assignments/old-exams/final-study.html">Study Guide</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
