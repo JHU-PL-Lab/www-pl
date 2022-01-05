@@ -1,0 +1,664 @@
+
+type token = 
+  | WITH
+  | TRY
+  | THEN
+  | STRING of (
+# 21 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (string)
+# 10 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+)
+  | SEMICOLON
+  | RPAREN
+  | REC
+  | RCURLY
+  | RAISE
+  | PLUS
+  | OR
+  | NOT
+  | MINUS
+  | LPAREN
+  | LET
+  | LCURLY
+  | INT of (
+# 23 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (int)
+# 27 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+)
+  | IN
+  | IF
+  | IDENT of (
+# 18 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (string)
+# 34 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+)
+  | GOESTO
+  | FUNCTION
+  | EXN of (
+# 56 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (string)
+# 41 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+)
+  | EQUAL
+  | EOEX
+  | ELSE
+  | DOT
+  | BOOL of (
+# 22 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (bool)
+# 50 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+)
+  | APPEND
+  | AND
+
+# 1 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+  
+
+open Fbrxast;;
+exception DuplicateLabel
+
+let mkexn n =
+  "#" ^ n
+
+# 64 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+
+let menhir_begin_marker =
+  0
+
+and (xv_simple_expr, xv_record_body, xv_main, xv_label, xv_ident_usage, xv_ident_decl, xv_expr, xv_exn_def, xv_appl_expr) =
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 138 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+               _3
+# 73 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 138 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+          _2
+# 77 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 138 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 81 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 139 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( _2 )
+# 86 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_simple_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 135 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                   _3
+# 91 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_label) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 135 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+               _2
+# 95 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 135 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 99 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_simple_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 136 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Select(_3, _1) )
+# 104 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_simple_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 133 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+          _2
+# 109 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 133 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 113 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 134 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Record [] )
+# 118 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_simple_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 131 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                      _3
+# 123 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 131 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+          _2
+# 127 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_record_body) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 131 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 131 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 132 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Record _2 )
+# 136 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_simple_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 129 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 141 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_ident_usage) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 130 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( _1 )
+# 146 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_simple_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 127 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 151 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : (
+# 21 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (string)
+# 155 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+  )) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 128 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( String _1 )
+# 160 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_simple_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 125 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 165 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : (
+# 22 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (bool)
+# 169 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+  )) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 126 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Bool _1 )
+# 174 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_simple_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 122 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+            _1
+# 180 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : (
+# 23 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (int)
+# 184 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+  )) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 124 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Int _1 )
+# 189 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_simple_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 145 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                              _5
+# 194 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_record_body) (_startpos__5_ : Lexing.position) (_endpos__5_ : Lexing.position) (_startofs__5_ : int) (_endofs__5_ : int) (_loc__5_ : Lexing.position * Lexing.position) (
+# 145 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                    _4
+# 198 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__4_ : Lexing.position) (_endpos__4_ : Lexing.position) (_startofs__4_ : int) (_endofs__4_ : int) (_loc__4_ : Lexing.position * Lexing.position) (
+# 145 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+               _3
+# 202 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 145 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+         _2
+# 206 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 145 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 210 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_label) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 146 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( let rec addifnotpresent (lab, e) l =
+          match l with [] -> [(lab,e)]
+	   | (l1,e1) :: tl -> if l1=lab then (raise DuplicateLabel) else (l1,e1) :: (addifnotpresent (lab, e) tl)
+          in addifnotpresent (_1, _3) _5 )
+# 218 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_record_body) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 143 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+               _3
+# 223 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 143 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+         _2
+# 227 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 142 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+            _1
+# 232 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_label) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 144 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( [(_1, _3)] )
+# 237 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_record_body) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 81 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      _2
+# 242 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 80 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+     _1
+# 247 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    ((
+# 81 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+            ( _1 )
+# 252 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_main) : (
+# 76 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      (Fbrxast.expr)
+# 256 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+    )) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 152 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      _1
+# 262 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : (
+# 18 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (string)
+# 266 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+  )) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 154 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Lab _1 )
+# 271 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_label) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 156 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+            _1
+# 277 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_ident_decl) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 158 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Var _1 )
+# 282 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_ident_usage) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 161 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+           _1
+# 288 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : (
+# 18 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (string)
+# 292 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+  )) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 163 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Ident _1 )
+# 297 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_ident_decl) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 111 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                 _3
+# 302 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 111 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+         _2
+# 306 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_exn_def) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 111 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 310 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 112 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( let n = _2 in Raise(mkexn n, _3) )
+# 315 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 109 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                                      _7
+# 320 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__7_ : Lexing.position) (_endpos__7_ : Lexing.position) (_startofs__7_ : int) (_endofs__7_ : int) (_loc__7_ : Lexing.position * Lexing.position) (
+# 109 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                               _6
+# 324 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__6_ : Lexing.position) (_endpos__6_ : Lexing.position) (_startofs__6_ : int) (_endofs__6_ : int) (_loc__6_ : Lexing.position * Lexing.position) (
+# 109 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                         _5
+# 328 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : (
+# 18 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (string)
+# 332 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+  )) (_startpos__5_ : Lexing.position) (_endpos__5_ : Lexing.position) (_startofs__5_ : int) (_endofs__5_ : int) (_loc__5_ : Lexing.position * Lexing.position) (
+# 109 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                 _4
+# 336 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_exn_def) (_startpos__4_ : Lexing.position) (_endpos__4_ : Lexing.position) (_startofs__4_ : int) (_endofs__4_ : int) (_loc__4_ : Lexing.position * Lexing.position) (
+# 109 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+            _3
+# 340 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 109 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       _2
+# 344 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 109 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 348 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 110 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( let n = _4 in Try(_2, mkexn n, Ident _5, _7) )
+# 353 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 107 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                                _6
+# 358 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__6_ : Lexing.position) (_endpos__6_ : Lexing.position) (_startofs__6_ : int) (_endofs__6_ : int) (_loc__6_ : Lexing.position * Lexing.position) (
+# 107 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                             _5
+# 362 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__5_ : Lexing.position) (_endpos__5_ : Lexing.position) (_startofs__5_ : int) (_endofs__5_ : int) (_loc__5_ : Lexing.position * Lexing.position) (
+# 107 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                        _4
+# 366 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__4_ : Lexing.position) (_endpos__4_ : Lexing.position) (_startofs__4_ : int) (_endofs__4_ : int) (_loc__4_ : Lexing.position * Lexing.position) (
+# 107 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                  _3
+# 370 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 107 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       _2
+# 374 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_ident_decl) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 107 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 378 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 108 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Let(_2, _4, _6) )
+# 383 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 105 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                                               _8
+# 388 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__8_ : Lexing.position) (_endpos__8_ : Lexing.position) (_startofs__8_ : int) (_endofs__8_ : int) (_loc__8_ : Lexing.position * Lexing.position) (
+# 105 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                                            _7
+# 392 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__7_ : Lexing.position) (_endpos__7_ : Lexing.position) (_startofs__7_ : int) (_endofs__7_ : int) (_loc__7_ : Lexing.position * Lexing.position) (
+# 105 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                                       _6
+# 396 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__6_ : Lexing.position) (_endpos__6_ : Lexing.position) (_startofs__6_ : int) (_endofs__6_ : int) (_loc__6_ : Lexing.position * Lexing.position) (
+# 105 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                                 _5
+# 400 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__5_ : Lexing.position) (_endpos__5_ : Lexing.position) (_startofs__5_ : int) (_endofs__5_ : int) (_loc__5_ : Lexing.position * Lexing.position) (
+# 105 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                      _4
+# 404 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_ident_decl) (_startpos__4_ : Lexing.position) (_endpos__4_ : Lexing.position) (_startofs__4_ : int) (_endofs__4_ : int) (_loc__4_ : Lexing.position * Lexing.position) (
+# 105 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+           _3
+# 408 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_ident_decl) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 105 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       _2
+# 412 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 105 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 416 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 106 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( LetRec(_3, _4, _6, _8) )
+# 421 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 103 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                          _6
+# 426 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__6_ : Lexing.position) (_endpos__6_ : Lexing.position) (_startofs__6_ : int) (_endofs__6_ : int) (_loc__6_ : Lexing.position * Lexing.position) (
+# 103 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                     _5
+# 430 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__5_ : Lexing.position) (_endpos__5_ : Lexing.position) (_startofs__5_ : int) (_endofs__5_ : int) (_loc__5_ : Lexing.position * Lexing.position) (
+# 103 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                _4
+# 434 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__4_ : Lexing.position) (_endpos__4_ : Lexing.position) (_startofs__4_ : int) (_endofs__4_ : int) (_loc__4_ : Lexing.position * Lexing.position) (
+# 103 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+           _3
+# 438 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 103 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      _2
+# 442 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 103 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 446 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 104 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( If(_2, _4, _6) )
+# 451 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 101 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                              _4
+# 456 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__4_ : Lexing.position) (_endpos__4_ : Lexing.position) (_startofs__4_ : int) (_endofs__4_ : int) (_loc__4_ : Lexing.position * Lexing.position) (
+# 101 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                       _3
+# 460 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 101 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+            _2
+# 464 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_ident_decl) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 101 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 468 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 102 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Function(_2, _4) )
+# 473 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 99 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+               _3
+# 478 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 99 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+        _2
+# 482 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 99 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 486 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 100 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Append(_1, _3) )
+# 491 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 97 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+              _3
+# 496 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 97 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+        _2
+# 500 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 97 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 504 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 98 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Equal(_1, _3) )
+# 509 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 95 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       _2
+# 514 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 95 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 518 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 96 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Not _2 )
+# 523 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 93 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+           _3
+# 528 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 93 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+        _2
+# 532 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 93 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 536 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 94 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Or(_1, _3) )
+# 541 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 91 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+            _3
+# 546 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 91 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+        _2
+# 550 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 91 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 554 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 92 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( And(_1, _3) )
+# 559 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 89 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+              _3
+# 564 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 89 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+        _2
+# 568 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 89 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 572 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 90 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Minus(_1, _3) )
+# 577 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 87 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+             _3
+# 582 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 87 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+        _2
+# 586 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 87 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 590 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 88 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Plus(_1, _3) )
+# 595 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 85 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 600 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_appl_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 86 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( _1 )
+# 605 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 169 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+                  _3
+# 610 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__3_ : Lexing.position) (_endpos__3_ : Lexing.position) (_startofs__3_ : int) (_endofs__3_ : int) (_loc__3_ : Lexing.position * Lexing.position) (
+# 169 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+          _2
+# 614 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_exn_def) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 169 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 618 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : unit) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 170 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       ( _2 )
+# 623 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_exn_def) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 166 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+        _1
+# 629 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : (
+# 56 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       (string)
+# 633 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+  )) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 168 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+       ( _1 )
+# 638 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_exn_def) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 118 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+             _2
+# 643 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_simple_expr) (_startpos__2_ : Lexing.position) (_endpos__2_ : Lexing.position) (_startofs__2_ : int) (_endofs__2_ : int) (_loc__2_ : Lexing.position * Lexing.position) (
+# 118 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+   _1
+# 647 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_appl_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 119 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( Appl(_1,_2) )
+# 652 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_appl_expr) in
+  let _ = fun (_eRR : exn) (_startpos : Lexing.position) (_endpos : Lexing.position) (_endpos__0_ : Lexing.position) (_symbolstartpos : Lexing.position) (_startofs : int) (_endofs : int) (_endofs__0_ : int) (_symbolstartofs : int) (_sloc : Lexing.position * Lexing.position) (_loc : Lexing.position * Lexing.position) (
+# 115 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+          _1
+# 658 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+   : 'tv_simple_expr) (_startpos__1_ : Lexing.position) (_endpos__1_ : Lexing.position) (_startofs__1_ : int) (_endofs__1_ : int) (_loc__1_ : Lexing.position * Lexing.position) ->
+    (
+# 117 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+      ( _1 )
+# 663 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
+     : 'tv_appl_expr) in
+  ((let rec diverge() = diverge() in diverge()) : 'tv_simple_expr * 'tv_record_body * 'tv_main * 'tv_label * 'tv_ident_usage * 'tv_ident_decl * 'tv_expr * 'tv_exn_def * 'tv_appl_expr)
+
+and menhir_end_marker =
+  0
+
+# 171 "dist/untitled folder/dist/FbRX/fbrxparser.mly"
+  
+
+# 673 "dist/untitled folder/dist/FbRX/fbrxparser__mock.ml.mock"
