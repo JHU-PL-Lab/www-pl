@@ -14,7 +14,7 @@ See the Q&amp;A site for those links.
 
 ### The Book
 
-The book for the course is the on-line [Book](book/index.html), which directly complements the lectures. The course will cover most of the book, but leaving out Chapter 8\. The book doesn't contain an introduction to OCaml; we will be doing running examples in class as the lecture, from file [lecture.html](ocaml/code/lecture.html). See the [OCaml page](ocaml) for material on learning OCaml. Some of the later lecture topics are also not in the book lecture notes for those topics are found on the [dateline](dateline.html).
+The book for the course is the on-line [Book](book/index.html), which directly complements the lectures. The course will cover most of the book, but leaving out Chapter 8\. The book doesn't contain an introduction to OCaml; we will be doing running examples in class as the lecture, from file [lecture.html](ocaml/lecture.html). See the [OCaml page](ocaml) for material on learning OCaml. Some of the later lecture topics are also not in the book lecture notes for those topics are found on the [dateline](dateline.html).
 
 ### Gradescope
 
