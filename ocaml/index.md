@@ -1,7 +1,7 @@
 ### OCaml Lecture Information
 
-*   [lecture.html](code/lecture.html), the file we work through interactively in class.
-*   For the separate compilation topic we cover [this example (zipped)](code/sep.zip)
+*   [lecture.html](lecture.html), the file we work through interactively in class.
+*   For the separate compilation topic we cover [this example (zipped)](set-example.zip)
 
 ### Our ML Dialect
 
