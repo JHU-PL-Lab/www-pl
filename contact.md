@@ -11,8 +11,8 @@ Please send private questions for instructors as a new Post to "Instructors and 
 
 **Course Assistants**
 * Shiwei Weng (office hours)
-* TBA
-
+* Evan Leung (grading, office hours)
+* One More CA hopefully
 ### Office Hours
 
 They will be posted on the Q&amp;A board.
