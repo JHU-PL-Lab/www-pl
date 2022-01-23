@@ -41,6 +41,7 @@
          <li>
           <a href="/pl/logistics.html">Logistics</a>
           <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
            <li><a href="/pl/dateline.html">Dateline</a></li>
            <li><a href="https://gradescope.com">Gradescope</a></li>
            <li><a href="https://TBA.TBA">Q&amp;A</a></li>
@@ -93,7 +94,7 @@
 
 <p>We will use <a href="http://ocaml.org">OCaml</a>, version 4.13.1.</p>
 
-<h3 id="installing-ocaml-4131">Installing OCaml 4.13.1=</h3>
+<h3 id="installing-ocaml-4131">Installing OCaml 4.13.1</h3>
 
 <p>We require that you use the <a href="https://opam.ocaml.org">opam packaging system</a> for installing OCaml and its extensions.  Once you get <code>opam</code> installed and working, everything else should be easy to install .. so the only hard part is the first step.</p>
 
@@ -129,15 +130,15 @@
 <h3 id="configuring-ocaml">Configuring OCaml</h3>
 
 <p>Once you have OCaml 4.13.1 installed, run the following <code>opam</code> command in the terminal to install additional necessary packages used in the class:</p>
-<pre><code class="language-bash">opam install merlin ocp-indent menhir utop ppx_deriving ounit2
-</code></pre>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opam <span class="nb">install </span>merlin ocp-indent menhir utop ppx_deriving ounit2
+</code></pre></div></div>
 
 <p>Lastly, edit the file <code>~/.ocamlinit</code> to add the line</p>
-<pre><code class="language-ocaml">#use "topfind";;
-</code></pre>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span><span class="n">use</span> <span class="s2">"topfind"</span><span class="p">;;</span>
+</code></pre></div></div>
 <p>if it is not already in the file.  The contents of this file are entered in the top loop when it starts.  Here is an easy one-liner you can copy/paste into your terminal to set that file up:</p>
-<pre><code class="language-sh">echo '#use "topfind";;'  &gt; ~/.ocamlinit
-</code></pre>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">echo</span> <span class="s1">'#use "topfind";;'</span>  <span class="o">&gt;</span> ~/.ocamlinit
+</code></pre></div></div>
 
 <h3 id="ocaml-with-the-pl-book-fbdk">OCaml with the PL Book FbDK</h3>
 

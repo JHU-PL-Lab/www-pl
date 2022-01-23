@@ -7,7 +7,7 @@
 
 We will use [OCaml](http://ocaml.org), version 4.13.1.
 
-### Installing OCaml 4.13.1=
+### Installing OCaml 4.13.1
 
 We require that you use the [opam packaging system](https://opam.ocaml.org) for installing OCaml and its extensions.  Once you get `opam` installed and working, everything else should be easy to install .. so the only hard part is the first step.
 
