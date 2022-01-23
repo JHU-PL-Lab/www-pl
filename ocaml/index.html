@@ -102,7 +102,11 @@
   <li>For Linux or Mac see <a href="https://opam.ocaml.org/doc/Install.html">The OPAM install page</a> for install instructions.</li>
   <li>For Mac users, the above requires <a href="https://brew.sh">Homebrew</a> (a package manager for Linux-ish libraries) so here is a more detailed suggestion of some copy/paste that should work.
     <ul>
-      <li>Mac without homebrew installed:<code>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</code> will install Homebrew</li>
+      <li>Mac without homebrew installed:
+        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> /bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="si">)</span><span class="s2">"</span>
+</code></pre></div>        </div>
+        <p>will install Homebrew</p>
+      </li>
       <li>Mac with Homebrew (make sure you first do a <code>brew update</code> before this): <code>brew install gpatch; brew install opam</code></li>
     </ul>
   </li>

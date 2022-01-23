@@ -13,7 +13,11 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
 
 -   For Linux or Mac see [The OPAM install page](https://opam.ocaml.org/doc/Install.html) for install instructions. 
 -  For Mac users, the above requires [Homebrew](https://brew.sh) (a package manager for Linux-ish libraries) so here is a more detailed suggestion of some copy/paste that should work.
-	- Mac without homebrew installed:`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"` will install Homebrew 
+	- Mac without homebrew installed:
+    ```sh
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    ``` 
+    will install Homebrew 
 	- Mac with Homebrew (make sure you first do a `brew update` before this): `brew install gpatch; brew install opam`
 - You will then need to run some terminal commands to set up the basics:
     1.  `opam init` to initialize OPAM;
