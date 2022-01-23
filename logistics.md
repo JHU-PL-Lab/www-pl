@@ -6,11 +6,11 @@ We will meet 1:30-2:45PM on Mondays and Wednesdays in Hodson 213.  You are norma
 
 ### Q&amp;A
 
-We plan on testing a new tool, Courselore, for announcements and Q&amp;A. Stay tuned for details on how to sign up, we will put them here.
+We are using a new tool, Courselore, for course announcements and Q&amp;A. We will be emailing a special sign-up link for you to get on there.  If you added late please contact the instructor or TA for the link.
 
 ### Zoom and Panopto Locations
 
-See the Q&amp;A site for those links. 
+See Courselore for those links.  Once you have an account there, [this link will work to see these locations](https://courselore.org/courses/8986607496/conversations/1).
 
 ### The Book
 
