@@ -1,7 +1,9 @@
 ## Contact Information
 
 **For quickest response, post to Courselore**.
-Please send private questions for staff only as a new Conversion set to Visible to "Visible by Staff Only" (not "Visible by Everyone") in Courselore.  If you want to contact an individual instructor/TA/CA, for now you can use the emails above for the instructor and TA, but soon the "Note" mode of Courselore will support direct messaging to any individual or group.. stay tuned.
+If you feel your question might be relevant to other students and does not contain confidential information or answers to assignment questions, please post with Visibility set to "Visible by Everyone" in Courselore.
+
+Please send private questions for course staff only as a new Conversion setting Visible to "Visible by Staff Only" (not "Visible by Everyone") in Courselore.  If you want to contact an individual instructor/TA/CA, for now you can use the emails below for the instructor and TA, but soon the "Note"-Type post of Courselore will support direct messaging to any individual or group.. stay tuned for that feature.
 
 **Professor** Scott Smith
 **email** [scott@cs.jhu.edu](mailto:scott@cs.jhu.edu)
