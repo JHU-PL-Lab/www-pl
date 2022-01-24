@@ -12,9 +12,11 @@ Please send private questions for course staff only as a new Conversion setting 
 **email** kwu48 --at-- jhu.edu
 
 **Course Assistants**
+
 * Shiwei Weng (office hours)
 * Evan Leung (grading, office hours)
 * One More CA hopefully
+
 ### Office Hours and Locations
 
 They will be posted on Courselore.
