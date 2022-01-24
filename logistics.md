@@ -4,7 +4,7 @@
 
 We will meet 1:30-2:45PM on Mondays and Wednesdays in Hodson 213.  You are normally expected to attend in-person, but if there are reasons you cannot attend such as being quarantined, sick, travelling, etc we have backup options including live streaming of all lectures on Zoom, and recording and uploading them to Panopto.
 
-### Q&amp;A
+### Q&amp;A: Courselore
 
 We are using a new tool, Courselore, for course announcements and Q&amp;A. We will be emailing a special sign-up link for you to get on there.  If you added late please contact the instructor or TA for the link.
 
@@ -38,11 +38,11 @@ You will be given the same number of "late days" as there are assignments, which
 
 ### Office Hours
 
-Office hours and locations will be pinned on the Q&amp;A board.
+Office hours and locations will be pinned on Courselore.
 
 ### Exams
 
-There will be a midterm before spring break and a final examination during the normal final exam period.
+There will be a take-home midterm before spring break and an in-person final examination during the normal final exam period.
 
 ### Grading
 

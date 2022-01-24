@@ -68,7 +68,6 @@ The OCaml manual is [here](https://ocaml.org/manual/).
 Here are all the tools we will be using.  You are required to have a build for which all these tools work, and the above `opam` one-liner should install them all.
 
 * [`opam`](https://opam.ocaml.org) is the package management system.  See above for install and setup instructions.
-* [`ocamlc`](http://caml.inria.fr/pub/docs/manual-ocaml/comp.html) is the standalone compiler which we will be invoking via the `dune` build tool.  You don't really need to know much about it as you will not need to invoke it directly.
 * [`utop`](https://opam.ocaml.org/blog/about-utop/) is the read/eval/print loop we will be using.  It is a replacement for the original [`ocaml`](http://caml.inria.fr/pub/docs/manual-ocaml/toplevel.html) command, with many more features such as command history, replay, etc.
 * [`dune`](https://dune.build) is the build tool (think `make`) that we will be using.
 * [OUnit](https://github.com/gildor478/ounit) is the unit tester for OCaml.  The opam package is called `ounit2` for obscure reasons.
