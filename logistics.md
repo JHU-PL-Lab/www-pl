@@ -18,7 +18,7 @@ The book for the course is the on-line [Book](book/index.html), which directly c
 
 ### Gradescope
 
-[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See CampusWire for the entry code.
+[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See Courselore for the entry code ([here](https://courselore.org/courses/8986607496/conversations/1) once you have made your Courselore account.)
 
 ### Assignments
 
