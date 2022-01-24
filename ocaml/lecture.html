@@ -87,6 +87,14 @@
 <h2 id="introduction-to-ocaml-programming">Introduction to OCaml Programming</h2>
 
 <ul>
+  <li>We will be using the OCaml language for implementing interpreters, typecheckers and the like</li>
+  <li>You are not going to learn how to be an OCaml software engineer in this class however, we are just going to cover the minimal OCaml needed for these tasks</li>
+  <li>Take <a href="https://pl.cs.jhu.edu/fpse">Functional Programming in Software Engineering</a> for a focus on broader uses of OCaml</li>
+  <li>OCaml itself has a very minimal set of features which can build up other features, we will also follow that in our toy langauges <strong>Fb</strong>, <strong>FbV</strong>, <strong>FbR</strong>, etc.</li>
+</ul>
+
+<h3 id="what-is-ocaml">What is OCaml?</h3>
+<ul>
   <li>OCaml is a <em>strongly typed functional programming language</em>
     <ul>
       <li>Strongly typed means the compiler will detect type errors; you won’t get them at runtime like in JavaScript/Python</li>
@@ -95,17 +103,17 @@
   </li>
 </ul>
 
-<p>(Note if you want to get all the code (only) in this webpage into a <code>.ml</code> file to load into your editor, download the file <a href="lecture.ml">lecture.ml</a>.)</p>
-
 <h3 id="the-top-loop">The top loop</h3>
 
 <ul>
   <li>We will begin exploration of OCaml in the interactive <em>top loop</em></li>
-  <li>The top loop is the same as the read-eval-print loop or the console window for other languages</li>
-  <li>To get the top loop we are using, <code>utop</code>, follow the course <a href="../index.html">OCaml install instructions</a>.</li>
+  <li>A top loop is also called a read-eval-print loop or the console window for other languages; it also works like a terminal shell</li>
+  <li>To install the top loop we are using, <code>utop</code>, follow the course <a href="../index.html">OCaml install instructions</a>.</li>
+  <li>To run it, just type <code>utop</code> into a terminal window.</li>
 </ul>
 
 <h4 id="simple-integer-operations-in-the-top-loop">Simple integer operations in the top loop</h4>
+<p>(Note if you want to get all the code (only) of this webpage in a <code>.ml</code> file to load into your editor, download the file <a href="lecture.ml">lecture.ml</a>.)</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span> <span class="o">+</span> <span class="mi">4</span><span class="p">;;</span> <span class="c">(* ";;" denotes end of input, somewhat archaic. *)</span>
 <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">4</span><span class="p">;;</span> <span class="c">(* give the value a name via let keyword. *)</span>

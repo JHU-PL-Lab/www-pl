@@ -1,19 +1,26 @@
 
 ## Introduction to OCaml Programming
 
+* We will be using the OCaml language for implementing interpreters, typecheckers and the like
+* You are not going to learn how to be an OCaml software engineer in this class however, we are just going to cover the minimal OCaml needed for these tasks
+* Take [Functional Programming in Software Engineering](https://pl.cs.jhu.edu/fpse) for a focus on broader uses of OCaml
+* OCaml itself has a very minimal set of features which can build up other features, we will also follow that in our toy langauges **Fb**, **FbV**, **FbR**, etc.
+
+### What is OCaml?
 * OCaml is a *strongly typed functional programming language*
    - Strongly typed means the compiler will detect type errors; you won't get them at runtime like in JavaScript/Python
    - Functional means an emphasis on *functions* as a key building block and use of functions as data (functions that themselves can take functions as arguments and return functions as results)
 
-(Note if you want to get all the code (only) in this webpage into a `.ml` file to load into your editor, download the file [lecture.ml](lecture.ml).)
 
 ### The top loop
 
 * We will begin exploration of OCaml in the interactive *top loop*
-* The top loop is the same as the read-eval-print loop or the console window for other languages
-* To get the top loop we are using, `utop`, follow the course [OCaml install instructions](../index.html).
+* A top loop is also called a read-eval-print loop or the console window for other languages; it also works like a terminal shell
+* To install the top loop we are using, `utop`, follow the course [OCaml install instructions](../index.html).
+* To run it, just type `utop` into a terminal window.
 
 #### Simple integer operations in the top loop
+(Note if you want to get all the code (only) of this webpage in a `.ml` file to load into your editor, download the file [lecture.ml](lecture.ml).)
 
 ```ocaml
 3 + 4;; (* ";;" denotes end of input, somewhat archaic. *)
