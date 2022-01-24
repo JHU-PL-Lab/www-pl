@@ -13,7 +13,7 @@ Please send private questions for staff only as a new Conversion set to Visible 
 * Shiwei Weng (office hours)
 * Evan Leung (grading, office hours)
 * One More CA hopefully
-### Office Hours
+### Office Hours and Locations
 
-They will be posted on the Q&amp;A board.
+They will be posted on Courselore.
 
