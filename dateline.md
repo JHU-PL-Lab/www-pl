@@ -51,7 +51,8 @@ Lecture material and assigments are under the indicated links; lectures with no 
     patterns, functions, lists</a> </div> 
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body"><a
+href="assignments/assignment1.html">1 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -68,8 +69,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
         <div align="left" class="body">&nbsp;<a href="ocaml/lecture.html#iii">OCaml III: higher-order functions</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a
-href="assignments/assignment1.html">1 - OCaml</a></div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
