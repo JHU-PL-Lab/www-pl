@@ -29,7 +29,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
       </td>
       <td width="30%"> 
         <div align="left" class="body">&nbsp;Introduction; <br> &nbsp;<a href="ocaml/lecture.html">OCaml I:
-    basic data, lists, let</a></div>
+    basic data, let</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="ocaml/index.html">(0 - Install OCaml)</a>
@@ -47,8 +47,8 @@ Lecture material and assigments are under the indicated links; lectures with no 
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;<a href="ocaml/lecture.html#ii">OCaml II: tuples,
-    patterns, functions</a> </div> 
+        <div align="left" class="body">&nbsp;<a href="ocaml/lecture.html#ii">OCaml II: 
+    patterns, functions, lists</a> </div> 
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
