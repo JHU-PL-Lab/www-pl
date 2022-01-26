@@ -73,25 +73,25 @@ let rec fib n =     (* the "rec" keyword needs to be added to allow recursion *)
 fib 10;; (* get the 10th Fibonacci number *)
 ```
 
-#### Anonymous functions basics
+#### Anonymous functions aka "functions are just other values"
 
 * Key advantage of FP: functions are just expressions; put them in variables, pass and return from other functions, etc.
-* Much of this course will be showing how this is useful, we are just getting started now
+* There is major power to this, which is why Java, Python, C++, etc have had higher-order functions added to them.
 
 ```ocaml
 let add1 x = x + 1;; (* a normal add1 definition *)
 let anon_add1 = (function x -> x + 1);; (* equivalent anonymous version; "x" is argument here *)
 anon_add1 3;;
-(anon_add1 4) + 7;; 
-((function x -> x + 1) 4) + 7;; (* can inline anonymous function definition *)
-((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off the "ction" *)
+(anon_add1 4) * 7;; 
+((function x -> x + 1) 4) * 7;; (* can inline anonymous function definition *)
+((fun x -> x + 1) 4) * 7;; (*  shorthand notation -- can usually cut off the "ction" *)
 ```
 
 <a name="ii"></a>
 
 ## OCaml Lecture II
 
-* Multiple arguments - just leave s p a c e s between multiple arguments in both definitions and uses
+* Multiple argument functions - just leave s p a c e s between multiple arguments in both definitions and uses
 
 ```ocaml
 let add x y = x + y;;
@@ -100,18 +100,18 @@ add 3 4;;
 let add3 = add 3;; (* No need to give all arguments at once!  Type of add is int -> (int -> int) - "CURRIED" *)
 add3 4;;
 add3 20;;
-(+) 3 4;; (* Putting () around any infix operator turns it into a 2-argument function *)
+(+) 3 4;; (* Putting () around any infix operator turns it into a 2-argument function: `(+)` is same as our `add` above *)
 ```
 
-Conclusion: add is a function taking an integer, and returning a **function** which takes ints to ints.
-So, add is a **higher-order function**: it returns a function as result.
+Conclusion: `add` is a function taking an integer, and returning a **function** which takes ints to ints.
+So, `add` is in fact a **higher-order function**: it returns a function as result.
 
 Observe `int -> int -> int` is parenthesized as `int -> (int -> int)` -- unusual **right** associativity
 
 Be careful on operator precedence with this goofy way that function application doesn't need parens!
 ```ocaml
 add3 (3 * 2);;
-add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than * *)
+add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than `*` *)
 add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
 ```
 
@@ -125,6 +125,7 @@ Some 5;;
 ```
 
 * all this does is "wrap" the 5 in the `Some` tag
+* Along with `Some`-thing 5, there can also be `None`-thing, nothing:
 
 ```ocaml
 None;;
@@ -155,7 +156,7 @@ Error: This expression has type int option
 
 This type error means the `+` lhs should be type `int` but is a `Some` value which is not an `int`.
 
-Here is a non-solution to that:
+Here is a non-solution to the above showing `None` is not like `nil`/`null`/`NULL` of some other languages:
  ```ocaml
 # let not_nice_div m n = if n = 0 then None else m / n;;
 Line 1, characters 47-52:
@@ -189,8 +190,9 @@ div_exn 3 4;;
 * This has the property of not needing a match on the result.  
 * Note that the built-in `/` also raises an exception.
 * Exceptions are side effects though, we want to minimize their usage to avoid error-at-a-distance.
-* The above examples show how exceptional conditions can either be handled via exceptions or in the return value; 
-   - the latter is the C approach
+* The above examples show how exceptional conditions can either be handled via 
+  - exceptions (the most common way, e.g. how Java deals with division by 0)
+  - or in the return value; the latter is the C approach, C functions return `NULL` or `-1` and the caller has to deal.
 
 ### Everything is an expression
 
@@ -250,13 +252,13 @@ let rec nth l n =
   |  [] -> failwith "no nth element in this list"
   |  x :: xs -> if n = 0 then x else nth xs (n-1)
 ;;
-nth [33;22;11] 1;;
-nth [33;22;11] 3;;
+nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
+nth [33;22;11] 3;; (* Hits failure case; could have instead returned Some/None *)
 ```
 * Pattern priority: pick the first matched clause
 * The above two patterns are mutually exclusive so order irrelevant, but not in all cases.
 
-Don't use non-exhaustive pattern matches!
+Don't use non-exhaustive pattern matches! You will get a warning:
 
 ```ocaml
 let dumb l = match l with

@@ -20,6 +20,7 @@ Here is a reminder of some resources at your disposal.
 *   You are required to use OCaml version 4.13.1 and we strongly recommend using Visual Studio Code for editing. Again see the OCaml page for how to get an editor working.
 *   For more OCaml examples etc, read and copy/paste the code defined in the [OCaml.org tutorials](https://ocaml.org/learn/tutorials/) (mainly "the Basics" for this assignment).
 *   If you are looking for how some standard function is expressed in OCaml, like not equal, etc, consult the [Caml Stdlib](http://caml.inria.fr/pub/docs/manual-ocaml/libref/Stdlib.html) which contains the predefined functions available in OCaml.
+* Note for this first assignment you can only use things in this standard library; you **cannot** use list library functions such as `List.hd` or `List.nth` (you can code your own versions, of course).
 *   You are strongly encouraged to work with other people on the assignment. You just need to list the names of people you worked with. However remember that you should submit your own write up of the answers. **Copying of solutions is not allowed**. For the full collaboration policy see [here](../logistics.html).
 *   Come to the office hours, to get help from Prof, TAs, and your peers.  They are pinned on Courselore.
 *   Use Courselore for additional help and question clarification.  Make sure to also watch the posts there for question corrections.
