@@ -162,19 +162,19 @@
 <span class="n">fib</span> <span class="mi">10</span><span class="p">;;</span> <span class="c">(* get the 10th Fibonacci number *)</span>
 </code></pre></div></div>
 
-<h4 id="anonymous-functions-basics">Anonymous functions basics</h4>
+<h4 id="anonymous-functions-aka-functions-are-just-other-values">Anonymous functions aka “functions are just other values”</h4>
 
 <ul>
   <li>Key advantage of FP: functions are just expressions; put them in variables, pass and return from other functions, etc.</li>
-  <li>Much of this course will be showing how this is useful, we are just getting started now</li>
+  <li>There is major power to this, which is why Java, Python, C++, etc have had higher-order functions added to them.</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add1</span> <span class="n">x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* a normal add1 definition *)</span>
 <span class="k">let</span> <span class="n">anon_add1</span> <span class="o">=</span> <span class="p">(</span><span class="k">function</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);;</span> <span class="c">(* equivalent anonymous version; "x" is argument here *)</span>
 <span class="n">anon_add1</span> <span class="mi">3</span><span class="p">;;</span>
-<span class="p">(</span><span class="n">anon_add1</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">7</span><span class="p">;;</span> 
-<span class="p">((</span><span class="k">function</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">7</span><span class="p">;;</span> <span class="c">(* can inline anonymous function definition *)</span>
-<span class="p">((</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">4</span><span class="p">)</span> <span class="o">+</span> <span class="mi">7</span><span class="p">;;</span> <span class="c">(*  shorthand notation -- cut off the "ction" *)</span>
+<span class="p">(</span><span class="n">anon_add1</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">7</span><span class="p">;;</span> 
+<span class="p">((</span><span class="k">function</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">7</span><span class="p">;;</span> <span class="c">(* can inline anonymous function definition *)</span>
+<span class="p">((</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">7</span><span class="p">;;</span> <span class="c">(*  shorthand notation -- can usually cut off the "ction" *)</span>
 </code></pre></div></div>
 
 <p><a name="ii"></a></p>
@@ -182,7 +182,7 @@
 <h2 id="ocaml-lecture-ii">OCaml Lecture II</h2>
 
 <ul>
-  <li>Multiple arguments - just leave s p a c e s between multiple arguments in both definitions and uses</li>
+  <li>Multiple argument functions - just leave s p a c e s between multiple arguments in both definitions and uses</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add</span> <span class="n">x</span> <span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
@@ -191,17 +191,17 @@
 <span class="k">let</span> <span class="n">add3</span> <span class="o">=</span> <span class="n">add</span> <span class="mi">3</span><span class="p">;;</span> <span class="c">(* No need to give all arguments at once!  Type of add is int -&gt; (int -&gt; int) - "CURRIED" *)</span>
 <span class="n">add3</span> <span class="mi">4</span><span class="p">;;</span>
 <span class="n">add3</span> <span class="mi">20</span><span class="p">;;</span>
-<span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">;;</span> <span class="c">(* Putting () around any infix operator turns it into a 2-argument function *)</span>
+<span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">;;</span> <span class="c">(* Putting () around any infix operator turns it into a 2-argument function: `(+)` is same as our `add` above *)</span>
 </code></pre></div></div>
 
-<p>Conclusion: add is a function taking an integer, and returning a <strong>function</strong> which takes ints to ints.<br />
-So, add is a <strong>higher-order function</strong>: it returns a function as result.</p>
+<p>Conclusion: <code>add</code> is a function taking an integer, and returning a <strong>function</strong> which takes ints to ints.<br />
+So, <code>add</code> is in fact a <strong>higher-order function</strong>: it returns a function as result.</p>
 
 <p>Observe <code>int -&gt; int -&gt; int</code> is parenthesized as <code>int -&gt; (int -&gt; int)</code> – unusual <strong>right</strong> associativity</p>
 
 <p>Be careful on operator precedence with this goofy way that function application doesn’t need parens!</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">add3</span> <span class="p">(</span><span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span><span class="p">);;</span>
-<span class="n">add3</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than * *)</span>
+<span class="n">add3</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than `*` *)</span>
 <span class="n">add3</span> <span class="o">@@</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)</span>
 </code></pre></div></div>
 
@@ -217,6 +217,7 @@ So, add is a <strong>higher-order function</strong>: it returns a function as re
 
 <ul>
   <li>all this does is “wrap” the 5 in the <code>Some</code> tag</li>
+  <li>Along with <code>Some</code>-thing 5, there can also be <code>None</code>-thing, nothing:</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">None</span><span class="p">;;</span>
@@ -247,7 +248,7 @@ So, add is a <strong>higher-order function</strong>: it returns a function as re
 
 <p>This type error means the <code>+</code> lhs should be type <code>int</code> but is a <code>Some</code> value which is not an <code>int</code>.</p>
 
-<p>Here is a non-solution to that:</p>
+<p>Here is a non-solution to the above showing <code>None</code> is not like <code>nil</code>/<code>null</code>/<code>NULL</code> of some other languages:</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="k">let</span> <span class="n">not_nice_div</span> <span class="n">m</span> <span class="n">n</span> <span class="o">=</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="nc">None</span> <span class="k">else</span> <span class="n">m</span> <span class="o">/</span> <span class="n">n</span><span class="p">;;</span>
 <span class="nc">Line</span> <span class="mi">1</span><span class="o">,</span> <span class="n">characters</span> <span class="mi">47</span><span class="o">-</span><span class="mi">52</span><span class="o">:</span>
 <span class="nc">Error</span><span class="o">:</span> <span class="nc">This</span> <span class="n">expression</span> <span class="n">has</span> <span class="k">type</span> <span class="kt">int</span> <span class="n">but</span> <span class="n">an</span> <span class="n">expression</span> <span class="n">was</span> <span class="n">expected</span> <span class="k">of</span> <span class="k">type</span>
@@ -283,9 +284,10 @@ So, add is a <strong>higher-order function</strong>: it returns a function as re
   <li>This has the property of not needing a match on the result.</li>
   <li>Note that the built-in <code>/</code> also raises an exception.</li>
   <li>Exceptions are side effects though, we want to minimize their usage to avoid error-at-a-distance.</li>
-  <li>The above examples show how exceptional conditions can either be handled via exceptions or in the return value;
+  <li>The above examples show how exceptional conditions can either be handled via
     <ul>
-      <li>the latter is the C approach</li>
+      <li>exceptions (the most common way, e.g. how Java deals with division by 0)</li>
+      <li>or in the return value; the latter is the C approach, C functions return <code>NULL</code> or <code>-1</code> and the caller has to deal.</li>
     </ul>
   </li>
 </ul>
@@ -349,15 +351,15 @@ So, add is a <strong>higher-order function</strong>: it returns a function as re
   <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="s2">"no nth element in this list"</span>
   <span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">x</span> <span class="k">else</span> <span class="n">nth</span> <span class="n">xs</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="p">;;</span>
-<span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">1</span><span class="p">;;</span>
-<span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">3</span><span class="p">;;</span>
+<span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">0</span><span class="p">;;</span> <span class="c">(* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)</span>
+<span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">3</span><span class="p">;;</span> <span class="c">(* Hits failure case; could have instead returned Some/None *)</span>
 </code></pre></div></div>
 <ul>
   <li>Pattern priority: pick the first matched clause</li>
   <li>The above two patterns are mutually exclusive so order irrelevant, but not in all cases.</li>
 </ul>
 
-<p>Don’t use non-exhaustive pattern matches!</p>
+<p>Don’t use non-exhaustive pattern matches! You will get a warning:</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">dumb</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
       <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="p">;;</span>

@@ -28,9 +28,9 @@ fib 10;; (* get the 10th Fibonacci number *)
 let add1 x = x + 1;; (* a normal add1 definition *)
 let anon_add1 = (function x -> x + 1);; (* equivalent anonymous version; "x" is argument here *)
 anon_add1 3;;
-(anon_add1 4) + 7;; 
-((function x -> x + 1) 4) + 7;; (* can inline anonymous function definition *)
-((fun x -> x + 1) 4) + 7;; (*  shorthand notation -- cut off the "ction" *)
+(anon_add1 4) * 7;; 
+((function x -> x + 1) 4) * 7;; (* can inline anonymous function definition *)
+((fun x -> x + 1) 4) * 7;; (*  shorthand notation -- can usually cut off the "ction" *)
 
 let add x y = x + y;;
 add 3 4;;
@@ -38,10 +38,10 @@ add 3 4;;
 let add3 = add 3;; (* No need to give all arguments at once!  Type of add is int -> (int -> int) - "CURRIED" *)
 add3 4;;
 add3 20;;
-(+) 3 4;; (* Putting () around any infix operator turns it into a 2-argument function *)
+(+) 3 4;; (* Putting () around any infix operator turns it into a 2-argument function: `(+)` is same as our `add` above *)
 
 add3 (3 * 2);;
-add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than * *)
+add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than `*` *)
 add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
 
 Some 5;;
@@ -84,8 +84,8 @@ let rec nth l n =
   |  [] -> failwith "no nth element in this list"
   |  x :: xs -> if n = 0 then x else nth xs (n-1)
 ;;
-nth [33;22;11] 1;;
-nth [33;22;11] 3;;
+nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
+nth [33;22;11] 3;; (* Hits failure case; could have instead returned Some/None *)
 
 let dumb l = match l with
       | x :: y -> x;;
