@@ -45,22 +45,22 @@ add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - applicatio
 add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
 
 Some 5;;
-- : int option = Some 5
+(*  - : int option = Some 5 *)
 
 None;;
-- : 'a option = None
+(* - : 'a option = None *)
 
 let div_exn m n = if n = 0 then failwith "divide by zero is bad!" else m / n;;
 div_exn 3 4;;
 
 if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
 (if (x = 3) then 5 else 6) * 2;;
-(if (x = 3) then 5.4 else 6) * 2;; (* type errors:  two branches of if must have same type *)
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type errors:  two branches of if must have same type *)
 
 let l1 = [1; 2; 3];;
 let l2 = [1; 1+1; 1+1+1];;
 let l3 = ["a"; "b"; "c"];;
-let l4 = [1; "a"];; (* error - All elements must have same type *)
+(* let l4 = [1; "a"];; *) (* error - All elements must have same type *)
 let l5 = [];; (* empty list *)
 
 0 :: l1;; (* "::" is 'consing' 0 to the top of the tree - fast *)
@@ -85,27 +85,27 @@ let rec nth l n =
   |  x :: xs -> if n = 0 then x else nth xs (n-1)
 ;;
 nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
-nth [33;22;11] 3;; (* Hits failure case; could have instead returned Some/None *)
+(* nth [33;22;11] 3;; *) (* Hits failure case; could have instead returned Some/None *)
 
 let dumb l = match l with
       | x :: y -> x;;
 dumb [1;2;3];; (* this works to return head of list but.. *)
-dumb [];; (* runtime error here *)
+(* dumb [];; *) (* runtime error here *)
 
-# List.nth [1;2;3] 2;;
-- : int = 3
+List.nth [1;2;3] 2;;
+(* - : int = 3 *)
 
 List.length ["d";"ss";"qwqw"];;
 List.concat [[1;2];[22;33];[444;5555]];;
 List.append [1;2] [3;4];; 
-[1;2] @ [3;4] (* Use this equivalent infix syntax for append *)
+[1;2] @ [3;4];; (* Use this equivalent infix syntax for append *)
 
-# List.length;;
-- : 'a list -> int = <fun>
-# List.concat;;
-- : 'a list list -> 'a list = <fun>
-# List.append;;
-- : 'a list -> 'a list -> 'a list = <fun>
+List.length;;
+(* - : 'a list -> int = <fun> *)
+List.concat;;
+(* - : 'a list list -> 'a list = <fun> *)
+List.append;;
+(* - : 'a list -> 'a list -> 'a list = <fun> *)
 
 let rec rev l =
   match l with
@@ -113,14 +113,6 @@ let rec rev l =
   | x :: xs -> rev xs @ [x]
 ;;
 rev [1;2;3];; (* recall [1;2;3] is equivalent to 1 :: ( 2 :: ( 3 :: [])) *)
-
-rev [1;2;3] 
-~= rev (1 :: [2;3]) (by the meaning of the [...] list syntax)
-~= (rev [2;3]) @ [1]  (the second pattern is matched: x is 1, xs is [2;3] and run the match body)
-~= (rev [3] @ [2]) @ [1]  (same thing for the rev [2;3] expression - plug in its elaboration)
-~= ((rev [] @ [3]) @ [2]) @ [1]
-~= (([] @ [3]) @ [2]) @ [1]
-~= [3;2;1] (by the meaning of append)
 
 (2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
 let tuple = (2, "hi");;
@@ -133,6 +125,17 @@ match tuple with
 
 (* shorthand for the above - only one pattern, can use let syntax *)
 let (f, s, th) = tuple in s;;
+
+(* Parens around tuple not always needed *)
+let i,b,f = 4, true, 4.4;;
+
+(* Tuple pattern matching as a trick to parallel match *)
+
+let rec eq_lists l1 l2 = 
+  match l1,l2 with
+  | [], [] -> true
+  | x::xs, x'::xs' -> if x <> x' then false else eq_lists xs xs'
+  (* more cases needed for lists not equal length - an exercise for you *)
 
 let y = 3;;
 let x = 5;;
@@ -211,7 +214,7 @@ map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
 
 let rec summate_right l init = match l with
-    | []   -> init
+    | []   -> init (* init is the initial number to start with; a special case *)
     | hd::tl ->  (+) hd (summate_right tl init) (* assume by induction this will summate tl, add hd *)
     ;;
 summate_right [1;2;3] 0;;
@@ -276,18 +279,10 @@ new_add_nc (2,3);;
 let new_add_c  = curry   add_nc;;
 new_add_c 2 3;;
 
-curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c
-uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c
-
 let noop1 = curry (uncurry add_c);; (* a no-op *)
 let noop2 = uncurry (curry add_nc);; (* another no-op; noop1 & noop2 together show isomorphism *)
 
 print_string ("hi\n");;
-
-(failwith "BOOM!") + 3 ;;
-
-let f x = if x <= 0 then invalid_arg "Let's be positive, please!" else x + 1;;
-f (-5);;
 
 let add (x: float) (y: float) = x +. y;;
 let add (x: int) (y: int) = (((x: int) + y) : int);;
@@ -331,7 +326,7 @@ let rec partition p l =
       (posl,hd::negl);;
 
 let is_positive n = n > 0 in
-assert(partition isPositive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
+assert(partition is_positive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
 
 let rec contains x l =
   match l with
@@ -349,10 +344,10 @@ let rec diff l1 l2 =
     x :: diff xs l2
 ;;
 
-assert(contains 1 [1; 2; 3])
-assert(not(contains 5 [1; 2; 3]))
-assert(diff [1;2;3] [3;4;5] = [1; 2])
-assert(diff [1;2] [1;2;3] = [])
+assert(contains 1 [1; 2; 3]);;
+assert(not(contains 5 [1; 2; 3]));;
+assert(diff [1;2;3] [3;4;5] = [1; 2]);;
+assert(diff [1;2] [1;2;3] = []);;
 
 type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
 
@@ -391,9 +386,9 @@ let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
 let rec map ml f =
   match ml with
     | Mt -> Mt
-    | Cons(hd,tl) -> Cons(f hd,map tl ~f)
+    | Cons(hd,tl) -> Cons(f hd,map tl f);;
 
-let map_eg = map hb_eg (fun x -> x - 1) mylisteg
+let map_eg = map mylisteg (fun x -> x - 1)
 
 type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 
@@ -414,7 +409,7 @@ let bt2 = Node("fiddly ",
                   Leaf)),
             whack);;
 (* Type error; like lists, tree data must have uniform type: *)
-Node("fiddly",Node(0,Leaf,Leaf),Leaf);;
+(* Node("fiddly",Node(0,Leaf,Leaf),Leaf);; *)
 
 let rec add_gobble binstringtree =
    match binstringtree with
@@ -476,7 +471,7 @@ let happy_add_ratio {num = n1; denom = d1} {num = n2; denom = d2} =
 
 let x = ref 4;;    (* always have to declare initial value when creating a reference *)
 
-x + 1;; (* a type error ! *)
+(* x + 1;; *) (* a type error ! *)
 !x + 1;; (* need `!x` to get out the value; parallels `*x` in C *)
 x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
 !x;; (* Mutation happened to contents of cell x *)
@@ -506,8 +501,8 @@ arr;;
 exception Goo of string;;
 
 let f _ = raise (Goo "keyboard on fire");;
-f ();;
-(f ()) + 1;; (* recall that exceptions blow away the context *)
+(* f ();; *) (* raises the exception to the top level *)
+(* (f ()) + 1;; *) (* recall that exceptions blow away the context *)
 
 let g () =
   try
@@ -518,12 +513,4 @@ let g () =
        print_string(s);print_string("\n"))
 ;;
 g ();;
-
-failwith "Oops";; (* Generic code failure - exception is named Failure *)
-invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
-
-Simple_set.emptyset;; (* simple_set.ml's binary is loaded as module Simple_set *)
-open Simple_set;;     (* open makes `emptyset` etc in module available without typing `Simple_set.` *)
-let aset = List.fold_left (Fun.flip add) emptyset [1;2;3;4] ;;
-contains 3 aset ;;
 

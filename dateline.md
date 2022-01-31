@@ -483,10 +483,10 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>    
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">May 10?? (TBA now)</div>
+        <div align="center" class="body">May 13?</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">TBA</div>
+        <div align="center" class="body">Fri?</div>
       </td>
       <td width="30%"> 
         <div align="left" class="body">Final Review Session</div>
@@ -500,10 +500,10 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">May 12?? (TBA now)</div>
+        <div align="center" class="body">May 16, 6-9PM</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">TBA</div>
+        <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
         <div align="left" class="body">Final Exam</div>

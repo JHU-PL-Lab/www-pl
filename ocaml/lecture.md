@@ -121,7 +121,7 @@ add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but bi
 
 ```ocaml
 Some 5;;
-- : int option = Some 5
+(*  - : int option = Some 5 *)
 ```
 
 * all this does is "wrap" the 5 in the `Some` tag
@@ -129,7 +129,7 @@ Some 5;;
 
 ```ocaml
 None;;
-- : 'a option = None
+(* - : 'a option = None *)
 ```
 
  * Notice these are both in the `option` type .. either you have `Some` data or you have `None`.
@@ -147,7 +147,7 @@ val nice_div : int -> int -> int option = <fun>
 
 There is a downside with this though, you can't just use `nice_div` like `/`:
 
-```ocaml
+```sh
 # (nice_div 5 2) + 7;;
 Line 1, characters 0-14:
 Error: This expression has type int option
@@ -200,7 +200,7 @@ Everything in OCaml returns values (i.e. is an 'expression') - no commands
 ```ocaml
 if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
 (if (x = 3) then 5 else 6) * 2;;
-(if (x = 3) then 5.4 else 6) * 2;; (* type errors:  two branches of if must have same type *)
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type errors:  two branches of if must have same type *)
 ```
 
 ### Lists
@@ -212,7 +212,7 @@ if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
 let l1 = [1; 2; 3];;
 let l2 = [1; 1+1; 1+1+1];;
 let l3 = ["a"; "b"; "c"];;
-let l4 = [1; "a"];; (* error - All elements must have same type *)
+(* let l4 = [1; "a"];; *) (* error - All elements must have same type *)
 let l5 = [];; (* empty list *)
 ```
 
@@ -253,7 +253,7 @@ let rec nth l n =
   |  x :: xs -> if n = 0 then x else nth xs (n-1)
 ;;
 nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
-nth [33;22;11] 3;; (* Hits failure case; could have instead returned Some/None *)
+(* nth [33;22;11] 3;; *) (* Hits failure case; could have instead returned Some/None *)
 ```
 * Pattern priority: pick the first matched clause
 * The above two patterns are mutually exclusive so order irrelevant, but not in all cases.
@@ -264,7 +264,7 @@ Don't use non-exhaustive pattern matches! You will get a warning:
 let dumb l = match l with
       | x :: y -> x;;
 dumb [1;2;3];; (* this works to return head of list but.. *)
-dumb [];; (* runtime error here *)
+(* dumb [];; *) (* runtime error here *)
 ```
 
 Built-in `List.hd` is the same as `dumb` and it is nearly always a **dumb** function, don't use it unless it is 100% obvious that the list is not empty.
@@ -274,8 +274,8 @@ Built-in `List.hd` is the same as `dumb` and it is nearly always a **dumb** func
 Fortunately many common list operations are in the `List` module in the standard library:
 
 ```ocaml
-# List.nth [1;2;3] 2;;
-- : int = 3
+List.nth [1;2;3] 2;;
+(* - : int = 3 *)
 ```
 * We will discuss modules later, but for now just think of them as containers of a collection of functions types etc.  Something like a `package` in Java, or a Java `class` with only `static` methods.
 
@@ -284,7 +284,7 @@ Some more handy `List` library functions
 List.length ["d";"ss";"qwqw"];;
 List.concat [[1;2];[22;33];[444;5555]];;
 List.append [1;2] [3;4];; 
-[1;2] @ [3;4] (* Use this equivalent infix syntax for append *)
+[1;2] @ [3;4];; (* Use this equivalent infix syntax for append *)
 ```
 
 * Type `#show List;;` into utop to get a dump of all the functions in `List`.
@@ -297,12 +297,12 @@ List.append [1;2] [3;4];;
 * Much of the time when you mis-use a function you will get a type error
 * `'a list` etc is a polymorphic aka generic type, `'a` can be *any* type
 ```ocaml
-# List.length;;
-- : 'a list -> int = <fun>
-# List.concat;;
-- : 'a list list -> 'a list = <fun>
-# List.append;;
-- : 'a list -> 'a list -> 'a list = <fun>
+List.length;;
+(* - : 'a list -> int = <fun> *)
+List.concat;;
+(* - : 'a list list -> 'a list = <fun> *)
+List.append;;
+(* - : 'a list -> 'a list -> 'a list = <fun> *)
 ```
 
 A cool feature of OCaml is how it automatically *infers* polymorphic types, unlike Java where generics usually need to be declared explicitly.
@@ -327,7 +327,7 @@ We assume we have a notion of "program fragments behaving the same", `~=`.
 
 Before doing the general case, here are some equivalences we can see from the above program run 
 (by running it in our heads):
-```ocaml
+```
 rev [1;2;3] 
 ~= rev (1 :: [2;3]) (by the meaning of the [...] list syntax)
 ~= (rev [2;3]) @ [1]  (the second pattern is matched: x is 1, xs is [2;3] and run the match body)
@@ -384,7 +384,8 @@ QED.
 
 ### Tuples
 
-Think of tuples as fixed length lists, where the types of each element can differ, unlike lists
+* Think of tuples as fixed length lists, where the types of each element can differ, unlike lists
+* Tuples are "and" data structures: this *and* this *and this.  `struct` and objects are also "and" structures (variants like `Some/None` are OCaml's "or" structures, more later on them)
 
 ```ocaml
 (2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
@@ -400,6 +401,17 @@ match tuple with
 
 (* shorthand for the above - only one pattern, can use let syntax *)
 let (f, s, th) = tuple in s;;
+
+(* Parens around tuple not always needed *)
+let i,b,f = 4, true, 4.4;;
+
+(* Tuple pattern matching as a trick to parallel match *)
+
+let rec eq_lists l1 l2 = 
+  match l1,l2 with
+  | [], [] -> true
+  | x::xs, x'::xs' -> if x <> x' then false else eq_lists xs xs'
+  (* more cases needed for lists not equal length - an exercise for you *)
 ```
 
 #### Consequences of immutable variable declarations on the top loop
@@ -456,8 +468,10 @@ let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
 g (-5);; (* works now *)
 ```
 
-* Moral: don't code (too much) directly in the top-loop since this behavior can cause anomalies
+* Moral: don't code (too much) directly in the top-loop since this behavior can cause anomalies 
+   - if you change any function, all functions that depend on it need to be copy/pasted in as well
 * For Assignment 1, you will be able to say `dune test` in the terminal to run tests on your code, and `dune utop` will load it all into `utop` so you can then play with your functions.
+* Also you can type into `utop` the command `#use "src/assignment.ml"` and it is as if you copy/pasted the whole file into `utop`.
 
 #### Mutually recursive functions
 
@@ -571,11 +585,13 @@ let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functio
 
 ```ocaml
 let rec summate_right l init = match l with
-    | []   -> init
+    | []   -> init (* init is the initial number to start with; a special case *)
     | hd::tl ->  (+) hd (summate_right tl init) (* assume by induction this will summate tl, add hd *)
     ;;
 summate_right [1;2;3] 0;;
 ```
+
+Let us now pull out the `+` as a function *parameter*:
 
 ```ocaml
 let rec fold_right f l init = match l with
@@ -723,7 +739,7 @@ new_add_c 2 3;;
 ```
 
 Observe the types themselves pretty much specify the behavior
-```ocaml
+```
 curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c
 uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c
 ```
@@ -743,12 +759,12 @@ print_string ("hi\n");;
 ```
 
 Some `Stdlib` built-in exception generating functions (more on exceptions later)
-```ocaml
+```sh
 (failwith "BOOM!") + 3 ;;
 ```
 
 Invalid argument exception `invalid_arg`:
-```ocaml
+```sh
 let f x = if x <= 0 then invalid_arg "Let's be positive, please!" else x + 1;;
 f (-5);;
 ```
@@ -850,7 +866,7 @@ Test
 
 ```ocaml
 let is_positive n = n > 0 in
-assert(partition isPositive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
+assert(partition is_positive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
 ```
 
 3. Write a function `diff` which takes in two lists l1 and l2 and returns a list containing all elements in l1 not in l2.
@@ -878,10 +894,10 @@ let rec diff l1 l2 =
 
 Tests
 ```ocaml
-assert(contains 1 [1; 2; 3])
-assert(not(contains 5 [1; 2; 3]))
-assert(diff [1;2;3] [3;4;5] = [1; 2])
-assert(diff [1;2] [1;2;3] = [])
+assert(contains 1 [1; 2; 3]);;
+assert(not(contains 5 [1; 2; 3]));;
+assert(diff [1;2;3] [3;4;5] = [1; 2]);;
+assert(diff [1;2] [1;2;3] = []);;
 ```
 
 
@@ -973,9 +989,9 @@ let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
 let rec map ml f =
   match ml with
     | Mt -> Mt
-    | Cons(hd,tl) -> Cons(f hd,map tl ~f)
+    | Cons(hd,tl) -> Cons(f hd,map tl f);;
 
-let map_eg = map hb_eg (fun x -> x - 1) mylisteg
+let map_eg = map mylisteg (fun x -> x - 1)
 ```
 
 
@@ -1013,7 +1029,7 @@ let bt2 = Node("fiddly ",
                   Leaf)),
             whack);;
 (* Type error; like lists, tree data must have uniform type: *)
-Node("fiddly",Node(0,Leaf,Leaf),Leaf);;
+(* Node("fiddly",Node(0,Leaf,Leaf),Leaf);; *)
 ```
 
 Functions on binary trees are similar to functions on lists: use recursion
@@ -1147,7 +1163,7 @@ let x = ref 4;;    (* always have to declare initial value when creating a refer
 Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The **contents** of that fixed call can change, but not x.
 
 ```ocaml
-x + 1;; (* a type error ! *)
+(* x + 1;; *) (* a type error ! *)
 !x + 1;; (* need `!x` to get out the value; parallels `*x` in C *)
 x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
 !x;; (* Mutation happened to contents of cell x *)
@@ -1209,8 +1225,8 @@ Here is a tiny example of how to declare and use exceptions
 exception Goo of string;;
 
 let f _ = raise (Goo "keyboard on fire");;
-f ();;
-(f ()) + 1;; (* recall that exceptions blow away the context *)
+(* f ();; *) (* raises the exception to the top level *)
+(* (f ()) + 1;; *) (* recall that exceptions blow away the context *)
 
 let g () =
   try
@@ -1225,7 +1241,7 @@ g ();;
 
 There are a few built-in exceptions we mentioned previously:
 
-```ocaml
+```sh
 failwith "Oops";; (* Generic code failure - exception is named Failure *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
 ```
@@ -1286,7 +1302,7 @@ Some general principles of modules across language designs:
 ```sh
 dune utop
 ```
-```ocaml
+```sh
 Simple_set.emptyset;; (* simple_set.ml's binary is loaded as module Simple_set *)
 open Simple_set;;     (* open makes `emptyset` etc in module available without typing `Simple_set.` *)
 let aset = List.fold_left (Fun.flip add) emptyset [1;2;3;4] ;;

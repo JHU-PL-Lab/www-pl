@@ -212,7 +212,7 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Some</span> <span class="mi">5</span><span class="p">;;</span>
-<span class="o">-</span> <span class="o">:</span> <span class="kt">int</span> <span class="n">option</span> <span class="o">=</span> <span class="nc">Some</span> <span class="mi">5</span>
+<span class="c">(*  - : int option = Some 5 *)</span>
 </code></pre></div></div>
 
 <ul>
@@ -221,7 +221,7 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">None</span><span class="p">;;</span>
-<span class="o">-</span> <span class="o">:</span> <span class="k">'</span><span class="n">a</span> <span class="n">option</span> <span class="o">=</span> <span class="nc">None</span>
+<span class="c">(* - : 'a option = None *)</span>
 </code></pre></div></div>
 
 <ul>
@@ -240,10 +240,10 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 
 <p>There is a downside with this though, you can’t just use <code>nice_div</code> like <code>/</code>:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="p">(</span><span class="n">nice_div</span> <span class="mi">5</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="mi">7</span><span class="p">;;</span>
-<span class="nc">Line</span> <span class="mi">1</span><span class="o">,</span> <span class="n">characters</span> <span class="mi">0</span><span class="o">-</span><span class="mi">14</span><span class="o">:</span>
-<span class="nc">Error</span><span class="o">:</span> <span class="nc">This</span> <span class="n">expression</span> <span class="n">has</span> <span class="k">type</span> <span class="kt">int</span> <span class="n">option</span>
-       <span class="n">but</span> <span class="n">an</span> <span class="n">expression</span> <span class="n">was</span> <span class="n">expected</span> <span class="k">of</span> <span class="k">type</span> <span class="kt">int</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># (nice_div 5 2) + 7;;</span>
+Line 1, characters 0-14:
+Error: This expression has <span class="nb">type </span>int option
+       but an expression was expected of <span class="nb">type </span>int
 </code></pre></div></div>
 
 <p>This type error means the <code>+</code> lhs should be type <code>int</code> but is a <code>Some</code> value which is not an <code>int</code>.</p>
@@ -297,7 +297,7 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 <p>Everything in OCaml returns values (i.e. is an ‘expression’) - no commands</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span> <span class="p">(</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">35</span><span class="p">)</span> <span class="k">else</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* ((x==3)?5:6)+1 in C *)</span>
 <span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span> <span class="mi">5</span> <span class="k">else</span> <span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;;</span>
-<span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span> <span class="mi">5</span><span class="o">.</span><span class="mi">4</span> <span class="k">else</span> <span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* type errors:  two branches of if must have same type *)</span>
+<span class="c">(* (if (x = 3) then 5.4 else 6) * 2;; *)</span> <span class="c">(* type errors:  two branches of if must have same type *)</span>
 </code></pre></div></div>
 
 <h3 id="lists">Lists</h3>
@@ -310,7 +310,7 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">l1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">];;</span>
 <span class="k">let</span> <span class="n">l2</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="o">+</span><span class="mi">1</span><span class="p">];;</span>
 <span class="k">let</span> <span class="n">l3</span> <span class="o">=</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span> <span class="s2">"b"</span><span class="p">;</span> <span class="s2">"c"</span><span class="p">];;</span>
-<span class="k">let</span> <span class="n">l4</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="s2">"a"</span><span class="p">];;</span> <span class="c">(* error - All elements must have same type *)</span>
+<span class="c">(* let l4 = [1; "a"];; *)</span> <span class="c">(* error - All elements must have same type *)</span>
 <span class="k">let</span> <span class="n">l5</span> <span class="o">=</span> <span class="bp">[]</span><span class="p">;;</span> <span class="c">(* empty list *)</span>
 </code></pre></div></div>
 
@@ -352,7 +352,7 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
   <span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">x</span> <span class="k">else</span> <span class="n">nth</span> <span class="n">xs</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="p">;;</span>
 <span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">0</span><span class="p">;;</span> <span class="c">(* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)</span>
-<span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">3</span><span class="p">;;</span> <span class="c">(* Hits failure case; could have instead returned Some/None *)</span>
+<span class="c">(* nth [33;22;11] 3;; *)</span> <span class="c">(* Hits failure case; could have instead returned Some/None *)</span>
 </code></pre></div></div>
 <ul>
   <li>Pattern priority: pick the first matched clause</li>
@@ -364,7 +364,7 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">dumb</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
       <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="p">;;</span>
 <span class="n">dumb</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* this works to return head of list but.. *)</span>
-<span class="n">dumb</span> <span class="bp">[]</span><span class="p">;;</span> <span class="c">(* runtime error here *)</span>
+<span class="c">(* dumb [];; *)</span> <span class="c">(* runtime error here *)</span>
 </code></pre></div></div>
 
 <p>Built-in <code>List.hd</code> is the same as <code>dumb</code> and it is nearly always a <strong>dumb</strong> function, don’t use it unless it is 100% obvious that the list is not empty.</p>
@@ -372,8 +372,8 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 <h3 id="list-library-functions">List library functions</h3>
 <p>Fortunately many common list operations are in the <code>List</code> module in the standard library:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="nn">List</span><span class="p">.</span><span class="n">nth</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">2</span><span class="p">;;</span>
-<span class="o">-</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="mi">3</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">nth</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">2</span><span class="p">;;</span>
+<span class="c">(* - : int = 3 *)</span>
 </code></pre></div></div>
 <ul>
   <li>We will discuss modules later, but for now just think of them as containers of a collection of functions types etc.  Something like a <code>package</code> in Java, or a Java <code>class</code> with only <code>static</code> methods.</li>
@@ -383,7 +383,7 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">length</span> <span class="p">[</span><span class="s2">"d"</span><span class="p">;</span><span class="s2">"ss"</span><span class="p">;</span><span class="s2">"qwqw"</span><span class="p">];;</span>
 <span class="nn">List</span><span class="p">.</span><span class="n">concat</span> <span class="p">[[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">];[</span><span class="mi">22</span><span class="p">;</span><span class="mi">33</span><span class="p">];[</span><span class="mi">444</span><span class="p">;</span><span class="mi">5555</span><span class="p">]];;</span>
 <span class="nn">List</span><span class="p">.</span><span class="n">append</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">]</span> <span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">];;</span> 
-<span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">]</span> <span class="o">@</span> <span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">]</span> <span class="c">(* Use this equivalent infix syntax for append *)</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">]</span> <span class="o">@</span> <span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">];;</span> <span class="c">(* Use this equivalent infix syntax for append *)</span>
 </code></pre></div></div>
 
 <ul>
@@ -397,18 +397,15 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 <ul>
   <li>The types of the functions are additional hints to their purpose, get used to reading them</li>
   <li>Much of the time when you mis-use a function you will get a type error</li>
-  <li><code>'a list</code> etc is a polymorphic aka generic type, <code>'a</code> can be <em>any</em> type<br />
-```ocaml
-    <h1 id="listlength">List.length;;</h1>
+  <li><code>'a list</code> etc is a polymorphic aka generic type, <code>'a</code> can be <em>any</em> type
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">length</span><span class="p">;;</span>
+<span class="c">(* - : 'a list -&gt; int = &lt;fun&gt; *)</span>
+<span class="nn">List</span><span class="p">.</span><span class="n">concat</span><span class="p">;;</span>
+<span class="c">(* - : 'a list list -&gt; 'a list = &lt;fun&gt; *)</span>
+<span class="nn">List</span><span class="p">.</span><span class="n">append</span><span class="p">;;</span>
+<span class="c">(* - : 'a list -&gt; 'a list -&gt; 'a list = &lt;fun&gt; *)</span>
+</code></pre></div>    </div>
   </li>
-  <li>: ‘a list -&gt; int = <fun>
-</fun>    <h1 id="listconcat">List.concat;;</h1>
-  </li>
-  <li>: ‘a list list -&gt; ‘a list = <fun>
-</fun>    <h1 id="listappend">List.append;;</h1>
-  </li>
-  <li>: ‘a list -&gt; ‘a list -&gt; ‘a list = <fun>
-```</fun></li>
 </ul>
 
 <p>A cool feature of OCaml is how it automatically <em>infers</em> polymorphic types, unlike Java where generics usually need to be declared explicitly.</p>
@@ -434,14 +431,14 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 
 <p>Before doing the general case, here are some equivalences we can see from the above program run <br />
 (by running it in our heads):</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rev</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> 
-<span class="o">~=</span> <span class="n">rev</span> <span class="p">(</span><span class="mi">1</span> <span class="o">::</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">])</span> <span class="p">(</span><span class="n">by</span> <span class="n">the</span> <span class="n">meaning</span> <span class="k">of</span> <span class="n">the</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="kt">list</span> <span class="n">syntax</span><span class="p">)</span>
-<span class="o">~=</span> <span class="p">(</span><span class="n">rev</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">])</span> <span class="o">@</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="p">(</span><span class="n">the</span> <span class="n">second</span> <span class="n">pattern</span> <span class="n">is</span> <span class="n">matched</span><span class="o">:</span> <span class="n">x</span> <span class="n">is</span> <span class="mi">1</span><span class="o">,</span> <span class="n">xs</span> <span class="n">is</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="ow">and</span> <span class="n">run</span> <span class="n">the</span> <span class="k">match</span> <span class="n">body</span><span class="p">)</span>
-<span class="o">~=</span> <span class="p">(</span><span class="n">rev</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">@</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="p">(</span><span class="n">same</span> <span class="n">thing</span> <span class="k">for</span> <span class="n">the</span> <span class="n">rev</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="n">expression</span> <span class="o">-</span> <span class="n">plug</span> <span class="k">in</span> <span class="n">its</span> <span class="n">elaboration</span><span class="p">)</span>
-<span class="o">~=</span> <span class="p">((</span><span class="n">rev</span> <span class="bp">[]</span> <span class="o">@</span> <span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">@</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="o">~=</span> <span class="p">(([]</span> <span class="o">@</span> <span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">@</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">@</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-<span class="o">~=</span> <span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">1</span><span class="p">]</span> <span class="p">(</span><span class="n">by</span> <span class="n">the</span> <span class="n">meaning</span> <span class="k">of</span> <span class="n">append</span><span class="p">)</span>
-</code></pre></div></div>
+<pre><code>rev [1;2;3] 
+~= rev (1 :: [2;3]) (by the meaning of the [...] list syntax)
+~= (rev [2;3]) @ [1]  (the second pattern is matched: x is 1, xs is [2;3] and run the match body)
+~= (rev [3] @ [2]) @ [1]  (same thing for the rev [2;3] expression - plug in its elaboration)
+~= ((rev [] @ [3]) @ [2]) @ [1]
+~= (([] @ [3]) @ [2]) @ [1]
+~= [3;2;1] (by the meaning of append)
+</code></pre>
 
 <p>But, what we really want to show is it reverses ANY list.. use induction!</p>
 
@@ -494,7 +491,10 @@ This completes the induction step.</p>
 
 <h3 id="tuples">Tuples</h3>
 
-<p>Think of tuples as fixed length lists, where the types of each element can differ, unlike lists</p>
+<ul>
+  <li>Think of tuples as fixed length lists, where the types of each element can differ, unlike lists</li>
+  <li>Tuples are “and” data structures: this <em>and</em> this *and this.  <code>struct</code> and objects are also “and” structures (variants like <code>Some/None</code> are OCaml’s “or” structures, more later on them)</li>
+</ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="s2">"hi"</span><span class="p">);;</span>        <span class="c">(* type is int * string -- '*' is like "x" of set theory, a product *)</span>
 <span class="k">let</span> <span class="n">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="s2">"hi"</span><span class="p">);;</span>
@@ -508,6 +508,17 @@ This completes the induction step.</p>
 
 <span class="c">(* shorthand for the above - only one pattern, can use let syntax *)</span>
 <span class="k">let</span> <span class="p">(</span><span class="n">f</span><span class="o">,</span> <span class="n">s</span><span class="o">,</span> <span class="n">th</span><span class="p">)</span> <span class="o">=</span> <span class="n">tuple</span> <span class="k">in</span> <span class="n">s</span><span class="p">;;</span>
+
+<span class="c">(* Parens around tuple not always needed *)</span>
+<span class="k">let</span> <span class="n">i</span><span class="o">,</span><span class="n">b</span><span class="o">,</span><span class="n">f</span> <span class="o">=</span> <span class="mi">4</span><span class="o">,</span> <span class="bp">true</span><span class="o">,</span> <span class="mi">4</span><span class="o">.</span><span class="mi">4</span><span class="p">;;</span>
+
+<span class="c">(* Tuple pattern matching as a trick to parallel match *)</span>
+
+<span class="k">let</span> <span class="k">rec</span> <span class="n">eq_lists</span> <span class="n">l1</span> <span class="n">l2</span> <span class="o">=</span> 
+  <span class="k">match</span> <span class="n">l1</span><span class="o">,</span><span class="n">l2</span> <span class="k">with</span>
+  <span class="o">|</span> <span class="bp">[]</span><span class="o">,</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">true</span>
+  <span class="o">|</span> <span class="n">x</span><span class="o">::</span><span class="n">xs</span><span class="o">,</span> <span class="n">x'</span><span class="o">::</span><span class="n">xs'</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;&gt;</span> <span class="n">x'</span> <span class="k">then</span> <span class="bp">false</span> <span class="k">else</span> <span class="n">eq_lists</span> <span class="n">xs</span> <span class="n">xs'</span>
+  <span class="c">(* more cases needed for lists not equal length - an exercise for you *)</span>
 </code></pre></div></div>
 
 <h4 id="consequences-of-immutable-variable-declarations-on-the-top-loop">Consequences of immutable variable declarations on the top loop</h4>
@@ -564,8 +575,13 @@ This completes the induction step.</p>
 </code></pre></div></div>
 
 <ul>
-  <li>Moral: don’t code (too much) directly in the top-loop since this behavior can cause anomalies</li>
+  <li>Moral: don’t code (too much) directly in the top-loop since this behavior can cause anomalies
+    <ul>
+      <li>if you change any function, all functions that depend on it need to be copy/pasted in as well</li>
+    </ul>
+  </li>
   <li>For Assignment 1, you will be able to say <code>dune test</code> in the terminal to run tests on your code, and <code>dune utop</code> will load it all into <code>utop</code> so you can then play with your functions.</li>
+  <li>Also you can type into <code>utop</code> the command <code>#use "src/assignment.ml"</code> and it is as if you copy/pasted the whole file into <code>utop</code>.</li>
 </ul>
 
 <h4 id="mutually-recursive-functions">Mutually recursive functions</h4>
@@ -689,11 +705,13 @@ This completes the induction step.</p>
 <h4 id="folding-right">Folding right</h4>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">summate_right</span> <span class="n">l</span> <span class="n">init</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">init</span>
+    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">init</span> <span class="c">(* init is the initial number to start with; a special case *)</span>
     <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span>  <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">hd</span> <span class="p">(</span><span class="n">summate_right</span> <span class="n">tl</span> <span class="n">init</span><span class="p">)</span> <span class="c">(* assume by induction this will summate tl, add hd *)</span>
     <span class="p">;;</span>
 <span class="n">summate_right</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">0</span><span class="p">;;</span>
 </code></pre></div></div>
+
+<p>Let us now pull out the <code>+</code> as a function <em>parameter</em>:</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">fold_right</span> <span class="n">f</span> <span class="n">l</span> <span class="n">init</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
   <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">init</span>
@@ -847,9 +865,9 @@ This completes the induction step.</p>
 </code></pre></div></div>
 
 <p>Observe the types themselves pretty much specify the behavior</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curry</span> <span class="o">:</span> <span class="p">(</span><span class="k">'</span><span class="n">a</span> <span class="o">*</span> <span class="k">'</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">c</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">c</span>
-<span class="n">uncurry</span> <span class="o">:</span> <span class="p">(</span><span class="k">'</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">c</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">a</span> <span class="o">*</span> <span class="k">'</span><span class="n">b</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">c</span>
-</code></pre></div></div>
+<pre><code>curry : ('a * 'b -&gt; 'c) -&gt; 'a -&gt; 'b -&gt; 'c
+uncurry : ('a -&gt; 'b -&gt; 'c) -&gt; 'a * 'b -&gt; 'c
+</code></pre>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">noop1</span> <span class="o">=</span> <span class="n">curry</span> <span class="p">(</span><span class="n">uncurry</span> <span class="n">add_c</span><span class="p">);;</span> <span class="c">(* a no-op *)</span>
 <span class="k">let</span> <span class="n">noop2</span> <span class="o">=</span> <span class="n">uncurry</span> <span class="p">(</span><span class="n">curry</span> <span class="n">add_nc</span><span class="p">);;</span> <span class="c">(* another no-op; noop1 &amp; noop2 together show isomorphism *)</span>
@@ -864,12 +882,12 @@ This completes the induction step.</p>
 </code></pre></div></div>
 
 <p>Some <code>Stdlib</code> built-in exception generating functions (more on exceptions later)</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="n">failwith</span> <span class="s2">"BOOM!"</span><span class="p">)</span> <span class="o">+</span> <span class="mi">3</span> <span class="p">;;</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>failwith <span class="s2">"BOOM!"</span><span class="o">)</span> + 3 <span class="p">;;</span>
 </code></pre></div></div>
 
 <p>Invalid argument exception <code>invalid_arg</code>:</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">f</span> <span class="n">x</span> <span class="o">=</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">invalid_arg</span> <span class="s2">"Let's be positive, please!"</span> <span class="k">else</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span>
-<span class="n">f</span> <span class="p">(</span><span class="o">-</span><span class="mi">5</span><span class="p">);;</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">let </span>f x <span class="o">=</span> <span class="k">if </span>x &lt;<span class="o">=</span> 0 <span class="k">then </span>invalid_arg <span class="s2">"Let's be positive, please!"</span> <span class="k">else </span>x + 1<span class="p">;;</span>
+f <span class="o">(</span><span class="nt">-5</span><span class="o">)</span><span class="p">;;</span>
 </code></pre></div></div>
 
 <ul>
@@ -966,7 +984,7 @@ a. Assume that the capital of characters other than alphabets<br />
 <p>Test</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">is_positive</span> <span class="n">n</span> <span class="o">=</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">in</span>
-<span class="k">assert</span><span class="p">(</span><span class="n">partition</span> <span class="n">isPositive</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span> <span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]</span><span class="o">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">3</span><span class="p">]))</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">partition</span> <span class="n">is_positive</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span> <span class="o">-</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="p">([</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]</span><span class="o">,</span> <span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="o">-</span><span class="mi">2</span><span class="p">;</span> <span class="o">-</span><span class="mi">3</span><span class="p">]))</span>
 </code></pre></div></div>
 
 <ol>
@@ -994,10 +1012,10 @@ a. Assume that the capital of characters other than alphabets<br />
 </code></pre></div></div>
 
 <p>Tests</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span><span class="p">(</span><span class="n">contains</span> <span class="mi">1</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">])</span>
-<span class="k">assert</span><span class="p">(</span><span class="n">not</span><span class="p">(</span><span class="n">contains</span> <span class="mi">5</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]))</span>
-<span class="k">assert</span><span class="p">(</span><span class="n">diff</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">])</span>
-<span class="k">assert</span><span class="p">(</span><span class="n">diff</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">[]</span><span class="p">)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">assert</span><span class="p">(</span><span class="n">contains</span> <span class="mi">1</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]);;</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">not</span><span class="p">(</span><span class="n">contains</span> <span class="mi">5</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]));;</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">diff</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">]);;</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">diff</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">[]</span><span class="p">);;</span>
 </code></pre></div></div>
 
 <h3 id="variants">Variants</h3>
@@ -1088,9 +1106,9 @@ First just int lists</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">map</span> <span class="n">ml</span> <span class="n">f</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">ml</span> <span class="k">with</span>
     <span class="o">|</span> <span class="nc">Mt</span> <span class="o">-&gt;</span> <span class="nc">Mt</span>
-    <span class="o">|</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">hd</span><span class="o">,</span><span class="n">tl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">f</span> <span class="n">hd</span><span class="o">,</span><span class="n">map</span> <span class="n">tl</span> <span class="o">~</span><span class="n">f</span><span class="p">)</span>
+    <span class="o">|</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">hd</span><span class="o">,</span><span class="n">tl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">f</span> <span class="n">hd</span><span class="o">,</span><span class="n">map</span> <span class="n">tl</span> <span class="n">f</span><span class="p">);;</span>
 
-<span class="k">let</span> <span class="n">map_eg</span> <span class="o">=</span> <span class="n">map</span> <span class="n">hb_eg</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="n">mylisteg</span>
+<span class="k">let</span> <span class="n">map_eg</span> <span class="o">=</span> <span class="n">map</span> <span class="n">mylisteg</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p><a name="v"></a></p>
@@ -1127,7 +1145,7 @@ First just int lists</p>
                   <span class="nc">Leaf</span><span class="p">))</span><span class="o">,</span>
             <span class="n">whack</span><span class="p">);;</span>
 <span class="c">(* Type error; like lists, tree data must have uniform type: *)</span>
-<span class="nc">Node</span><span class="p">(</span><span class="s2">"fiddly"</span><span class="o">,</span><span class="nc">Node</span><span class="p">(</span><span class="mi">0</span><span class="o">,</span><span class="nc">Leaf</span><span class="o">,</span><span class="nc">Leaf</span><span class="p">)</span><span class="o">,</span><span class="nc">Leaf</span><span class="p">);;</span>
+<span class="c">(* Node("fiddly",Node(0,Leaf,Leaf),Leaf);; *)</span>
 </code></pre></div></div>
 
 <p>Functions on binary trees are similar to functions on lists: use recursion</p>
@@ -1273,7 +1291,7 @@ First just int lists</p>
 
 <p>Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The <strong>contents</strong> of that fixed call can change, but not x.</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* a type error ! *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">(* x + 1;; *)</span> <span class="c">(* a type error ! *)</span>
 <span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* need `!x` to get out the value; parallels `*x` in C *)</span>
 <span class="n">x</span> <span class="o">:=</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* assignment - x must be a ref cell.  Returns () - goal is side effect *)</span>
 <span class="o">!</span><span class="n">x</span><span class="p">;;</span> <span class="c">(* Mutation happened to contents of cell x *)</span>
@@ -1346,8 +1364,8 @@ First just int lists</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Goo</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span>
 
 <span class="k">let</span> <span class="n">f</span> <span class="n">_</span> <span class="o">=</span> <span class="k">raise</span> <span class="p">(</span><span class="nc">Goo</span> <span class="s2">"keyboard on fire"</span><span class="p">);;</span>
-<span class="n">f</span> <span class="bp">()</span><span class="p">;;</span>
-<span class="p">(</span><span class="n">f</span> <span class="bp">()</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* recall that exceptions blow away the context *)</span>
+<span class="c">(* f ();; *)</span> <span class="c">(* raises the exception to the top level *)</span>
+<span class="c">(* (f ()) + 1;; *)</span> <span class="c">(* recall that exceptions blow away the context *)</span>
 
 <span class="k">let</span> <span class="n">g</span> <span class="bp">()</span> <span class="o">=</span>
   <span class="k">try</span>
@@ -1362,8 +1380,8 @@ First just int lists</p>
 
 <p>There are a few built-in exceptions we mentioned previously:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">failwith</span> <span class="s2">"Oops"</span><span class="p">;;</span> <span class="c">(* Generic code failure - exception is named Failure *)</span>
-<span class="n">invalid_arg</span> <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="c">(* Invalid_argument exception *)</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failwith <span class="s2">"Oops"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Generic code failure - exception is named Failure <span class="k">*</span><span class="o">)</span>
+invalid_arg <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Invalid_argument exception <span class="k">*</span><span class="o">)</span>
 </code></pre></div></div>
 
 <h3 id="modules">Modules</h3>
@@ -1447,11 +1465,11 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dune utop
 </code></pre></div></div>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">Simple_set</span><span class="p">.</span><span class="n">emptyset</span><span class="p">;;</span> <span class="c">(* simple_set.ml's binary is loaded as module Simple_set *)</span>
-<span class="k">open</span> <span class="nc">Simple_set</span><span class="p">;;</span>     <span class="c">(* open makes `emptyset` etc in module available without typing `Simple_set.` *)</span>
-<span class="k">let</span> <span class="n">aset</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="nn">Fun</span><span class="p">.</span><span class="n">flip</span> <span class="n">add</span><span class="p">)</span> <span class="n">emptyset</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">]</span> <span class="p">;;</span>
-<span class="n">contains</span> <span class="mi">3</span> <span class="n">aset</span> <span class="p">;;</span>
-</code></pre></div></div>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Simple_set.emptyset<span class="p">;;</span> <span class="o">(</span><span class="k">*</span> simple_set.ml<span class="s1">'s binary is loaded as module Simple_set *)
+open Simple_set;;     (* open makes `emptyset` etc in module available without typing `Simple_set.` *)
+let aset = List.fold_left (Fun.flip add) emptyset [1;2;3;4] ;;
+contains 3 aset ;;
+</span></code></pre></div></div>
 
 <h3 id="end-of-ocaml">End of OCaml!</h3>
 
