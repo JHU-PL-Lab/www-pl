@@ -726,10 +726,16 @@ This completes the induction step.</p>
   <li>(It is so important that it is in the standard library as well, as <code>List.fold_right</code>)</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">filter</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">f</span> <span class="n">elt</span> <span class="k">then</span> <span class="n">elt</span><span class="o">::</span><span class="n">accum</span> <span class="k">else</span> <span class="n">accum</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span> 
-<span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="o">@</span> <span class="p">[</span><span class="n">elt</span><span class="p">])</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="o">@</span> <span class="p">[</span><span class="n">elt</span><span class="p">])</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span>
 <span class="k">let</span> <span class="n">map</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">elt</span><span class="p">)</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span>
+<span class="k">let</span> <span class="n">filter</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">f</span> <span class="n">elt</span> <span class="k">then</span> <span class="n">elt</span><span class="o">::</span><span class="n">accum</span> <span class="k">else</span> <span class="n">accum</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span> 
 </code></pre></div></div>
+
+<p>We leave as an exercise understanding how the last two work but here is what <code>rev</code> is doing.<br />
+Abreviate <code>fun elt accum -&gt; accum @ [elt]</code> as <code>f</code> in the below..</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">rev</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="o">~=</span> <span class="n">fold_right</span> <span class="n">f</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="bp">[]</span> <span class="o">~=</span> <span class="n">f</span> <span class="mi">1</span> <span class="p">(</span><span class="n">fold_right</span> <span class="n">f</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="bp">[]</span><span class="p">])</span> <span class="o">~=</span> <span class="p">(</span><span class="n">fold_right</span> <span class="n">f</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="bp">[]</span><span class="p">])</span> <span class="o">@</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">~=</span> <span class="o">...</span>
+</code></pre></div></div>
+<p>hopefully the pattern is clear from the above: the <code>f</code> here puts the <code>elt</code> on the back of the list each time, affecting a reverse.</p>
 
 <h4 id="folding-left">Folding left</h4>
 
@@ -737,6 +743,7 @@ This completes the induction step.</p>
   <li><code>fold_left</code> accumulates “on the way down” (we pass down the accumulated value), whereas <code>fold_right</code> accumulated “on the way up”</li>
   <li>It is a little less intuitive at first so let us again do a concrete case and extract the general one.</li>
   <li>In <code>fold_right</code> we kept passing down the same <code>init</code> value; in the left approach we instead pass down the currently accumulated <em>result</em>, <code>accum</code>.</li>
+  <li>When we get to the bottom of the recursion (empty list) we have the fully final value in accum and just need to return … return … return it.</li>
   <li>List and value arguments are swapped compared to <code>fold_right</code>, be careful !</li>
 </ul>
 
@@ -744,7 +751,7 @@ This completes the induction step.</p>
     <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">accum</span>
     <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="n">summate_left</span> <span class="p">((</span><span class="o">+</span><span class="p">)</span> <span class="n">accum</span> <span class="n">hd</span><span class="p">)</span> <span class="n">tl</span> <span class="c">(* pass down accum + hd as new "accum" -- accumulating *)</span>
     <span class="p">;;</span>
-<span class="n">summate_left</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* = summate_left (0+1) [2;3] = summate_left (1+2) [3] = summate_left (3+3) [] = 6 *)</span>
+<span class="n">summate_left</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)</span>
 </code></pre></div></div>
 
 <ul>
@@ -761,7 +768,7 @@ This completes the induction step.</p>
   <li>Type is <code>('a -&gt; 'b -&gt; 'a) -&gt; 'a -&gt; 'b list -&gt; 'a</code> which parenthesizes as <code>('a -&gt; 'b -&gt; 'a) -&gt; ('a -&gt; ('b list -&gt; 'a))</code></li>
 </ul>
 
-<p>Summing elements of a list can now be succinctly coded:</p>
+<p>Summing elements of a list can now be more succinctly coded:</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span>
 </code></pre></div></div>
 
@@ -769,19 +776,19 @@ This completes the induction step.</p>
   <li>As with <code>fold_right</code> this skeleton lets us plug in different <code>f</code> to make many natural functions on lists.</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">length</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">0</span> <span class="n">l</span><span class="p">;;</span> <span class="c">(* adds accum, ignores elt *)</span>
-<span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="n">elt</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="bp">[]</span> <span class="n">l</span><span class="p">;;</span> <span class="c">(* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="n">elt</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="bp">[]</span> <span class="n">l</span><span class="p">;;</span> <span class="c">(* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)</span>
+<span class="k">let</span> <span class="n">length</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">0</span> <span class="n">l</span><span class="p">;;</span> <span class="c">(* adds accum, ignores elt *)</span>
 </code></pre></div></div>
 
-<p>Example where left and right folds produce a different result:</p>
+<p>Example to help claroify how left and right folds produce a different results:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">"+"</span><span class="o">^</span><span class="n">accum</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="s2">"0"</span> <span class="p">[</span><span class="s2">"1"</span><span class="p">;</span><span class="s2">"2"</span><span class="p">;</span><span class="s2">"3"</span><span class="p">]</span> <span class="p">;;</span> 
-<span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">accum</span><span class="o">^</span><span class="s2">"+"</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="p">[</span><span class="s2">"1"</span><span class="p">;</span><span class="s2">"2"</span><span class="p">;</span><span class="s2">"3"</span><span class="p">]</span> <span class="s2">"0"</span> <span class="p">;;</span> 
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">" and "</span><span class="o">^</span><span class="n">accum</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="s2">"z"</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="p">;;</span> 
+<span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">init</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">init</span><span class="o">^</span><span class="s2">" and "</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="s2">"z"</span> <span class="p">;;</span> 
 </code></pre></div></div>
 
 <h3 id="pipeling-and-composition">Pipeling and composition</h3>
 
-<p>Pipelining Example: get the nth-from the end from a list, by first reversing and then getting nth element.</p>
+<p>Pipelining Example: get the element nth from the end from a list, by first reversing and then getting nth element.</p>
 
 <p>Obvious version:</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">nth_end</span> <span class="n">l</span> <span class="n">n</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">nth</span> <span class="p">(</span><span class="nn">List</span><span class="p">.</span><span class="n">rev</span> <span class="n">l</span><span class="p">)</span> <span class="n">n</span><span class="p">;;</span>
@@ -802,11 +809,12 @@ This completes the induction step.</p>
       <li>it is another interesting higher-order function, with type <code>('a -&gt; 'b -&gt; 'c) -&gt; 'b -&gt; 'a -&gt; 'c</code>.</li>
     </ul>
   </li>
+  <li>So, e.g. <code>(Fun.flip(List.nth) 2)</code> is a function taking a list and returning the 2nd element.
+    <h4 id="function-composition-functions-both-in-and-out">Function Composition: functions both in and out</h4>
+  </li>
 </ul>
 
-<h4 id="function-composition-functions-in-functions-out">Function Composition: functions in, functions out</h4>
-
-<p>Composition function g o f: take two functions, return their composition</p>
+<p>Composition operation g o f from math: take two functions, return their composition</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">compose</span> <span class="n">g</span> <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">g</span> <span class="p">(</span><span class="n">f</span> <span class="n">x</span><span class="p">));;</span>
 <span class="n">compose</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span> <span class="mi">10</span><span class="p">;;</span>
 </code></pre></div></div>
@@ -824,10 +832,10 @@ This completes the induction step.</p>
 <span class="k">let</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">add_c</span> <span class="mi">1</span> <span class="k">in</span> <span class="n">tmp</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* the partial application of arguments - tmp is a function *)</span>
 <span class="c">(* An equivalent way to define `add_c`, clarifying what the above means *)</span>
 <span class="k">let</span> <span class="n">add_c</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="k">fun</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">);;</span>
-<span class="c">(* and, yet another identical way .. *)</span>
+<span class="c">(* and, yet another identical way .. lots of equivalent notation in OCaml *)</span>
 <span class="k">let</span> <span class="n">add_c</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">x</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
 <span class="c">(* yet one more, the built-in (+) *)</span>
-<span class="p">(</span><span class="o">+</span><span class="p">);;</span>
+<span class="k">let</span> <span class="n">add_c</span> <span class="o">=</span> <span class="p">(</span><span class="o">+</span><span class="p">);;</span>
 </code></pre></div></div>
 
 <p>Here is the so-called non-Curried version: use a <em>pair of arguments</em> instead</p>
@@ -835,7 +843,7 @@ This completes the induction step.</p>
     <span class="k">match</span> <span class="n">p</span> <span class="k">with</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Here is an equivalent OCaml syntax which looks like a standard C function</p>
+<p>Here is an equivalent OCaml syntax which looks more like a standard C function</p>
 <ul>
   <li>This is <em>still</em> a one-argument function, but you can pattern match in a function parameter
     <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_nc</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
@@ -893,12 +901,12 @@ f <span class="o">(</span><span class="nt">-5</span><span class="o">)</span><spa
 <ul>
   <li>OCaml infers types most of the time</li>
   <li>But, you can optionally declare types on any expression</li>
-  <li>Put parens around any such declaration as in the examples</li>
+  <li>Make sure to put parens around any such declaration, <code>(var : type)</code>, to parse OK</li>
   <li>It is good practice to paste in the inferred types in your code to have types as documentation</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">float</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">float</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+.</span> <span class="n">y</span><span class="p">;;</span>
-<span class="k">let</span> <span class="n">add</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="o">=</span> <span class="p">(((</span><span class="n">x</span><span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="o">+</span> <span class="n">y</span><span class="p">)</span> <span class="o">:</span> <span class="kt">int</span><span class="p">);;</span>
+<span class="k">let</span> <span class="n">add</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">float</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">float</span><span class="p">)</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="nn">Float</span><span class="p">.</span><span class="n">to_int</span> <span class="p">(</span><span class="n">x</span> <span class="o">+.</span> <span class="n">y</span><span class="p">);;</span> <span class="c">(* can also declare the return type *)</span>
 </code></pre></div></div>
 
 <p>Type abbreviations are also possible via keyword <code>type</code></p>
@@ -911,9 +919,104 @@ f <span class="o">(</span><span class="nt">-5</span><span class="o">)</span><spa
 <span class="p">((</span><span class="mi">2</span><span class="o">,</span><span class="mi">3</span><span class="p">)</span><span class="o">:</span><span class="n">intpair</span><span class="p">);;</span> <span class="c">(* can also explicitly tag data with its type *)</span>
 </code></pre></div></div>
 
+<h3 id="variants">Variants</h3>
+
+<p>We saw a simple examples of variants above, the <code>option</code> type; now we go into the full possibilities</p>
+<ul>
+  <li>Related to <code>union</code> types in C or <code>enum</code>s in Java: “this OR that OR theother”</li>
+  <li>Like OCamls lists/tuples they are <strong>immutable</strong> data structures</li>
+  <li>Each case of the union is identified by a name called a ‘Constructor’ which serves for both
+    <ul>
+      <li>constructing values of the variant type</li>
+      <li>destructing them by pattern matching</li>
+    </ul>
+  </li>
+  <li>Constructors must start with Capital Letter to distinguish from variables</li>
+  <li>The <code>of</code> indicates what type is under the wrapper</li>
+  <li>Type declarations are needed but once they are in place type inference on them works</li>
+</ul>
+
+<p>Example of how to declare a new variant type for doing mixed arithmetic (integers and floats)</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">mynumber</span> <span class="o">=</span> <span class="nc">Fixed</span> <span class="k">of</span> <span class="kt">int</span> <span class="o">|</span> <span class="nc">Floating</span> <span class="k">of</span> <span class="kt">float</span><span class="p">;;</span>  <span class="c">(* read "|" as "or" *)</span>
+
+<span class="nc">Fixed</span><span class="p">(</span><span class="mi">5</span><span class="p">);;</span> <span class="c">(* tag 5 as a Fixed *)</span>
+<span class="nc">Fixed</span> <span class="mi">5</span><span class="p">;;</span> <span class="c">(* parens optional as is often the case in OCaml *)</span>
+<span class="nc">Floating</span> <span class="mi">4</span><span class="o">.</span><span class="mi">0</span><span class="p">;;</span> <span class="c">(* tag 4.0 as a Floating *)</span>
+</code></pre></div></div>
+
+<p>Note constructors look like functions but they are <strong>not</strong> – you always need to give the argument</p>
+
+<p>Destruct variants by pattern matching like we did for <code>Some/None</code> option type values:</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">ff_as_int</span> <span class="n">x</span> <span class="o">=</span>
+    <span class="k">match</span> <span class="n">x</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Fixed</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span>    <span class="c">(* variants fit well into pattern matching syntax *)</span>
+    <span class="o">|</span> <span class="nc">Floating</span> <span class="n">z</span> <span class="o">-&gt;</span> <span class="n">int_of_float</span> <span class="n">z</span><span class="p">;;</span>
+
+<span class="n">ff_as_int</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="mi">5</span><span class="p">);;</span> <span class="c">(* beware that ff_as_int Fixed(5) won't parse properly!  
+                         ff_as_int @@ Fixed 5 will though *)</span>
+</code></pre></div></div>
+
+<p>A non-trivial function using the above variant</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_num</span> <span class="n">n1</span> <span class="n">n2</span> <span class="o">=</span>
+   <span class="k">match</span> <span class="n">n1</span><span class="o">,</span> <span class="n">n2</span> <span class="k">with</span>    <span class="c">(* note use of pair here to parallel-match on two variables  *)</span>
+     <span class="o">|</span> <span class="nc">Fixed</span> <span class="n">i1</span><span class="o">,</span> <span class="nc">Fixed</span> <span class="n">i2</span> <span class="o">-&gt;</span>       <span class="nc">Fixed</span>   <span class="p">(</span><span class="n">i1</span>       <span class="o">+</span>  <span class="n">i2</span><span class="p">)</span>
+     <span class="o">|</span> <span class="nc">Fixed</span> <span class="n">i1</span><span class="o">,</span>   <span class="nc">Floating</span> <span class="n">f2</span> <span class="o">-&gt;</span>  <span class="nc">Floating</span><span class="p">(</span><span class="kt">float</span> <span class="n">i1</span> <span class="o">+.</span> <span class="n">f2</span><span class="p">)</span>       <span class="c">(* need to coerce *)</span>
+     <span class="o">|</span> <span class="nc">Floating</span> <span class="n">f1</span><span class="o">,</span> <span class="nc">Fixed</span> <span class="n">i2</span>   <span class="o">-&gt;</span>  <span class="nc">Floating</span><span class="p">(</span><span class="n">f1</span>       <span class="o">+.</span> <span class="kt">float</span> <span class="n">i2</span><span class="p">)</span> <span class="c">(* ditto *)</span>
+     <span class="o">|</span> <span class="nc">Floating</span> <span class="n">f1</span><span class="o">,</span> <span class="nc">Floating</span> <span class="n">f2</span> <span class="o">-&gt;</span> <span class="nc">Floating</span><span class="p">(</span><span class="n">f1</span>       <span class="o">+.</span> <span class="n">f2</span><span class="p">)</span>
+<span class="p">;;</span>
+
+<span class="n">add_num</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="mi">123</span><span class="p">)</span> <span class="p">(</span><span class="nc">Floating</span> <span class="mi">3</span><span class="o">.</span><span class="mi">14159</span><span class="p">);;</span>
+</code></pre></div></div>
+
+<p>Multiple data items in a single variant case?  Use tuple types</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">complex</span> <span class="o">=</span> <span class="nc">CZero</span> <span class="o">|</span> <span class="nc">Nonzero</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">*</span> <span class="kt">float</span><span class="p">;;</span>
+
+<span class="k">let</span> <span class="n">com</span> <span class="o">=</span> <span class="nc">Nonzero</span><span class="p">(</span><span class="mi">3</span><span class="o">.</span><span class="mi">2</span><span class="o">,</span><span class="mi">11</span><span class="o">.</span><span class="mi">2</span><span class="p">);;</span>
+<span class="k">let</span> <span class="n">zer</span> <span class="o">=</span> <span class="nc">CZero</span><span class="p">;;</span>
+</code></pre></div></div>
+
+<h4 id="recursive-data-structures">Recursive data structures</h4>
+<ul>
+  <li>A key use of variant types</li>
+  <li>Functional programming is fantastic for computing over tree-structured data</li>
+  <li>Recursive types can refer to themselves in their own definition</li>
+  <li>Similar in spirit to how C structs can be recursive (but, no pointer needed here)</li>
+</ul>
+
+<p>Warm-up: homebrew lists - built-in list type not needed<br />
+First just int lists.. <code>Mt</code> represents <code>[]</code>, <code>Cons(x,xs)</code> represents <code>x::xs</code></p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">myintlist</span> <span class="o">=</span> <span class="nc">Mt</span> <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="kt">int</span> <span class="o">*</span> <span class="n">myintlist</span><span class="p">;;</span> <span class="c">(* Observe: self-referential type *)</span>
+<span class="k">let</span> <span class="n">mylisteg</span> <span class="o">=</span> <span class="nc">Cons</span><span class="p">(</span><span class="mi">3</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">5</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">7</span><span class="o">,</span><span class="nc">Mt</span><span class="p">)));;</span> <span class="c">(* equivalent in spirit to [3;5;7] *)</span>
+</code></pre></div></div>
+<p>Let us extend the above to be polymorphic using a <em>type parameter</em></p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="k">'</span><span class="n">a</span> <span class="n">mylist</span> <span class="o">=</span> <span class="nc">Mt</span> <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="k">'</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="k">'</span><span class="n">a</span> <span class="n">mylist</span><span class="p">);;</span>
+</code></pre></div></div>
+<ul>
+  <li>Observe how above type takes a (prefix) argument, <code>'a</code> – <code>mylist</code> is a type function</li>
+  <li>Perhaps better syntax would have been <code>type mylist(t) = Mt | Cons of t * (mylist(t))</code></li>
+  <li>This <code>'a</code> is not the same as the generic type <code>'a</code> - can be confusing</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">mylisteg</span> <span class="o">=</span> <span class="nc">Cons</span><span class="p">(</span><span class="mi">3</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">5</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">7</span><span class="o">,</span><span class="nc">Mt</span><span class="p">)));;</span>
+</code></pre></div></div>
+<p>Coding is very similar to built-in lists</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">map</span> <span class="n">ml</span> <span class="n">f</span> <span class="o">=</span>
+  <span class="k">match</span> <span class="n">ml</span> <span class="k">with</span>
+    <span class="o">|</span> <span class="nc">Mt</span> <span class="o">-&gt;</span> <span class="nc">Mt</span>
+    <span class="o">|</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">hd</span><span class="o">,</span><span class="n">tl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">f</span> <span class="n">hd</span><span class="o">,</span><span class="n">map</span> <span class="n">tl</span> <span class="n">f</span><span class="p">);;</span>
+
+<span class="k">let</span> <span class="n">map_eg</span> <span class="o">=</span> <span class="n">map</span> <span class="n">mylisteg</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);;</span>
+</code></pre></div></div>
+
 <h3 id="solving-some-simple-problems">Solving some simple problems</h3>
 
-<p>Some practice problems and their solutions which will not have time to cover in lecture.</p>
+<p>Some practice problems and their solutions for your own self-study (skipped in lecture)</p>
 
 <ol>
   <li>Write a function <code>to_upper_case</code> which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).</li>
@@ -937,15 +1040,13 @@ a. Assume that the capital of characters other than alphabets<br />
 <p><strong>Answer:</strong></p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">to_upper_char</span> <span class="n">c</span> <span class="o">=</span>
   <span class="k">let</span> <span class="n">c_code</span> <span class="o">=</span> <span class="nn">Char</span><span class="p">.</span><span class="n">code</span> <span class="n">c</span> <span class="k">in</span>
-  <span class="k">if</span> <span class="n">c_code</span> <span class="o">&gt;=</span> <span class="mi">97</span> <span class="o">&amp;&amp;</span> <span class="n">c_code</span> <span class="o">&lt;=</span> <span class="mi">122</span> <span class="k">then</span>
-    <span class="nn">Char</span><span class="p">.</span><span class="n">chr</span> <span class="p">(</span><span class="n">c_code</span> <span class="o">-</span> <span class="mi">32</span><span class="p">)</span>
+  <span class="k">if</span> <span class="n">c_code</span> <span class="o">&gt;=</span> <span class="mi">97</span> <span class="o">&amp;&amp;</span> <span class="n">c_code</span> <span class="o">&lt;=</span> <span class="mi">122</span> <span class="k">then</span> <span class="nn">Char</span><span class="p">.</span><span class="n">chr</span> <span class="p">(</span><span class="n">c_code</span> <span class="o">-</span> <span class="mi">32</span><span class="p">)</span>
   <span class="k">else</span> <span class="n">c</span><span class="p">;;</span>
-
 
 <span class="k">let</span> <span class="k">rec</span> <span class="n">to_upper_case</span> <span class="n">l</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-    <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
-  <span class="o">|</span> <span class="n">c</span> <span class="o">::</span> <span class="n">cs</span> <span class="o">-&gt;</span> <span class="n">to_upper_char</span> <span class="n">c</span> <span class="o">::</span> <span class="n">to_upper_case</span> <span class="n">cs</span>
+   <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
+   <span class="o">|</span> <span class="n">c</span> <span class="o">::</span> <span class="n">cs</span> <span class="o">-&gt;</span> <span class="n">to_upper_char</span> <span class="n">c</span> <span class="o">::</span> <span class="n">to_upper_case</span> <span class="n">cs</span>
 <span class="p">;;</span>
 </code></pre></div></div>
 
@@ -975,11 +1076,8 @@ a. Assume that the capital of characters other than alphabets<br />
   <span class="o">|</span><span class="bp">[]</span> <span class="o">-&gt;</span> <span class="p">([]</span><span class="o">,</span><span class="bp">[]</span><span class="p">)</span>
   <span class="o">|</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span>
     <span class="k">let</span> <span class="p">(</span><span class="n">posl</span><span class="o">,</span><span class="n">negl</span><span class="p">)</span> <span class="o">=</span> <span class="n">partition</span> <span class="n">p</span> <span class="n">tl</span> <span class="k">in</span>
-    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="n">hd</span><span class="p">)</span>
-    <span class="k">then</span>
-      <span class="p">(</span><span class="n">hd</span> <span class="o">::</span> <span class="n">posl</span><span class="o">,</span><span class="n">negl</span><span class="p">)</span>
-    <span class="k">else</span>
-      <span class="p">(</span><span class="n">posl</span><span class="o">,</span><span class="n">hd</span><span class="o">::</span><span class="n">negl</span><span class="p">);;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">p</span> <span class="n">hd</span><span class="p">)</span> <span class="k">then</span> <span class="p">(</span><span class="n">hd</span> <span class="o">::</span> <span class="n">posl</span><span class="o">,</span><span class="n">negl</span><span class="p">)</span>
+    <span class="k">else</span> <span class="p">(</span><span class="n">posl</span><span class="o">,</span><span class="n">hd</span><span class="o">::</span><span class="n">negl</span><span class="p">);;</span>
 </code></pre></div></div>
 <p>Test</p>
 
@@ -996,18 +1094,16 @@ a. Assume that the capital of characters other than alphabets<br />
 <p><strong>Answer:</strong></p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">contains</span> <span class="n">x</span> <span class="n">l</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-    <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">false</span>
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">false</span>
   <span class="o">|</span> <span class="n">y</span> <span class="o">::</span> <span class="n">ys</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">||</span> <span class="n">contains</span> <span class="n">x</span> <span class="n">ys</span>
 <span class="p">;;</span>
 
 <span class="k">let</span> <span class="k">rec</span> <span class="n">diff</span> <span class="n">l1</span> <span class="n">l2</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l1</span> <span class="k">with</span>
-    <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
   <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span>
-      <span class="k">if</span> <span class="n">contains</span> <span class="n">x</span> <span class="n">l2</span> <span class="k">then</span>
-    <span class="n">diff</span> <span class="n">xs</span> <span class="n">l2</span>
-      <span class="k">else</span>
-    <span class="n">x</span> <span class="o">::</span> <span class="n">diff</span> <span class="n">xs</span> <span class="n">l2</span>
+      <span class="k">if</span> <span class="n">contains</span> <span class="n">x</span> <span class="n">l2</span> <span class="k">then</span> <span class="n">diff</span> <span class="n">xs</span> <span class="n">l2</span>
+      <span class="k">else</span> <span class="n">x</span> <span class="o">::</span> <span class="n">diff</span> <span class="n">xs</span> <span class="n">l2</span>
 <span class="p">;;</span>
 </code></pre></div></div>
 
@@ -1016,99 +1112,6 @@ a. Assume that the capital of characters other than alphabets<br />
 <span class="k">assert</span><span class="p">(</span><span class="n">not</span><span class="p">(</span><span class="n">contains</span> <span class="mi">5</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]));;</span>
 <span class="k">assert</span><span class="p">(</span><span class="n">diff</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">]);;</span>
 <span class="k">assert</span><span class="p">(</span><span class="n">diff</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">]</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="bp">[]</span><span class="p">);;</span>
-</code></pre></div></div>
-
-<h3 id="variants">Variants</h3>
-
-<p>We saw a simple examples of variants above, the <code>option</code> type; now we go into the full possibilities</p>
-<ul>
-  <li>Related to <code>union</code> types in C or <code>enum</code>s in Java: “this OR that OR theother”</li>
-  <li>Like OCamls lists/tuples they are <strong>immutable</strong> data structures</li>
-  <li>Each case of the union is identified by a name called a ‘Constructor’ which serves for both
-    <ul>
-      <li>constructing values of the variant type</li>
-      <li>destructing them by pattern matching</li>
-    </ul>
-  </li>
-  <li>Constructors must start with Capital Letter to distinguish from variables</li>
-  <li>The <code>of</code> indicates what type is under the wrapper</li>
-  <li>Type declarations are needed but once they are in place type inference on them works</li>
-</ul>
-
-<p>Example of how to declare a new variant type for doing mixed arithmetic (integers and floats)</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">mynumber</span> <span class="o">=</span> <span class="nc">Fixed</span> <span class="k">of</span> <span class="kt">int</span> <span class="o">|</span> <span class="nc">Floating</span> <span class="k">of</span> <span class="kt">float</span><span class="p">;;</span>  <span class="c">(* read "|" as "or" *)</span>
-
-<span class="nc">Fixed</span><span class="p">(</span><span class="mi">5</span><span class="p">);;</span> <span class="c">(* tag 5 as a Fixed *)</span>
-<span class="nc">Floating</span> <span class="mi">4</span><span class="o">.</span><span class="mi">0</span><span class="p">;;</span> <span class="c">(* tag 4.0 as a Floating *)</span>
-</code></pre></div></div>
-
-<p>Note constructors look like functions but they are <strong>not</strong> – you always need to give the argument</p>
-
-<p>Destruct variants by pattern matching like we did for <code>Some/None</code> option type values:</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">ff_as_int</span> <span class="n">x</span> <span class="o">=</span>
-    <span class="k">match</span> <span class="n">x</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="nc">Fixed</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span>    <span class="c">(* variants fit well into pattern matching syntax *)</span>
-    <span class="o">|</span> <span class="nc">Floating</span> <span class="n">z</span> <span class="o">-&gt;</span> <span class="n">int_of_float</span> <span class="n">z</span><span class="p">;;</span>
-
-<span class="n">ff_as_int</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="mi">5</span><span class="p">);;</span>
-</code></pre></div></div>
-
-<p>A non-trivial function using the above variant</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_num</span> <span class="n">n1</span> <span class="n">n2</span> <span class="o">=</span>
-   <span class="k">match</span> <span class="p">(</span><span class="n">n1</span><span class="o">,</span> <span class="n">n2</span><span class="p">)</span> <span class="k">with</span>    <span class="c">(* note use of pair here to parallel-match on two variables  *)</span>
-     <span class="o">|</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="n">i1</span><span class="o">,</span> <span class="nc">Fixed</span> <span class="n">i2</span><span class="p">)</span> <span class="o">-&gt;</span>       <span class="nc">Fixed</span>   <span class="p">(</span><span class="n">i1</span>       <span class="o">+</span>  <span class="n">i2</span><span class="p">)</span>
-     <span class="o">|</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="n">i1</span><span class="o">,</span>   <span class="nc">Floating</span> <span class="n">f2</span><span class="p">)</span> <span class="o">-&gt;</span>  <span class="nc">Floating</span><span class="p">(</span><span class="kt">float</span> <span class="n">i1</span> <span class="o">+.</span> <span class="n">f2</span><span class="p">)</span>       <span class="c">(* need to coerce *)</span>
-     <span class="o">|</span> <span class="p">(</span><span class="nc">Floating</span> <span class="n">f1</span><span class="o">,</span> <span class="nc">Fixed</span> <span class="n">i2</span><span class="p">)</span>   <span class="o">-&gt;</span>  <span class="nc">Floating</span><span class="p">(</span><span class="n">f1</span>       <span class="o">+.</span> <span class="kt">float</span> <span class="n">i2</span><span class="p">)</span> <span class="c">(* ditto *)</span>
-     <span class="o">|</span> <span class="p">(</span><span class="nc">Floating</span> <span class="n">f1</span><span class="o">,</span> <span class="nc">Floating</span> <span class="n">f2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">Floating</span><span class="p">(</span><span class="n">f1</span>       <span class="o">+.</span> <span class="n">f2</span><span class="p">)</span>
-<span class="p">;;</span>
-
-<span class="n">add_num</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="mi">123</span><span class="p">)</span> <span class="p">(</span><span class="nc">Floating</span> <span class="mi">3</span><span class="o">.</span><span class="mi">14159</span><span class="p">);;</span>
-</code></pre></div></div>
-
-<p>Multiple data items in a single variant case?  Use tuple types</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">complex</span> <span class="o">=</span> <span class="nc">CZero</span> <span class="o">|</span> <span class="nc">Nonzero</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">*</span> <span class="kt">float</span><span class="p">;;</span>
-
-<span class="k">let</span> <span class="n">com</span> <span class="o">=</span> <span class="nc">Nonzero</span><span class="p">(</span><span class="mi">3</span><span class="o">.</span><span class="mi">2</span><span class="o">,</span><span class="mi">11</span><span class="o">.</span><span class="mi">2</span><span class="p">);;</span>
-<span class="k">let</span> <span class="n">zer</span> <span class="o">=</span> <span class="nc">CZero</span><span class="p">;;</span>
-</code></pre></div></div>
-
-<h4 id="recursive-data-structures">Recursive data structures</h4>
-<ul>
-  <li>A key use of variant types</li>
-  <li>Functional programming is fantastic for computing over tree-structured data</li>
-  <li>Recursive types can refer to themselves in their own definition</li>
-  <li>Similar in spirit to how C structs can be recursive (but, no pointer needed here)</li>
-</ul>
-
-<p>Warm-up: homebrew lists - built-in list type not needed<br />
-First just int lists</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">myintlist</span> <span class="o">=</span> <span class="nc">Mt</span> <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="kt">int</span> <span class="o">*</span> <span class="n">myintlist</span><span class="p">;;</span> <span class="c">(* Observe: self-referential type *)</span>
-<span class="k">let</span> <span class="n">mylisteg</span> <span class="o">=</span> <span class="nc">Cons</span><span class="p">(</span><span class="mi">3</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">5</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">7</span><span class="o">,</span><span class="nc">Mt</span><span class="p">)));;</span> <span class="c">(* equivalent to [3;5;7] *)</span>
-</code></pre></div></div>
-<p>Let us extend the above to be just like built-in polymorphic lists</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="k">'</span><span class="n">a</span> <span class="n">mylist</span> <span class="o">=</span> <span class="nc">Mt</span> <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="k">'</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="k">'</span><span class="n">a</span> <span class="n">mylist</span><span class="p">);;</span>
-</code></pre></div></div>
-<ul>
-  <li>Observe how above type takes a (prefix) argument, <code>'a</code> – <code>mylist</code> is a type function</li>
-  <li>Perhaps better syntax would have been <code>type mylist(t) = Mt | Cons of t * (mylist(t))</code></li>
-  <li>This <code>'a</code> is not the same as the generic type <code>'a</code> - can be confusing</li>
-</ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">mylisteg</span> <span class="o">=</span> <span class="nc">Cons</span><span class="p">(</span><span class="mi">3</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">5</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">7</span><span class="o">,</span><span class="nc">Mt</span><span class="p">)));;</span>
-</code></pre></div></div>
-<p>Coding is very similar to built-in lists</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">map</span> <span class="n">ml</span> <span class="n">f</span> <span class="o">=</span>
-  <span class="k">match</span> <span class="n">ml</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="nc">Mt</span> <span class="o">-&gt;</span> <span class="nc">Mt</span>
-    <span class="o">|</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">hd</span><span class="o">,</span><span class="n">tl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">f</span> <span class="n">hd</span><span class="o">,</span><span class="n">map</span> <span class="n">tl</span> <span class="n">f</span><span class="p">);;</span>
-
-<span class="k">let</span> <span class="n">map_eg</span> <span class="o">=</span> <span class="n">map</span> <span class="n">mylisteg</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 </code></pre></div></div>
 
 <p><a name="v"></a></p>

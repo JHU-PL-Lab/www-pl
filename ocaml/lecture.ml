@@ -226,15 +226,17 @@ let rec fold_right f l init = match l with
 let summate_right' = fold_right (+);;
 fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
 
-let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
 let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];;
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
+let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
+
+rev [1;2;3] ~= fold_right f [1;2;3] [] ~= f 1 (fold_right f [2;3] []]) ~= (fold_right f [2;3] []]) @ [1] ~= ...
 
 let rec summate_left accum l = match l with
     | []   -> accum
     | hd::tl -> summate_left ((+) accum hd) tl (* pass down accum + hd as new "accum" -- accumulating *)
     ;;
-summate_left 0 [1;2;3];; (* = summate_left (0+1) [2;3] = summate_left (1+2) [3] = summate_left (3+3) [] = 6 *)
+summate_left 0 [1;2;3];; (* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)
 
 let rec fold_left f accum l = match l with
     | []   -> accum
@@ -243,11 +245,11 @@ let rec fold_left f accum l = match l with
 
 fold_left (+) 0 [1;2;3];;
 
-let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
+let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 
-fold_left (fun elt -> fun accum -> "("^elt^"+"^accum^")") "0" ["1";"2";"3"] ;; 
-fold_right (fun accum -> fun elt -> "("^accum^"+"^elt^")") ["1";"2";"3"] "0" ;; 
+fold_left (fun elt -> fun accum -> "("^elt^" and "^accum^")") "z" ["a";"b";"c"] ;; 
+fold_right (fun init -> fun elt -> "("^init^" and "^elt^")") ["a";"b";"c"] "z" ;; 
 
 let nth_end l n = List.nth (List.rev l) n;;
 
@@ -261,10 +263,10 @@ add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
 let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - tmp is a function *)
 (* An equivalent way to define `add_c`, clarifying what the above means *)
 let add_c = fun x -> (fun y -> x + y);;
-(* and, yet another identical way .. *)
+(* and, yet another identical way .. lots of equivalent notation in OCaml *)
 let add_c = fun x y -> x + y;;
 (* yet one more, the built-in (+) *)
-(+);;
+let add_c = (+);;
 
 let add_nc p =
     match p with (x,y) -> x+y;;
@@ -285,7 +287,7 @@ let noop2 = uncurry (curry add_nc);; (* another no-op; noop1 & noop2 together sh
 print_string ("hi\n");;
 
 let add (x: float) (y: float) = x +. y;;
-let add (x: int) (y: int) = (((x: int) + y) : int);;
+let add (x: float) (y: float) : int = Float.to_int (x +. y);; (* can also declare the return type *)
 
 type intpair = int * int;;
 let f (p : intpair) = match p with
@@ -295,17 +297,58 @@ let f (p : intpair) = match p with
 f (2, 3);; (* still, can pass it to the function expecting an intpair *)
 ((2,3):intpair);; (* can also explicitly tag data with its type *)
 
+type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
+
+Fixed(5);; (* tag 5 as a Fixed *)
+Fixed 5;; (* parens optional as is often the case in OCaml *)
+Floating 4.0;; (* tag 4.0 as a Floating *)
+
+let ff_as_int x =
+    match x with
+    | Fixed n -> n    (* variants fit well into pattern matching syntax *)
+    | Floating z -> int_of_float z;;
+
+ff_as_int (Fixed 5);; (* beware that ff_as_int Fixed(5) won't parse properly!  
+                         ff_as_int @@ Fixed 5 will though *)
+
+let add_num n1 n2 =
+   match n1, n2 with    (* note use of pair here to parallel-match on two variables  *)
+     | Fixed i1, Fixed i2 ->       Fixed   (i1       +  i2)
+     | Fixed i1,   Floating f2 ->  Floating(float i1 +. f2)       (* need to coerce *)
+     | Floating f1, Fixed i2   ->  Floating(f1       +. float i2) (* ditto *)
+     | Floating f1, Floating f2 -> Floating(f1       +. f2)
+;;
+
+add_num (Fixed 123) (Floating 3.14159);;
+
+type complex = CZero | Nonzero of float * float;;
+
+let com = Nonzero(3.2,11.2);;
+let zer = CZero;;
+
+type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent in spirit to [3;5;7] *)
+
+type 'a mylist = Mt | Cons of 'a * ('a mylist);;
+
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
+
+let rec map ml f =
+  match ml with
+    | Mt -> Mt
+    | Cons(hd,tl) -> Cons(f hd,map tl f);;
+
+let map_eg = map mylisteg (fun x -> x - 1);;
+
 let to_upper_char c =
   let c_code = Char.code c in
-  if c_code >= 97 && c_code <= 122 then
-    Char.chr (c_code - 32)
+  if c_code >= 97 && c_code <= 122 then Char.chr (c_code - 32)
   else c;;
-
 
 let rec to_upper_case l =
   match l with
-    [] -> []
-  | c :: cs -> to_upper_char c :: to_upper_case cs
+   | [] -> []
+   | c :: cs -> to_upper_char c :: to_upper_case cs
 ;;
 
 assert(to_upper_case ['a'; 'q'; 'B'; 'Z'; ';'; '!'] = ['A'; 'Q'; 'B'; 'Z'; ';'; '!']);;
@@ -319,76 +362,30 @@ let rec partition p l =
   |[] -> ([],[])
   | hd :: tl ->
     let (posl,negl) = partition p tl in
-    if (p hd)
-    then
-      (hd :: posl,negl)
-    else
-      (posl,hd::negl);;
+    if (p hd) then (hd :: posl,negl)
+    else (posl,hd::negl);;
 
 let is_positive n = n > 0 in
 assert(partition is_positive [1; -1; 2; -2; 3; -3] = ([1; 2; 3], [-1; -2; -3]))
 
 let rec contains x l =
   match l with
-    [] -> false
+  | [] -> false
   | y :: ys -> x = y || contains x ys
 ;;
 
 let rec diff l1 l2 =
   match l1 with
-    [] -> []
+  | [] -> []
   | x :: xs ->
-      if contains x l2 then
-    diff xs l2
-      else
-    x :: diff xs l2
+      if contains x l2 then diff xs l2
+      else x :: diff xs l2
 ;;
 
 assert(contains 1 [1; 2; 3]);;
 assert(not(contains 5 [1; 2; 3]));;
 assert(diff [1;2;3] [3;4;5] = [1; 2]);;
 assert(diff [1;2] [1;2;3] = []);;
-
-type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
-
-Fixed(5);; (* tag 5 as a Fixed *)
-Floating 4.0;; (* tag 4.0 as a Floating *)
-
-let ff_as_int x =
-    match x with
-    | Fixed n -> n    (* variants fit well into pattern matching syntax *)
-    | Floating z -> int_of_float z;;
-
-ff_as_int (Fixed 5);;
-
-let add_num n1 n2 =
-   match (n1, n2) with    (* note use of pair here to parallel-match on two variables  *)
-     | (Fixed i1, Fixed i2) ->       Fixed   (i1       +  i2)
-     | (Fixed i1,   Floating f2) ->  Floating(float i1 +. f2)       (* need to coerce *)
-     | (Floating f1, Fixed i2)   ->  Floating(f1       +. float i2) (* ditto *)
-     | (Floating f1, Floating f2) -> Floating(f1       +. f2)
-;;
-
-add_num (Fixed 123) (Floating 3.14159);;
-
-type complex = CZero | Nonzero of float * float;;
-
-let com = Nonzero(3.2,11.2);;
-let zer = CZero;;
-
-type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
-let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent to [3;5;7] *)
-
-type 'a mylist = Mt | Cons of 'a * ('a mylist);;
-
-let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
-
-let rec map ml f =
-  match ml with
-    | Mt -> Mt
-    | Cons(hd,tl) -> Cons(f hd,map tl f);;
-
-let map_eg = map mylisteg (fun x -> x - 1)
 
 type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 
