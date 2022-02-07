@@ -613,7 +613,7 @@ let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else
 
 We leave as an exercise understanding how the last two work but here is what `rev` is doing.
 Abreviate `fun elt accum -> accum @ [elt]` as `f` in the below..
-```ocaml
+```sh
 rev [1;2;3] ~= fold_right f [1;2;3] [] ~= f 1 (fold_right f [2;3] []]) ~= (fold_right f [2;3] []]) @ [1] ~= ...
 ```
 hopefully the pattern is clear from the above: the `f` here puts the `elt` on the back of the list each time, affecting a reverse.
@@ -1004,7 +1004,7 @@ assert(diff [1;2] [1;2;3] = []);;
 
 * Binary trees are like lists but with two self-referential sub-structures not one
 * Here is one tree definition; note the data is (only) in the nodes here
-* n-ary trees are a direct generalization of this pattern
+* ... n-ary trees are a direct generalization of this pattern
 
 ```ocaml
 type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
@@ -1022,13 +1022,6 @@ let bt = Node("fiddly ",
                   Leaf)),
             whack);;
 
-let bt2 = Node("fiddly ",
-            Node("backer ",
-               Leaf,
-               Node("crack ",
-                  Leaf,
-                  Leaf)),
-            whack);;
 (* Type error; like lists, tree data must have uniform type: *)
 (* Node("fiddly",Node(0,Leaf,Leaf),Leaf);; *)
 ```
@@ -1038,24 +1031,19 @@ Functions on binary trees are similar to functions on lists: use recursion
 ```ocaml
 let rec add_gobble binstringtree =
    match binstringtree with
-     Leaf -> Leaf
+   | Leaf -> Leaf
    | Node(y, left, right) ->
        Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
 ```
-(Remember, as with lists this is *not* mutating the tree, its building a new one)
+(Remember, as with lists this is *not* mutating the tree, its building a "new" one)
 
 ```ocaml
 let rec lookup x bintree =
   match bintree with
   | Leaf -> false
-  | Node(y, left, right) ->
-    if x = y then
-      true
-    else if x < y then
-      lookup x left
-    else
-      lookup x right
+  | Node (y, left, right) ->
+      if x = y then true else if x < y then lookup x left else lookup x right
 ;;
 
 lookup "whack!" bt;;
@@ -1066,12 +1054,10 @@ Let us now define how to insert an element in sorted order.
 ```ocaml
 let rec insert x bintree =
    match bintree with
-     Leaf -> Node(x, Leaf, Leaf)
+   | Leaf -> Node(x, Leaf, Leaf)
    | Node(y, left, right) ->
-       if x <= y then
-         Node(y, insert x left, right)
-       else
-         Node(y, left, insert x right)
+       if x <= y then Node(y, insert x left, right)
+       else Node(y, left, insert x right)
 ;;
 ```
 
@@ -1085,26 +1071,28 @@ let gooobt = insert "slacker " goobt;; (* pass in goobt to accumulate both addit
 let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four"] (* folding helps *)
 ```
 
-* You have already seen a bit of programming with functional data structures with lists
-* For trees you are probably used to mutating to insert, delete, etc so takes some getting used to
+* You have already been programming with immutable data structures -- lists
+* For trees you are used to mutating to insert, delete, etc so takes some getting used to
 * It looks really inefficient since an insertion is making a "totally new tree"
-   - but, the compiler can in fact share all subtrees along the spine to the new node - log n cost
+   - but, the compiler can in fact share all subtrees along the spine to the new node - "only" log n cost
    - referential transparency at work
 
 ### End Core OCaml used in the course
 
 * The bulk of the assignments only use what we covered above
 * We now will quickly cover a few more features which we will not use nearly as much
-  - (they will also not be covered in assignment 2)
+  - (Only state below will be needed in assignment 2)
+  - Note that the toy languages we study will rip off OCaml so we at least want some understanding of records, state, exceptions
+  - **FbR** will be our records extension, **FbS** for state, and **FbX** for eXceptions.
 
 ### Records
   - Like tuples but with labels on fields.
   - Similar to the structs of C/C++.
-  - The types must be declared just like OCaml variants.
-  - Can be used in pattern matches as well.
-  - Again the fields are **immutable** by default, so not like Python/Javascript dictionaries
+  - The types *must* be declared with `type`, just like OCaml variants.
+  - Also like variants can be used in pattern matches.
+  - Also also record fields are **immutable** by default, so not like Python/Javascript dictionaries
 
-Example: a record type to represent rational numbers
+Example: a declaring record type to represent rational numbers
 
 ```ocaml
 type ratio = {num: int; denom: int};;
@@ -1123,7 +1111,7 @@ Only one pattern matched so can again inline pattern in function's/let's
 let rat_to_int {num = n; denom = d} =  n / d;;
 ```
 
-Equivalently could use dot projections, but happy path in OCaml is usually patterns
+Equivalently could use dot projections, but happy path in OCaml is patterns
 ```ocaml
 let unhappy_rat_to_int r  =
    r.num / r.denom;;
@@ -1147,7 +1135,7 @@ let happy_add_ratio {num = n1; denom = d1} {num = n2; denom = d2} =
 * The autograder may let you get away with side effects on assignment 1/2 but you will get a manual ding by the CAs.
 
 ### State
- *   Variables in OCaml are NEVER directly mutable themselves; only (indirectly) mutable if they hold a
+ *   Variables in OCaml are **never** directly mutable themselves; only (indirectly) mutable if they hold a
       - reference
       - mutable record
       - array
@@ -1158,7 +1146,7 @@ Indirect mutability - variable itself can't change, but what it points to can.
 ### Mutable References
 
 ```ocaml
-let x = ref 4;;    (* always have to declare initial value when creating a reference *)
+let x = ref 4;;    (* always have to declare initial value when creating a reference; type is `int ref` here *)
 ```
 
 Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The **contents** of that fixed call can change, but not x.
@@ -1168,10 +1156,13 @@ Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a f
 !x + 1;; (* need `!x` to get out the value; parallels `*x` in C *)
 x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
 !x;; (* Mutation happened to contents of cell x *)
+let x_alias = x;; (* make another name for x since we are about to shadow it *)
 let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definition *)
+!x_alias;; (* confirms the previous line was not a mutation, just a shadowing *)
 ```
 
-* `'a ref` is really implemented by a mutable record with one field, contents:
+#### Refs are "really" mutable records
+* `'a ref` is in fact implemented by a mutable record with one field, contents:
 * `'a ref` abbreviates the type `{ mutable contents: 'a }`
 * The keyword mutable on a record field means it can mutate
 
@@ -1179,7 +1170,6 @@ let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definit
 let x = { contents = 4};; (* identical to x's definition above *)
 x := 6;;
 x.contents <- 7;;  (* same effect as previous line: backarrow updates a field *)
-
 !x + 1;;
 x.contents + 1;; (* same effect as previous line *)
 ```
@@ -1197,7 +1187,7 @@ translate mypoint 1.0 2.0;;
 mypoint;;
 ```
 
-Observe: mypoint is immutable at the top level but it has two spots in it where we can mutate
+Observe: mypoint is immutable at the top level but it has two spots `x`/`y` in it where we can mutate
 
 ### Arrays
  - Fairly self-explanatory, we will just flash over this in lecture
@@ -1205,7 +1195,7 @@ Observe: mypoint is immutable at the top level but it has two spots in it where 
    - in general there is no such thing as "uninitialized"/"null" in OCaml
 
 ```ocaml
-let arr = [| 4; 3; 2 |];; (* one way to make an array *)
+let arr = [| 4; 3; 2 |];; (* one way to make a new array *)
 arr.(0);; (* access (unfortunately already used [] for lists in the syntax) *)
 arr.(0) <- 5;; (* update *)
 arr;;
@@ -1214,16 +1204,16 @@ arr;;
 ### Exceptions
 * OCaml has a standard (e.g. Java-like) notion of exception
 * Unfortunately types do not include what exceptions a function will raise - an outdated aspect of OCaml.
+  - If a side effect is notated in the type that is called an *effect type* - e.g. Rust uses this for mutation effects
 * Modern OCaml coding style is to *minimize* the use of exceptions
   - Causes action-at-a-distance, hard to debug
   - Instead follow the old C approach of bubbling up error codes: 
     - return `Some/None` and make the caller explicitly handle the `None` (error) case.
-    - Better yet use `Ok/Error`, similar to `Some/None` but designed for error handling.
 
-Here is a tiny example of how to declare and use exceptions
+Here is a trivial example of how to declare and use exceptions in OCaml
 
 ```ocaml
-exception Goo of string;;
+exception Goo of string;; (* Exception named `Goo` has a string payload *)
 
 let f _ = raise (Goo "keyboard on fire");;
 (* f ();; *) (* raises the exception to the top level *)
@@ -1243,7 +1233,7 @@ g ();;
 There are a few built-in exceptions we mentioned previously:
 
 ```sh
-failwith "Oops";; (* Generic code failure - exception is named Failure *)
+failwith "Oops";; (* Generic code failure - exception is named `Failure` *)
 invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
 ```
 
@@ -1253,35 +1243,38 @@ Modules in programming languages
    - a module is a larger level of program abstraction: functional units or library.
    - e.g. Java package, Python module, C directory, etc
    - needed for all but very small programs: imagine a file system without directories/folders as analogy to a PL without modules - YUCK!
+   - We are not going to study the theory of modules in the course so will cover a bit more about the principles now
 
-Some general principles of modules across language designs:
-  -  Modules have names they can be referenced by.
-  -  A module is a container of code: functions, classes,  types, etc.
+#### General principles of modules
+  - Modules have names they can be referenced by
+  - A module is a container of code: functions, classes,  types, etc.
   - Modules can be file-based: one module per file, module name is file name
   -  The module needs a way to
-      * import things (e.g. other modules) from the outside;
-      * export some (or all) things it has declared for outsiders to use;
+      * **import** things (e.g. other modules) from the outside;
+      * **export** some (or all) things it has declared for outsiders to use;
       * it may **hide** some things for internal use only
          - allows module users to operate at a higher level of abstraction
          - avoids users mucking with internals and messing things up
-      * Separate name spaces, so e.g. the Window's reset() won't clash
-        with a File's reset(): use `Window.reset()` and `File.reset()`
+      * Separate name spaces, so e.g. the `Window`'s `reset()` won't clash
+        with a `File`'s `reset()`: use `Window.reset()` and `File.reset()`
       * Nested name spaces for ever larger software: `Window.Init.reset()`
-      * Often modules can be compiled separately (for compiled languages)
+      * In compiled languages, modules can generally be compiled separately (only recompile the changed module(s))
+        - speeds up incremental recompilation, is critical in practice.
 
 ### Modules in OCaml
 
 * We already saw OCaml modules in action
     - Example: `List.map` is an invocation of the map function in the built-in `List` module.
-* Now, lets study how we can build and use our own OCaml modules
-* (We focus here on building modules via files, but there are other methods in OCaml which we skip)
+    - Modules always start with a Capital letter, just like variant labels.
+* We now study how we can build and use our own OCaml modules
+* (We focus here on building modules via files; there are other methods in OCaml which we skip)
 
 #### Making a module
 
 * Assignment 1/2 require you to fill out a file `assignment.ml`
 * This is in fact creating a *module* `Assignment` (notice the first letter (only) is capped)
 * `dune utop` will load your module in the top loop
-* You then need to write `Assignment.factorial 5;;` etc to access the functions in the module's namespace
+* You then need to write `Assignment.reverse_n 5;;` etc to access the functions in the module's namespace
 * Or, use `open Assignment;;` to make all the functions in the module available at the top level.
 
 ### Separate Compilation with OCaml
@@ -1297,8 +1290,8 @@ Some general principles of modules across language designs:
 
 * See [set-example.zip](http://pl.cs.jhu.edu/pl/ocaml/set-example.zip) for the example we cover in lecture.
 
-### Playing with the Simple_set module
-* For this example we can use terminal command `dune utop` to load the module into a fresh `utop`
+### Playing with the Simple_set library module
+* For this example we can use terminal command `dune utop` to load the library module into a fresh `utop`
 
 ```sh
 dune utop

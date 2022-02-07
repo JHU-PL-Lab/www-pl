@@ -6,7 +6,9 @@
 
 (* This type declaration is the data structure storing the actual sets (just a list here) 
    Note how we call the type just "t", that is because the full name will be Simple_set.t 
-   -- "simple set's type" is how you can read this *)
+   -- "simple set's type" is how you can read this.  
+   OCaml uses a similar convention, e.g. List.t is List's type
+    *)
 
 type 'a t = 'a list
 
