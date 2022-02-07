@@ -1158,10 +1158,8 @@ a. Assume that the capital of characters other than alphabets<br />
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">bintree</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">bintree</span> <span class="k">with</span>
   <span class="o">|</span> <span class="nc">Leaf</span> <span class="o">-&gt;</span> <span class="bp">false</span>
-  <span class="o">|</span> <span class="nc">Node</span><span class="p">(</span><span class="n">y</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="p">)</span> <span class="o">-&gt;</span>
-      <span class="k">if</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="k">then</span> <span class="bp">true</span>
-      <span class="k">else</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">y</span> <span class="k">then</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">left</span>
-      <span class="k">else</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">right</span>
+  <span class="o">|</span> <span class="nc">Node</span> <span class="p">(</span><span class="n">y</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="p">)</span> <span class="o">-&gt;</span>
+      <span class="k">if</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="k">then</span> <span class="bp">true</span> <span class="k">else</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">y</span> <span class="k">then</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">left</span> <span class="k">else</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">right</span>
 <span class="p">;;</span>
 
 <span class="n">lookup</span> <span class="s2">"whack!"</span> <span class="n">bt</span><span class="p">;;</span>
@@ -1190,11 +1188,11 @@ a. Assume that the capital of characters other than alphabets<br />
 </code></pre></div></div>
 
 <ul>
-  <li>You have already seen a bit of programming with functional data structures with lists</li>
-  <li>For trees you are probably used to mutating to insert, delete, etc so takes some getting used to</li>
+  <li>You have already been programming with immutable data structures – lists</li>
+  <li>For trees you are used to mutating to insert, delete, etc so takes some getting used to</li>
   <li>It looks really inefficient since an insertion is making a “totally new tree”
     <ul>
-      <li>but, the compiler can in fact share all subtrees along the spine to the new node - log n cost</li>
+      <li>but, the compiler can in fact share all subtrees along the spine to the new node - “only” log n cost</li>
       <li>referential transparency at work</li>
     </ul>
   </li>
@@ -1206,7 +1204,9 @@ a. Assume that the capital of characters other than alphabets<br />
   <li>The bulk of the assignments only use what we covered above</li>
   <li>We now will quickly cover a few more features which we will not use nearly as much
     <ul>
-      <li>(they will also not be covered in assignment 2)</li>
+      <li>(Only state below will be needed in assignment 2)</li>
+      <li>Note that the toy languages we study will rip off OCaml so we at least want some understanding of records, state, exceptions</li>
+      <li><strong>FbR</strong> will be our records extension, <strong>FbS</strong> for state, and <strong>FbX</strong> for eXceptions.</li>
     </ul>
   </li>
 </ul>
@@ -1215,12 +1215,12 @@ a. Assume that the capital of characters other than alphabets<br />
 <ul>
   <li>Like tuples but with labels on fields.</li>
   <li>Similar to the structs of C/C++.</li>
-  <li>The types must be declared just like OCaml variants.</li>
-  <li>Can be used in pattern matches as well.</li>
-  <li>Again the fields are <strong>immutable</strong> by default, so not like Python/Javascript dictionaries</li>
+  <li>The types <em>must</em> be declared with <code>type</code>, just like OCaml variants.</li>
+  <li>Also like variants can be used in pattern matches.</li>
+  <li>Also also record fields are <strong>immutable</strong> by default, so not like Python/Javascript dictionaries</li>
 </ul>
 
-<p>Example: a record type to represent rational numbers</p>
+<p>Example: a declaring record type to represent rational numbers</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">ratio</span> <span class="o">=</span> <span class="p">{</span><span class="n">num</span><span class="o">:</span> <span class="kt">int</span><span class="p">;</span> <span class="n">denom</span><span class="o">:</span> <span class="kt">int</span><span class="p">};;</span>
 <span class="k">let</span> <span class="n">q</span> <span class="o">=</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="mi">53</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="mi">6</span><span class="p">};;</span>
@@ -1236,7 +1236,7 @@ a. Assume that the capital of characters other than alphabets<br />
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rat_to_int</span> <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">n</span><span class="p">;</span> <span class="n">denom</span> <span class="o">=</span> <span class="n">d</span><span class="p">}</span> <span class="o">=</span>  <span class="n">n</span> <span class="o">/</span> <span class="n">d</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Equivalently could use dot projections, but happy path in OCaml is usually patterns</p>
+<p>Equivalently could use dot projections, but happy path in OCaml is patterns</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">unhappy_rat_to_int</span> <span class="n">r</span>  <span class="o">=</span>
    <span class="n">r</span><span class="o">.</span><span class="n">num</span> <span class="o">/</span> <span class="n">r</span><span class="o">.</span><span class="n">denom</span><span class="p">;;</span>
 </code></pre></div></div>
@@ -1261,7 +1261,7 @@ a. Assume that the capital of characters other than alphabets<br />
 
 <h3 id="state">State</h3>
 <ul>
-  <li>Variables in OCaml are NEVER directly mutable themselves; only (indirectly) mutable if they hold a
+  <li>Variables in OCaml are <strong>never</strong> directly mutable themselves; only (indirectly) mutable if they hold a
     <ul>
       <li>reference</li>
       <li>mutable record</li>
@@ -1277,7 +1277,7 @@ a. Assume that the capital of characters other than alphabets<br />
 
 <h3 id="mutable-references">Mutable References</h3>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="mi">4</span><span class="p">;;</span>    <span class="c">(* always have to declare initial value when creating a reference *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="mi">4</span><span class="p">;;</span>    <span class="c">(* always have to declare initial value when creating a reference; type is `int ref` here *)</span>
 </code></pre></div></div>
 
 <p>Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The <strong>contents</strong> of that fixed call can change, but not x.</p>
@@ -1286,11 +1286,14 @@ a. Assume that the capital of characters other than alphabets<br />
 <span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* need `!x` to get out the value; parallels `*x` in C *)</span>
 <span class="n">x</span> <span class="o">:=</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* assignment - x must be a ref cell.  Returns () - goal is side effect *)</span>
 <span class="o">!</span><span class="n">x</span><span class="p">;;</span> <span class="c">(* Mutation happened to contents of cell x *)</span>
+<span class="k">let</span> <span class="n">x_alias</span> <span class="o">=</span> <span class="n">x</span><span class="p">;;</span> <span class="c">(* make another name for x since we are about to shadow it *)</span>
 <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="s2">"hi"</span><span class="p">;;</span> <span class="c">(* does NOT mutate x above, instead another shadowing definition *)</span>
+<span class="o">!</span><span class="n">x_alias</span><span class="p">;;</span> <span class="c">(* confirms the previous line was not a mutation, just a shadowing *)</span>
 </code></pre></div></div>
 
+<h4 id="refs-are-really-mutable-records">Refs are “really” mutable records</h4>
 <ul>
-  <li><code>'a ref</code> is really implemented by a mutable record with one field, contents:</li>
+  <li><code>'a ref</code> is in fact implemented by a mutable record with one field, contents:</li>
   <li><code>'a ref</code> abbreviates the type <code>{ mutable contents: 'a }</code></li>
   <li>The keyword mutable on a record field means it can mutate</li>
 </ul>
@@ -1298,7 +1301,6 @@ a. Assume that the capital of characters other than alphabets<br />
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="p">{</span> <span class="n">contents</span> <span class="o">=</span> <span class="mi">4</span><span class="p">};;</span> <span class="c">(* identical to x's definition above *)</span>
 <span class="n">x</span> <span class="o">:=</span> <span class="mi">6</span><span class="p">;;</span>
 <span class="n">x</span><span class="o">.</span><span class="n">contents</span> <span class="o">&lt;-</span> <span class="mi">7</span><span class="p">;;</span>  <span class="c">(* same effect as previous line: backarrow updates a field *)</span>
-
 <span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span>
 <span class="n">x</span><span class="o">.</span><span class="n">contents</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* same effect as previous line *)</span>
 </code></pre></div></div>
@@ -1315,7 +1317,7 @@ a. Assume that the capital of characters other than alphabets<br />
 <span class="n">mypoint</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Observe: mypoint is immutable at the top level but it has two spots in it where we can mutate</p>
+<p>Observe: mypoint is immutable at the top level but it has two spots <code>x</code>/<code>y</code> in it where we can mutate</p>
 
 <h3 id="arrays">Arrays</h3>
 <ul>
@@ -1327,7 +1329,7 @@ a. Assume that the capital of characters other than alphabets<br />
   </li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="o">|</span> <span class="mi">4</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span> <span class="mi">2</span> <span class="o">|</span><span class="p">];;</span> <span class="c">(* one way to make an array *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">arr</span> <span class="o">=</span> <span class="p">[</span><span class="o">|</span> <span class="mi">4</span><span class="p">;</span> <span class="mi">3</span><span class="p">;</span> <span class="mi">2</span> <span class="o">|</span><span class="p">];;</span> <span class="c">(* one way to make a new array *)</span>
 <span class="n">arr</span><span class="o">.</span><span class="p">(</span><span class="mi">0</span><span class="p">);;</span> <span class="c">(* access (unfortunately already used [] for lists in the syntax) *)</span>
 <span class="n">arr</span><span class="o">.</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">&lt;-</span> <span class="mi">5</span><span class="p">;;</span> <span class="c">(* update *)</span>
 <span class="n">arr</span><span class="p">;;</span>
@@ -1336,23 +1338,26 @@ a. Assume that the capital of characters other than alphabets<br />
 <h3 id="exceptions">Exceptions</h3>
 <ul>
   <li>OCaml has a standard (e.g. Java-like) notion of exception</li>
-  <li>Unfortunately types do not include what exceptions a function will raise - an outdated aspect of OCaml.</li>
+  <li>Unfortunately types do not include what exceptions a function will raise - an outdated aspect of OCaml.
+    <ul>
+      <li>If a side effect is notated in the type that is called an <em>effect type</em> - e.g. Rust uses this for mutation effects</li>
+    </ul>
+  </li>
   <li>Modern OCaml coding style is to <em>minimize</em> the use of exceptions
     <ul>
       <li>Causes action-at-a-distance, hard to debug</li>
       <li>Instead follow the old C approach of bubbling up error codes:
         <ul>
           <li>return <code>Some/None</code> and make the caller explicitly handle the <code>None</code> (error) case.</li>
-          <li>Better yet use <code>Ok/Error</code>, similar to <code>Some/None</code> but designed for error handling.</li>
         </ul>
       </li>
     </ul>
   </li>
 </ul>
 
-<p>Here is a tiny example of how to declare and use exceptions</p>
+<p>Here is a trivial example of how to declare and use exceptions in OCaml</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Goo</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Goo</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span> <span class="c">(* Exception named `Goo` has a string payload *)</span>
 
 <span class="k">let</span> <span class="n">f</span> <span class="n">_</span> <span class="o">=</span> <span class="k">raise</span> <span class="p">(</span><span class="nc">Goo</span> <span class="s2">"keyboard on fire"</span><span class="p">);;</span>
 <span class="c">(* f ();; *)</span> <span class="c">(* raises the exception to the top level *)</span>
@@ -1371,7 +1376,7 @@ a. Assume that the capital of characters other than alphabets<br />
 
 <p>There are a few built-in exceptions we mentioned previously:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failwith <span class="s2">"Oops"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Generic code failure - exception is named Failure <span class="k">*</span><span class="o">)</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failwith <span class="s2">"Oops"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Generic code failure - exception is named <span class="sb">`</span>Failure<span class="sb">`</span> <span class="k">*</span><span class="o">)</span>
 invalid_arg <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Invalid_argument exception <span class="k">*</span><span class="o">)</span>
 </code></pre></div></div>
 
@@ -1382,27 +1387,32 @@ invalid_arg <span class="s2">"This function works on non-empty lists only"</span
   <li>a module is a larger level of program abstraction: functional units or library.</li>
   <li>e.g. Java package, Python module, C directory, etc</li>
   <li>needed for all but very small programs: imagine a file system without directories/folders as analogy to a PL without modules - YUCK!</li>
+  <li>We are not going to study the theory of modules in the course so will cover a bit more about the principles now</li>
 </ul>
 
-<p>Some general principles of modules across language designs:</p>
+<h4 id="general-principles-of-modules">General principles of modules</h4>
 <ul>
-  <li>Modules have names they can be referenced by.</li>
+  <li>Modules have names they can be referenced by</li>
   <li>A module is a container of code: functions, classes,  types, etc.</li>
   <li>Modules can be file-based: one module per file, module name is file name</li>
   <li>The module needs a way to
     <ul>
-      <li>import things (e.g. other modules) from the outside;</li>
-      <li>export some (or all) things it has declared for outsiders to use;</li>
+      <li><strong>import</strong> things (e.g. other modules) from the outside;</li>
+      <li><strong>export</strong> some (or all) things it has declared for outsiders to use;</li>
       <li>it may <strong>hide</strong> some things for internal use only
         <ul>
           <li>allows module users to operate at a higher level of abstraction</li>
           <li>avoids users mucking with internals and messing things up</li>
         </ul>
       </li>
-      <li>Separate name spaces, so e.g. the Window’s reset() won’t clash<br />
-with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()</code></li>
+      <li>Separate name spaces, so e.g. the <code>Window</code>’s <code>reset()</code> won’t clash<br />
+with a <code>File</code>’s <code>reset()</code>: use <code>Window.reset()</code> and <code>File.reset()</code></li>
       <li>Nested name spaces for ever larger software: <code>Window.Init.reset()</code></li>
-      <li>Often modules can be compiled separately (for compiled languages)</li>
+      <li>In compiled languages, modules can generally be compiled separately (only recompile the changed module(s))
+        <ul>
+          <li>speeds up incremental recompilation, is critical in practice.</li>
+        </ul>
+      </li>
     </ul>
   </li>
 </ul>
@@ -1413,10 +1423,11 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
   <li>We already saw OCaml modules in action
     <ul>
       <li>Example: <code>List.map</code> is an invocation of the map function in the built-in <code>List</code> module.</li>
+      <li>Modules always start with a Capital letter, just like variant labels.</li>
     </ul>
   </li>
-  <li>Now, lets study how we can build and use our own OCaml modules</li>
-  <li>(We focus here on building modules via files, but there are other methods in OCaml which we skip)</li>
+  <li>We now study how we can build and use our own OCaml modules</li>
+  <li>(We focus here on building modules via files; there are other methods in OCaml which we skip)</li>
 </ul>
 
 <h4 id="making-a-module">Making a module</h4>
@@ -1425,7 +1436,7 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
   <li>Assignment 1/2 require you to fill out a file <code>assignment.ml</code></li>
   <li>This is in fact creating a <em>module</em> <code>Assignment</code> (notice the first letter (only) is capped)</li>
   <li><code>dune utop</code> will load your module in the top loop</li>
-  <li>You then need to write <code>Assignment.factorial 5;;</code> etc to access the functions in the module’s namespace</li>
+  <li>You then need to write <code>Assignment.reverse_n 5;;</code> etc to access the functions in the module’s namespace</li>
   <li>Or, use <code>open Assignment;;</code> to make all the functions in the module available at the top level.</li>
 </ul>
 
@@ -1449,9 +1460,9 @@ with a File’s reset(): use <code>Window.reset()</code> and <code>File.reset()<
   <li>See <a href="http://pl.cs.jhu.edu/pl/ocaml/set-example.zip">set-example.zip</a> for the example we cover in lecture.</li>
 </ul>
 
-<h3 id="playing-with-the-simple_set-module">Playing with the Simple_set module</h3>
+<h3 id="playing-with-the-simple_set-library-module">Playing with the Simple_set library module</h3>
 <ul>
-  <li>For this example we can use terminal command <code>dune utop</code> to load the module into a fresh <code>utop</code></li>
+  <li>For this example we can use terminal command <code>dune utop</code> to load the library module into a fresh <code>utop</code></li>
 </ul>
 
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dune utop
