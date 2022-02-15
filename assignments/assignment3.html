@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/8986607496">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assignment-3-operational-semantics">Assignment 3: Operational Semantics</h2>
+
+<p>This is a short homework giving you some practice with operational semantics before starting on writing your Fb interpreter. Please consult <a href="http://pl.cs.jhu.edu/pl/book/book.pdf">Chapter 2 of the book</a> for the full details on various definitions, and for more examples beyond those in lecture, if you have any questions.</p>
+
+<ol>
+  <li>
+    <p>[5 points] Compute the following substitutions. Note that we informally defined subsitution in lecture, and the precise substitution function is defined in Section 2.3.2 of the book.</p>
+
+    <p>a.  <code>(Fun x -&gt; z + 1) [3/x]</code></p>
+
+    <p>b.  <code>(If z Then (Fun z -&gt; Fun y -&gt; y And z) Else 22) [True/z]</code></p>
+
+    <p>c.  <code>(Fun x -&gt; Fun z -&gt; x And y) [4/y]</code></p>
+
+    <p>d.  <code>((Fun x -&gt; x) (Fun y -&gt; x)) [2/x]</code></p>
+
+    <p>e.  <code>(Let y = x + 1 In y + 2) [5/y]</code></p>
+
+    <p>f.  <code>(Let f = f In f f) [(Fun f -&gt; f)/f]</code></p>
+  </li>
+  <li>
+    <p>[9 points] The following Fb proof trees are not theorems.  Describe why the proof tree is not valid (i.e. why the last line is in fact not a theorem).</p>
+
+    <p><img src="a3q2.png" width="500" /></p>
+  </li>
+  <li>
+    <p>[15 points] Write operational semantics proofs (i.e., proof trees) showing what the following expressions evaluate to in the Fb operational semantics. Please give the whole proof trees, using the rules in Chapter 2.  You may reference one proof tree in another like a “proof tree macro” to make your answer more readable if you want (in other words, you can re-use any one proof tree in another, just like how proofs of Lemmas can be used in Theorems in math).  Note it is not a bad idea to start by running them in the reference interpreter to make sure you are on the right path.</p>
+
+    <p>a.  <code>Let f = (Fun y -&gt; y + 1) In Fun z -&gt; (f z) + 1</code></p>
+
+    <p>b.  <code>(Fun f -&gt; Fun z -&gt; (f z) + 1) (Fun y -&gt; y + 1) 4</code></p>
+
+    <p>c.  <code>(Fun x -&gt; (If x = 2 Then Fun x -&gt; x Else 1)) 2 4</code></p>
+  </li>
+  <li>
+    <p>[10 points] Fb currently lacks string data.  For this question we are going to define a new language <strong>FbSt</strong> which adds string constants such as <code>"blahblah"</code> and the infix <code>^</code> string append operation to Fb, and also extends the infix <code>=</code> to work on string data.</p>
+
+    <p>a. Define the BNF for <strong>FbSt</strong>.  Note you can write “… Fb’s …” to indicate a copy/paste of the Fb clauses.</p>
+
+    <p>b. Write new proof rules, in the spirit of the existing rules.  You can also say “… Fb’s …” to paste in the Fb rules as part of your set.</p>
+  </li>
+</ol>
+
+<h3 id="submission-and-grading">Submission and Grading</h3>
+
+<p>Upload your homework pdf to Gradescope. As long as you can make a pdf and we can read it, the format is fine.  So, scans of your handwritten solution are fine as long as they are readable and are in pdf format.  Please do verify the scans are readable before uploading!</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
