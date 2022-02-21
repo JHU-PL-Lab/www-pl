@@ -11,9 +11,9 @@ We have provided you with the FbDK to make your job easier.
 
 *  The FbDK distribution is [here](http://pl.cs.jhu.edu/pl/book/dist), download the zip file and unzip.
 *  The [README.md](http://pl.cs.jhu.edu/pl/book/dist/fbdk/README.md) in the distribution contains basic instructions on how to install, build, and run the various interpreters in the FbDK.
-* For part 1, you will need to fill in the very incomplete `eval` function in the file [`dist/Fb/fbinterp.ml`](http://pl.cs.jhu.edu/pl/book/dist/fbdk/Fb/fbinterp.ml).
-*   File [`dist/Fb/fbast.ml`](http://pl.cs.jhu.edu/pl/book/dist/fbdk/Fb/fbast.ml) is the type declaration for the F♭ AST's.  There are many other files in the FbDK which you generally can ignore if you want.
-*   The FbDK contains a complete BOOL interpreter in the directory [`dist/BOOL/`](http://pl.cs.jhu.edu/pl/book/dist/fbdk/BOOL/). The complete source for the [BOOL evaluator](http://pl.cs.jhu.edu/pl/book/dist/fbdk/BOOL/boolinterp.ml) is given and can help you get started on your F♭ evaluator.
+* For part 1, you will need to fill in the very incomplete `eval` function in the file [`Fb/fbinterp.ml`](http://pl.cs.jhu.edu/pl/book/dist/fbdk/Fb/fbinterp.ml).
+*   File [`Fb/fbast.ml`](http://pl.cs.jhu.edu/pl/book/dist/fbdk/Fb/fbast.ml) is the type declaration for the F♭ AST's.  There are many other files in the FbDK which you generally can ignore if you want.
+*   The FbDK contains a complete BOOL interpreter in the directory [`BOOL/`](http://pl.cs.jhu.edu/pl/book/dist/fbdk/BOOL/). The complete source for the [BOOL evaluator](http://pl.cs.jhu.edu/pl/book/dist/fbdk/BOOL/boolinterp.ml) is given and can help you get started on your F♭ evaluator.
 *  As was shown in class and described in the [README.md](http://pl.cs.jhu.edu/pl/book/dist/fbdk/README.md), you can run your interpreter in OCaml's `utop`, or in standalone mode, and additionally we have supplied reference binary implementations to help you  -- see the README.  Note if you get an error message trying to run the reference `interpreter.exe` on a Mac see the README for how to fix that.
 *  The source of the F♭ code examples in the book as well as the examples and macros used in the **Programming in F♭** lecture are found in the file [`fb_examples.ml`](http://pl.cs.jhu.edu/pl/ocaml/fb_examples.ml) as a separate download.
 
@@ -32,7 +32,7 @@ We have provided you with the FbDK to make your job easier.
 
 ### Testing
 
-You can test your code against the reference interpreter on the examples in the `fb_examples.ml` file.
+You can test your code against the reference interpreter on the examples in the [`fb_examples.ml`](http://pl.cs.jhu.edu/pl/ocaml/fb_examples.ml) file.
 
 ### Submission
 
