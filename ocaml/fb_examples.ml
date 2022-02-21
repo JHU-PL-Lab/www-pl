@@ -14,7 +14,7 @@
 
    $ ./reference/Fb/toplevel.exe
 
-   Once you have oen of these utop's running, to make functions visible type
+   Once you have one of these utop's running, to make functions available type
 
    open Debugutils;;
    open Fbdk.Ast;;
@@ -49,24 +49,24 @@ open Debugutils;;
 
 let ex1 = "If Not(1 = 2) Then 3 Else 4";;
 
-let ex2 = "(Function x -> x + 1) 5" ;;
+let ex2 = "(Fun x -> x + 1) 5" ;;
 
-let ex3 = "(Function x -> Function y -> x + y) 4 5" ;;
+let ex3 = "(Fun x -> Fun y -> x + y) 4 5" ;;
 
 let ex4 = "Let Rec fib x =
     If x = 1 Or x = 2 Then 1 Else fib (x - 1) + fib (x - 2)
     In fib 6" ;;
 
-let ex5 = "(Function x -> x + 2)(3 + 2 + 5)" ;;
+let ex5 = "(Fun x -> x + 2)(3 + 2 + 5)" ;;
 
-let ex6 = "(Function x -> Function x -> x) 3" ;;
+let ex6 = "(Fun x -> Fun x -> x) 3" ;;
 
-let ex7 = "Function x -> Function y -> x + y + z";;
+let ex7 = "Fun x -> Fun y -> x + y + z";;
 
 let ex8 =
  "Let Rec x1 x2 =
      If x2 = 1 Then
-          (Function x3 -> x3 (x2 - 1)) (Function x4 -> x4)
+          (Fun x3 -> x3 (x2 - 1)) (Fun x4 -> x4)
      Else
           x1 (x2 - 1)
   In x1 100";;
@@ -76,17 +76,17 @@ let pp s = s |> parse |> unparse |> print_string |> print_newline;;
 
 let ex9 = "If 3 = 4 Then 5 Else 4 + 2" ;;
 
-let ex10 = "(Function x -> If 3 = x Then 5 Else x + 2) 4 " ;;
+let ex10 = "(Fun x -> If 3 = x Then 5 Else x + 2) 4 " ;;
 
-let ex11 = "(Function x -> x x)(Function y -> y) " ;;
+let ex11 = "(Fun x -> x x)(Fun y -> y) " ;;
 
-let ex12 = "(Function f -> Function x -> f(f(x)))
-           (Function x -> x - 1) 4" ;;
+let ex12 = "(Fun f -> Fun x -> f(f(x)))
+           (Fun x -> x - 1) 4" ;;
 
-let ex13 = "(Function x -> Function y -> x + y)
-    ((Function x -> If 3 = x Then 5 Else x + 2) 4)
-    ((Function f -> Function x -> f (f x))
-            (Function x -> x - 1) 4 )" ;;
+let ex13 = "(Fun x -> Fun y -> x + y)
+    ((Fun x -> If 3 = x Then 5 Else x + 2) 4)
+    ((Fun f -> Fun x -> f (f x))
+            (Fun x -> x - 1) 4 )" ;;
 
 let ex14 = "Let Rec f x =
     If x = 1 Then 1 Else x + f (x - 1)
@@ -98,12 +98,13 @@ let ex15 = "Let Rec f x =
   In f" ;;
 
 
-let diverger = "(Fun x -> x x)(Fun x -> x x)" ;;
+let omega = "(Fun w -> w w)" ;;
+let diverger = omega^omega ;;
 
-let combI = "Function x -> x";;
-let combK = "Function x -> Function y -> x";;
-let combS = "Function x -> Function y -> Function z -> (x z) (y z)";;
-let combD = "Function x -> x x";;
+let combI = "Fun x -> x";;
+let combK = "Fun x -> Fun y -> x";;
+let combS = "Fun x -> Fun y -> Fun z -> (x z) (y z)";;
+let combD = "Fun x -> x x";;
 
 (* ************************************************************ *)
 (* ****** Simple Fb Macros Using String Concatenation ********* *)
@@ -128,8 +129,8 @@ double "2 + 4";; (* "(2 + 4) + (2 + 4)" *)
 (* 
    * Why didn't we just write n ^"+" ^ n above?? We need parens around all
    macro parameters like the n to not change the parse order.
-   * Yes, this is a hackish notion of macros
-   * But it is very simple so we will use it.
+   * Yes, this is a somewhat hackish notion of macros
+   * But it is very simple
    * Notice also that macros do not do any evaluation -- 2+4 not 6 in the above.
 *)
 
@@ -142,10 +143,9 @@ let quad = "Fun z -> (" ^ double "z" ^ ") + (" ^ double "z" ^ ")";;
 
 (* Example of a bad string-based macro *)
 let apply_bad f x = f^" "^x;; (* sort of looks right here ... *)
-let apply_eg = apply_bad "Fun x ->x" "0";; (* oops! this is "Fun x ->x 0" *)
+let apply_eg = apply_bad "Fun x ->x" "0";; (* oops! this is string "Fun x ->x 0" *)
 let apply_fixed f x = "("^f^")("^x^")";;
 let apply_eg_fixed = apply_fixed "Fun x ->x" "0";; (* "(Fun x ->x)(0)" *)
-
 
 (* A less hackish way to write macros would be to use ASTs as input and output to macros *)
 
@@ -183,13 +183,13 @@ let lazy_pair_eg = pr_simple "2+3" "3";;
 (* Macro which makes an eager pair, which is the OCaml form *)
 let pr l r  =
   "(Let lft = ("^l^") In Let rgt = ("^r^") In
-      Function x -> x lft rgt)";;
+      Fun x -> x lft rgt)";;
 
-let pc = pr "34+3" "45";; (* peu pc is "Function x -> x 37 45" -- eager pair that we wanted *)
+let pc = pr "34+3" "45";; (* peu pc is "Fun x -> x 37 45" -- eager pair that we wanted *)
 
 (* Macros for extracting contents of pairs *)
-let left c =  "Let c = "^c^" In c (Function x -> Function y -> x)";;
-let right c =  "("^c^") (Function x -> Function y -> y)";;
+let left c =  "Let c = "^c^" In c (Fun x -> Fun y -> x)";;
+let right c =  "("^c^") (Fun x -> Fun y -> y)";;
 let use_pr = left pc;;
 
 (* peu use_pr;; *)
@@ -206,7 +206,7 @@ let use_pair_add =  "(" ^ pair_add ^ ")(" ^ pc ^ ")";;
    In fact in a way this is easier since Fb makes sure the components were evaluated
 *)
 
-let pr_fb = "(Fun lft -> Fun rgt -> Function x -> x lft rgt)";;
+let pr_fb = "(Fun lft -> Fun rgt -> Fun x -> x lft rgt)";;
 let pr_fb_eg = pr_fb ^ "4 5";;
 
 (* ****** Encoding Lists ********* *)
@@ -309,7 +309,7 @@ let let_as_application =  "(Fun x -> x - 44) (3+4)";; (* has exact same effect a
 
 let fblet x e1 e2 = "(Fun "^x^" -> "^e2^")("^e1^")";;
 let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 3 In z + z" *)
-(* pp let_ex;; - returns `(Function z -> z + z) (2 + 3)` *)
+(* pp let_ex;; - returns `(Fun z -> z + z) (2 + 3)` *)
 (* peu let_ex;; - returns "10" *)
 
 (* *********************** Equivalence ************************* *)
@@ -360,16 +360,16 @@ let summate0test' = (summate ^ "5");;
   Let us *just* apply the first argument of the two above to see what is going on:
 
   pp @@ peu (summate0^summate0);; -- returns:
-  Function arg ->
+  Fun arg ->
     If arg = 0 Then
         0
     Else
-        arg + (Function self ->
-                   Function arg ->
+        arg + (Fun self ->
+                   Fun arg ->
                        If arg = 0 Then 0 Else arg + self self (arg - 1)) 
 
-              (Function self ->
-                   Function arg -> 
+              (Fun self ->
+                   Fun arg -> 
                        If arg = 0 Then 0 Else arg + self self (arg - 1)) 
                        
               (arg - 1)
@@ -461,9 +461,9 @@ let run = converted_code^" 5 2";; (* peu run;; *)
 (* We can see how we are doing code surgery if we just apply code argument: *)
 
 (* pp @@ peu converted_code;; -- shows how we plugged in the x+x; this prints
-Function x ->
-    Function y ->
-        (Function xpx -> Function y -> If y = 1 Then xpx Else xpx + 1) (x + x) y 
+Fun x ->
+    Fun y ->
+        (Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1) (x + x) y 
 *)
 
 (* Note the above is not identical to goal_code, but it is *equivalent*:
@@ -491,10 +491,10 @@ let repl = "(Fun f -> Fun self -> Fun x -> f (self self) x)";;
 let summate0again = "("^repl^code^")";;
 (* As with the above x + x case we get an *equivalent* but not *identical* program:
 pp @@ peu summate0again;; returns 
-Function self ->
-    Function x ->
-        (Function rec ->
-             Function arg -> If arg = 0 Then 0 Else arg + rec (arg - 1)) (self self) x
+Fun self ->
+    Fun x ->
+        (Fun rec ->
+             Fun arg -> If arg = 0 Then 0 Else arg + rec (arg - 1)) (self self) x
 
    -- "in our heads" we can see that the (self self) will be passed in for rec giving the desired result
    -- this is a bit subtle as recall our functions are call-by-value so it will in fact first compute
