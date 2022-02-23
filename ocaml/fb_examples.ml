@@ -336,9 +336,10 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
    Formally, we can say the Let-version and the macro version are always equivalent:
       Let x = e in e'   ~=   (Fun x -> e')(e)   for any possible expressions e and e' and any variable x 
       e.g. Let x = 3+4 In x - 44 ~= (Fun x -> x - 44) (3+4) by above
-      -- the ~= relation is called *operational equivalence*, we will define later.
+      -- the ~= relation is called *operational equivalence*, we will define precisely later.
+      -- informally, replacing one with the other will not change overall program result.
       -- it is an equivalence relation and lets us do "algebra on programs"
-      -- we will use it below to help our understanding.
+      -- we will use ~= below to help our understanding.
 *)
 
 (* Here are some classic equivalences from 90+ years ago:
@@ -346,7 +347,7 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
   alpha-equivalence: rename parameter
       Fun x -> x ~= Fun y -> y   
       (and in general can rename any parameter with alpha, just change all uses as well)
-  eta-equivalence: forward
+  eta-equivalence: forwarder
       Fun x -> e x ~= e      if e is a function
   beta-equivalance: "inlining a function call anywhere preserves meaning"
       (Fun x -> e) v ~= e[v/x] (with a subtle side-condition we skip for now)
@@ -362,7 +363,6 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
   First we will write recursive programs by hand and then we will
   make a general macro, the Y-combinator. *)
 
-
 (* Recursion by explicit chaining of self as an argument *)
 
 let summate0 = "(Fun self -> Fun arg ->
@@ -370,7 +370,9 @@ let summate0 = "(Fun self -> Fun arg ->
 
 let summate0test = (summate0 ^ summate0 ^ "5");;
 
-(* The above works!  In general can write arbitrary recursive programs with self-passing. *)
+(* Key idea in the above is like the P P paradox computation but with a base case:
+   pass the function to itself.
+   Paradox is BAD for proofs (which must terminate), GOOD for coding!! *)
 
 (* Here is summate as an independent function *)
 
@@ -422,11 +424,11 @@ ycomb (Fun self -> Fun arg ->
 
 *)
 
-(* Background: refactorings in Fb code 
-   and using them to make a Y-combinator *)
+(* Background: refactorings in Fb code *)
 
 (* First a very common functional programming refactoring:
    Extract out a concrete operation as a (function) parameter.
+   Allows a different operation to be "plugged in" easily
 
    Consider this starting program:
 *)
@@ -434,10 +436,10 @@ ycomb (Fun self -> Fun arg ->
 let bump = "(Fun x -> If x = 0 Then 1 Else 0)";;
 
 (* Suppose we wanted to convert this to code where the    
-   equivalence relation `=` was instead a parameter, `eq`
+   equivalence relation `=` was instead a parameter, `op`
       -- makes for more general code *)
 
-let bump_general = "(Fun eq -> Fun x -> If eq x 0 Then 1 Else 0)";;
+let bump_general = "(Fun op -> Fun x -> If op x 0 Then 1 Else 0)";;
 
 (* Now feed in a concrete function for equivalence *)
 
@@ -461,32 +463,30 @@ let test2 = new_bump^"4";;
 
   This will be more clear from the example below. *)
 
-(* Suppose programmer writes this: *)
-let code = "(Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1)";; 
-
- (* And we want to convert to this just with Fb code: *)
+(* Suppose we want this code: *)
 let goal_code =
    "(Fun x -> Fun y -> If y = 1 Then (x + x) Else (x + x) + 1)";;
 
+(* But we want to let programmer just write this simpler *)   
+let code = "(Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1)";; 
+
 (* Here is converter Fb code that will do it: its just a function
-   taking original code as argument *)
+   taking code as argument and producing something with goal_code behavior *)
 let cvrt = "(Fun code -> Fun x -> Fun y -> code (x + x) y)";;
 
-(* Note: this turns code into goal_code!! *)
+(* Observe: cvrt turns code into goal_code!! *)
+let converted_code = "("^cvrt^")("^code^")";;
+
+(* Test to show it works *)
+(* First lets run the goal *)
+let run0 = goal_code^"5 2";;  (* peu run0;; *)
+(* The converted code has the same value *)
+let run = converted_code^" 5 2";; (* peu run;; *)
 
 (* Observe how it 
     -- replaces the Fun xpx parameter with Fun x, 
     -- keeps the Fun y parameter 
     -- passes code `x + x` and `y`, meaning y just forwarded, x doubled and forwarded *)
-
-(* Applying the converter to our code *)
-let converted_code = "("^cvrt^")("^code^")";;
-
-(* Now we can test to show it works *)
-(* First lets run the goal *)
-let run0 = goal_code^"5 2";;  (* peu run0;; *)
-(* The converted code has the same value *)
-let run = converted_code^" 5 2";; (* peu run;; *)
 
 (* We can see how we are doing code surgery if we just apply code argument: *)
 
