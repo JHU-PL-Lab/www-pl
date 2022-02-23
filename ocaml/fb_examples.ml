@@ -71,8 +71,8 @@ let ex8 =
           x1 (x2 - 1)
   In x1 100";;
 
-(* Here is a pretty printer for strings that are programs *)
-let pp s = s |> parse |> unparse |> print_string |> print_newline;;
+(* Here is a formatter for strings that are programs *)
+let format s = s |> parse |> unparse |> print_string |> print_newline;;
 
 let ex9 = "If 3 = 4 Then 5 Else 4 + 2" ;;
 
@@ -122,19 +122,18 @@ let combD = "Fun x -> x x";;
    No this is not ideal but it is very simple. 
  *)
 
-let double n = "(" ^ n ^ ") + (" ^ n ^ ")";;
+let double n = "(" ^ n ^ ") + (" ^ n ^ ")";; (* n is a _macro parameter_, a string *)
 
 double "2 + 4";; (* "(2 + 4) + (2 + 4)" *)
 
 (* 
    * Why didn't we just write n ^"+" ^ n above?? We need parens around all
    macro parameters like the n to not change the parse order.
-   * Yes, this is a somewhat hackish notion of macros
-   * But it is very simple
    * Notice also that macros do not do any evaluation -- 2+4 not 6 in the above.
 *)
 
-(* Macros can be used in code-strings by appending them in *)
+(* Macros can be used in other Fb code (strings) by appending them in 
+   This is in principle what C etc macros do, but they work at the level of the parse tree *)
 
 let quad = "Fun z -> (" ^ double "z" ^ ") + (" ^ double "z" ^ ")";;
   
@@ -142,10 +141,12 @@ let quad = "Fun z -> (" ^ double "z" ^ ") + (" ^ double "z" ^ ")";;
 
 
 (* Example of a bad string-based macro *)
-let apply_bad f x = f^" "^x;; (* sort of looks right here ... *)
-let apply_eg = apply_bad "Fun x ->x" "0";; (* oops! this is string "Fun x ->x 0" *)
-let apply_fixed f x = "("^f^")("^x^")";;
-let apply_eg_fixed = apply_fixed "Fun x ->x" "0";; (* "(Fun x ->x)(0)" *)
+let apply_bad f x = f^" "^x;; (* sort of looks OK here for f x ... *)
+let apply_bad_eg = apply_bad "Fun x -> x" "0";; (* oops! this is string "Fun x -> x 0" *)
+
+(* Fixed version *)
+let apply f x = "("^f^")("^x^")";;
+let apply_eg = apply "Fun x ->x" "0";; (* "(Fun x ->x)(0)", parsing is correct! *)
 
 (* A less hackish way to write macros would be to use ASTs as input and output to macros *)
 
@@ -153,24 +154,27 @@ let double_ast n = Plus(n,n);;
 let quad_ast n = Plus(double_ast n, double_ast n);;
 let eg_quad = quad_ast (Int 5);;
 
-(* But, it is hard for humans to code in the above format *)
+(* But, it is hard for humans to code in the above format so we use strings.
+   Real macro languages such as #define in C or ppx in OCaml will parse the strings *)
 
-(* ****** Using macros to encode features in Fb ********* *)
+(* ************************************************************ *)
+(* ********* Using macros to encode features in Fb ************ *)
+(* ************************************************************ *)
 
 
 (* ****** Encoding Pairs in Fb ********* *)   
 
-(* First lets hack some by hand, then write a general macro. *)
+(* First lets encode some by hand, then write a general macro. *)
 
-(* Fact: the following odd thing behaves a lot like OCaml's "(3,2)" *)
+(* Fact: the following odd thing can be made to behave a lot like OCaml's "(3,2)" *)
 
 let pair_eg = "Fun d -> d 3 2";;
 
 (* Proof: we can "get left side out" (and similarly for right) *)
 
-let getleft = "Let p = ("^pair_eg^") In p (Fun x -> Fun y -> x)"
+let get_left = "Let p = ("^pair_eg^") In p (Fun x -> Fun y -> x)"
 
-(* An overly simple pair macro reflecting what we did above *)
+(* An overly simple pair macro reflecting what we did above  *)
 
 let pr_simple c1 c2  =  "Fun d -> d ("^c1^") ("^c2^")";;
 let pair_eg_again = pr_simple "3" "2";;
@@ -178,18 +182,21 @@ let pair_eg_again = pr_simple "3" "2";;
 (* pr_simple works for the above, but it makes a *lazy* pair, the components are not evaluated *)
 
 let lazy_pair_eg = pr_simple "2+3" "3";; 
-(* peu lazy_pair_eg  -- does not compute the 2+3 --> LAZY pair, not what OCaml does *)
+(* peu lazy_pair_eg  -- does not compute the 2+3 --> LAZY pair, not what OCaml does 
+   -- here 2+3 will need to be computed every time first projection taken - inefficient! 
+   (note that lazy languages such as Haskell in fact cache so are not this inefficient) *)
 
-(* Macro which makes an eager pair, which is the OCaml form *)
+(* Macro which makes an eager pair, which is the OCaml form 
+   Idea is to use Let to force the components to compute first. *)
 let pr l r  =
   "(Let lft = ("^l^") In Let rgt = ("^r^") In
       Fun x -> x lft rgt)";;
 
-let pc = pr "34+3" "45";; (* peu pc is "Fun x -> x 37 45" -- eager pair that we wanted *)
+let pc = pr "34+3" "45";; (* peu pc is "Fun x -> x 37 45" -- the eager pair that we wanted *)
 
 (* Macros for extracting contents of pairs *)
-let left c =  "Let c = "^c^" In c (Fun x -> Fun y -> x)";;
-let right c =  "("^c^") (Fun x -> Fun y -> y)";;
+let left c =  "Let p = "^c^" In p (Fun x -> Fun y -> x)";;
+let right c =  "Let p = "^c^" In p (Fun x -> Fun y -> y)";;
 let use_pr = left pc;;
 
 (* peu use_pr;; *)
@@ -204,10 +211,11 @@ let use_pair_add =  "(" ^ pair_add ^ ")(" ^ pc ^ ")";;
 
 (* Note we could have instead directly made pr a 2-argument Fb function.
    In fact in a way this is easier since Fb makes sure the components were evaluated
+   -- no Let needed.
 *)
 
 let pr_fb = "(Fun lft -> Fun rgt -> Fun x -> x lft rgt)";;
-let pr_fb_eg = pr_fb ^ "4 5";;
+let pr_fb_eg = pr_fb ^ "(4+2) 5";;
 
 (* ****** Encoding Lists ********* *)
 
@@ -221,7 +229,8 @@ let emptylist_buggy = pr "0" "0";; (* make something up here *)
 let head_buggy e = left e;;
 let tail_buggy e = right e;;
 
-let eglist = cons_buggy "0" (cons_buggy "4" (cons_buggy "2" emptylist_buggy));; (* [0;4;2] encoded *)
+ (* [0;4;2] is informally encoded (0,(4,(2,(0,0)))) which is .. *)
+let eglist = cons_buggy "0" (cons_buggy "4" (cons_buggy "2" emptylist_buggy));;
 let eghd = head_buggy eglist;; (* evals to 0 *)
 let egtl = tail_buggy eglist;;
 let eghdtl = head_buggy (tail_buggy eglist);; (* evals to 4 *)
@@ -232,21 +241,28 @@ let eghdtl = head_buggy (tail_buggy eglist);; (* evals to 4 *)
    Seems like "tl l = 0" would work but if l is not empty it would get stuck. *)
 
 (* Solution: tag each element with a flag of emptylist or not *)
-(* Makes lists triples of (tag,head,tail) - lets make triple macros *)
+(* Makes lists triples of (tag,head,tail), tag True iff list is empty
+
+   Informally, the list [1;2;3] would then be the nested triple
+
+   (False, 1, (False, 2, (False, 3, (True, 0, 0))))
+
+   Lets make triple macros *)
 
 let triple a b c = pr (pr a b) c;; (* triples in terms of pairs (could have also made triples directly) *)
 let tfirst t = left (left t);;
 let tsecond t = right (left t);;
 let tthird t = (right t);;
+
+(* Now let us encode lists using triples as outined above *)
 let cons (e1, e2) = triple "False" e1 e2;; (* tag False means its not emptylist *)
-let emptylist = triple "True" "0" "0";; (* tag True --> empty list!  0's are filler *)
+let empty_list = triple "True" "0" "0";; (* tag True --> empty list!  0's are filler *)
 let head e = tsecond e;;
 let tail e = tthird e;;
 let isempty e = tfirst e;; (* Pull out the tag: True -> empty list, False -> not *)
 
-let eglist = cons("0",cons("4",cons("2",emptylist)));;
-(* This is in OCaml-triples is something like (false, (0, (false, 4, (false, 2, (true, 0, 0)))))
-   - doesn't work in OCaml since type of each list is different but fine in Fb *)
+let eglist = cons("0",cons("4",cons("2",empty_list)));;
+(* This is informally (False, (0, (False, 4, (False, 2, (True, 0, 0))))) if Fb had primitive triples *)
 let eghd = head eglist;;
 let egtl = tail eglist;;
 let eghdtl = head (tail eglist);;
@@ -270,7 +286,7 @@ let eglength = "("^length^")("^eglist^")";;
 (* Idea: stop and start evaluation explicitly. 
    These can be used to encode lazy data structures including infinite lists *)
 
-(* Before making the macro, it is nothing but a dummy function *)
+(* Informal idea: put a dummy "Fun _ ->" in front to stop eval  *)
 let fr = "(Fun _ -> 5 + 2 + 10922)";;
 (* peu fr;; -- observe how evaluating this does nothing - don't evaluate function body *)
 let thaw_fr = fr ^ "304949";; (* any application will "thaw" it. *) 
@@ -302,14 +318,14 @@ let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* a hack; really should find a va
 (* Let is built-in but it is also easy to define as a macro: it is just a function call.
 *)
 
-(* Here is a concrete example of this encoding *)
+(* Here is the idea of the encoding on an example *)
 
 let let_eg = "Let x = 3+4 In x - 44";;
 let let_as_application =  "(Fun x -> x - 44) (3+4)";; (* has exact same effect as previous Let *)
 
 let fblet x e1 e2 = "(Fun "^x^" -> "^e2^")("^e1^")";;
 let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 3 In z + z" *)
-(* pp let_ex;; - returns `(Fun z -> z + z) (2 + 3)` *)
+(* format let_ex;; - returns `(Fun z -> z + z) (2 + 3)` *)
 (* peu let_ex;; - returns "10" *)
 
 (* *********************** Equivalence ************************* *)
@@ -322,7 +338,7 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
       e.g. Let x = 3+4 In x - 44 ~= (Fun x -> x - 44) (3+4) by above
       -- the ~= relation is called *operational equivalence*, we will define later.
       -- it is an equivalence relation and lets us do "algebra on programs"
-      -- we will informally use it below to help our understanding.
+      -- we will use it below to help our understanding.
 *)
 
 (* Here are some classic equivalences from 90+ years ago:
@@ -338,9 +354,16 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
   Also  ~= is transitive, reflexive, symmetric, and we can always "substitute ~= for ~="
 *)
 
-(* ********* The Y Combinator ************** *)
+(* ************************************************************ *)
+(* ********* Encoding Recursion With The Y Combinator ********* *)
+(* ************************************************************ *)
 
-(* Recursion in Fb a la Python explicit chaining of self as an argument *)
+(* Yes there is Let Rec syntax in Fb, but it is not needed! 
+  First we will write recursive programs by hand and then we will
+  make a general macro, the Y-combinator. *)
+
+
+(* Recursion by explicit chaining of self as an argument *)
 
 let summate0 = "(Fun self -> Fun arg ->
     If arg = 0 Then 0 Else arg + self self (arg - 1))";;
@@ -359,7 +382,7 @@ let summate0test' = (summate ^ "5");;
 
   Let us *just* apply the first argument of the two above to see what is going on:
 
-  pp @@ peu (summate0^summate0);; -- returns:
+  format @@ peu (summate0^summate0);; -- returns:
   Fun arg ->
     If arg = 0 Then
         0
@@ -374,11 +397,18 @@ let summate0test' = (summate ^ "5");;
                        
               (arg - 1)
 
+   which is informally just
+   
+   Fun arg ->
+    If arg = 0 Then 0
+    Else arg + summate0 summate0 (arg - 1)
+
+
   -- we can see the 2nd parameter `5` will come into the variable `arg` here 
-  -- and the inner pattern is like what we started with, two summage0's applied to 5-1 ~= 4
+  -- and the inner pattern is like what we started with, two summate0's applied to 5-1 ~= 4
   -- so, the pattern repeats.  Fortunately it stops when arg = 0, no infinite looping like paradoxes.
 
-  Now, lets make a more user-friendly macro for defining recursive functions.
+  Now, lets make a more user-friendly Y-macro for defining recursive functions.
   1) get rid of extra self parameter in recursive calls ( the `self self`) and     
   2) get rid of the need to do the final line as a separate thing    
      -- lets make one master combinator to do all this. *)
@@ -388,14 +418,14 @@ let summate0test' = (summate ^ "5");;
 ycomb (Fun self -> Fun arg ->
     If arg = 0 Then 0 Else arg + self (arg - 1)) 5
 
-    computes to 15.  This is not far from Python's `self` syntax.
+    computes to 15.
 
 *)
 
 (* Background: refactorings in Fb code 
    and using them to make a Y-combinator *)
 
-(* First a very basic and common functional programming refactoring:
+(* First a very common functional programming refactoring:
    Extract out a concrete operation as a (function) parameter.
 
    Consider this starting program:
@@ -460,7 +490,7 @@ let run = converted_code^" 5 2";; (* peu run;; *)
 
 (* We can see how we are doing code surgery if we just apply code argument: *)
 
-(* pp @@ peu converted_code;; -- shows how we plugged in the x+x; this prints
+(* format @@ peu converted_code;; -- shows how we plugged in the x+x; this prints
 Fun x ->
     Fun y ->
         (Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1) (x + x) y 
@@ -490,7 +520,7 @@ let repl = "(Fun f -> Fun self -> Fun x -> f (self self) x)";;
 (* Do the replacer -- should make something like summate0 *)
 let summate0again = "("^repl^code^")";;
 (* As with the above x + x case we get an *equivalent* but not *identical* program:
-pp @@ peu summate0again;; returns 
+format @@ peu summate0again;; returns 
 Fun self ->
     Fun x ->
         (Fun rec ->
