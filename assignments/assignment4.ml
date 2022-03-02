@@ -85,7 +85,7 @@ let fb_unchurch = "(0 1)";;
 let fb_church = "(0 1)";;
    
 (*
-   assert (peu fb_unchurch^"("^fb_church^"(True))" = "True" );;
+   assert (peu @@ fb_unchurch^"("^fb_church^"(True))" = "True" );;
 *)
    
 (* Write a function to find out the logical NOT of a church encoded bool *)
