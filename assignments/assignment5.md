@@ -28,7 +28,7 @@
      
      b. Use your rules to show 
      ```ocaml
-     Let f = Fun x -> { w = x - 1} In (f 2).w ⇒ 3
+     Let f = Fun x -> { w = x - 1} In (f 2).w ⇒ 1
      ```
      by building the full proof tree.
 

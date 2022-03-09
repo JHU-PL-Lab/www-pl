@@ -113,7 +113,7 @@
     <p>a. Generalize the grammar and rules given in lecture for <strong>FbR2</strong> to the case of full records, <strong>FbR</strong>: they can have from 0 to n fields in a given record.  Note that the book only gives an interpreter for <strong>FbR</strong> so it not much help.</p>
 
     <p>b. Use your rules to show</p>
-    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nc">Let</span> <span class="n">f</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">w</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">}</span> <span class="nc">In</span> <span class="p">(</span><span class="n">f</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">w</span> <span class="err">⇒</span> <span class="mi">3</span>
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nc">Let</span> <span class="n">f</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">{</span> <span class="n">w</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">}</span> <span class="nc">In</span> <span class="p">(</span><span class="n">f</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">w</span> <span class="err">⇒</span> <span class="mi">1</span>
 </code></pre></div>    </div>
     <p>by building the full proof tree.</p>
   </li>
