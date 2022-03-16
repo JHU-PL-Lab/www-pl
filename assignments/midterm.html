@@ -1,0 +1,172 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/8986607496">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="pl-midterm-2022">PL Midterm 2022</h2>
+
+<p>You are to work without the consultation of any individuals other than Prof/TA/CAs on this exam.  This includes posting questions on the Internet (other than Courselore), etc. Please include at the top of your exam</p>
+
+<blockquote>
+  <p>I pledge I worked without consultation with any individuals other than course staff on this exam</p>
+</blockquote>
+
+<p>certifying this.  You are free to use any non-human resources, e.g. the course text, lectures, Wikipedia, etc.</p>
+
+<p>You are free to ask questions on Courselore or in office hours, but please ask all Courselore questions to Staff only.  If it is a good issue to clarify we will make your question public.</p>
+
+<p>The exam is due Friday 11:59PM.  You can use up to one late day on this exam so with a late day it would be due Saturday 11:59PM.</p>
+
+<ol>
+  <li>
+    <p>(10 points) Using the <strong>Fb</strong> operational semantics show <code>(Fun z -&gt; Let x = 3 + 4 In x - z) 4 ==&gt; 3</code></p>
+  </li>
+  <li>
+    <p>(10 points) Show that <code>Fun z -&gt; Let x = 3 + 4 In x - z ~= Fun q -&gt; 7 - q</code> using only the laws 2.17-2.27 in the book.</p>
+  </li>
+  <li>
+    <p>(30 points) For this question we will study <strong>FbValt</strong>, an alternative syntax for <strong>FbV</strong>.  Here is the grammar.</p>
+
+    <pre><code>  v ::= ... Fb grammar ... | n(v)
+  e ::= ... Fb grammar ... | e @ n | e has n | n(e)
+  n ::= a named variant tag, notated `a `b etc (i.e., the same as FbV)
+</code></pre>
+
+    <p>The new operator <code>@</code> extracts the underlying <code>n</code>-wrapped data, so e.g. <code>(`hello(5) @ `hello) ==&gt; 5</code>.  Note that if the tag does not map the argument <code>n</code> here the computation gets stuck, i.e. it has no value and so e.g. <code>(`hello(5) @ `byebye) ==&gt; v</code> fails for any <code>v</code>.  In order to write general programs we also need to include the <code>e has n</code> operator, which returns <code>True</code> if <code>e</code> is a variant <code>n(v)</code> for some <code>v</code>, and returns <code>False</code> if it is some other variant.  The operator is undefined if <code>e</code> is not a variant value.  So, for example the function</p>
+
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Let</span> <span class="n">f</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="nc">If</span> <span class="n">x</span> <span class="n">has</span> <span class="nt">`Some</span> <span class="nc">Then</span> <span class="p">(</span><span class="n">x</span> <span class="o">@</span> <span class="nt">`Some</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span> <span class="nc">Else</span> <span class="nc">If</span> <span class="n">x</span> <span class="n">has</span> <span class="nt">`None</span> <span class="k">then</span> <span class="mi">0</span>
+</code></pre></div>    </div>
+
+    <p>would have the behavior of <code>f(Some(4)) ==&gt; 3</code> and <code>f(None(33)) ==&gt; 0</code></p>
+
+    <p>a. Write the operational semantics rules for <strong>FbValt</strong>.  You may use shorthand to borrow all or some of the <strong>Fb</strong> rules.</p>
+
+    <p>b. We could alternatively have defined the above notation as <em>macros</em> for <strong>FbV</strong>.  Concretely, propose <strong>FbV</strong> macros <code>e @ n =def= ...</code> and <code>e has n =def= ...</code> (fill in the ..)  which would use the <strong>FbV</strong> syntax to implement these operations.</p>
+
+    <p>c. It is in fact also possible to do the opposite as well: show how the general <code>Match</code> syntax of <strong>FbV</strong> can be expressed as a macro in <strong>FbValt</strong>.  Give the general case, not just an example.</p>
+  </li>
+  <li>
+    <p>(20 points) We can also define operational equivalence <code>~=</code> on <strong>FbV</strong>.  The definition is identical to Definition 2.16, except use <strong>FbV</strong> expressions <code>e</code> and <strong>FbV</strong> contexts <code>C</code> in place of <strong>Fb</strong> expressions/contexts.</p>
+
+    <p>a. Prove that <code>`Yes(0) ~= `Yes(1)</code> fails in <strong>FbV</strong> by using the definition of <code>~=</code> for <strong>FbV</strong> outlined above.</p>
+
+    <p>b. All of the laws in the book for <strong>Fb</strong> (2.17-2.27) in fact hold for <strong>FbV</strong> as well, and in addition some new laws are needed if we want to prove useful equivalences from the laws.  Propose one useful general law of the form <code>e ~= e'</code> which will let us prove the <strong>FbV</strong> equivalence <br />
+ <code>(Fun x -&gt; Match `Yes(x) With `Yes(x) -&gt; 1 | `No(y) -&gt; 0) ~= Fun x -&gt; 1</code>.  Note you do not need to verify your law holds, but do make sure that it makes sense and is a general principle useful for much more than this one particular program equivalence.</p>
+
+    <p>c. Now, use your new law plus the 2.17-2.27 analogues for <strong>FbV</strong> to in fact prove this above example.</p>
+  </li>
+  <li>
+    <p>(10 points) Prove the symmetry of the operational equivalence relation <code>~=</code> (see Definition 2.18). Prove this by using Definition 2.16 to expand what <code>~=</code> means.</p>
+  </li>
+  <li>
+    <p>(15 points) Recall our definition of the Y combinator <code>ycomb</code> from <code>fb_examples.ml</code>:</p>
+
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="p">(</span><span class="nc">Fun</span> <span class="n">code</span> <span class="o">-&gt;</span> 
+        <span class="nc">Let</span> <span class="n">repl</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">self</span> <span class="o">-&gt;</span> <span class="nc">Fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">code</span> <span class="p">(</span><span class="n">self</span> <span class="n">self</span><span class="p">)</span> <span class="n">x</span> 
+        <span class="nc">In</span> <span class="n">repl</span> <span class="n">repl</span><span class="p">)</span>
+</code></pre></div>    </div>
+
+    <p>It looks like we are doing something like an η rule expansion (Def 2.22) on the body here:  we have <code>Fun x -&gt; code (self self) x</code> which takes in <code>x</code> as an argument and just forwards it to the function <code>(code (self self))</code> (extra parens added only for clarity here) which seems like a no-op.  If the η rule could apply we could collapse this forwarding and end up with an alternate Y combinator like this (let us call it <code>y_alt</code>):</p>
+
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="p">(</span><span class="nc">Fun</span> <span class="n">code</span> <span class="o">-&gt;</span> 
+        <span class="nc">Let</span> <span class="n">repl</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">self</span> <span class="o">-&gt;</span> <span class="n">code</span> <span class="p">(</span><span class="n">self</span> <span class="n">self</span><span class="p">)</span>
+        <span class="nc">In</span> <span class="n">repl</span> <span class="n">repl</span><span class="p">)</span>
+</code></pre></div>    </div>
+
+    <p>a. The η rule in fact <em>cannot</em> be used to equate the two expressions <code>ycomb ~= y_alt</code> above; why does it not apply?</p>
+
+    <p>b. This is a good thing in fact: <code>y_alt</code> cannot be used to write recursive functions like <code>ycomb</code> can (feel try try it out in the <strong>Fb</strong> interpreter, e.g. <code>peu y_alt^code^" 5";;</code> for <code>code</code> defined in <code>fb_examples.ml</code>).  For this question you need to use the operational semantics of <strong>Fb</strong> to justify why this is not working. You don’t need to write a whole proof tree but argue why there is no operational semantics proof that <code>y_alt^code^" 5" ==&gt; 15</code>.</p>
+  </li>
+</ol>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
