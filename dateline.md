@@ -315,7 +315,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mar 28</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">Wed</div>
+        <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
         <div align="left" class="body">&nbsp;Concurrency I</div>
@@ -332,7 +332,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mar 30</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">Mon</div>
+        <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
         <div align="left" class="body">&nbsp;Concurrency II</div>
@@ -349,11 +349,28 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Apr 4</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">Wed</div>
+        <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
         <div align="left" class="body"><a href="ocaml/afbv_examples.ml">AFbV coding</a></div>
       </td>
+      <td width="22%"> 
+        <div align="center" class="body">&nbsp;</div>
+      </td>
+      <td width="22%"> 
+        <div align="center" class="body">&nbsp;</div>
+      </td>
+    </tr>
+    <tr> 
+      <td width="8%"> 
+        <div align="center" class="body">Apr 6</div>
+      </td>
+      <td width="8%"> 
+        <div align="center" class="body">Wed</div>
+      </td>
+      <td width="30%"> 
+        <div align="left" class="body">&nbsp;Types I: TFb</div>
+      </td>	
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency</a></div>
       </td>
@@ -363,27 +380,10 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 6</div>
-      </td>
-      <td width="8%"> 
-        <div align="center" class="body">Mon</div>
-      </td>
-      <td width="30%"> 
-        <div align="left" class="body">&nbsp;Types I: TFb</div>
-      </td>	
-      <td width="22%"> 
-        <div align="center" class="body"></div>
-      </td>
-      <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
-      </td>
-    </tr>
-    <tr> 
-      <td width="8%"> 
         <div align="center" class="body">Apr 11</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">Wed</div>
+        <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
         <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
@@ -400,7 +400,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Apr 13</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">Mon</div>
+        <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
         <div align="left" class="body">&nbsp;Types III: Subtyping</div>
