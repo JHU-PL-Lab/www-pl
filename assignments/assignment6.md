@@ -8,7 +8,7 @@ Implement an interpreter for the variant language **FbRX** which implements **Fb
 
 The only file you should modify is **fbrxinterp.ml**; do not change the code above **eval** in that file.
 
-For records, we permit the append of arbitrary records so e.g. `{a = 1; b = 1} @ {a = 2; c = 1} => {a = 2; b = 1; c = 1}` . If the same field is present in both records, the value in the right record has precedence. Order of fields in records is arbitrary.  Make sure you support `@` in all contexts, e.g. code like `(f 0) @ (g 1)` should work if `f`/`g` are functions returning records.
+For records, we permit the append of arbitrary records so e.g. `{a = 1; b = 1} @ {a = 2; c = 1} => {a = 2; b = 1; c = 1}` . If the same field is present in both records, the value in the right record has precedence.  Make sure you support `@` in all contexts, e.g. code like `(f 0) @ (g 1)` should work if `f`/`g` are functions returning records.
 
 For exceptions, **FbRX** supports exceptions via expression `Raise #xn e` and `Try e With #xn e` as is defined in **FbX** in the book. **FbRX** also supports runtime exceptions so the language itself can handle the dynamic errors that may arise. For example, e.g. `1 + True` should evaluate to `Raise #TypeMismatch 0` since there is a type mismatch here. Another **FbRX** exception you should support is `Raise #LabelNotFound 0` when a non-existing label is selected from a record, e.g. for `{a = 1}.b`. The value 0 in the exception is arbitrary, but when grading we will check whether the exception id matches the names above.  In general, for any case that there is a run-time type error the interpreter should return an **FbRX** exception instead of raising an OCaml exception as we did with **Fb**.
 
