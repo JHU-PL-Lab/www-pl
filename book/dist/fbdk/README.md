@@ -126,8 +126,6 @@ $ ocamlrun reference/Fb/interpreter.bc
 
 Pressing Ctrl+C or Ctrl+D will exit the toploop.
 
-A
-
 The interpreters may also be used to run files directly rather than through a
 toploop.  The interpreter may take a filename as an argument:
 
@@ -147,7 +145,7 @@ your own implementation to ours. You need only run the provided `toplevel.exe` f
     
 This will enter you into an environment identical to if you had run
 
-    $ dune utop ./Fb
+    $ dune utop Fb
 
 ...but with the reference, 'ground truth' implementation supplying the definitions.
 The same Debugutils and Fbdk functions and modules are available.
