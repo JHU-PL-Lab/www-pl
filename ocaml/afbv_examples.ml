@@ -99,7 +99,7 @@ let multbad = "Let one_message_behavior = Fun me -> Fun data -> Fun msg ->
      In
 Let actor = Create(one_message_behavior,2) In
 actor <- `doit(3);
-actor <- `doit(7) (* will not be received - no code to process it *)"
+actor <- `doit(7) (* will not be processed - no code to do it *)"
 ;;
 
 
@@ -168,26 +168,53 @@ actor <- `count 4"
 
 (* Internal state example: count_down_behavior where the actor internally keeps the count 
    Actors can be stateful in this manner: stateless during message processing but
-   stateful between each message *)
+   stateful between each message.
+   State is really just a parameter passed to the continuation each time, hand over fist.  *)
    
 let internal_count =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
    Let self_messaging_behavior =
 
-(* Observe how here the 'data' parameter is now under the Y - it is not just a global parameter,
-   each recursion also needs to be fed data, and that will allow us to propagate state *)
+(* Observe how here the 'cur_count' state parameter is now under the Y - it is not just a global parameter,
+   each recursion also needs to be fed cur_count, and that will allow us to propagate state *)
    
-  Fun me -> y (Fun this -> Fun data -> Fun msg ->
+  Fun me -> y (Fun this -> Fun cur_count -> Fun msg ->
      Match msg With
        `count(_) ->
-           (Print \"OUTPUT: \"; (Print data); Print \"\n\");
-           (If data = 0 Then 0 Else (me <- (`count (_))));
-           (this (data-1))) In
+           (Print \"OUTPUT: \"; (Print cur_count); Print \"\n\");
+           (If cur_count = 0 Then 0 Else (me <- (`count (_))));
+           (this (cur_count-1))) In
 Let actor = Create(self_messaging_behavior, 4) In
 actor <- `count (0)"
 ;;
 
-(* ping pong example involving two actors.  Have pinger create ponger for fun. *)
 
+(* Count server example to show how ne actor can maintain a data structure other
+   actors can use.  For simplicity the data structure here is just a single number,
+   incremented at each call *)
+
+let count_server_eg =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
+Let count_beh = (* this actor behavior will be the count server *)
+  Fun me -> y (Fun this -> Fun cur_count -> Fun msg ->
+     Match msg With
+       `count(a) -> (a <- cur_count);  (* send current count back to customer actor *)
+                    (this (cur_count + 1)) (* change state to one bigger for next msg *)
+   )
+In
+Let count_user_beh = (* This is a client to the above server, it will query for some numbers *)
+  Fun me -> Fun count_actor -> Fun _ -> 
+   count_actor <- `count(me); (* We critically need our own name here to let counter know where to send reply *)
+   (Fun msg_n -> count_actor <- `count(me); (* this is the behavior to handle the reply, a number *)
+   Fun msg_m -> Print \"OUTPUT: \"; Print(msg_n + msg_m)) (* One more behavior to handle reply to 2nd count *)
+In
+Let counter = Create(count_beh, 10) (* initial value is 10 *) In
+Let user = Create(count_user_beh,counter) (* Need to tell user about count actor at its creation *) In
+user <- 0 (* bootstrap the messaging by sending user any message *)"
+;;
+
+
+
+
+(* ping pong example involving two actors.  Have pinger create ponger for fun. *)
 
 let ping_pong = "
 Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
