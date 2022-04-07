@@ -44,7 +44,7 @@ let onemsg = "Let one_message_behavior =
      Match msg With
        `doit(n) -> (Print \"OUTPUT: \"; (Print (n + data)); Print \"\n\");
                    Fun x -> x (* ignore this line for now, will explain later *)
-     In
+In (* Above is just defining code, now lets bootstrap the system with some actual actors and messages *)
 Let actor = Create(one_message_behavior,2) In
 actor <- `doit(3)"
 ;;
@@ -78,19 +78,16 @@ let lecture_example =
          Match msg With
            `hi(n) -> 
                (Print \"DEBUG: a1 received hi\");
-               Let a2 = Create(a2_behavior, me) In  (* a1 creates a2 *)
+               Let a2 = Create(a2_behavior, me) In  (* a1 creates a2, tells it about itself for reply *)
                (a2 <- `ho(0)); 
                Fun msg -> (Print \"DEBUG: a1 received ok\"); (Fun msg -> 0)
    In
    Let a1 = Create(a1_behavior,0) In
    a1 <- `hi(7)"
     ;;
-    
-
-
 
 (* Note if we send multiple messages to the above one_message_behavior actor 
-   it will only process the first one: *)
+   it will only process one of them (nondeterministically): *)
 
 let multbad = "Let one_message_behavior = Fun me -> Fun data -> Fun msg ->
      Match msg With
@@ -99,29 +96,35 @@ let multbad = "Let one_message_behavior = Fun me -> Fun data -> Fun msg ->
      In
 Let actor = Create(one_message_behavior,2) In
 actor <- `doit(3);
-actor <- `doit(7) (* will not be processed - no code to do it *)"
+actor <- `doit(7)"
 ;;
+(* Nondeterminism is hard to debug so use this for debugging: `deterministic_delivery := true;;`
+   - keeps message in a queue instead of a set conceptually *)
 
 
-(* Why did the above fail?  Because the contract is: when the actor is finished processing,
+(* Why did the above not process 2nd message?  Because the contract is: when the actor is finished processing,
    it needs to return what code will use to process the next message.
 
    * This is similar to the hand-over-fist programming idiom for functional trees, lists, etc
    * But, it is not data state here, it is **code state**
    * In other words, the code you are setting is the future code for the actor
-     - The technical term for "the rest of the code" is the **continuation**
+     - The PL term for "the rest of the code I need to run" is the **continuation**
      - So, each actor after processing one message needs to set its continuation before going back to sleep.
      - This is the same as how in JavaScript for asynchronous requests you need to set up the callback code
        -- the callback function is exactly the "next thing" the code needs to do, the **continuation**
+       -- modern JavaScript has some sugar which hides this (asynch/await) but old JS and under the covers 
+          there is a continuation function in JavaScript to perform subsequent actions
 *)
    
 (* Here is an example which processes multiple messages: 
-  after the first message we return code to process the second.  *)
+  after the first message we **return code to process the second** -- the continuation code.  *)
 
 let twomsg = "Let two_message_behavior =
   Fun me -> Fun data -> Fun msg ->
      Match msg With
        `doit(n) -> (Print \"OUTPUT: \"; (Print (n + data)); Print \"\n\");
+     (* OK for the result we now return **code** (continuation) to process the next message *)
+     (* This code is in turn what is installed in the soup so it will run upon next message *)  
      Fun msg -> ((Print \"DONE!\n\"); (Fun msg -> 0)) (* this return result will be code handling next message *)
     In
 Let actor = Create(two_message_behavior,2) In
@@ -210,8 +213,6 @@ Let counter = Create(count_beh, 10) (* initial value is 10 *) In
 Let user = Create(count_user_beh,counter) (* Need to tell user about count actor at its creation *) In
 user <- 0 (* bootstrap the messaging by sending user any message *)"
 ;;
-
-
 
 
 (* ping pong example involving two actors.  Have pinger create ponger for fun. *)
