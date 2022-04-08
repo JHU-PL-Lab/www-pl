@@ -1,6 +1,6 @@
 ## Assigment 7: Actors
 
-This homework focuses on the actor model and actor programming in **AFbV**.  The AFbV examples run in class may be found in the [`afbv_examples.ml`](../ocaml/code/afbv_examples.ml) file.
+This homework focuses on the actor model and actor programming in **AFbV**.  The AFbV examples run in class may be found in the [`afbv_examples.ml`](../ocaml/afbv_examples.ml) file.
 
 This file also contains instructions on how to run the reference interpreter and to set up utop for easy testing of your actor code.  As a warm-up, turn on some of the debugging flags in comments at the top and `peu` some of the examples in that file. (Note that the message debug flag was recently fixed so if you want to use that please grab a fresh copy of the zip file to get the latest reference implementation (only the file `./reference/AFbV/toplevel.exe` is changed).)
 
