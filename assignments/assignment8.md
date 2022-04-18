@@ -42,13 +42,13 @@ This assignment has a principles/theory paper part (A) and an implementation par
 
     **STFbV** needs type rules and subtype rules as with **STFbR**.  But, for this question we are only going to focus on the *semantics* of these variant types as sets of expressions, and what subtyping means in that context. Here is how we could define `[[τ]]` for the **STFbV** types.
 
-    > `e in [[τ]]` iff 
+    `e in [[τ]]` iff 
 
-    > (* clauses same as STFbR for non-record non-variant cases *)
+    (* clauses same as STFbR for non-record non-variant cases *)
 
-    > ... or `τ = n_1 of τ_1 | ... | n_m of τ_m`, in which case
-
-    >    if `e => v`, then `v = n_1(v_1)` with `v_1 in [[τ_1]]`, or `v = n_2(v_2)` with `v_2 in [[τ_2]]`, ... or `v = n_m(v_m)` with `v_m in [[τ_m]]`
+    ... or `τ = n_1 of τ_1 | ... | n_m of τ_m`, in which case
+    
+    if `e => v`, then `v = n_1(v_1)` with `v_1 in [[τ_1]]`, or `v = n_2(v_2)` with `v_2 in [[τ_2]]`, ... or `v = n_m(v_m)` with `v_m in [[τ_m]]`
 
 
     In other words, the members of e.g. `` [[ `good of Int | `bad of Bool ]]`` are expressions that if they terminate either evaluate to `` `good(n)`` for some number `n`, or to `bad(True/False)`.

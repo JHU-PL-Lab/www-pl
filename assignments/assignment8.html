@@ -128,21 +128,13 @@
 
     <p><strong>STFbV</strong> needs type rules and subtype rules as with <strong>STFbR</strong>.  But, for this question we are only going to focus on the <em>semantics</em> of these variant types as sets of expressions, and what subtyping means in that context. Here is how we could define <code>[[τ]]</code> for the <strong>STFbV</strong> types.</p>
 
-    <blockquote>
-      <p><code>e in [[τ]]</code> iff</p>
-    </blockquote>
+    <p><code>e in [[τ]]</code> iff</p>
 
-    <blockquote>
-      <p>(* clauses same as STFbR for non-record non-variant cases *)</p>
-    </blockquote>
+    <p>(* clauses same as STFbR for non-record non-variant cases *)</p>
 
-    <blockquote>
-      <p>… or <code>τ = n_1 of τ_1 | ... | n_m of τ_m</code>, in which case</p>
-    </blockquote>
+    <p>… or <code>τ = n_1 of τ_1 | ... | n_m of τ_m</code>, in which case</p>
 
-    <blockquote>
-      <p>if <code>e =&gt; v</code>, then <code>v = n_1(v_1)</code> with <code>v_1 in [[τ_1]]</code>, or <code>v = n_2(v_2)</code> with <code>v_2 in [[τ_2]]</code>, … or <code>v = n_m(v_m)</code> with <code>v_m in [[τ_m]]</code></p>
-    </blockquote>
+    <p>if <code>e =&gt; v</code>, then <code>v = n_1(v_1)</code> with <code>v_1 in [[τ_1]]</code>, or <code>v = n_2(v_2)</code> with <code>v_2 in [[τ_2]]</code>, … or <code>v = n_m(v_m)</code> with <code>v_m in [[τ_m]]</code></p>
 
     <p>In other words, the members of e.g. <code>[[ `good of Int | `bad of Bool ]]</code> are expressions that if they terminate either evaluate to <code>`good(n)</code> for some number <code>n</code>, or to <code>bad(True/False)</code>.</p>
 
