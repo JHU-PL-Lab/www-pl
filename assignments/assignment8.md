@@ -86,7 +86,7 @@ val tc : string -> string = <fun>
 The `Fb` reference binary also supports typechecking. You can turn it on by passing `--typecheck` to it. As an example, a correctly working interpreter should behave as follows:
 
 ```ocaml
-$ ./Fb/reference/interpreter.bc --typecheck
+$ ocamlrun reference/Fb/interpreter.bc --typecheck
         Fb version 1.4.0                (typechecker enabled)
 # (Function x -> Function y -> x + y) 4;;
 : Int -> Int
