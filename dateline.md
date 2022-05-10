@@ -489,7 +489,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Fri</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">Final Review Session, 1-2:30PM</div>
+        <div align="left" class="body">Final Review Session, 1:15-2:30PM</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
