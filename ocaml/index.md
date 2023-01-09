@@ -19,20 +19,19 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
     ``` 
     will install Homebrew 
 	- Mac with Homebrew (make sure you first do a `brew update` before this): `brew install gpatch; brew install opam`
+-   For Windows you should use WSL2, the Windows Subsystem for Linux.  It creates a Linux-like system from within Windows.
+    - Once you install [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/) you will be able to follow the Linux Ubuntu install instructions linked above. 
+       - Note that your WSL2 Ubuntu needs the C compiler and tools for the `opam` install to work; the following Linux shell command will get you those: `sudo apt install make m4 gcc unzip bubblewrap`.
+       - You can still use your Windows install of VSCode to edit files by using the [VSCode Remote WSL Extension](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) -- it will connect the Windows editor to the underlying WSL2 subsystem.  See below where VSCode is described for details on how to set this up.
+    -  WSL2 has been working well for most people, but another option is to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, [here is one of them](https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098).  Once your virtual Linux box is set up, you can follow the `opam` Linux install instructions.
+
+### Initial setup of `opam`
 - You will then need to run some terminal commands to set up the basics:
-    1.  `opam init` to initialize OPAM;
-    2.  `opam switch create 4.14.1` (this will take awhile) to build OCaml version 4.14.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to `opam update` before this `switch` to make sure OPAM is aware of the latest version);
-	3.  `eval $(opam env)` to let your shell know where the OPAM files are (use ``eval `opam env` `` instead if you are using `zsh` on a Mac); and
-    4.  Also add the very same line, `eval $(opam env)`, to your `~/.bash_profile` or `~/.profile` or `~/.bashrc` shell init file (add to the first one that exists already) as you would need to do that in every new terminal window otherwise. If you are using `zsh` on macs, add line ``eval `opam env` `` instead to your `~/.zshrc` file.
-    
-- If you already have an earlier version of OCaml installed via `opam`, start on step 2. above to update to 4.14.1.  Make sure to do the `opam update` step first or your install won't know that 4.14.1 even exists.
-
--   Windows Windows Windows.. the OCaml toolchain is unfortunately not good in straight Windows.
-    -   If you are running a recent Windows install, we recommend installing [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/) which once you have set up will allow you to follow the Linux Ubuntu install instructions above to get `opam`. 
-       - Note that your Ubuntu needs the C compiler and tools for the `opam` install to work; the following Linux shell command will get you those: `sudo apt install make m4 gcc unzip`.
-       - [More WSL2 for OCaml tips here](https://www.cs.princeton.edu/courses/archive/fall20/cos326/WindowsSemiNative.php).  
-    -   Option 2 is to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, [here is one of them](https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098).  Once your virtual Linux box is set up, you can follow the `opam` Linux install instructions.
-
+    1.  `opam init` to initialize OPAM (we suggest you answer `y` to the question `Do you want opam to modify ~/.profile? [N/y/f]`);
+    2.  If you didn't get that question or said `N`, you will need to add line, `eval $(opam env)`, to your `~/.bash_profile` or `~/.profile` or `~/.bashrc` shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using `zsh` on macs, add line ``eval `opam env` `` instead to your `~/.zshrc` file. 
+    3.  Type command `eval $(opam env)` to your shell to let it know where the opam files are (zsh users on Macs type ``eval `opam env` `` instead)       
+    4. Type `opam switch create 4.14.1` (this will take awhile) to build OCaml version 4.14.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to `opam update` before this `switch` to make sure OPAM is aware of the latest version).
+- If you already have an earlier version of OCaml installed via `opam`, you will need to update to 4.14.1.  Make sure to do the `opam update` step first or your install won't know that 4.14.1 even exists.
 ### Configuring OCaml 
 
 Once you have OCaml 4.14.1 installed, run the following `opam` command in the terminal to install additional necessary packages used in the class:
@@ -74,21 +73,21 @@ Here are all the tools we will be using.  You are required to have a build for w
 
 ### Development Environments for OCaml
 
+We strongly recommend VSCode since it has OCaml-specific features such as syntax highlighting, auto-indent, and lint analysis to make the coding process much smoother.
+
 **[Visual Studio Code](https://code.visualstudio.com)**
 
 VSCode has very good OCaml support and is the "officially recommended editor". 
 
-* We recommend you use the plugin called **OCaml Platform** for OCaml support in VSCode.   To install it, first run `opam install ocaml-lsp-server` from a terminal.  Then from the `View` menu in VSCode select `Extensions`, then type in OCaml in the search box and this extension will show up: select **OCaml Platform** from the list.
+* To make VSCode OCaml-aware you will need to install the **OCaml Platform**.   To install it, from the `View` menu select `Extensions`, and type OCaml in the search box and this extension will show up: select **OCaml Platform** from the list.
 
-* (If you are having problems with installing OCaml Platform you could try to install the **OCaml and Reason IDE** extension instead (it has fewer features however): from the `View` menu select `Extensions`, then type in OCaml in the search box and this extension will show up; install it.)
+* You can easily run a `utop` shell from within VSCode, just open up a shell from the `Terminal` menu and type `utop`.
 
-* You can easily run a `utop` shell from within VSCode, just open up a new terminal from the `Terminal` menu and type `utop`.
-
-* If you are on Windows and using WSL2, you should run Visual Studio "in WSL2 space" so you get OCaml syntax highlighting and other nice features; see [this blog post](https://code.visualstudio.com/blogs/2019/09/03/wsl2) for how you can set it up.
+* If you are on Windows and using WSL2, you need to run Visual Studio "in WSL2 space" to get OCaml syntax highlighting and other nice features. See the [Remote WSL Extension Docs](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) for details on how to set up the VSCode-WSL2 connection.  If you are having trouble look at the [Additional Resources](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode#additional-resources) on that page.  Once you have the above set up, install the OCaml Platform as described above and you should have syntax highlighting etc working.
 
 **vim**: If you use `vim`, my condolances as it is woefully behind the times in spite of many band-aids added over the years.  Still, if you have been brainwashed to believe it is good, type shell commands `opam install user-setup` and `opam user-setup install` after doing the above  default `opam` install to set up syntax highlighting, tab completion, displaying types, etc. See [here](https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt) for some dense documentation.
 
-**emacs**: See vim.  Confession: I still use emacs a bit but have managed to mostly wean myself.  40-year habits die hard.  Note you will need to also `opam install tuareg` to get emacs to work, and follow the instructions the install prints out.
+**emacs**: See vim. Note you will need to also `opam install tuareg` to get emacs to work, and follow the instructions the install prints out.
 
 ### Coding Style
 
