@@ -139,7 +139,7 @@
 <h3 id="configuring-ocaml">Configuring OCaml</h3>
 
 <p>Once you have OCaml 4.14.1 installed, run the following <code>opam</code> command in the terminal to install additional necessary packages used in the class:</p>
-<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opam <span class="nb">install </span>ocp-indent ocaml-lsp-server menhir utop ppx_deriving ounit2
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opam <span class="nb">install </span>ocaml-lsp-server menhir utop ppx_deriving ounit2
 </code></pre></div></div>
 
 <p>Lastly, edit the file <code>~/.ocamlinit</code> to add the line</p>
@@ -199,7 +199,7 @@
   </li>
 </ul>
 
-<p><strong>vim</strong>: If you use <code>vim</code>, my condolances as it is woefully behind the times in spite of many band-aids added over the years.  Still, if you have been brainwashed to believe it is good, type shell commands <code>opam install merlin user-setup</code> and <code>opam user-setup install</code> after doing the above  default <code>opam</code> install to set up syntax highlighting, tab completion, displaying types, etc. See <a href="https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt">here</a> for some dense documentation.</p>
+<p><strong>vim</strong>: If you use <code>vim</code>, my condolances as it is woefully behind the times in spite of many band-aids added over the years.  Still, if you have been brainwashed to believe it is good, type shell commands <code>opam install merlin ocp-indent user-setup</code> and <code>opam user-setup install</code> after doing the above  default <code>opam</code> install to set up syntax highlighting, tab completion, displaying types, etc. See <a href="https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt">here</a> for some dense documentation.</p>
 
 <p><strong>emacs</strong>: See vim. Note you will need to also <code>opam install tuareg</code> to get emacs to work, and follow the instructions the install prints out.</p>
 
