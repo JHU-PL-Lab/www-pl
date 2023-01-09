@@ -31,7 +31,8 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
     2.  If you didn't get that question or said `N`, you will need to add line, `eval $(opam env)`, to your `~/.bash_profile` or `~/.profile` or `~/.bashrc` shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using `zsh` on macs, add line ``eval `opam env` `` instead to your `~/.zshrc` file. 
     3.  Type command `eval $(opam env)` to your shell to let it know where the opam files are (zsh users on Macs type ``eval `opam env` `` instead)       
     4. Type `opam switch create 4.14.1` (this will take awhile) to build OCaml version 4.14.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to `opam update` before this `switch` to make sure OPAM is aware of the latest version).
-- If you already have an earlier version of OCaml installed via `opam`, you will need to update to 4.14.1.  Make sure to do the `opam update` step first or your install won't know that 4.14.1 even exists.
+- If you already have an earlier version of OCaml installed via `opam`, you will need to update to 4.14.1 via `opam switch create 4.14.1`.  Make sure to do the `opam update` step first or your install won't know that 4.14.1 even exists.  (Note if you took FPSE you need to also follow all the configuration steps below as they are different and the OCaml version is different).
+
 ### Configuring OCaml 
 
 Once you have OCaml 4.14.1 installed, run the following `opam` command in the terminal to install additional necessary packages used in the class:

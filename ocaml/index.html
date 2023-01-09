@@ -133,10 +133,10 @@
       <li>Type <code>opam switch create 4.14.1</code> (this will take awhile) to build OCaml version 4.14.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to <code>opam update</code> before this <code>switch</code> to make sure OPAM is aware of the latest version).</li>
     </ol>
   </li>
-  <li>If you already have an earlier version of OCaml installed via <code>opam</code>, you will need to update to 4.14.1.  Make sure to do the <code>opam update</code> step first or your install won’t know that 4.14.1 even exists.
-    <h3 id="configuring-ocaml">Configuring OCaml</h3>
-  </li>
+  <li>If you already have an earlier version of OCaml installed via <code>opam</code>, you will need to update to 4.14.1 via <code>opam switch create 4.14.1</code>.  Make sure to do the <code>opam update</code> step first or your install won’t know that 4.14.1 even exists.  (Note if you took FPSE you need to also follow all the configuration steps below as they are different and the OCaml version is different).</li>
 </ul>
+
+<h3 id="configuring-ocaml">Configuring OCaml</h3>
 
 <p>Once you have OCaml 4.14.1 installed, run the following <code>opam</code> command in the terminal to install additional necessary packages used in the class:</p>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opam <span class="nb">install </span>merlin ocp-indent menhir utop ppx_deriving ounit2
