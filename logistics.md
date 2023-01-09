@@ -2,15 +2,16 @@
 
 ### Class Time and location
 
-We will meet 1:30-2:45PM on Mondays and Wednesdays in Hodson 213.  You are normally expected to attend in-person, but if there are reasons you cannot attend such as being quarantined, sick, travelling, etc we have backup options including live streaming of all lectures on Zoom, and recording and uploading them to Panopto.
+We will meet 1:30-2:45PM on Mondays and Wednesdays in Remsen 1.  You are normally expected to attend in-person, but if there are reasons you cannot attend such as being quarantined, sick, travelling, etc the lecture recordings should be available on Panopto.
 
 ### Q&amp;A: Courselore
 
-We are using a new tool, Courselore, for course announcements and Q&amp;A. We will be emailing a special sign-up link for you to get on there.  If you added late please contact the instructor or TA for the link.
+We are using a new tool, Courselore, for course announcements and Q&amp;A. We will be emailing a special sign-up link for you to get on there; the link is also accessible from the course Canvas page.
 
-### Zoom and Panopto Locations
+### Panopto Lecture Videos
 
-See Courselore for those links.  Once you have an account there, [this link will work to see these locations](https://courselore.org/courses/8986607496/conversations/1).
+See [this link](https://jh.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx?folderID=bf3b5ead-d83f-48b1-9988-af8501240312) for access to the videos.  You must authenticate to see them.  Please let us know if the link is not working.
+
 
 ### The Book
 
@@ -18,7 +19,7 @@ The book for the course is the on-line [Book](book/index.html), which directly c
 
 ### Gradescope
 
-[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See Courselore for the entry code ([here](https://courselore.org/courses/8986607496/conversations/1) once you have made your Courselore account.)
+[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See Courselore for the entry code ([here](TBA) once you have made your Courselore account.)
 
 ### Assignments
 
