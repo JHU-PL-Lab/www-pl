@@ -5,9 +5,9 @@
 
 ### Our ML Dialect
 
-We will use [OCaml](http://ocaml.org), version 4.13.1.
+We will use [OCaml](http://ocaml.org), version 4.14.1.
 
-### Installing OCaml 4.13.1
+### Installing OCaml 4.14.1
 
 We require that you use the [opam packaging system](https://opam.ocaml.org) for installing OCaml and its extensions.  Once you get `opam` installed and working, everything else should be easy to install .. so the only hard part is the first step.
 
@@ -21,11 +21,11 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
 	- Mac with Homebrew (make sure you first do a `brew update` before this): `brew install gpatch; brew install opam`
 - You will then need to run some terminal commands to set up the basics:
     1.  `opam init` to initialize OPAM;
-    2.  `opam switch create 4.13.1` (this will take awhile) to build OCaml version 4.13.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to `opam update` before this `switch` to make sure OPAM is aware of the latest version);
+    2.  `opam switch create 4.14.1` (this will take awhile) to build OCaml version 4.14.1 (the initial install is usually a slightly outdated version; also, if you already had an OPAM install you need to `opam update` before this `switch` to make sure OPAM is aware of the latest version);
 	3.  `eval $(opam env)` to let your shell know where the OPAM files are (use ``eval `opam env` `` instead if you are using `zsh` on a Mac); and
     4.  Also add the very same line, `eval $(opam env)`, to your `~/.bash_profile` or `~/.profile` or `~/.bashrc` shell init file (add to the first one that exists already) as you would need to do that in every new terminal window otherwise. If you are using `zsh` on macs, add line ``eval `opam env` `` instead to your `~/.zshrc` file.
     
-- If you already have an earlier version of OCaml installed via `opam`, start on step 2. above to update to 4.13.1.  Make sure to do the `opam update` step first or your install won't know that 4.13.1 even exists.
+- If you already have an earlier version of OCaml installed via `opam`, start on step 2. above to update to 4.14.1.  Make sure to do the `opam update` step first or your install won't know that 4.14.1 even exists.
 
 -   Windows Windows Windows.. the OCaml toolchain is unfortunately not good in straight Windows.
     -   If you are running a recent Windows install, we recommend installing [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/) which once you have set up will allow you to follow the Linux Ubuntu install instructions above to get `opam`. 
@@ -35,7 +35,7 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
 
 ### Configuring OCaml 
 
-Once you have OCaml 4.13.1 installed, run the following `opam` command in the terminal to install additional necessary packages used in the class:
+Once you have OCaml 4.14.1 installed, run the following `opam` command in the terminal to install additional necessary packages used in the class:
 ```bash
 opam install merlin ocp-indent menhir utop ppx_deriving ounit2
 ```

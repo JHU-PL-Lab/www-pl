@@ -6,11 +6,11 @@ We will meet 1:30-2:45PM on Mondays and Wednesdays in Remsen 1.  You are normall
 
 ### Q&amp;A: Courselore
 
-We are using a new tool, Courselore, for course announcements and Q&amp;A. We will be emailing a special sign-up link for you to get on there; the link is also accessible from the course Canvas page.
+We are using [Courselore](https://courselore.org) for course announcements and Q&amp;A. We will be emailing a special sign-up link for you to get on there; the link is also accessible from the course Canvas page if you added late.
 
 ### Panopto Lecture Videos
 
-See [this link](https://jh.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx?folderID=bf3b5ead-d83f-48b1-9988-af8501240312) for access to the videos.  You must authenticate to see them.  Please let us know if the link is not working.
+Use [this link](https://jh.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx?folderID=bf3b5ead-d83f-48b1-9988-af8501240312) for access to the videos.  You must authenticate to see them.  Please let us know if the link is not working.
 
 
 ### The Book
@@ -19,7 +19,7 @@ The book for the course is the on-line [Book](book/index.html), which directly c
 
 ### Gradescope
 
-[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See Courselore for the entry code ([here](TBA) once you have made your Courselore account.)
+[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See Courselore for the entry code ([here](https://courselore.org/courses/8683833116/conversations/1) once you have made your Courselore account.)
 
 ### Assignments
 
