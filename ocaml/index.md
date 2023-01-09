@@ -37,7 +37,7 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
 
 Once you have OCaml 4.14.1 installed, run the following `opam` command in the terminal to install additional necessary packages used in the class:
 ```bash
-opam install merlin ocp-indent menhir utop ppx_deriving ounit2
+opam install ocp-indent ocaml-lsp-server menhir utop ppx_deriving ounit2
 ```
 
 Lastly, edit the file `~/.ocamlinit` to add the line 
@@ -86,7 +86,7 @@ VSCode has very good OCaml support and is the "officially recommended editor".
 
 * If you are on Windows and using WSL2, you need to run Visual Studio "in WSL2 space" to get OCaml syntax highlighting and other nice features. See the [Remote WSL Extension Docs](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) for details on how to set up the VSCode-WSL2 connection.  If you are having trouble look at the [Additional Resources](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode#additional-resources) on that page.  Once you have the above set up, install the OCaml Platform as described above and you should have syntax highlighting etc working.
 
-**vim**: If you use `vim`, my condolances as it is woefully behind the times in spite of many band-aids added over the years.  Still, if you have been brainwashed to believe it is good, type shell commands `opam install user-setup` and `opam user-setup install` after doing the above  default `opam` install to set up syntax highlighting, tab completion, displaying types, etc. See [here](https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt) for some dense documentation.
+**vim**: If you use `vim`, my condolances as it is woefully behind the times in spite of many band-aids added over the years.  Still, if you have been brainwashed to believe it is good, type shell commands `opam install merlin user-setup` and `opam user-setup install` after doing the above  default `opam` install to set up syntax highlighting, tab completion, displaying types, etc. See [here](https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt) for some dense documentation.
 
 **emacs**: See vim. Note you will need to also `opam install tuareg` to get emacs to work, and follow the instructions the install prints out.
 

@@ -42,11 +42,11 @@ let rec pp_expr fmt =
   | Not(e1) ->
       ff fmt "Not %a" pp_expr e1
   | If(e1, e2, e3) ->
-      ff fmt "@[<hv>If %a Then@;<1 4>%a@;<1 0>Else@;<1 4>%a@]"
+      ff fmt "@[<hv>If %a Then@;<1 2>%a@;<1 0>Else@;<1 2>%a@]"
         pp_expr e1 pp_expr e2 pp_expr e3
       
   | Function(Ident(i), x) ->
-      ff fmt "@[<hv>Function %s ->@;<1 4>%a@]" i pp_expr x
+      ff fmt "@[<hv>Fun %s ->@;<1 2>%a@]" i pp_expr x
   | Appl(e1, e2) ->
       let is_compound_exprL = function
         | Appl(_) -> false
@@ -56,7 +56,7 @@ let rec pp_expr fmt =
         (paren_if is_compound_exprL pp_expr) e1
         (paren_if is_compound_expr  pp_expr) e2
   | Let(Ident(i), e1, e2) ->
-      ff fmt "@[<hv>Let %s =@;<1 4>%a@;<1 0>In@;<1 4>%a@]"
+      ff fmt "@[<hv>Let %s =@;<1 2>%a@;<1 0>In@;<1 2>%a@]"
         i pp_expr e1 pp_expr e2
 
 	| Pair(e1, e2) ->
@@ -71,7 +71,7 @@ let rec pp_expr fmt =
 	| Match(disc, branches) ->
 			ff fmt "@[<hv>Match %a With" pp_expr disc;
 			branches |> List.iter begin fun (Name name, Ident i1, body) ->
-				ff fmt "@;<1 0>| %s %s ->@;<1 4>%a" name i1 pp_expr body
+				ff fmt "@;<1 0>| %s %s ->@;<1 2>%a" name i1 pp_expr body
 			end;
 			ff fmt "@]"
 
@@ -79,7 +79,7 @@ let rec pp_expr fmt =
 			ff fmt "[]"
 	| Cons(e_hd, e_tl) -> 
 			if is_list e_tl then	
-				ff fmt "[@[<hv>@;<0 4>%a%a" pp_expr e_hd pp_list_tail e_tl
+				ff fmt "[@[<hv>@;<0 2>%a%a" pp_expr e_hd pp_list_tail e_tl
 			else
 				ff fmt "%a :: %a" (paren_if is_compound_expr pp_expr) e_hd pp_expr e_tl
 
@@ -108,7 +108,7 @@ let rec pp_expr fmt =
 and pp_list_tail fmt =
 	function
 	| EmptyList -> ff fmt "@,@]]"
-	| Cons(e_hd, e_tl) -> ff fmt ";@;<1 4>%a%a" pp_expr e_hd pp_list_tail e_tl 
+	| Cons(e_hd, e_tl) -> ff fmt ";@;<1 2>%a%a" pp_expr e_hd pp_list_tail e_tl 
 	| _ -> failwith "Impossible"
 
 
