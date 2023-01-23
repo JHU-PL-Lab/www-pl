@@ -18,7 +18,7 @@ Please send private questions for course staff only as a new Conversion setting 
 * Farnaz Yousefi
 * Robert Zhang
 * Junjie Lei
-* ...
+* Zhenbo Yan
 
 ### Office Hours and Locations
 

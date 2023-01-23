@@ -81,10 +81,10 @@ fib 10;; (* get the 10th Fibonacci number *)
 ```ocaml
 let add1 x = x + 1;; (* a normal add1 definition *)
 let anon_add1 = (function x -> x + 1);; (* equivalent anonymous version; "x" is argument here *)
-anon_add1 3;;
-(anon_add1 4) * 7;; 
-((function x -> x + 1) 4) * 7;; (* can inline anonymous function definition *)
-((fun x -> x + 1) 4) * 7;; (*  shorthand notation -- can usually cut off the "ction" *)
+let anon_add1_fun = (fun x -> x + 1);; (* `function` can usually be shortened to `fun` *)
+add1 3;;
+(add1 4) * 7;; 
+((fun x -> x + 1) 4) * 7;; (* can inline anonymous function definition; makes no sense here but will later *)
 ```
 
 <a name="ii"></a>

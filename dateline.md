@@ -222,7 +222,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Tuples, Records, Variants</div>
+        <div align="left" class="body">&nbsp;Tuples (FbP), Records (FbR), Variants (FbV)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -239,7 +239,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;State</div>
+        <div align="left" class="body">&nbsp;State (FbS)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment5.html">5 - Y/Opeq/Records/Variants</a></div>
@@ -256,7 +256,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Exceptions</div>
+        <div align="left" class="body">&nbsp;Exceptions (FbX)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -273,7 +273,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Objects</div>
+        <div align="left" class="body">&nbsp;Objects (FbOB)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -318,7 +318,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Concurrency I</div>
+        <div align="left" class="body">&nbsp;Concurrency I (AFbV)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a></div>
@@ -369,7 +369,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Types I: TFb</div>
+        <div align="left" class="body">&nbsp;Types I (TFb)</div>
       </td>	
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency</a></div>
@@ -403,7 +403,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Types III: Subtyping</div>
+        <div align="left" class="body">&nbsp;Types III: Subtyping (STFb)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment8.html">8 A&B - Types (Fri)</a>
@@ -421,7 +421,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Types IV: Type Inference</div>
+        <div align="left" class="body">&nbsp;Types IV: Type Inference (EFb)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"></div>
