@@ -18,6 +18,10 @@ true || false;;
 let squared x = x * x;; 
 squared 4;; (* to call a function -- separate arguments with S P A C E S *)
 
+if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
+(if (x = 3) then 5 else 6) * 2;;
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type errors:  two branches of if must have same type *)
+
 let rec fib n =     (* the "rec" keyword needs to be added to allow recursion *)
   if n <= 0 then 0
   else if n = 1 then 1
@@ -55,17 +59,13 @@ None;;
 let div_exn m n = if n = 0 then failwith "divide by zero is bad!" else m / n;;
 div_exn 3 4;;
 
-if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
-(if (x = 3) then 5 else 6) * 2;;
-(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type errors:  two branches of if must have same type *)
-
 let l1 = [1; 2; 3];;
 let l2 = [1; 1+1; 1+1+1];;
 let l3 = ["a"; "b"; "c"];;
 (* let l4 = [1; "a"];; *) (* error - All elements must have same type *)
 let l5 = [];; (* empty list *)
 
-3 :: [] (* tree with root ::, left sub tree 3, right sub tree empty list *) 
+3 :: [] (* also written [3], a singleton list -- tree with root ::, left sub tree 3, right sub tree empty list *) 
 let l1 = 1 :: (2 :: (3 :: []));; (* equivalent to [1;2;3] *)
 let l0 = 0 :: l1;; (* fast, just makes one new node, left is 0 right is l1 - SHARE it *)
 l1;; (* Notice that l1 did not change even though we put a 0 on - immutable always! *)
@@ -77,13 +77,21 @@ let hd l =
   |  x :: xs -> Some x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
 ;;
 hd [1;2;3];; (* [1;2;3] is 1 :: [2;3] So the head is 1. *)
-hd [1];; (* [1] is 1 :: [] - !  So the head is 1. *)
+hd [1];; (* [1] is 1 :: []  So the head is 1. *)
 hd [];;
+
+let rec append l1 l2 =
+  match l1 with
+  |  [] -> l2
+  |  x :: xs -> x :: (append xs l2) (* assume function works for shorter lists like xs *)
+;;
+append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is 1, xs is [2;3] *)
+1 :: (append [2;3] [4;5]);; (* This is what the first recursive call is performing *)
 
 let rec nth l n =
   match l with
   |  [] -> failwith ("no "^(Int.to_string n)^"th element in this list")
-  |  x :: xs -> if n = 0 then x else nth xs (n-1)
+  |  x :: xs -> if n = 0 then x else nth xs (n-1) (* to get nth elt in list, get n-1-th elt from tail *)
 ;;
 nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
 (* nth [33;22;11] 3;; *) (* Hits failure case; could have instead returned Some/None *)

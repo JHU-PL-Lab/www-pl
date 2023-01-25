@@ -150,6 +150,12 @@
   <li>OCaml functions in fact always take only one argument - !  multiple arguments can be encoded (later)</li>
 </ul>
 
+<p>Everything in OCaml returns values (i.e. is an ‘expression’) - no commands</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span> <span class="p">(</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">35</span><span class="p">)</span> <span class="k">else</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* ((x==3)?5:6)+1 in C *)</span>
+<span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span> <span class="mi">5</span> <span class="k">else</span> <span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;;</span>
+<span class="c">(* (if (x = 3) then 5.4 else 6) * 2;; *)</span> <span class="c">(* type errors:  two branches of if must have same type *)</span>
+</code></pre></div></div>
+
 <h4 id="fibonacci-series-example---0-1-1-2-3-5-8-13-">Fibonacci series example - <code>0 1 1 2 3 5 8 13 ...</code></h4>
 
 <p>Let’s write a well-known function with recursion and if-then-else syntax</p>
@@ -294,18 +300,12 @@ Error: This expression has <span class="nb">type </span>int option
   <li>The above examples show how exceptional conditions can either be handled via
     <ul>
       <li>exceptions (the most common way, e.g. how Java deals with division by 0)</li>
-      <li>or in the return value; the latter is the C approach, C functions return <code>NULL</code> or <code>-1</code> and the caller has to deal.</li>
+      <li>with Some/None in the return value; the latter is the C philosophy, C functions return <code>NULL</code> or <code>-1</code> if fail and the caller has to deal.</li>
     </ul>
   </li>
 </ul>
 
 <h3 id="everything-is-an-expression">Everything is an expression</h3>
-
-<p>Everything in OCaml returns values (i.e. is an ‘expression’) - no commands</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span> <span class="p">(</span><span class="mi">5</span> <span class="o">+</span> <span class="mi">35</span><span class="p">)</span> <span class="k">else</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* ((x==3)?5:6)+1 in C *)</span>
-<span class="p">(</span><span class="k">if</span> <span class="p">(</span><span class="n">x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="k">then</span> <span class="mi">5</span> <span class="k">else</span> <span class="mi">6</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;;</span>
-<span class="c">(* (if (x = 3) then 5.4 else 6) * 2;; *)</span> <span class="c">(* type errors:  two branches of if must have same type *)</span>
-</code></pre></div></div>
 
 <h3 id="lists">Lists</h3>
 
@@ -330,7 +330,7 @@ Error: This expression has <span class="nb">type </span>int option
   <li><code>::</code> is also an operation to build a new list</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span> <span class="o">::</span> <span class="bp">[]</span> <span class="c">(* tree with root ::, left sub tree 3, right sub tree empty list *)</span> 
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span> <span class="o">::</span> <span class="bp">[]</span> <span class="c">(* also written [3], a singleton list -- tree with root ::, left sub tree 3, right sub tree empty list *)</span> 
 <span class="k">let</span> <span class="n">l1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">::</span> <span class="p">(</span><span class="mi">2</span> <span class="o">::</span> <span class="p">(</span><span class="mi">3</span> <span class="o">::</span> <span class="bp">[]</span><span class="p">));;</span> <span class="c">(* equivalent to [1;2;3] *)</span>
 <span class="k">let</span> <span class="n">l0</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">::</span> <span class="n">l1</span><span class="p">;;</span> <span class="c">(* fast, just makes one new node, left is 0 right is l1 - SHARE it *)</span>
 <span class="n">l1</span><span class="p">;;</span> <span class="c">(* Notice that l1 did not change even though we put a 0 on - immutable always! *)</span>
@@ -344,6 +344,7 @@ Error: This expression has <span class="nb">type </span>int option
 <h4 id="destructing-lists-with-pattern-matching">Destructing Lists with pattern matching</h4>
 
 <ul>
+  <li>You are used to using <code>.</code> (dot) to project out fields of data structures; in OCaml we instead pattern match nearly all the time</li>
   <li>Here is a simple example of pattern matching on a list to get the <em>head</em>, the first element.</li>
 </ul>
 
@@ -353,9 +354,28 @@ Error: This expression has <span class="nb">type </span>int option
   <span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="nc">Some</span> <span class="n">x</span> <span class="c">(* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)</span>
 <span class="p">;;</span>
 <span class="n">hd</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* [1;2;3] is 1 :: [2;3] So the head is 1. *)</span>
-<span class="n">hd</span> <span class="p">[</span><span class="mi">1</span><span class="p">];;</span> <span class="c">(* [1] is 1 :: [] - !  So the head is 1. *)</span>
+<span class="n">hd</span> <span class="p">[</span><span class="mi">1</span><span class="p">];;</span> <span class="c">(* [1] is 1 :: []  So the head is 1. *)</span>
 <span class="n">hd</span> <span class="bp">[]</span><span class="p">;;</span>
 </code></pre></div></div>
+
+<h4 id="append">Append</h4>
+
+<ul>
+  <li>Here is how list append is implemented with recursion on the first list
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">append</span> <span class="n">l1</span> <span class="n">l2</span> <span class="o">=</span>
+<span class="k">match</span> <span class="n">l1</span> <span class="k">with</span>
+<span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">l2</span>
+<span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">::</span> <span class="p">(</span><span class="n">append</span> <span class="n">xs</span> <span class="n">l2</span><span class="p">)</span> <span class="c">(* assume function works for shorter lists like xs *)</span>
+<span class="p">;;</span>
+<span class="n">append</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">];;</span> <span class="c">(* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is 1, xs is [2;3] *)</span>
+<span class="mi">1</span> <span class="o">::</span> <span class="p">(</span><span class="n">append</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">]);;</span> <span class="c">(* This is what the first recursive call is performing *)</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Pattern priority: pick the first matched clause</li>
+  <li>The above two patterns are mutually exclusive so order is in fact irrelevant here</li>
+</ul>
+
+<h4 id="nth">nth</h4>
 
 <ul>
   <li>Lists are not random access like arrays; if you want to get the nth element, you need walk the list.</li>
@@ -365,17 +385,13 @@ Error: This expression has <span class="nb">type </span>int option
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">nth</span> <span class="n">l</span> <span class="n">n</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
   <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="p">(</span><span class="s2">"no "</span><span class="o">^</span><span class="p">(</span><span class="nn">Int</span><span class="p">.</span><span class="n">to_string</span> <span class="n">n</span><span class="p">)</span><span class="o">^</span><span class="s2">"th element in this list"</span><span class="p">)</span>
-  <span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">x</span> <span class="k">else</span> <span class="n">nth</span> <span class="n">xs</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+  <span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">x</span> <span class="k">else</span> <span class="n">nth</span> <span class="n">xs</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c">(* to get nth elt in list, get n-1-th elt from tail *)</span>
 <span class="p">;;</span>
 <span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">0</span><span class="p">;;</span> <span class="c">(* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)</span>
 <span class="c">(* nth [33;22;11] 3;; *)</span> <span class="c">(* Hits failure case; could have instead returned Some/None *)</span>
 </code></pre></div></div>
-<ul>
-  <li>Pattern priority: pick the first matched clause</li>
-  <li>The above two patterns are mutually exclusive so order irrelevant, but not in all cases.</li>
-</ul>
 
-<p>Don’t use non-exhaustive pattern matches! You will get a warning:</p>
+<p>Don’t use non-exhaustive pattern matches! You will get a warning (and an error in compiler):</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">dumb</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
       <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="p">;;</span>
@@ -383,7 +399,7 @@ Error: This expression has <span class="nb">type </span>int option
 <span class="c">(* dumb [];; *)</span> <span class="c">(* runtime error here *)</span>
 </code></pre></div></div>
 
-<p>Built-in <code>List.hd</code> is the same as <code>dumb</code> and it is nearly always a <strong>dumb</strong> function, don’t use it unless it is 100% obvious that the list is not empty.</p>
+<p>Built-in <code>List.hd</code> is the same as <code>dumb</code> and it is often a <strong>dumb</strong> function, don’t use it unless it is 100% obvious that the list is not empty.</p>
 
 <h3 id="list-library-functions">List library functions</h3>
 <p>Fortunately many common list operations are in the <code>List</code> module in the standard library:</p>
@@ -404,6 +420,7 @@ Error: This expression has <span class="nb">type </span>int option
 
 <ul>
   <li>Type <code>#show List;;</code> into utop to get a dump of all the functions in <code>List</code>.</li>
+  <li>NOTE: for assignment 1 you cannot use these <code>List.</code> functions, we want you to first practice using recursion.</li>
   <li>The <a href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html">Standard Library Reference page for lists</a> contains descriptions as well.</li>
   <li>There are similar modes for <code>Int</code>, <code>String</code>, <code>Float</code>, etc modules which similarly contain handy functions.</li>
 </ul>
@@ -413,7 +430,7 @@ Error: This expression has <span class="nb">type </span>int option
 <ul>
   <li>The types of the functions are additional hints to their purpose, get used to reading them</li>
   <li>Much of the time when you mis-use a function you will get a type error</li>
-  <li><code>'a list</code> etc is a polymorphic aka generic type, <code>'a</code> can be <em>any</em> type
+  <li><code>'a list</code> etc is a polymorphic aka generic type, <code>'a</code> can be <em>any</em> type. more later on that
     <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">length</span><span class="p">;;</span>
 <span class="c">(* - : 'a list -&gt; int = &lt;fun&gt; *)</span>
 <span class="nn">List</span><span class="p">.</span><span class="n">concat</span><span class="p">;;</span>
@@ -423,8 +440,6 @@ Error: This expression has <span class="nb">type </span>int option
 </code></pre></div>    </div>
   </li>
 </ul>
-
-<p>A cool feature of OCaml is how it automatically <em>infers</em> polymorphic types, unlike Java where generics usually need to be declared explicitly.</p>
 
 <h3 id="correctness-of-recursive-functions">Correctness of recursive Functions</h3>
 
@@ -463,22 +478,26 @@ Error: This expression has <span class="nb">type </span>int option
 <p>Recall an induction principle:<br />
 To show P(n) for all in, it suffices to show <br />
   1) P(0), and <br />
-  2) P(k) holds implies P(k+1) holds for any natural number k.</p>
+  2) P(k-1) holds implies P(k) holds for any natural number k&gt;0.</p>
 
 <ul>
-  <li>Induction is not explained well by mathematicians which causes confusion</li>
-  <li>It is easier for us CS-ers, the induction step 2) is really just a <strong>proof macro</strong> with k a parameter</li>
+  <li>Induction is often not explained well by mathematicians which causes confusion</li>
+  <li>It is easier for us CS-ers, the induction step 2) is really just a <strong>proof macro</strong> with k a parameter
+    <ul>
+      <li>imagine copy/pasting your proof of 2) for any particular number k =&gt; macro expansion</li>
+    </ul>
+  </li>
   <li>Induction is justified by repeatedly instantiating the macro for 1,2,3,..</li>
 </ul>
 
 <p>So, if we showed 1) and 2) above,</p>
 <ul>
   <li>P(0) is true by 1)</li>
-  <li>P(1) is true because letting k=0 in 2) we have P(0) implies P(1),<br />
+  <li>P(1) is true because letting k=1 in 2) we have P(0) implies P(1),<br />
   and we just showed we have P(0), so we also have P(1).</li>
-  <li>P(2) is true because letting k=1 in 2) we have P(1) implies P(2),<br />
+  <li>P(2) is true because letting k=2 in 2) we have P(1) implies P(2),<br />
   and we just showed we have P(1), so we also have P(2).</li>
-  <li>P(3) is true because letting k=2 in 2) we have P(2) implies P(3),<br />
+  <li>P(3) is true because letting k=3 in 2) we have P(2) implies P(3),<br />
   and we just showed we have P(2), so we also have P(3).</li>
   <li>… etc for all k</li>
 </ul>

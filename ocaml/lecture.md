@@ -59,6 +59,12 @@ squared 4;; (* to call a function -- separate arguments with S P A C E S *)
  *  Type is automatically **inferred** and printed as domain `->` range
  *  OCaml functions in fact always take only one argument - !  multiple arguments can be encoded (later)
 
+Everything in OCaml returns values (i.e. is an 'expression') - no commands
+```ocaml
+if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
+(if (x = 3) then 5 else 6) * 2;;
+(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type errors:  two branches of if must have same type *)
+```
 
 #### Fibonacci series example - `0 1 1 2 3 5 8 13 ...` 
 
@@ -200,16 +206,10 @@ div_exn 3 4;;
 * Exceptions are side effects though, we want to minimize their usage to avoid error-at-a-distance.
 * The above examples show how exceptional conditions can either be handled via 
   - exceptions (the most common way, e.g. how Java deals with division by 0)
-  - or in the return value; the latter is the C approach, C functions return `NULL` or `-1` and the caller has to deal.
+  - with Some/None in the return value; the latter is the C philosophy, C functions return `NULL` or `-1` if fail and the caller has to deal.
 
 ### Everything is an expression
 
-Everything in OCaml returns values (i.e. is an 'expression') - no commands
-```ocaml
-if (x = 3) then (5 + 35) else 6;; (* ((x==3)?5:6)+1 in C *)
-(if (x = 3) then 5 else 6) * 2;;
-(* (if (x = 3) then 5.4 else 6) * 2;; *) (* type errors:  two branches of if must have same type *)
-```
 
 ### Lists
 
@@ -232,7 +232,7 @@ let l5 = [];; (* empty list *)
 * `::` is also an operation to build a new list
 
 ```ocaml
-3 :: [] (* tree with root ::, left sub tree 3, right sub tree empty list *) 
+3 :: [] (* also written [3], a singleton list -- tree with root ::, left sub tree 3, right sub tree empty list *) 
 let l1 = 1 :: (2 :: (3 :: []));; (* equivalent to [1;2;3] *)
 let l0 = 0 :: l1;; (* fast, just makes one new node, left is 0 right is l1 - SHARE it *)
 l1;; (* Notice that l1 did not change even though we put a 0 on - immutable always! *)
@@ -245,6 +245,7 @@ Picture of `l1` and `l0`:
 
 #### Destructing Lists with pattern matching
 
+* You are used to using `.` (dot) to project out fields of data structures; in OCaml we instead pattern match nearly all the time
 * Here is a simple example of pattern matching on a list to get the *head*, the first element.
 
 ```ocaml
@@ -254,9 +255,27 @@ let hd l =
   |  x :: xs -> Some x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
 ;;
 hd [1;2;3];; (* [1;2;3] is 1 :: [2;3] So the head is 1. *)
-hd [1];; (* [1] is 1 :: [] - !  So the head is 1. *)
+hd [1];; (* [1] is 1 :: []  So the head is 1. *)
 hd [];;
 ```
+
+#### Append
+
+* Here is how list append is implemented with recursion on the first list
+```ocaml
+let rec append l1 l2 =
+  match l1 with
+  |  [] -> l2
+  |  x :: xs -> x :: (append xs l2) (* assume function works for shorter lists like xs *)
+;;
+append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is 1, xs is [2;3] *)
+1 :: (append [2;3] [4;5]);; (* This is what the first recursive call is performing *)
+```
+* Pattern priority: pick the first matched clause
+* The above two patterns are mutually exclusive so order is in fact irrelevant here
+
+
+#### nth
 
 * Lists are not random access like arrays; if you want to get the nth element, you need walk the list.
 * Notice also that pretty much any non-trivial function on lists is going to use recursion and pattern matching
@@ -265,15 +284,13 @@ hd [];;
 let rec nth l n =
   match l with
   |  [] -> failwith ("no "^(Int.to_string n)^"th element in this list")
-  |  x :: xs -> if n = 0 then x else nth xs (n-1)
+  |  x :: xs -> if n = 0 then x else nth xs (n-1) (* to get nth elt in list, get n-1-th elt from tail *)
 ;;
 nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
 (* nth [33;22;11] 3;; *) (* Hits failure case; could have instead returned Some/None *)
 ```
-* Pattern priority: pick the first matched clause
-* The above two patterns are mutually exclusive so order irrelevant, but not in all cases.
 
-Don't use non-exhaustive pattern matches! You will get a warning:
+Don't use non-exhaustive pattern matches! You will get a warning (and an error in compiler):
 
 ```ocaml
 let dumb l = match l with
@@ -282,7 +299,7 @@ dumb [1;2;3];; (* this works to return head of list but.. *)
 (* dumb [];; *) (* runtime error here *)
 ```
 
-Built-in `List.hd` is the same as `dumb` and it is nearly always a **dumb** function, don't use it unless it is 100% obvious that the list is not empty.
+Built-in `List.hd` is the same as `dumb` and it is often a **dumb** function, don't use it unless it is 100% obvious that the list is not empty.
 
 
 ### List library functions
@@ -303,6 +320,7 @@ List.append [1;2] [3;4];;
 ```
 
 * Type `#show List;;` into utop to get a dump of all the functions in `List`.
+* NOTE: for assignment 1 you cannot use these `List.` functions, we want you to first practice using recursion.
 * The [Standard Library Reference page for lists](http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html) contains descriptions as well.
 * There are similar modes for `Int`, `String`, `Float`, etc modules which similarly contain handy functions.
 
@@ -310,7 +328,7 @@ List.append [1;2] [3;4];;
 
 * The types of the functions are additional hints to their purpose, get used to reading them
 * Much of the time when you mis-use a function you will get a type error
-* `'a list` etc is a polymorphic aka generic type, `'a` can be *any* type
+* `'a list` etc is a polymorphic aka generic type, `'a` can be *any* type. more later on that
 ```ocaml
 List.length;;
 (* - : 'a list -> int = <fun> *)
@@ -319,8 +337,6 @@ List.concat;;
 List.append;;
 (* - : 'a list -> 'a list -> 'a list = <fun> *)
 ```
-
-A cool feature of OCaml is how it automatically *infers* polymorphic types, unlike Java where generics usually need to be declared explicitly.
 
 ### Correctness of recursive Functions
 
@@ -359,19 +375,20 @@ Let P(n) mean "for any list l of length n, `rev l ~=` its reverse".
 Recall an induction principle:
 To show P(n) for all in, it suffices to show 
   1) P(0), and 
-  2) P(k) holds implies P(k+1) holds for any natural number k.
+  2) P(k-1) holds implies P(k) holds for any natural number k>0.
 
-* Induction is not explained well by mathematicians which causes confusion
+* Induction is often not explained well by mathematicians which causes confusion
 * It is easier for us CS-ers, the induction step 2) is really just a **proof macro** with k a parameter
+   - imagine copy/pasting your proof of 2) for any particular number k => macro expansion
 * Induction is justified by repeatedly instantiating the macro for 1,2,3,..
 
 So, if we showed 1) and 2) above, 
 - P(0) is true by 1)
-- P(1) is true because letting k=0 in 2) we have P(0) implies P(1),
+- P(1) is true because letting k=1 in 2) we have P(0) implies P(1),
     and we just showed we have P(0), so we also have P(1).
-- P(2) is true because letting k=1 in 2) we have P(1) implies P(2),
+- P(2) is true because letting k=2 in 2) we have P(1) implies P(2),
     and we just showed we have P(1), so we also have P(2).
-- P(3) is true because letting k=2 in 2) we have P(2) implies P(3),
+- P(3) is true because letting k=3 in 2) we have P(2) implies P(3),
     and we just showed we have P(2), so we also have P(3).
 - ... etc for all k
 
