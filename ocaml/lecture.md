@@ -115,6 +115,14 @@ add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - applicatio
 add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
 ```
 
+#### Declaring types in OCaml
+While OCaml infers types for you it is often good practice to add those types to your code, e.g.
+
+```ocaml
+let add (x : int) (y : int) : int = x + y;;
+```
+Note that the parentheses here are required, and the return type is at the end.
+
 ### Simple Structured Data Types: Option and Result
 
 * Before getting into "bigger" data types and how to declare our own, let's use one of the simplest structured data types, the built-in `option` type.
@@ -218,14 +226,15 @@ let l5 = [];; (* empty list *)
 
 #### Operations on lists.  
 
-Lists are represented internally as **binary trees** with left child a leaf.
+* Lists are represented internally as **binary trees** with left child a leaf.
+* The tree nodes are `::` and are called *conses* (an historical term from Lisp)
+* The list is then the list of these left children going down the tree.
 ```ocaml
-0 :: l1;; (* "::" is 'consing' 0 to the top of the tree - fast *)
-0 :: (1 :: (2 :: (3 :: [])));; (* equivalent to [0;1;2;3] *)
+3 :: [] (* tree with root ::, left sub tree 3, right sub tree empty list [] *) 
+let l3 = 0 :: (1 :: (2 :: (3 :: [])));; (* equivalent to [0;1;2;3] *)
+let l4 = 4 :: l3;; (* fast, just makes one new node, left is 4 right is l3 - SHARE it *)
+l3;; (* Notice that l3 did not change even though we put a 4 on - immutable always! *)
 [1; 2; 3] @ [4; 5];; (* appending lists - slower, needs to cons 3/2/1 on front of [4;5] *)
-let z = [2; 4; 6];;
-let y = 0 :: z;;
-z;; (* Observe z itself did not change -- recall lists are immutable in OCaml *)
 ```
 
 #### Destructing Lists with pattern matching
@@ -245,6 +254,7 @@ hd [];;
 ```
 
 * Lists are not random access like arrays; if you want to get the nth element, you need to work for it.
+* Notice also that pretty much any non-trivial function on lists is going to use recursion and pattern matching
 
 ```ocaml
 let rec nth l n =
