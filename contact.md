@@ -19,6 +19,7 @@ Please send private questions for course staff only as a new Conversion setting 
 * Robert Zhang
 * Junjie Lei
 * Zhenbo Yan
+* Ricky Cheng
 
 ### Office Hours and Locations
 

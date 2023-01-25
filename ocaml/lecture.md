@@ -226,21 +226,26 @@ let l5 = [];; (* empty list *)
 
 #### Operations on lists.  
 
-* Lists are represented internally as **binary trees** with left child a leaf.
+* Lists are represented internally as **binary trees** with left children all leaves.
 * The tree nodes are `::` and are called *conses* (an historical term from Lisp)
 * The list is then the list of these left children going down the tree.
+* `::` is also an operation to build a new list
+
 ```ocaml
-3 :: [] (* tree with root ::, left sub tree 3, right sub tree empty list [] *) 
-let l3 = 0 :: (1 :: (2 :: (3 :: [])));; (* equivalent to [0;1;2;3] *)
-let l4 = 4 :: l3;; (* fast, just makes one new node, left is 4 right is l3 - SHARE it *)
-l3;; (* Notice that l3 did not change even though we put a 4 on - immutable always! *)
-[1; 2; 3] @ [4; 5];; (* appending lists - slower, needs to cons 3/2/1 on front of [4;5] *)
+3 :: [] (* tree with root ::, left sub tree 3, right sub tree empty list *) 
+let l1 = 1 :: (2 :: (3 :: []));; (* equivalent to [1;2;3] *)
+let l0 = 0 :: l1;; (* fast, just makes one new node, left is 0 right is l1 - SHARE it *)
+l1;; (* Notice that l1 did not change even though we put a 0 on - immutable always! *)
+[1; 2; 3] @ [4; 5];; (* appending lists - slower, needs to cons 3 then 2 then 1 on front of [4;5] *)
 ```
+
+Picture of `l1` and `l0`:
+
+<img src="List.png" width="300">
 
 #### Destructing Lists with pattern matching
 
-* Before writing real programs here is a simple example of pattern matching on a list.
-* This function gets the head, the first element.
+* Here is a simple example of pattern matching on a list to get the *head*, the first element.
 
 ```ocaml
 let hd l =
@@ -248,18 +253,18 @@ let hd l =
   |  [] -> None
   |  x :: xs -> Some x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
 ;;
-hd [1;2;3];;
+hd [1;2;3];; (* [1;2;3] is 1 :: [2;3] So the head is 1. *)
 hd [1];; (* [1] is 1 :: [] - !  So the head is 1. *)
 hd [];;
 ```
 
-* Lists are not random access like arrays; if you want to get the nth element, you need to work for it.
+* Lists are not random access like arrays; if you want to get the nth element, you need walk the list.
 * Notice also that pretty much any non-trivial function on lists is going to use recursion and pattern matching
 
 ```ocaml
 let rec nth l n =
   match l with
-  |  [] -> failwith "no nth element in this list"
+  |  [] -> failwith ("no "^(Int.to_string n)^"th element in this list")
   |  x :: xs -> if n = 0 then x else nth xs (n-1)
 ;;
 nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)

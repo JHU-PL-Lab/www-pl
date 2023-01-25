@@ -205,6 +205,13 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 <span class="n">add3</span> <span class="o">@@</span> <span class="mi">3</span> <span class="o">*</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)</span>
 </code></pre></div></div>
 
+<h4 id="declaring-types-in-ocaml">Declaring types in OCaml</h4>
+<p>While OCaml infers types for you it is often good practice to add those types to your code, e.g.</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add</span> <span class="p">(</span><span class="n">x</span> <span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span> <span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
+</code></pre></div></div>
+<p>Note that the parentheses here are required, and the return type is at the end.</p>
+
 <h3 id="simple-structured-data-types-option-and-result">Simple Structured Data Types: Option and Result</h3>
 
 <ul>
@@ -316,20 +323,28 @@ Error: This expression has <span class="nb">type </span>int option
 
 <h4 id="operations-on-lists">Operations on lists.</h4>
 
-<p>Lists are represented internally as <strong>binary trees</strong> with left child a leaf.</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">0</span> <span class="o">::</span> <span class="n">l1</span><span class="p">;;</span> <span class="c">(* "::" is 'consing' 0 to the top of the tree - fast *)</span>
-<span class="mi">0</span> <span class="o">::</span> <span class="p">(</span><span class="mi">1</span> <span class="o">::</span> <span class="p">(</span><span class="mi">2</span> <span class="o">::</span> <span class="p">(</span><span class="mi">3</span> <span class="o">::</span> <span class="bp">[]</span><span class="p">)));;</span> <span class="c">(* equivalent to [0;1;2;3] *)</span>
-<span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]</span> <span class="o">@</span> <span class="p">[</span><span class="mi">4</span><span class="p">;</span> <span class="mi">5</span><span class="p">];;</span> <span class="c">(* appending lists - slower, needs to cons 3/2/1 on front of [4;5] *)</span>
-<span class="k">let</span> <span class="n">z</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span> <span class="mi">4</span><span class="p">;</span> <span class="mi">6</span><span class="p">];;</span>
-<span class="k">let</span> <span class="n">y</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">::</span> <span class="n">z</span><span class="p">;;</span>
-<span class="n">z</span><span class="p">;;</span> <span class="c">(* Observe z itself did not change -- recall lists are immutable in OCaml *)</span>
+<ul>
+  <li>Lists are represented internally as <strong>binary trees</strong> with left children all leaves.</li>
+  <li>The tree nodes are <code>::</code> and are called <em>conses</em> (an historical term from Lisp)</li>
+  <li>The list is then the list of these left children going down the tree.</li>
+  <li><code>::</code> is also an operation to build a new list</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span> <span class="o">::</span> <span class="bp">[]</span> <span class="c">(* tree with root ::, left sub tree 3, right sub tree empty list *)</span> 
+<span class="k">let</span> <span class="n">l1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">::</span> <span class="p">(</span><span class="mi">2</span> <span class="o">::</span> <span class="p">(</span><span class="mi">3</span> <span class="o">::</span> <span class="bp">[]</span><span class="p">));;</span> <span class="c">(* equivalent to [1;2;3] *)</span>
+<span class="k">let</span> <span class="n">l0</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">::</span> <span class="n">l1</span><span class="p">;;</span> <span class="c">(* fast, just makes one new node, left is 0 right is l1 - SHARE it *)</span>
+<span class="n">l1</span><span class="p">;;</span> <span class="c">(* Notice that l1 did not change even though we put a 0 on - immutable always! *)</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]</span> <span class="o">@</span> <span class="p">[</span><span class="mi">4</span><span class="p">;</span> <span class="mi">5</span><span class="p">];;</span> <span class="c">(* appending lists - slower, needs to cons 3 then 2 then 1 on front of [4;5] *)</span>
 </code></pre></div></div>
+
+<p>Picture of <code>l1</code> and <code>l0</code>:</p>
+
+<p><img src="List.png" width="300" /></p>
 
 <h4 id="destructing-lists-with-pattern-matching">Destructing Lists with pattern matching</h4>
 
 <ul>
-  <li>Before writing real programs here is a simple example of pattern matching on a list.</li>
-  <li>This function gets the head, the first element.</li>
+  <li>Here is a simple example of pattern matching on a list to get the <em>head</em>, the first element.</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">hd</span> <span class="n">l</span> <span class="o">=</span>
@@ -337,18 +352,19 @@ Error: This expression has <span class="nb">type </span>int option
   <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="nc">None</span>
   <span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="nc">Some</span> <span class="n">x</span> <span class="c">(* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)</span>
 <span class="p">;;</span>
-<span class="n">hd</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span>
+<span class="n">hd</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* [1;2;3] is 1 :: [2;3] So the head is 1. *)</span>
 <span class="n">hd</span> <span class="p">[</span><span class="mi">1</span><span class="p">];;</span> <span class="c">(* [1] is 1 :: [] - !  So the head is 1. *)</span>
 <span class="n">hd</span> <span class="bp">[]</span><span class="p">;;</span>
 </code></pre></div></div>
 
 <ul>
-  <li>Lists are not random access like arrays; if you want to get the nth element, you need to work for it.</li>
+  <li>Lists are not random access like arrays; if you want to get the nth element, you need walk the list.</li>
+  <li>Notice also that pretty much any non-trivial function on lists is going to use recursion and pattern matching</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">nth</span> <span class="n">l</span> <span class="n">n</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-  <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="s2">"no nth element in this list"</span>
+  <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="p">(</span><span class="s2">"no "</span><span class="o">^</span><span class="p">(</span><span class="nn">Int</span><span class="p">.</span><span class="n">to_string</span> <span class="n">n</span><span class="p">)</span><span class="o">^</span><span class="s2">"th element in this list"</span><span class="p">)</span>
   <span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">x</span> <span class="k">else</span> <span class="n">nth</span> <span class="n">xs</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
 <span class="p">;;</span>
 <span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">0</span><span class="p">;;</span> <span class="c">(* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)</span>

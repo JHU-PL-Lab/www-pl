@@ -44,6 +44,8 @@ add3 (3 * 2);;
 add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than `*` *)
 add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
 
+let add (x : int) (y : int) : int = x + y;;
+
 Some 5;;
 (*  - : int option = Some 5 *)
 
@@ -63,25 +65,24 @@ let l3 = ["a"; "b"; "c"];;
 (* let l4 = [1; "a"];; *) (* error - All elements must have same type *)
 let l5 = [];; (* empty list *)
 
-0 :: l1;; (* "::" is 'consing' 0 to the top of the tree - fast *)
-0 :: (1 :: (2 :: (3 :: [])));; (* equivalent to [0;1;2;3] *)
-[1; 2; 3] @ [4; 5];; (* appending lists - slower, needs to cons 3/2/1 on front of [4;5] *)
-let z = [2; 4; 6];;
-let y = 0 :: z;;
-z;; (* Observe z itself did not change -- recall lists are immutable in OCaml *)
+3 :: [] (* tree with root ::, left sub tree 3, right sub tree empty list *) 
+let l1 = 1 :: (2 :: (3 :: []));; (* equivalent to [1;2;3] *)
+let l0 = 0 :: l1;; (* fast, just makes one new node, left is 0 right is l1 - SHARE it *)
+l1;; (* Notice that l1 did not change even though we put a 0 on - immutable always! *)
+[1; 2; 3] @ [4; 5];; (* appending lists - slower, needs to cons 3 then 2 then 1 on front of [4;5] *)
 
 let hd l =
   match l with
   |  [] -> None
   |  x :: xs -> Some x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
 ;;
-hd [1;2;3];;
+hd [1;2;3];; (* [1;2;3] is 1 :: [2;3] So the head is 1. *)
 hd [1];; (* [1] is 1 :: [] - !  So the head is 1. *)
 hd [];;
 
 let rec nth l n =
   match l with
-  |  [] -> failwith "no nth element in this list"
+  |  [] -> failwith ("no "^(Int.to_string n)^"th element in this list")
   |  x :: xs -> if n = 0 then x else nth xs (n-1)
 ;;
 nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
