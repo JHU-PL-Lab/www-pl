@@ -123,8 +123,8 @@ let rec rev l =
 ;;
 rev [1;2;3];; (* recall [1;2;3] is equivalent to 1 :: ( 2 :: ( 3 :: [])) *)
 
-(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
-let tuple = (2, "hi");;
+(2, "hi");;             (* type is int * string -- '*' is like "x" of set theory, a product *)
+let tuple = (2, "hi");; (* tuple elements separated by commas, list elements by semicolon *)
 (1,1.1,'c',"cc");;
 
 let tuple = (2, "hi", 1.2);;
@@ -138,13 +138,13 @@ let (f, s, th) = tuple in s;;
 (* Parens around tuple not always needed *)
 let i,b,f = 4, true, 4.4;;
 
-(* Tuple pattern matching as a trick to parallel match *)
+(* Pattern matching on a pair allows parallel pattern matching *)
 
 let rec eq_lists l1 l2 = 
   match l1,l2 with
   | [], [] -> true
   | x::xs, x'::xs' -> if x <> x' then false else eq_lists xs xs'
-  (* more cases needed for lists not equal length - an exercise for you *)
+  | _ -> false (* lengths must differ if this case is hit *)
 
 let y = 3;;
 let x = 5;;
@@ -179,45 +179,46 @@ let rec copy l =
 
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 
-let rec copyodd l = match l with
+let rec copy_odd l = match l with
   | [] -> []
-  | hd :: tl ->  hd::(copyeven tl)
+  | hd :: tl ->  hd::(copy_even tl)
 and  (* new keyword for declaring mutually recursive functions *)
-  copyeven l = match l with
+  copy_even l = match l with
   |  [] -> []
-  | x :: xs -> copyodd xs;;
+  | x :: xs -> copy_odd xs;;
 
-copyodd [1;2;3;4;5;6;7;8;9;10];;
-copyeven [1;2;3;4;5;6;7;8;9;10];;
+copy_odd [1;2;3;4;5;6;7;8;9;10];;
+copy_even [1;2;3;4;5;6;7;8;9;10];;
 
-let copyodd ll =
-  let rec copyoddlocal l = match l with
+let copy_odd ll =
+  let rec copy_odd_local l = match l with
     |  [] -> []
-    | hd :: tl ->  hd::(copyevenlocal tl)
+    | hd :: tl ->  hd::(copy_even_local tl)
   and
-    copyevenlocal l = match l with
+    copy_even_local l = match l with
     |        [] -> []
-    | x :: xs -> copyoddlocal xs
+    | x :: xs -> copy_odd_local xs
   in
-  copyoddlocal ll;;
+  copy_odd_local ll;;
 
-assert(copyodd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
+assert(copy_odd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 
-let rec appendgobblelist l =
+let rec append_gobble l =
   match l with
   | [] -> []
-  | hd::tl -> (hd ^"gobble") :: appendgobblelist tl;;
+  | hd::tl -> (hd ^"-gobble") :: append_gobble tl;;
 
-appendgobblelist ["have";"a";"good";"day"];;
-("have" ^"gobble") :: ("a"^"gobble") :: appendgobblelist ["good";"day"];;
+append_gobble ["have";"a";"good";"day"];;
+("have" ^"gobble") :: ("a"^"gobble") :: append_gobble ["good";"day"];;
 
-let rec map f l =  (* function f is an argument here *)
+let rec map (f : 'a -> 'b) (l : 'a list) : 'b list =  (* function f is an argument here *)
   match l with
   | [] -> []
   | hd::tl -> (f hd) :: map f tl;;
 
-let middle = map (function s -> s^"gobble");;
-middle ["have";"a";"good";"day"];;
+let another_append_gobble = map (fun s -> s^"-gobble");; (* give only the first argument -- Currying *)
+another_append_gobble ["have";"a";"good";"day"];;
+map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* Or, don't give the intermediate application a name *)
 
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
@@ -255,8 +256,8 @@ fold_left (+) 0 [1;2;3];;
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
 let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 
-fold_left (fun elt -> fun accum -> "("^elt^" and "^accum^")") "z" ["a";"b";"c"] ;; 
-fold_right (fun init -> fun elt -> "("^init^" and "^elt^")") ["a";"b";"c"] "z" ;; 
+fold_left (fun elt -> fun accum -> "("^elt^" and "^accum^")") "z" ["a";"b";"c"] ;;  (* "(((z and a) and b) and c)" *)
+fold_right (fun init -> fun elt -> "("^init^" and "^elt^")") ["a";"b";"c"] "z" ;; (* "(a and (b and (c and z)))" *)
 
 let nth_end l n = List.nth (List.rev l) n;;
 

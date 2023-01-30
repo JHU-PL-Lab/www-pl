@@ -528,11 +528,12 @@ This completes the induction step.</p>
 
 <ul>
   <li>Think of tuples as fixed length lists, where the types of each element can differ, unlike lists</li>
+  <li>A 2-tuple is a pair, a 3-tuple is a triple.</li>
   <li>Tuples are “and” data structures: this <em>and</em> this *and this.  <code>struct</code> and objects are also “and” structures (variants like <code>Some/None</code> are OCaml’s “or” structures, more later on them)</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="s2">"hi"</span><span class="p">);;</span>        <span class="c">(* type is int * string -- '*' is like "x" of set theory, a product *)</span>
-<span class="k">let</span> <span class="n">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="s2">"hi"</span><span class="p">);;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="s2">"hi"</span><span class="p">);;</span>             <span class="c">(* type is int * string -- '*' is like "x" of set theory, a product *)</span>
+<span class="k">let</span> <span class="n">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="s2">"hi"</span><span class="p">);;</span> <span class="c">(* tuple elements separated by commas, list elements by semicolon *)</span>
 <span class="p">(</span><span class="mi">1</span><span class="o">,</span><span class="mi">1</span><span class="o">.</span><span class="mi">1</span><span class="o">,</span><span class="k">'</span><span class="n">c'</span><span class="o">,</span><span class="s2">"cc"</span><span class="p">);;</span>
 </code></pre></div></div>
 <p>Tuple pattern matching</p>
@@ -547,13 +548,13 @@ This completes the induction step.</p>
 <span class="c">(* Parens around tuple not always needed *)</span>
 <span class="k">let</span> <span class="n">i</span><span class="o">,</span><span class="n">b</span><span class="o">,</span><span class="n">f</span> <span class="o">=</span> <span class="mi">4</span><span class="o">,</span> <span class="bp">true</span><span class="o">,</span> <span class="mi">4</span><span class="o">.</span><span class="mi">4</span><span class="p">;;</span>
 
-<span class="c">(* Tuple pattern matching as a trick to parallel match *)</span>
+<span class="c">(* Pattern matching on a pair allows parallel pattern matching *)</span>
 
 <span class="k">let</span> <span class="k">rec</span> <span class="n">eq_lists</span> <span class="n">l1</span> <span class="n">l2</span> <span class="o">=</span> 
   <span class="k">match</span> <span class="n">l1</span><span class="o">,</span><span class="n">l2</span> <span class="k">with</span>
   <span class="o">|</span> <span class="bp">[]</span><span class="o">,</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">true</span>
   <span class="o">|</span> <span class="n">x</span><span class="o">::</span><span class="n">xs</span><span class="o">,</span> <span class="n">x'</span><span class="o">::</span><span class="n">xs'</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;&gt;</span> <span class="n">x'</span> <span class="k">then</span> <span class="bp">false</span> <span class="k">else</span> <span class="n">eq_lists</span> <span class="n">xs</span> <span class="n">xs'</span>
-  <span class="c">(* more cases needed for lists not equal length - an exercise for you *)</span>
+  <span class="o">|</span> <span class="n">_</span> <span class="o">-&gt;</span> <span class="bp">false</span> <span class="c">(* lengths must differ if this case is hit *)</span>
 </code></pre></div></div>
 
 <h4 id="consequences-of-immutable-variable-declarations-on-the-top-loop">Consequences of immutable variable declarations on the top loop</h4>
@@ -610,18 +611,17 @@ This completes the induction step.</p>
 </code></pre></div></div>
 
 <ul>
-  <li>Moral: don’t code (too much) directly in the top-loop since this behavior can cause anomalies
-    <ul>
-      <li>if you change any function, all functions that depend on it need to be copy/pasted in as well</li>
-    </ul>
-  </li>
-  <li>For Assignment 1, you will be able to say <code>dune test</code> in the terminal to run tests on your code, and <code>dune utop</code> will load it all into <code>utop</code> so you can then play with your functions.</li>
+  <li>Moral: re-load all your functions if you change any one function</li>
+  <li>For Assignment 1, you will be able to say <code>dune test</code> in the terminal to compile and run tests on your code, and <code>dune utop</code> will load it all into <code>utop</code> so you can then play with your functions.</li>
   <li>Also you can type into <code>utop</code> the command <code>#use "src/assignment.ml"</code> and it is as if you copy/pasted the whole file into <code>utop</code>.</li>
 </ul>
 
 <h4 id="mutually-recursive-functions">Mutually recursive functions</h4>
 
-<p>Warm up to the next function - write a (useless) copy function on lists</p>
+<ul>
+  <li>Mutually recursive functions are not common but they require special syntax</li>
+  <li>Warm up: write a (useless) copy function on lists</li>
+</ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">copy</span> <span class="n">l</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
@@ -632,47 +632,51 @@ This completes the induction step.</p>
 </code></pre></div></div>
 <ul>
   <li>Argue by induction that this will copy the input list <code>l</code>.</li>
-  <li>(List copy is in fact useless because lists are immutable - compiler can <em>share</em>)
+  <li>(List copy is in fact <strong>useless</strong> in OCaml because lists are immutable - compiler can <em>share</em>)
     <ul>
-      <li>This property is a form of <em>referential transparency</em></li>
+      <li>This property is <em>referential transparency</em></li>
     </ul>
   </li>
 </ul>
 
-<p>Refine copy to flip back and forth between copying and not</p>
+<p>Copy every other element, defined by mutual recursion via <code>and</code> syntax</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">copyodd</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">copy_odd</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
   <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
-  <span class="o">|</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span>  <span class="n">hd</span><span class="o">::</span><span class="p">(</span><span class="n">copyeven</span> <span class="n">tl</span><span class="p">)</span>
+  <span class="o">|</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span>  <span class="n">hd</span><span class="o">::</span><span class="p">(</span><span class="n">copy_even</span> <span class="n">tl</span><span class="p">)</span>
 <span class="ow">and</span>  <span class="c">(* new keyword for declaring mutually recursive functions *)</span>
-  <span class="n">copyeven</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+  <span class="n">copy_even</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
   <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
-  <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="n">copyodd</span> <span class="n">xs</span><span class="p">;;</span>
+  <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="n">copy_odd</span> <span class="n">xs</span><span class="p">;;</span>
 
-<span class="n">copyodd</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">6</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">8</span><span class="p">;</span><span class="mi">9</span><span class="p">;</span><span class="mi">10</span><span class="p">];;</span>
-<span class="n">copyeven</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">6</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">8</span><span class="p">;</span><span class="mi">9</span><span class="p">;</span><span class="mi">10</span><span class="p">];;</span>
+<span class="n">copy_odd</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">6</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">8</span><span class="p">;</span><span class="mi">9</span><span class="p">;</span><span class="mi">10</span><span class="p">];;</span>
+<span class="n">copy_even</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">6</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">8</span><span class="p">;</span><span class="mi">9</span><span class="p">;</span><span class="mi">10</span><span class="p">];;</span>
 </code></pre></div></div>
 
 <h3 id="using-let--in-to-define-local-functions">Using <code>let .. in</code> to define local functions</h3>
 
-<p>Here is a version that hides the <code>copyeven</code> function – make both internal and export one</p>
+<ul>
+  <li>If functions are <em>only</em> used locally within one function, it can be defined inside that function - more modular</li>
+  <li>Suppose we only wanted to use <code>copy_odd</code>: here is a version that hides <code>copy_even</code>:</li>
+</ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">copyodd</span> <span class="n">ll</span> <span class="o">=</span>
-  <span class="k">let</span> <span class="k">rec</span> <span class="n">copyoddlocal</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">copy_odd</span> <span class="n">ll</span> <span class="o">=</span>
+  <span class="k">let</span> <span class="k">rec</span> <span class="n">copy_odd_local</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
     <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
-    <span class="o">|</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span>  <span class="n">hd</span><span class="o">::</span><span class="p">(</span><span class="n">copyevenlocal</span> <span class="n">tl</span><span class="p">)</span>
+    <span class="o">|</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span>  <span class="n">hd</span><span class="o">::</span><span class="p">(</span><span class="n">copy_even_local</span> <span class="n">tl</span><span class="p">)</span>
   <span class="ow">and</span>
-    <span class="n">copyevenlocal</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+    <span class="n">copy_even_local</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
     <span class="o">|</span>        <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
-    <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="n">copyoddlocal</span> <span class="n">xs</span>
+    <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="n">copy_odd_local</span> <span class="n">xs</span>
   <span class="k">in</span>
-  <span class="n">copyoddlocal</span> <span class="n">ll</span><span class="p">;;</span>
+  <span class="n">copy_odd_local</span> <span class="n">ll</span><span class="p">;;</span>
 
-<span class="k">assert</span><span class="p">(</span><span class="n">copyodd</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">6</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">8</span><span class="p">;</span><span class="mi">9</span><span class="p">;</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">9</span><span class="p">]);;</span>
+<span class="k">assert</span><span class="p">(</span><span class="n">copy_odd</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">6</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">8</span><span class="p">;</span><span class="mi">9</span><span class="p">;</span><span class="mi">10</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">5</span><span class="p">;</span><span class="mi">7</span><span class="p">;</span><span class="mi">9</span><span class="p">]);;</span>
 </code></pre></div></div>
 
 <ul>
-  <li>If functions are <em>only</em> used locally, use this syntax to define them locally and avoid polluting rest of code.</li>
+  <li><code>copy_even_local</code> is not available in the top loop, it is local to this code only</li>
+  <li>Note how the last line “exports” the internal <code>copy_odd_local</code> by forwarding the <code>ll</code> parameter to it</li>
 </ul>
 
 <h3 id="higher-order-functions">Higher Order Functions</h3>
@@ -681,7 +685,6 @@ This completes the induction step.</p>
 <ul>
   <li>take other functions as arguments</li>
   <li>or return functions as results</li>
-  <li>or both</li>
 </ul>
 
 <p>Why?</p>
@@ -691,22 +694,22 @@ This completes the induction step.</p>
   <li>Lets show the power by extracting out some pluggable code</li>
 </ul>
 
-<p>Example: append <code>"gobble"</code> to each word in a list of strings</p>
+<p>Illustration of there usefulness by example: append <code>"gobble"</code> to each word in a list of strings</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">appendgobblelist</span> <span class="n">l</span> <span class="o">=</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">append_gobble</span> <span class="n">l</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
   <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
-  <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">hd</span> <span class="o">^</span><span class="s2">"gobble"</span><span class="p">)</span> <span class="o">::</span> <span class="n">appendgobblelist</span> <span class="n">tl</span><span class="p">;;</span>
+  <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">hd</span> <span class="o">^</span><span class="s2">"-gobble"</span><span class="p">)</span> <span class="o">::</span> <span class="n">append_gobble</span> <span class="n">tl</span><span class="p">;;</span>
 
-<span class="n">appendgobblelist</span> <span class="p">[</span><span class="s2">"have"</span><span class="p">;</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"good"</span><span class="p">;</span><span class="s2">"day"</span><span class="p">];;</span>
-<span class="p">(</span><span class="s2">"have"</span> <span class="o">^</span><span class="s2">"gobble"</span><span class="p">)</span> <span class="o">::</span> <span class="p">(</span><span class="s2">"a"</span><span class="o">^</span><span class="s2">"gobble"</span><span class="p">)</span> <span class="o">::</span> <span class="n">appendgobblelist</span> <span class="p">[</span><span class="s2">"good"</span><span class="p">;</span><span class="s2">"day"</span><span class="p">];;</span>
+<span class="n">append_gobble</span> <span class="p">[</span><span class="s2">"have"</span><span class="p">;</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"good"</span><span class="p">;</span><span class="s2">"day"</span><span class="p">];;</span>
+<span class="p">(</span><span class="s2">"have"</span> <span class="o">^</span><span class="s2">"gobble"</span><span class="p">)</span> <span class="o">::</span> <span class="p">(</span><span class="s2">"a"</span><span class="o">^</span><span class="s2">"gobble"</span><span class="p">)</span> <span class="o">::</span> <span class="n">append_gobble</span> <span class="p">[</span><span class="s2">"good"</span><span class="p">;</span><span class="s2">"day"</span><span class="p">];;</span>
 </code></pre></div></div>
 
 <ul>
-  <li>Lets pull out the “append gobble” action as a function parameter, make it code we can plug in</li>
-  <li>At a high level, the common pattern is “apply a given operation to every list element”</li>
+  <li>At a high level, the common pattern is “apply a function to every list element and make a list of the results”</li>
+  <li>So, lets pull out the “append gobble” action as a function parameter so it will be it code we can plug in</li>
   <li>The resulting function is called <code>map</code> (note it is built-in as <code>List.map</code>):
-    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">map</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span>  <span class="c">(* function f is an argument here *)</span>
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">map</span> <span class="p">(</span><span class="n">f</span> <span class="o">:</span> <span class="k">'</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="k">'</span><span class="n">b</span><span class="p">)</span> <span class="p">(</span><span class="n">l</span> <span class="o">:</span> <span class="k">'</span><span class="n">a</span> <span class="kt">list</span><span class="p">)</span> <span class="o">:</span> <span class="k">'</span><span class="n">b</span> <span class="kt">list</span> <span class="o">=</span>  <span class="c">(* function f is an argument here *)</span>
 <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
 <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
 <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">hd</span><span class="p">)</span> <span class="o">::</span> <span class="n">map</span> <span class="n">f</span> <span class="n">tl</span><span class="p">;;</span>
@@ -714,8 +717,9 @@ This completes the induction step.</p>
   </li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">middle</span> <span class="o">=</span> <span class="n">map</span> <span class="p">(</span><span class="k">function</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="o">^</span><span class="s2">"gobble"</span><span class="p">);;</span>
-<span class="n">middle</span> <span class="p">[</span><span class="s2">"have"</span><span class="p">;</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"good"</span><span class="p">;</span><span class="s2">"day"</span><span class="p">];;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">another_append_gobble</span> <span class="o">=</span> <span class="n">map</span> <span class="p">(</span><span class="k">fun</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="o">^</span><span class="s2">"-gobble"</span><span class="p">);;</span> <span class="c">(* give only the first argument -- Currying *)</span>
+<span class="n">another_append_gobble</span> <span class="p">[</span><span class="s2">"have"</span><span class="p">;</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"good"</span><span class="p">;</span><span class="s2">"day"</span><span class="p">];;</span>
+<span class="n">map</span> <span class="p">(</span><span class="k">fun</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="o">^</span><span class="s2">"-gobble"</span><span class="p">)</span> <span class="p">[</span><span class="s2">"have"</span><span class="p">;</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"good"</span><span class="p">;</span><span class="s2">"day"</span><span class="p">];;</span> <span class="c">(* Or, don't give the intermediate application a name *)</span>
 </code></pre></div></div>
 
 <p>Mapping on lists of pairs - in and out lists can be different types.</p>
@@ -730,9 +734,11 @@ This completes the induction step.</p>
 
 <h2 id="ocaml-lecture-iv">OCaml Lecture IV</h2>
 
-<h3 id="folds">Folds</h3>
-
 <ul>
+  <li>There is a better way to program over lists than to use <code>let rec</code>, it is called <em>combinator programming</em> - use the library functions</li>
+  <li>We already saw this with <code>map</code> - we didn’t need to write <code>append_gobble</code> directly, instead we could use <code>map</code>.
+    <h3 id="folds">Folds</h3>
+  </li>
   <li>fold_left/right use a binary function to combine list elements</li>
   <li>As with <code>map</code> let us first write a concrete combiner and then pull out the particular combination code as a parameter</li>
 </ul>
@@ -817,8 +823,8 @@ Abreviate <code>fun elt accum -&gt; accum @ [elt]</code> as <code>f</code> in th
 
 <p>Example to help claroify how left and right folds produce a different results:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">" and "</span><span class="o">^</span><span class="n">accum</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="s2">"z"</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="p">;;</span> 
-<span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">init</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">init</span><span class="o">^</span><span class="s2">" and "</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="s2">"z"</span> <span class="p">;;</span> 
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">" and "</span><span class="o">^</span><span class="n">accum</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="s2">"z"</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="p">;;</span>  <span class="c">(* "(((z and a) and b) and c)" *)</span>
+<span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">init</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">init</span><span class="o">^</span><span class="s2">" and "</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="s2">"z"</span> <span class="p">;;</span> <span class="c">(* "(a and (b and (c and z)))" *)</span>
 </code></pre></div></div>
 
 <h3 id="pipeling-and-composition">Pipeling and composition</h3>

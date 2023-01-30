@@ -417,11 +417,12 @@ QED.
 ### Tuples
 
 * Think of tuples as fixed length lists, where the types of each element can differ, unlike lists
+* A 2-tuple is a pair, a 3-tuple is a triple.
 * Tuples are "and" data structures: this *and* this *and this.  `struct` and objects are also "and" structures (variants like `Some/None` are OCaml's "or" structures, more later on them)
 
 ```ocaml
-(2, "hi");;        (* type is int * string -- '*' is like "x" of set theory, a product *)
-let tuple = (2, "hi");;
+(2, "hi");;             (* type is int * string -- '*' is like "x" of set theory, a product *)
+let tuple = (2, "hi");; (* tuple elements separated by commas, list elements by semicolon *)
 (1,1.1,'c',"cc");;
 ```
 Tuple pattern matching
@@ -437,13 +438,13 @@ let (f, s, th) = tuple in s;;
 (* Parens around tuple not always needed *)
 let i,b,f = 4, true, 4.4;;
 
-(* Tuple pattern matching as a trick to parallel match *)
+(* Pattern matching on a pair allows parallel pattern matching *)
 
 let rec eq_lists l1 l2 = 
   match l1,l2 with
   | [], [] -> true
   | x::xs, x'::xs' -> if x <> x' then false else eq_lists xs xs'
-  (* more cases needed for lists not equal length - an exercise for you *)
+  | _ -> false (* lengths must differ if this case is hit *)
 ```
 
 #### Consequences of immutable variable declarations on the top loop
@@ -500,14 +501,14 @@ let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
 g (-5);; (* works now *)
 ```
 
-* Moral: don't code (too much) directly in the top-loop since this behavior can cause anomalies 
-   - if you change any function, all functions that depend on it need to be copy/pasted in as well
-* For Assignment 1, you will be able to say `dune test` in the terminal to run tests on your code, and `dune utop` will load it all into `utop` so you can then play with your functions.
+* Moral: re-load all your functions if you change any one function
+* For Assignment 1, you will be able to say `dune test` in the terminal to compile and run tests on your code, and `dune utop` will load it all into `utop` so you can then play with your functions.
 * Also you can type into `utop` the command `#use "src/assignment.ml"` and it is as if you copy/pasted the whole file into `utop`.
 
 #### Mutually recursive functions
 
-Warm up to the next function - write a (useless) copy function on lists
+* Mutually recursive functions are not common but they require special syntax
+* Warm up: write a (useless) copy function on lists
 
 ```ocaml
 let rec copy l =
@@ -518,82 +519,84 @@ let rec copy l =
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 ```
 * Argue by induction that this will copy the input list `l`.
-* (List copy is in fact useless because lists are immutable - compiler can *share*)
-  - This property is a form of *referential transparency*
+* (List copy is in fact **useless** in OCaml because lists are immutable - compiler can *share*)
+  - This property is *referential transparency*
 
-Refine copy to flip back and forth between copying and not
+Copy every other element, defined by mutual recursion via `and` syntax
 
 ```ocaml
-let rec copyodd l = match l with
+let rec copy_odd l = match l with
   | [] -> []
-  | hd :: tl ->  hd::(copyeven tl)
+  | hd :: tl ->  hd::(copy_even tl)
 and  (* new keyword for declaring mutually recursive functions *)
-  copyeven l = match l with
+  copy_even l = match l with
   |  [] -> []
-  | x :: xs -> copyodd xs;;
+  | x :: xs -> copy_odd xs;;
 
-copyodd [1;2;3;4;5;6;7;8;9;10];;
-copyeven [1;2;3;4;5;6;7;8;9;10];;
+copy_odd [1;2;3;4;5;6;7;8;9;10];;
+copy_even [1;2;3;4;5;6;7;8;9;10];;
 ```
 
 ### Using `let .. in` to define local functions
 
-Here is a version that hides the `copyeven` function -- make both internal and export one
+* If functions are *only* used locally within one function, it can be defined inside that function - more modular
+* Suppose we only wanted to use `copy_odd`: here is a version that hides `copy_even`:
 
 ```ocaml
-let copyodd ll =
-  let rec copyoddlocal l = match l with
+let copy_odd ll =
+  let rec copy_odd_local l = match l with
     |  [] -> []
-    | hd :: tl ->  hd::(copyevenlocal tl)
+    | hd :: tl ->  hd::(copy_even_local tl)
   and
-    copyevenlocal l = match l with
+    copy_even_local l = match l with
     |        [] -> []
-    | x :: xs -> copyoddlocal xs
+    | x :: xs -> copy_odd_local xs
   in
-  copyoddlocal ll;;
+  copy_odd_local ll;;
 
-assert(copyodd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
+assert(copy_odd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 ```
 
-* If functions are *only* used locally, use this syntax to define them locally and avoid polluting rest of code.
+- `copy_even_local` is not available in the top loop, it is local to this code only
+- Note how the last line "exports" the internal `copy_odd_local` by forwarding the `ll` parameter to it
 
 ### Higher Order Functions
 
 Higher order functions are functions that either
  * take other functions as arguments
  * or return functions as results
- * or both
 
 Why?
  * "pluggable" programming by passing in and out chunks of code
  * greatly increases reusability of code since any varying code can be pulled out as a function to pass in
  * Lets show the power by extracting out some pluggable code
 
-Example: append `"gobble"` to each word in a list of strings
+Illustration of there usefulness by example: append `"gobble"` to each word in a list of strings
 
 ```ocaml
-let rec appendgobblelist l =
+let rec append_gobble l =
   match l with
   | [] -> []
-  | hd::tl -> (hd ^"gobble") :: appendgobblelist tl;;
+  | hd::tl -> (hd ^"-gobble") :: append_gobble tl;;
 
-appendgobblelist ["have";"a";"good";"day"];;
-("have" ^"gobble") :: ("a"^"gobble") :: appendgobblelist ["good";"day"];;
+append_gobble ["have";"a";"good";"day"];;
+("have" ^"gobble") :: ("a"^"gobble") :: append_gobble ["good";"day"];;
 ```
 
-* Lets pull out the "append gobble" action as a function parameter, make it code we can plug in
-* At a high level, the common pattern is "apply a given operation to every list element"
+* At a high level, the common pattern is "apply a function to every list element and make a list of the results"
+* So, lets pull out the "append gobble" action as a function parameter so it will be it code we can plug in
 * The resulting function is called `map` (note it is built-in as `List.map`):
 ```ocaml
-let rec map f l =  (* function f is an argument here *)
+let rec map (f : 'a -> 'b) (l : 'a list) : 'b list =  (* function f is an argument here *)
   match l with
   | [] -> []
   | hd::tl -> (f hd) :: map f tl;;
 ```
 
 ```ocaml
-let middle = map (function s -> s^"gobble");;
-middle ["have";"a";"good";"day"];;
+let another_append_gobble = map (fun s -> s^"-gobble");; (* give only the first argument -- Currying *)
+another_append_gobble ["have";"a";"good";"day"];;
+map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* Or, don't give the intermediate application a name *)
 ```
 
 Mapping on lists of pairs - in and out lists can be different types.
@@ -607,6 +610,8 @@ let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functio
 
 ## OCaml Lecture IV
 
+* There is a better way to program over lists than to use `let rec`, it is called *combinator programming* - use the library functions
+* We already saw this with `map` - we didn't need to write `append_gobble` directly, instead we could use `map`.
 ### Folds
 
  * fold_left/right use a binary function to combine list elements
@@ -692,8 +697,8 @@ let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, 
 Example to help claroify how left and right folds produce a different results:
 
 ```ocaml
-fold_left (fun elt -> fun accum -> "("^elt^" and "^accum^")") "z" ["a";"b";"c"] ;; 
-fold_right (fun init -> fun elt -> "("^init^" and "^elt^")") ["a";"b";"c"] "z" ;; 
+fold_left (fun elt -> fun accum -> "("^elt^" and "^accum^")") "z" ["a";"b";"c"] ;;  (* "(((z and a) and b) and c)" *)
+fold_right (fun init -> fun elt -> "("^init^" and "^elt^")") ["a";"b";"c"] "z" ;; (* "(a and (b and (c and z)))" *)
 ```
 
 
