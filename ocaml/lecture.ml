@@ -165,9 +165,10 @@ f y;; (* 3 + 3 or 5 + 3 - ??   Answer: the latter. *)
 
 let f x = x + 1;;
 let g x = f (f x);;
-let shad = f;; (* make a new name for f above *)
+let f_alias = f;; (* make a new name for f above *)
 (* lets "change" f, say we made an error in its definition above *)
 let f x = if x <= 0 then 0 else x + 1;;
+f_alias;; (* it is the original f, similar to how let works on integer variables above *)
 g (-5);; (* g still refers to the initial f - !! *)
 let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
 g (-5);; (* works now *)

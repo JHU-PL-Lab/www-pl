@@ -493,9 +493,10 @@ Function definitions are similar, you can't mutate an existing definition.
 ```ocaml
 let f x = x + 1;;
 let g x = f (f x);;
-let shad = f;; (* make a new name for f above *)
+let f_alias = f;; (* make a new name for f above *)
 (* lets "change" f, say we made an error in its definition above *)
 let f x = if x <= 0 then 0 else x + 1;;
+f_alias;; (* it is the original f, similar to how let works on integer variables above *)
 g (-5);; (* g still refers to the initial f - !! *)
 let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
 g (-5);; (* works now *)
@@ -508,7 +509,9 @@ g (-5);; (* works now *)
 #### Mutually recursive functions
 
 * Mutually recursive functions are not common but they require special syntax
-* Warm up: write a (useless) copy function on lists
+* Warm up: write a copy function on lists
+  - List copy is in fact **useless** in OCaml because lists are immutable - compiler can *share* two versions without any issues
+  - This property is *referential transparency*
 
 ```ocaml
 let rec copy l =
@@ -518,9 +521,8 @@ let rec copy l =
 
 let result = copy [1;2;3;4;5;6;7;8;9;10]
 ```
-* Argue by induction that this will copy the input list `l`.
-* (List copy is in fact **useless** in OCaml because lists are immutable - compiler can *share*)
-  - This property is *referential transparency*
+* Argue by induction that this will copy: `(copy tl)` is a call on a shorter list so can assume is correct
+
 
 Copy every other element, defined by mutual recursion via `and` syntax
 
@@ -557,7 +559,7 @@ let copy_odd ll =
 assert(copy_odd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 ```
 
-- `copy_even_local` is not available in the top loop, it is local to this code only
+- `copy_even_local` is not available in the top loop, it is local to `copy_odd` function only, just like local variables but its a function.
 - Note how the last line "exports" the internal `copy_odd_local` by forwarding the `ll` parameter to it
 
 ### Higher Order Functions
