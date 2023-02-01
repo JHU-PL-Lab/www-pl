@@ -20,6 +20,7 @@ Please send private questions for course staff only as a new Conversion setting 
 * Junjie Lei
 * Zhenbo Yan
 * Ricky Cheng
+* Sean Murray
 
 ### Office Hours and Locations
 
