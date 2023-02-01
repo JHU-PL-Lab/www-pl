@@ -224,131 +224,6 @@ map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* Or, don't give the int
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
 
-let rec summate_right l init = match l with
-    | []   -> init (* init is the initial number to start with; a special case *)
-    | hd::tl ->  (+) hd (summate_right tl init) (* assume by induction this will summate tl, add hd *)
-    ;;
-summate_right [1;2;3] 0;;
-
-let rec fold_right f l init = match l with
-  | [] -> init
-  | hd::tl -> f hd (fold_right f tl init) (* same code as above just extracting (+) as a parameter *)
-;;
-let summate_right' = fold_right (+);;
-fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
-
-let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];;
-let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
-let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
-
-let rec summate_left accum l = match l with
-    | []   -> accum
-    | hd::tl -> summate_left ((+) accum hd) tl (* pass down accum + hd as new "accum" -- accumulating *)
-    ;;
-summate_left 0 [1;2;3];; (* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)
-
-let rec fold_left f accum l = match l with
-    | []   -> accum
-    | hd::tl -> fold_left f (f accum hd) tl
-    ;;
-
-fold_left (+) 0 [1;2;3];;
-
-let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) *)
-let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
-
-fold_left (fun elt -> fun accum -> "("^elt^" and "^accum^")") "z" ["a";"b";"c"] ;;  (* "(((z and a) and b) and c)" *)
-fold_right (fun init -> fun elt -> "("^init^" and "^elt^")") ["a";"b";"c"] "z" ;; (* "(a and (b and (c and z)))" *)
-
-let nth_end l n = List.nth (List.rev l) n;;
-
-let nth_end l n = l |> List.rev |> (Fun.flip(List.nth) n);;
-
-let compose g f = (fun x -> g (f x));;
-compose (fun x -> x+3) (fun x -> x*2) 10;;
-
-let add_c x y = x + y;;
-add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
-let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - tmp is a function *)
-(* An equivalent way to define `add_c`, clarifying what the above means *)
-let add_c = fun x -> (fun y -> x + y);;
-(* and, yet another identical way .. lots of equivalent notation in OCaml *)
-let add_c = fun x y -> x + y;;
-(* yet one more, the built-in (+) *)
-let add_c = (+);;
-
-let add_nc p =
-    match p with (x,y) -> x+y;;
-
-let add_nc (x, y) = x + y;;
-
-let curry fnc = fun x -> fun y -> fnc (x, y);;
-let uncurry fc = fun (x, y) -> fc x y;;
-
-let new_add_nc = uncurry add_c;;
-new_add_nc (2,3);;
-let new_add_c  = curry   add_nc;;
-new_add_c 2 3;;
-
-let noop1 = curry (uncurry add_c);; (* a no-op *)
-let noop2 = uncurry (curry add_nc);; (* another no-op; noop1 & noop2 together show isomorphism *)
-
-print_string ("hi\n");;
-
-let add (x: float) (y: float) = x +. y;;
-let add (x: float) (y: float) : int = Float.to_int (x +. y);; (* can also declare the return type *)
-
-type intpair = int * int;;
-let f (p : intpair) = match p with
-                      (l, r) -> l + r
-;;
-(2,3);; (* ocaml doesn't call this an intpair by default *)
-f (2, 3);; (* still, can pass it to the function expecting an intpair *)
-((2,3):intpair);; (* can also explicitly tag data with its type *)
-
-type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
-
-Fixed(5);; (* tag 5 as a Fixed *)
-Fixed 5;; (* parens optional as is often the case in OCaml *)
-Floating 4.0;; (* tag 4.0 as a Floating *)
-
-let ff_as_int x =
-    match x with
-    | Fixed n -> n    (* variants fit well into pattern matching syntax *)
-    | Floating z -> int_of_float z;;
-
-ff_as_int (Fixed 5);; (* beware that ff_as_int Fixed(5) won't parse properly!  
-                         ff_as_int @@ Fixed 5 will though *)
-
-let add_num n1 n2 =
-   match n1, n2 with    (* note use of pair here to parallel-match on two variables  *)
-     | Fixed i1, Fixed i2 ->       Fixed   (i1       +  i2)
-     | Fixed i1,   Floating f2 ->  Floating(float i1 +. f2)       (* need to coerce *)
-     | Floating f1, Fixed i2   ->  Floating(f1       +. float i2) (* ditto *)
-     | Floating f1, Floating f2 -> Floating(f1       +. f2)
-;;
-
-add_num (Fixed 123) (Floating 3.14159);;
-
-type complex = CZero | Nonzero of float * float;;
-
-let com = Nonzero(3.2,11.2);;
-let zer = CZero;;
-
-type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
-let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent in spirit to [3;5;7] *)
-
-type 'a mylist = Mt | Cons of 'a * ('a mylist);;
-
-let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
-
-let rec map ml f =
-  match ml with
-    | Mt -> Mt
-    | Cons(hd,tl) -> Cons(f hd,map tl f);;
-
-let map_eg = map mylisteg (fun x -> x - 1);;
-
 let to_upper_char c =
   let c_code = Char.code c in
   if c_code >= 97 && c_code <= 122 then Char.chr (c_code - 32)
@@ -395,6 +270,139 @@ assert(contains 1 [1; 2; 3]);;
 assert(not(contains 5 [1; 2; 3]));;
 assert(diff [1;2;3] [3;4;5] = [1; 2]);;
 assert(diff [1;2] [1;2;3] = []);;
+
+let rec summate_right l = match l with
+    | []   -> 0 (* this is the initial number to start with; a special case *)
+    | hd::tl ->  (+) hd (summate_right tl) (* assume by induction this will summate tl, add hd *)
+    ;;
+summate_right [1;2;3];;
+
+let rec summate_right l init = match l with
+    | []   -> init (* init is the initial number to start with *)
+    | hd::tl ->  (+) hd (summate_right tl init)
+    ;;
+summate_right [1;2;3] 0;;
+
+let rec fold_right f l init = match l with
+  | [] -> init
+  | hd::tl -> f hd (fold_right f tl init) (* same code as above just extracting (+) as a parameter *)
+;;
+let summate_right' = fold_right (+);; (* re-constitute the version above by feeding in (+) *)
+fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
+
+let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];;
+let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
+let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
+
+let rec rev’ l init = match l with
+    | []   -> init 
+    | hd::tl ->  (@) (rev’ tl init) [hd] (* recall our previous rev was identical but @ infix *)
+        ;;
+rev’ [1;2;3] [];;
+
+let rec summate_left accum l = match l with
+    | []   -> accum
+    | hd::tl -> summate_left ((+) accum hd) tl (* pass down accum + hd as new "accum" -- accumulating *)
+    ;;
+summate_left 0 [1;2;3];; (* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)
+
+let rec fold_left f accum l = match l with
+    | []   -> accum
+    | hd::tl -> fold_left f (f accum hd) tl
+    ;;
+
+fold_left (+) 0 [1;2;3];;
+
+let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
+let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) - much faster! *)
+
+fold_left (fun elt -> fun accum -> "("^elt^" op "^accum^")") "z" ["a";"b";"c"] ;;  (* "(((z op a) op b) op c)" *)
+fold_right (fun accum -> fun elt -> "("^accum^" op "^elt^")") ["a";"b";"c"] "z" ;; (* "(a op (b op (c op z)))" *)
+
+let nth_end l n = List.nth (List.rev l) n;;
+
+let nth_end l n = l |> List.rev |> (Fun.flip(List.nth) n);;
+
+let compose g f = (fun x -> g (f x));;
+compose (fun x -> x+3) (fun x -> x*2) 10;;
+
+let add_c x y = x + y;; (* recall type is int -> int -> int which is int -> (int -> int) *)
+add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
+let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - tmp is a function *)
+(* An equivalent way to define `add_c`, clarifying what the above means *)
+let add_c = fun x -> (fun y -> x + y);;
+(* and, yet another identical way .. lots of equivalent notation in OCaml *)
+let add_c = fun x y -> x + y;;
+(* yet one more, the built-in (+) *)
+let add_c = (+);;
+
+let add_nc (x,y) = x+y;; (* type is int * int -> int - no way to partially apply *)
+
+let curry fnc = fun x -> fun y -> fnc (x, y);;
+let uncurry fc = fun (x, y) -> fc x y;;
+
+let new_add_nc = uncurry add_c;;
+new_add_nc (2,3);;
+let new_add_c  = curry   add_nc;;
+new_add_c 2 3;;
+
+let noop1 = curry (uncurry add_c);; (* a no-op *)
+let noop2 = uncurry (curry add_nc);; (* another no-op; noop1 & noop2 together show isomorphism *)
+
+print_string ("hi\n");;
+
+let add (x: float) (y: float) : int = Float.to_int (x +. y);;
+
+type intpair = int * int;;
+let f (p : intpair) : int = match p with
+                      (l, r) -> l + r
+;;
+(2,3);; (* ocaml doesn't call this an intpair by default *)
+f (2, 3);; (* still, can pass it to the function expecting an intpair *)
+((2,3):intpair);; (* can also explicitly tag data with its type *)
+
+type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
+
+Fixed(5);; (* tag 5 as a Fixed *)
+Fixed 5;; (* parens optional as is often the case in OCaml *)
+Floating 4.0;; (* tag 4.0 as a Floating *)
+
+let ff_as_int x =
+    match x with
+    | Fixed n -> n    (* variants fit well into pattern matching syntax *)
+    | Floating z -> int_of_float z;;
+
+ff_as_int (Fixed 5);; (* beware that ff_as_int Fixed(5) won't parse properly!!  Super commmon error!!! 
+                         ff_as_int @@ Fixed 5 will though *)
+
+let add_num n1 n2 =
+   match n1, n2 with    (* note use of pair here to parallel-match on two variables  *)
+     | Fixed i1, Fixed i2 -> Fixed   (i1 + i2)
+     | Fixed i1, Floating f2 -> Floating(float i1 +. f2) (* need to coerce with `float` function *)
+     | Floating f1, Fixed i2 -> Floating(f1 +. float i2) (* ditto *)
+     | Floating f1, Floating f2 -> Floating(f1 +. f2)
+;;
+
+add_num (Fixed 10) (Floating 3.14159);;
+
+type complex = CZero | Nonzero of float * float;;
+
+let com = Nonzero(3.2,11.2);;
+let zer = CZero;;
+
+type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent in spirit to [3;5;7] *)
+
+type 'a mylist = Mt | Cons of 'a * ('a mylist);;
+
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
+
+let rec map ml f =
+  match ml with
+    | Mt -> Mt
+    | Cons(hd,tl) -> Cons(f hd,map tl f);;
+
+let map_eg = map mylisteg (fun x -> x - 1);;
 
 type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 
