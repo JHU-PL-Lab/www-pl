@@ -24,5 +24,5 @@ Please send private questions for course staff only as a new Conversion setting 
 
 ### Office Hours and Locations
 
-They will be posted on Courselore.
+They will be posted [on Courselore](https://courselore.org/courses/8683833116/conversations/4).
 
