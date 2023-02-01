@@ -766,8 +766,8 @@ let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else
 ```
 
 * We leave as an exercise understanding how the last two work but let us dig into `rev`.
-* Note that unlike `summate` above the types of the function passed are different here.
-  - parameter `elt` is the head of the list, and `accum` is the accumulated result thus far.
+* Note that unlike `summate` above the types of the two arguments to `f` are different here.
+  - parameter `elt` is the head of the list, and `accum` is the *accumulated* result thus far.
 * Here is `rev` written without fold to show how like with `summate_right` above it is a fold:
 
 ```ocaml
@@ -778,9 +778,9 @@ let rec rev’ l init = match l with
 rev’ [1;2;3] [];;
 ```
 
-* Note that the append here has the `accum` as the first parameter and the `elt` as the second parameter whereas the fold expects the parameters opposite
-* That is why we can’t just use `(@)` as the parameter to the `fold_right` above.
-* So, we pass `f` = `fun elt accum -> accum @ [elt]`
+* Note that the append in `rev'` has the `accum` as the first parameter and the `elt` as the second parameter whereas the fold expects the parameters opposite
+* So, the `f` we feed in to the `rev` via `fold_right` swaps them (also it makes the `elt` into a singleton list)
+* i.e., we pass `f` = `fun elt accum -> accum @ [elt]`
 * Why does this work?  By induction, can assume `accum` (the result so far) is the reverse of tail
   - then, adding the head, elt, at the end will reverse, done - !
  
@@ -801,12 +801,13 @@ rev [1;2]
 #### Folding left
 
 * `fold_left` accumulates "on the way down" (we pass down the f computed value), whereas `fold_right` accumulates "on the way up" (the f computes *after* the recursive call)
-* This aligns with pre-order vs post-order tree traversal you know about: 
+* This is somewhat related to pre-order vs post-order tree traversal you already know about: 
    - “left” is “pre”, compute on the way down
    - “right” is “post”, compute on the way back up
+* In general it is a fundamental aspect of recursive functions: can compute pre- post- or both.
 * So, in the left approach we will pass *down* the currently accumulated *result*, `accum`.
 * When we get to the bottom of the recursion (empty list) we have the fully final value in accum and just need to return ... return ... return it all the way to the top without touching it.
-* List and value arguments (and accum and elt) are swapped compared to `fold_right`, be careful !
+* List and value arguments (and `accum` and `elt` on `f`) are swapped compared to `fold_right`, be careful !
 * Let us again do summation, this time “on the way down”, and extract the general folder.
 
 ```ocaml
@@ -816,8 +817,8 @@ let rec summate_left accum l = match l with
     ;;
 summate_left 0 [1;2;3];; (* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)
 ```
-* Note that `accum` starts out as zero -- the "initial `accum`"  is `0`.
-* Again let us extract the `(+)` as a new parameter `f` to get a general template for this
+* Note that the "initial `accum`"  is `0`, grows on way *down* (only)
+* Again let us extract the `(+)` as a new parameter `f` to allow any operation to be applied in this manner
 
 ```ocaml
 let rec fold_left f accum l = match l with

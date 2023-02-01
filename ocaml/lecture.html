@@ -885,9 +885,9 @@ a. Assume that the capital of characters other than alphabets<br />
 
 <ul>
   <li>We leave as an exercise understanding how the last two work but let us dig into <code>rev</code>.</li>
-  <li>Note that unlike <code>summate</code> above the types of the function passed are different here.
+  <li>Note that unlike <code>summate</code> above the types of the two arguments to <code>f</code> are different here.
     <ul>
-      <li>parameter <code>elt</code> is the head of the list, and <code>accum</code> is the accumulated result thus far.</li>
+      <li>parameter <code>elt</code> is the head of the list, and <code>accum</code> is the <em>accumulated</em> result thus far.</li>
     </ul>
   </li>
   <li>Here is <code>rev</code> written without fold to show how like with <code>summate_right</code> above it is a fold:</li>
@@ -901,9 +901,9 @@ a. Assume that the capital of characters other than alphabets<br />
 </code></pre></div></div>
 
 <ul>
-  <li>Note that the append here has the <code>accum</code> as the first parameter and the <code>elt</code> as the second parameter whereas the fold expects the parameters opposite</li>
-  <li>That is why we can’t just use <code>(@)</code> as the parameter to the <code>fold_right</code> above.</li>
-  <li>So, we pass <code>f</code> = <code>fun elt accum -&gt; accum @ [elt]</code></li>
+  <li>Note that the append in <code>rev'</code> has the <code>accum</code> as the first parameter and the <code>elt</code> as the second parameter whereas the fold expects the parameters opposite</li>
+  <li>So, the <code>f</code> we feed in to the <code>rev</code> via <code>fold_right</code> swaps them (also it makes the <code>elt</code> into a singleton list)</li>
+  <li>i.e., we pass <code>f</code> = <code>fun elt accum -&gt; accum @ [elt]</code></li>
   <li>Why does this work?  By induction, can assume <code>accum</code> (the result so far) is the reverse of tail
     <ul>
       <li>then, adding the head, elt, at the end will reverse, done - !</li>
@@ -927,15 +927,16 @@ a. Assume that the capital of characters other than alphabets<br />
 
 <ul>
   <li><code>fold_left</code> accumulates “on the way down” (we pass down the f computed value), whereas <code>fold_right</code> accumulates “on the way up” (the f computes <em>after</em> the recursive call)</li>
-  <li>This aligns with pre-order vs post-order tree traversal you know about:
+  <li>This is somewhat related to pre-order vs post-order tree traversal you already know about:
     <ul>
       <li>“left” is “pre”, compute on the way down</li>
       <li>“right” is “post”, compute on the way back up</li>
     </ul>
   </li>
+  <li>In general it is a fundamental aspect of recursive functions: can compute pre- post- or both.</li>
   <li>So, in the left approach we will pass <em>down</em> the currently accumulated <em>result</em>, <code>accum</code>.</li>
   <li>When we get to the bottom of the recursion (empty list) we have the fully final value in accum and just need to return … return … return it all the way to the top without touching it.</li>
-  <li>List and value arguments (and accum and elt) are swapped compared to <code>fold_right</code>, be careful !</li>
+  <li>List and value arguments (and <code>accum</code> and <code>elt</code> on <code>f</code>) are swapped compared to <code>fold_right</code>, be careful !</li>
   <li>Let us again do summation, this time “on the way down”, and extract the general folder.</li>
 </ul>
 
@@ -946,8 +947,8 @@ a. Assume that the capital of characters other than alphabets<br />
 <span class="n">summate_left</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)</span>
 </code></pre></div></div>
 <ul>
-  <li>Note that <code>accum</code> starts out as zero – the “initial <code>accum</code>”  is <code>0</code>.</li>
-  <li>Again let us extract the <code>(+)</code> as a new parameter <code>f</code> to get a general template for this</li>
+  <li>Note that the “initial <code>accum</code>”  is <code>0</code>, grows on way <em>down</em> (only)</li>
+  <li>Again let us extract the <code>(+)</code> as a new parameter <code>f</code> to allow any operation to be applied in this manner</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">fold_left</span> <span class="n">f</span> <span class="n">accum</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
