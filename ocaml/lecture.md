@@ -1365,16 +1365,16 @@ Background on modules in programming languages
 
 * Assignment 1/2 require you to fill out a file `assignment.ml`
 * This is in fact creating a *module* `Assignment` (notice the first letter (only) is capped)
-* `dune utop` will load your module in the top loop
-* You then need to write `Assignment.reverse_n 5;;` etc to access the functions in the module's namespace
+* `dune utop` will compile your module and load it in the top loop
+* You then can type `Assignment.doit 5;;` etc to access the functions in the module's namespace
 * Or, use `open Assignment;;` to make all the functions in the module available at the top level.
 
 ### Separate Compilation with OCaml
 
 * File-based modules such as `assignment.ml` are compiled separately.
-* This is the traditional `javac`/`cc`/etc style of coding, done with `ocamlc` in ocaml
+* This is the traditional `javac`/`cc`/etc style of coding, and is done with done with `ocamlc` in ocaml
 * Also in the Java/C spirit, it is how you write a standalone app in OCaml
-* The underlying `ocamlc` compiler you don't need to directly invoke, in this course we will give you `dune` build files which invoke the compioler for you
+* The underlying `ocamlc` compiler you don't need to directly invoke, in this course we will give you `dune` build files which invoke the compiler for you
   - `dune` is `make` for OCaml
   - `dune build` invokes the OCaml compiler on all the files in a project
   - if you are curious what actual compiler calls are happening, add `--verbose` to the build command
@@ -1382,19 +1382,25 @@ Background on modules in programming languages
 ### An example of a separately-compiled OCaml program
 
 * See [set-example.zip](http://pl.cs.jhu.edu/pl/ocaml/set-example.zip) for the example we cover in lecture.
+* The file `src/simple_set.ml` is the set data structure and will compile to module `Simple_set`.
+* Observe how a module can also contain type definitions, this is a key differece of OCaml
 
 ### Playing with the Simple_set library module
-* For this example we can use terminal command `dune utop` to load the library module into a fresh `utop`
+* We can use `dune utop` to load the library module into a fresh `utop`, after which we can play with it
 
-```sh
-dune utop
-```
 ```sh
 Simple_set.emptyset;; (* simple_set.ml's binary is loaded as module Simple_set *)
 open Simple_set;;     (* open makes `emptyset` etc in module available without typing `Simple_set.` *)
 let aset = List.fold_left (Fun.flip add) emptyset [1;2;3;4] ;;
 contains 3 aset ;;
 ```
+
+### Running a command-line executable
+* `Set_main` is another module here, in file `src/set_main.ml`.
+* The `dune` file declares that module to be an *executable*, it will make a runnable binary out of it
+* After `dune build`, typing `_build/default/src/set_main.exe` to shell will invoke the binary
+* It expects a search word and a file and will look for that string in the file
+  - e.g. try `_build/default/src/set_main.exe dune dune-project`
 
 ### End of OCaml!
 

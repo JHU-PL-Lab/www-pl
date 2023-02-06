@@ -1550,8 +1550,8 @@ with a <code>File</code>’s <code>reset()</code>: use <code>Window.reset()</cod
 <ul>
   <li>Assignment 1/2 require you to fill out a file <code>assignment.ml</code></li>
   <li>This is in fact creating a <em>module</em> <code>Assignment</code> (notice the first letter (only) is capped)</li>
-  <li><code>dune utop</code> will load your module in the top loop</li>
-  <li>You then need to write <code>Assignment.reverse_n 5;;</code> etc to access the functions in the module’s namespace</li>
+  <li><code>dune utop</code> will compile your module and load it in the top loop</li>
+  <li>You then can type <code>Assignment.doit 5;;</code> etc to access the functions in the module’s namespace</li>
   <li>Or, use <code>open Assignment;;</code> to make all the functions in the module available at the top level.</li>
 </ul>
 
@@ -1559,9 +1559,9 @@ with a <code>File</code>’s <code>reset()</code>: use <code>Window.reset()</cod
 
 <ul>
   <li>File-based modules such as <code>assignment.ml</code> are compiled separately.</li>
-  <li>This is the traditional <code>javac</code>/<code>cc</code>/etc style of coding, done with <code>ocamlc</code> in ocaml</li>
+  <li>This is the traditional <code>javac</code>/<code>cc</code>/etc style of coding, and is done with done with <code>ocamlc</code> in ocaml</li>
   <li>Also in the Java/C spirit, it is how you write a standalone app in OCaml</li>
-  <li>The underlying <code>ocamlc</code> compiler you don’t need to directly invoke, in this course we will give you <code>dune</code> build files which invoke the compioler for you
+  <li>The underlying <code>ocamlc</code> compiler you don’t need to directly invoke, in this course we will give you <code>dune</code> build files which invoke the compiler for you
     <ul>
       <li><code>dune</code> is <code>make</code> for OCaml</li>
       <li><code>dune build</code> invokes the OCaml compiler on all the files in a project</li>
@@ -1574,20 +1574,32 @@ with a <code>File</code>’s <code>reset()</code>: use <code>Window.reset()</cod
 
 <ul>
   <li>See <a href="http://pl.cs.jhu.edu/pl/ocaml/set-example.zip">set-example.zip</a> for the example we cover in lecture.</li>
+  <li>The file <code>src/simple_set.ml</code> is the set data structure and will compile to module <code>Simple_set</code>.</li>
+  <li>Observe how a module can also contain type definitions, this is a key differece of OCaml</li>
 </ul>
 
 <h3 id="playing-with-the-simple_set-library-module">Playing with the Simple_set library module</h3>
 <ul>
-  <li>For this example we can use terminal command <code>dune utop</code> to load the library module into a fresh <code>utop</code></li>
+  <li>We can use <code>dune utop</code> to load the library module into a fresh <code>utop</code>, after which we can play with it</li>
 </ul>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>dune utop
-</code></pre></div></div>
 <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Simple_set.emptyset<span class="p">;;</span> <span class="o">(</span><span class="k">*</span> simple_set.ml<span class="s1">'s binary is loaded as module Simple_set *)
 open Simple_set;;     (* open makes `emptyset` etc in module available without typing `Simple_set.` *)
 let aset = List.fold_left (Fun.flip add) emptyset [1;2;3;4] ;;
 contains 3 aset ;;
 </span></code></pre></div></div>
+
+<h3 id="running-a-command-line-executable">Running a command-line executable</h3>
+<ul>
+  <li><code>Set_main</code> is another module here, in file <code>src/set_main.ml</code>.</li>
+  <li>The <code>dune</code> file declares that module to be an <em>executable</em>, it will make a runnable binary out of it</li>
+  <li>After <code>dune build</code>, typing <code>_build/default/src/set_main.exe</code> to shell will invoke the binary</li>
+  <li>It expects a search word and a file and will look for that string in the file
+    <ul>
+      <li>e.g. try <code>_build/default/src/set_main.exe dune dune-project</code></li>
+    </ul>
+  </li>
+</ul>
 
 <h3 id="end-of-ocaml">End of OCaml!</h3>
 
