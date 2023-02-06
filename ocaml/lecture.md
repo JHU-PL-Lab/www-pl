@@ -1166,14 +1166,14 @@ let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four"] (
 * The bulk of the assignments only use what we covered above
 * We now will quickly cover a few more features which we will not use nearly as much
   - (Only state below will be needed in assignment 2)
-  - Note that the toy languages we study will rip off OCaml so we at least want some understanding of records, state, exceptions
-  - **FbR** will be our records extension, **FbS** for state, and **FbX** for eXceptions.
+  - Note that the toy languages we study will copy OCaml to some degree so we at least want a basic understanding of OCaml's records, state, exceptions
+  - **FbR** will be our **Fb** records extension, **FbS** for state, and **FbX** for eXceptions.
 
 ### Records
   - Like tuples but with labels on fields.
   - Similar to the structs of C/C++.
   - The types *must* be declared with `type`, just like OCaml variants.
-  - Also like variants can be used in pattern matches.
+  - Also like variants and tuples they can be used in pattern matches.
   - Also also record fields are **immutable** by default, so not like Python/Javascript dictionaries
 
 Example: a declaring record type to represent rational numbers
@@ -1195,7 +1195,7 @@ Only one pattern matched so can again inline pattern in function's/let's
 let rat_to_int {num = n; denom = d} =  n / d;;
 ```
 
-Equivalently could use dot projections, but happy path in OCaml is patterns
+Equivalently could use standard method of dot projections, but happy path in OCaml is patterns
 ```ocaml
 let unhappy_rat_to_int r  =
    r.num / r.denom;;
@@ -1229,11 +1229,15 @@ Indirect mutability - variable itself can't change, but what it points to can.
 
 ### Mutable References
 
+* References are more like standard PL variables which can change but there are some subtle differences
+  - You can't make a reference without any value in it, there is no `null` pointer possible.
+  - References are more an *immutable* pointer to a *mutable* block, they are not directly mutable
+
 ```ocaml
-let x = ref 4;;    (* always have to declare initial value when creating a reference; type is `int ref` here *)
+let x = ref 4;;    (* declare initial value when creating; type is `int ref` here *)
 ```
 
-Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The **contents** of that fixed call can change, but not x.
+Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The **contents** of that fixed call **can** change, but not x.
 
 ```ocaml
 (* x + 1;; *) (* a type error ! *)
@@ -1248,10 +1252,10 @@ let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definit
 #### Refs are "really" mutable records
 * `'a ref` is in fact implemented by a mutable record with one field, contents:
 * `'a ref` abbreviates the type `{ mutable contents: 'a }`
-* The keyword mutable on a record field means it can mutate
+* The keyword `mutable` on a record field means it can change
 
 ```ocaml
-let x = { contents = 4};; (* identical to x's definition above *)
+let x = { contents = 4};; (* identical to `let x = ref 4` *)
 x := 6;;
 x.contents <- 7;;  (* same effect as previous line: backarrow updates a field *)
 !x + 1;;
@@ -1274,47 +1278,51 @@ mypoint;;
 Observe: mypoint is immutable at the top level but it has two spots `x`/`y` in it where we can mutate
 
 ### Arrays
- - Fairly self-explanatory, we will just flash over this in lecture
+ - Fairly self-explanatory, we will just flash over this
+ - Arrays are lists but we 
+   - *can* mutate elements 
+   - *can* quickly (constant time) access the n-th element
+   - but are *hard* to extend or shorten
+ - The main annoyance is the syntax is non-standard since `[..]` is already used for lists
  - Have to be initialized before using
    - in general there is no such thing as "uninitialized"/"null" in OCaml
 
 ```ocaml
-let arr = [| 4; 3; 2 |];; (* one way to make a new array *)
-arr.(0);; (* access (unfortunately already used [] for lists in the syntax) *)
-arr.(0) <- 5;; (* update *)
+let arr = [| 4; 3; 2 |];; (* one way to make a new array, or `Array.make 3 0` *)
+arr.(0);; (* access notation *)
+arr.(0) <- 5;; (* update notation *)
 arr;;
 ```
 
 ### Exceptions
-* OCaml has a standard (e.g. Java-like) notion of exception
+* OCaml has a standard (e.g. Java-like) notion of exceptions
 * Unfortunately types do not include what exceptions a function will raise - an outdated aspect of OCaml.
   - If a side effect is notated in the type that is called an *effect type* - e.g. Rust uses this for mutation effects
 * Modern OCaml coding style is to *minimize* the use of exceptions
   - Causes action-at-a-distance, hard to debug
   - Instead follow the old C approach of bubbling up error codes: 
     - return `Some/None` and make the caller explicitly handle the `None` (error) case.
+    - we covered this a bit with the `nice_div` example above.
 
 Here is a trivial example of how to declare and use exceptions in OCaml
 
 ```ocaml
-exception Goo of string;; (* Exception named `Goo` has a string payload *)
+exception Bad of string;; (* Exception named `Goo` has a string payload *)
 
-let f _ = raise (Goo "keyboard on fire");;
+let f _ = raise (Bad "keyboard on fire");;
 (* f ();; *) (* raises the exception to the top level *)
 (* (f ()) + 1;; *) (* recall that exceptions blow away the context *)
 
 let g () =
   try
     f ()
-  with (* "catch" in Java *)
-      Goo s ->
-      (print_string("exception raised: ");
-       print_string(s);print_string("\n"))
+  with (* `catch` keyword in Java; use pattern matching in handlers *)
+      Bad s -> Printf.printf "exception Bad raised with payload \"%s\" \n" s
 ;;
 g ();;
 ```
 
-There are a few built-in exceptions we mentioned previously:
+There are a few built-in exceptions mentioned previously:
 
 ```sh
 failwith "Oops";; (* Generic code failure - exception is named `Failure` *)
@@ -1323,27 +1331,27 @@ invalid_arg "This function works on non-empty lists only";; (* Invalid_argument 
 
 ### Modules
 
-Modules in programming languages
-   - a module is a larger level of program abstraction: functional units or library.
+Background on modules in programming languages
+   - a **module** is a larger level of program abstraction, think functional components or library.
    - e.g. Java package, Python module, C directory, etc
-   - needed for all but very small programs: imagine a file system without directories/folders as analogy to a PL without modules - YUCK!
-   - We are not going to study the theory of modules in the course so will cover a bit more about the principles now
+   - *something* is needed for all but very small programs: imagine a file system without directories/folders as an analogy to a PL without modules
+   - We are not going to study the theory of modules later in the course so will cover a bit more about the principles now
 
 #### General principles of modules
   - Modules have names they can be referenced by
   - A module is a container of code: functions, classes,  types, etc.
-  - Modules can be file-based: one module per file, module name is file name
+  - Modules can be file-based: one module per file, module name is file name.  Or, directory-based.   Or, neither.
   -  The module needs a way to
       * **import** things (e.g. other modules) from the outside;
       * **export** some (or all) things it has declared for outsiders to use;
       * it may **hide** some things for internal use only
-         - allows module users to operate at a higher level of abstraction
+         - allows module users to avoid seeing grubby internals - a higher level of abstraction
          - avoids users mucking with internals and messing things up
       * Separate name spaces, so e.g. the `Window`'s `reset()` won't clash
         with a `File`'s `reset()`: use `Window.reset()` and `File.reset()`
       * Nested name spaces for ever larger software: `Window.Init.reset()`
       * In compiled languages, modules can generally be compiled separately (only recompile the changed module(s))
-        - speeds up incremental recompilation, is critical in practice.
+        - speeds up incremental recompilation, an important feature in practice.
 
 ### Modules in OCaml
 
@@ -1364,10 +1372,11 @@ Modules in programming languages
 ### Separate Compilation with OCaml
 
 * File-based modules such as `assignment.ml` are compiled separately.
-* This is the traditional `javac`/`cc`/etc style of coding
-* Also in the C/Java spirit it is how you write a standalone app in OCaml
-* The underlying compiler for OCaml is `ocamlc` (or `ocamlopt`), but in this course we will give you `dune` build files
-  - just use `dune build` to invoke the OCaml compiler on all the files
+* This is the traditional `javac`/`cc`/etc style of coding, done with `ocamlc` in ocaml
+* Also in the Java/C spirit, it is how you write a standalone app in OCaml
+* The underlying `ocamlc` compiler you don't need to directly invoke, in this course we will give you `dune` build files which invoke the compioler for you
+  - `dune` is `make` for OCaml
+  - `dune build` invokes the OCaml compiler on all the files in a project
   - if you are curious what actual compiler calls are happening, add `--verbose` to the build command
 
 ### An example of a separately-compiled OCaml program
@@ -1390,4 +1399,4 @@ contains 3 aset ;;
 ### End of OCaml!
 
 * If you want to learn more about software engineering in OCaml, consider taking [Functional Progamming in Software Engineering](https://pl.cs.jhu.edu/fpse) in the fall
-* Or, just click on the above course link for good resources to teach it to yourself.
+* Or, just click on the above course link for resources to teach it to yourself.

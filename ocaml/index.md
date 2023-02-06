@@ -37,7 +37,7 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
 
 Once you have OCaml 4.14.1 installed, run the following `opam` command in the terminal to install additional necessary packages used in the class:
 ```bash
-opam install ocaml-lsp-server menhir utop ppx_deriving ounit2
+opam install ocaml-lsp-server menhir utop ppx_deriving ounit2 ocamlformat
 ```
 
 Lastly, edit the file `~/.ocamlinit` to add the line 

@@ -469,7 +469,7 @@ unhappy_add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 let happy_add_ratio {num = n1; denom = d1} {num = n2; denom = d2} = 
   {num = n1 * d2 + n2 * d1; denom = d1 * d2};;
 
-let x = ref 4;;    (* always have to declare initial value when creating a reference; type is `int ref` here *)
+let x = ref 4;;    (* declare initial value when creating; type is `int ref` here *)
 
 (* x + 1;; *) (* a type error ! *)
 !x + 1;; (* need `!x` to get out the value; parallels `*x` in C *)
@@ -479,7 +479,7 @@ let x_alias = x;; (* make another name for x since we are about to shadow it *)
 let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definition *)
 !x_alias;; (* confirms the previous line was not a mutation, just a shadowing *)
 
-let x = { contents = 4};; (* identical to x's definition above *)
+let x = { contents = 4};; (* identical to `let x = ref 4` *)
 x := 6;;
 x.contents <- 7;;  (* same effect as previous line: backarrow updates a field *)
 !x + 1;;
@@ -494,24 +494,22 @@ let mypoint = { x = 0.0; y = 0.0 };;
 translate mypoint 1.0 2.0;;
 mypoint;;
 
-let arr = [| 4; 3; 2 |];; (* one way to make a new array *)
-arr.(0);; (* access (unfortunately already used [] for lists in the syntax) *)
-arr.(0) <- 5;; (* update *)
+let arr = [| 4; 3; 2 |];; (* one way to make a new array, or `Array.make 3 0` *)
+arr.(0);; (* access notation *)
+arr.(0) <- 5;; (* update notation *)
 arr;;
 
-exception Goo of string;; (* Exception named `Goo` has a string payload *)
+exception Bad of string;; (* Exception named `Goo` has a string payload *)
 
-let f _ = raise (Goo "keyboard on fire");;
+let f _ = raise (Bad "keyboard on fire");;
 (* f ();; *) (* raises the exception to the top level *)
 (* (f ()) + 1;; *) (* recall that exceptions blow away the context *)
 
 let g () =
   try
     f ()
-  with (* "catch" in Java *)
-      Goo s ->
-      (print_string("exception raised: ");
-       print_string(s);print_string("\n"))
+  with (* `catch` keyword in Java; use pattern matching in handlers *)
+      Bad s -> Printf.printf "exception Bad raised with payload \"%s\" \n" s
 ;;
 g ();;
 
