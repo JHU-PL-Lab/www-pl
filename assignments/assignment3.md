@@ -1,6 +1,6 @@
 ## Assignment 3: Operational Semantics
 
-This is a short homework giving you some practice with operational semantics before starting on writing your Fb interpreter. Please consult [Chapter 2 of the book](http://pl.cs.jhu.edu/pl/book/book.pdf) for the full details on various definitions, and for more examples beyond those in lecture, if you have any questions.
+This is a short homework giving you some practice with operational semantics before starting on writing your Fb interpreter. Please consult [Chapter 2 of the book](https://pl.cs.jhu.edu/pl/book/book.pdf) for the full details on various definitions, and for more examples beyond those in lecture, if you have any questions.
 
 1.  [5 points] Compute the following substitutions. Note that we informally defined subsitution in lecture, and the precise substitution function is defined in Section 2.3.2 of the book. Make sure to classify each variable as bound or free to make sure you are performing the correct substitution.
 
@@ -28,7 +28,7 @@ This is a short homework giving you some practice with operational semantics bef
 
     c.  `Not((Fun x -> If x = 0 Then True Else Fun x -> x) 0)`
 
-4.  [10 points] In languages like C or Java, binary boolean operators are 'short circuiting' - i.e. For an expression like `file != null && file.length() > 0`, the second expression is evaluated only if the first expression is true. Similarly for '||' operations, the second expression is evaluated only if the first expression evaluates to false. This is not true in the default Fb operational semantics. 
+4.  [10 points] In languages like C or Java, binary boolean operators are "short circuiting" - i.e. For an expression like `file != null && file.length() > 0`, the second expression is evaluated only if the first expression is true. Similarly for `||` operations, the second expression is evaluated only if the first expression evaluates to false. This is not true in the default Fb operational semantics. 
     
     a. Modify the operational semantics of Fb `And` and `Or` such that they perform short-circuiting.
 

@@ -85,7 +85,7 @@
 <meta charset="utf-8" />
     <h2 id="assignment-3-operational-semantics">Assignment 3: Operational Semantics</h2>
 
-<p>This is a short homework giving you some practice with operational semantics before starting on writing your Fb interpreter. Please consult <a href="http://pl.cs.jhu.edu/pl/book/book.pdf">Chapter 2 of the book</a> for the full details on various definitions, and for more examples beyond those in lecture, if you have any questions.</p>
+<p>This is a short homework giving you some practice with operational semantics before starting on writing your Fb interpreter. Please consult <a href="https://pl.cs.jhu.edu/pl/book/book.pdf">Chapter 2 of the book</a> for the full details on various definitions, and for more examples beyond those in lecture, if you have any questions.</p>
 
 <ol>
   <li>
@@ -118,15 +118,7 @@
     <p>c.  <code>Not((Fun x -&gt; If x = 0 Then True Else Fun x -&gt; x) 0)</code></p>
   </li>
   <li>
-    <table>
-      <tbody>
-        <tr>
-          <td>[10 points] In languages like C or Java, binary boolean operators are ‘short circuiting’ - i.e. For an expression like <code>file != null &amp;&amp; file.length() &gt; 0</code>, the second expression is evaluated only if the first expression is true. Similarly for ‘</td>
-          <td> </td>
-          <td>’ operations, the second expression is evaluated only if the first expression evaluates to false. This is not true in the default Fb operational semantics.</td>
-        </tr>
-      </tbody>
-    </table>
+    <p>[10 points] In languages like C or Java, binary boolean operators are “short circuiting” - i.e. For an expression like <code>file != null &amp;&amp; file.length() &gt; 0</code>, the second expression is evaluated only if the first expression is true. Similarly for <code>||</code> operations, the second expression is evaluated only if the first expression evaluates to false. This is not true in the default Fb operational semantics.</p>
 
     <p>a. Modify the operational semantics of Fb <code>And</code> and <code>Or</code> such that they perform short-circuiting.</p>
 
