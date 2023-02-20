@@ -106,22 +106,38 @@ let combK = "Fun x -> Fun y -> x";;
 let combS = "Fun x -> Fun y -> Fun z -> (x z) (y z)";;
 let combD = "Fun x -> x x";;
 
+
+(* ************************************************** *)
+(* ****** Macro Encoding Features in Fb ************* *)
+(* ************************************************** *)
+
+(* 
+   * Many features not present in Fb directly are in fact indirectly accessible as programming patterns
+      - e.g. tuples, lists, recursion (even with out let rec), etc.
+      - Possible with patterns of coding which serve the same effect as having the actual feature
+   * In order to make these patterns 100% repeatable we more strongly show how they are expressible as *macros*
+*)
+
 (* ************************************************************ *)
 (* ****** Simple Fb Macros Using String Concatenation ********* *)
 (* ************************************************************ *)
 
 (* 
-   * Macros are simply functions on *code*
+   * Macros are simply functions on *code* aka *code templates*
    * They are run (expanded) by a compiler preprocessor to produce the final code object which is then compiled
    * They run like how our Fb evaluator runs: **substitute**
    * In an actual macro system you can use the full language syntax; C:
 
    #define double(n) (n + n) /* Full C syntax on RHS of this C macro */
 
-   Simple version for Fb: use string-functions-in-OCaml as the macro language
-   No this is not ideal but it is very simple. 
+   Simple version for Fb: 
+     * Use OCaml as the macro language
+     * Represent Fb programs in OCaml just as the concrete syntax -- strings
+     * Could instead use the Fb abstract syntax inside OCaml but harder to read
+     * This approach is not ideal as we will see, but it is very simple. 
  *)
 
+(* Here is a simple macro for a doubling function *)
 let double n = "(" ^ n ^ ") + (" ^ n ^ ")";; (* n is a _macro parameter_, a string *)
 
 double "2 + 4";; (* "(2 + 4) + (2 + 4)" *)
@@ -129,26 +145,29 @@ double "2 + 4";; (* "(2 + 4) + (2 + 4)" *)
 (* 
    * Why didn't we just write n ^"+" ^ n above?? We need parens around all
    macro parameters like the n to not change the parse order.
-   * Notice also that macros do not do any evaluation -- 2+4 not 6 in the above.
+   * This is the downside of working over concrete syntax as strings
+   * Notice also that macros do not do any evaluation -- `2 + 4` not `6` in the above.
 *)
 
 (* Macros can be used in other Fb code (strings) by appending them in 
-   This is in principle what C etc macros do, but they work at the level of the parse tree *)
+   This is in principle how C etc macros work, but they work at the level of the parse tree *)
 
-let quad = "Fun z -> (" ^ double "z" ^ ") + (" ^ double "z" ^ ")";;
+let quad = "Fun z -> " ^ double "z" ^ " + " ^ double "z";;
   
-  (* this returns "Fun z -> ((z) + (z)) + ((z) + (z))" *)
+(* this returns "Fun z -> (z) + (z) + (z) + (z)" *)
 
+(* If we just wrote "Fun z -> double z + double z" the `double` would be an Fb variable
+   - not what we want!  Program would not be closed!  *)
 
 (* Example of a bad string-based macro *)
 let apply_bad f x = f^" "^x;; (* sort of looks OK here for f x ... *)
-let apply_bad_eg = apply_bad "Fun x -> x" "0";; (* oops! this is string "Fun x -> x 0" *)
+let apply_bad_eg = apply_bad "Fun x -> x" "0";; (* oops! this is string "Fun x -> x 0"  which is "Fun x -> (x 0)" *)
 
-(* Fixed version *)
+(* Fixed version - parens around each macro parameter *)
 let apply f x = "("^f^")("^x^")";;
 let apply_eg = apply "Fun x ->x" "0";; (* "(Fun x ->x)(0)", parsing is correct! *)
 
-(* A less hackish way to write macros would be to use ASTs as input and output to macros *)
+(* A more principled way to write Fb macros in OCaml would be to use ASTs as input and output to macros *)
 
 let double_ast n = Plus(n,n);;
 let quad_ast n = Plus(double_ast n, double_ast n);;
@@ -157,10 +176,13 @@ let eg_quad = quad_ast (Int 5);;
 (* But, it is hard for humans to code in the above format so we use strings.
    Real macro languages such as #define in C or ppx in OCaml will parse the strings *)
 
-(* ************************************************************ *)
-(* ********* Using macros to encode features in Fb ************ *)
-(* ************************************************************ *)
+(* ******************************************************** *)
+(* ********* Macro Encodings of features in Fb ************ *)
+(* ******************************************************** *)
 
+(* We now show how features not directly expressible can be simply encoded
+     - shows the power of Fb and of how features relate to each other
+     - the encodings can be inefficient and make programs harder to read so want actual feature in eventually *)
 
 (* ****** Encoding Pairs in Fb ********* *)   
 
@@ -172,9 +194,10 @@ let pair_eg = "Fun d -> d 3 2";;
 
 (* Proof: we can "get left side out" (and similarly for right) *)
 
-let get_left = "Let p = ("^pair_eg^") In p (Fun x -> Fun y -> x)"
+let get_left = "Let p = Fun d -> d 3 2 In 
+                p (Fun x -> Fun y -> x)"
 
-(* An overly simple pair macro reflecting what we did above  *)
+(* A too-simple pair macro reflecting what we did above  *)
 
 let pr_simple c1 c2  =  "Fun d -> d ("^c1^") ("^c2^")";;
 let pair_eg_again = pr_simple "3" "2";;
@@ -210,6 +233,7 @@ let use_pair_add =  "(" ^ pair_add ^ ")(" ^ pc ^ ")";;
 
 
 (* Note we could have instead directly made pr a 2-argument Fb function.
+   - There is a trade-off of doing something in OCaml level (macro) or in Fb itself.
    In fact in a way this is easier since Fb makes sure the components were evaluated
    -- no Let needed.
 *)
@@ -229,7 +253,7 @@ let emptylist_buggy = pr "0" "0";; (* make something up here *)
 let head_buggy e = left e;;
 let tail_buggy e = right e;;
 
- (* [0;4;2] is informally encoded (0,(4,(2,(0,0)))) which is .. *)
+ (* [0;4;2] is informally encoded (0,(4,(2,(0,0)))): *)
 let eglist = cons_buggy "0" (cons_buggy "4" (cons_buggy "2" emptylist_buggy));;
 let eghd = head_buggy eglist;; (* evals to 0 *)
 let egtl = tail_buggy eglist;;
@@ -237,7 +261,7 @@ let eghdtl = head_buggy (tail_buggy eglist);; (* evals to 4 *)
 
 (* peu eghdtl;; *)
 
-(* All good so far, but can't test for empty list!
+(* All good so far..  but, can't test for empty list!! - this encoding is broken
    Seems like "tl l = 0" would work but if l is not empty it would get stuck. *)
 
 (* Solution: tag each element with a flag of emptylist or not *)
@@ -293,7 +317,7 @@ let thaw_fr = fr ^ "304949";; (* any application will "thaw" it. *)
 
 (* Now let us make a macro for this simple operation *)
 
-let freeze e = "(Fun x -> ("^e^"))";; (* the Fun blocks the evaluator from e *)
+let freeze e = "(Fun _ -> ("^e^"))";; (* the Fun blocks the evaluator from e *)
 let thaw e = "(("^e^") 0)";; (* the 0 here is arbitrary *)
 
 (* Using Freeze and Thaw *)
@@ -304,13 +328,15 @@ let lazy_double = "(Fun nl -> "^thaw "nl"^" + "^thaw "nl"^")";;
 let using_lazy = "Let f = "^lazy_double^" In f "^lazy_num;;
 (* peu using_lazy;; *)
 
-(* Freeze above has a bug if x occurs free in expression e. *)
+(* Freeze above has a bug if _ occurs free in expression e. 
+   (Fb treats _ just like a variable, a flaw really) *)
 
-let bad_freeze_use = "Let x = 5 In ("^freeze "1 + x"^")"
+let bad_freeze_use = "Let _ = 5 In ("^freeze "1 + _"^")"
 let thaw_bad = thaw bad_freeze_use;; (* should be 6 but returns 1 *)
 
 (* A somewhat-fix *)
-let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* a hack; really should find a variable not in e *)
+let freeze e = "(Fun x_9282733 -> ("^e^"))";; 
+(* above is a hack; really should change Fb parser to disallow `_` as variable use *)
 (* This issue is called a _hygiene condition_ and real-world macro systems need to address this *)
 
 (* ****** Encoding Let as function application ********* *)
@@ -321,7 +347,14 @@ let freeze e = "(Fun x_9282733 -> ("^e^"))";; (* a hack; really should find a va
 (* Here is the idea of the encoding on an example *)
 
 let let_eg = "Let x = 3+4 In x - 44";;
-let let_as_application =  "(Fun x -> x - 44) (3+4)";; (* has exact same effect as previous Let *)
+let let_as_application =  "(Fun x -> x - 44) (3+4)";; 
+(* Has exact same effect as previous Let: both
+   1. evaluate the 3+4
+   2. get 7 as result there
+   3. replace all x's with 7 in `x - 44` getting `7-44`
+   4. running that to get `-37` *)
+
+(* Here it is as a macro instead of just a coding pattern like the above: *)
 
 let fblet x e1 e2 = "(Fun "^x^" -> "^e2^")("^e1^")";;
 let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 3 In z + z" *)
@@ -346,9 +379,9 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
 
   alpha-equivalence: rename parameter
       Fun x -> x ~= Fun y -> y   
-      (and in general can rename any parameter with alpha, just change all uses as well)
-  eta-equivalence: forwarder
-      Fun x -> e x ~= e      if e is a function
+      (can rename any variable definition with alpha, just change all uses as well)
+  eta-equivalence: explicit forwarding of argument is a no-op
+      (Fun x -> e x) ~= e      if e is a function
   beta-equivalance: "inlining a function call anywhere preserves meaning"
       (Fun x -> e) v ~= e[v/x] (with a subtle side-condition we skip for now)
 
