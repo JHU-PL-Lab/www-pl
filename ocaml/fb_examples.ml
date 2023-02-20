@@ -78,7 +78,7 @@ let ex9 = "If 3 = 4 Then 5 Else 4 + 2" ;;
 
 let ex10 = "(Fun x -> If 3 = x Then 5 Else x + 2) 4 " ;;
 
-let ex11 = "(Fun x -> x x)(Fun y -> y) " ;;
+let ex11 = "(Fun x -> x x)(Fun y -> y)" ;;
 
 let ex12 = "(Fun f -> Fun x -> f(f(x)))
            (Fun x -> x - 1) 4" ;;
@@ -129,7 +129,7 @@ let combD = "Fun x -> x x";;
    * In an actual macro system you can use the full language syntax; C:
 
    #define double(n) (n + n) /* Full C syntax on RHS of this C macro */
-
+      ... double(x-32) .. u code turns in to `(x-32) + (x-32)`
    Simple version for Fb: 
      * Use OCaml as the macro language
      * Represent Fb programs in OCaml just as the concrete syntax -- strings
@@ -313,7 +313,7 @@ let eglength = "("^length^")("^eglist^")";;
 (* Informal idea: put a dummy "Fun _ ->" in front to stop eval  *)
 let fr = "(Fun _ -> 5 + 2 + 10922)";;
 (* peu fr;; -- observe how evaluating this does nothing - don't evaluate function body *)
-let thaw_fr = fr ^ "304949";; (* any application will "thaw" it. *) 
+let thaw_fr = fr ^ "0";; (* any application will "thaw" it. *) 
 
 (* Now let us make a macro for this simple operation *)
 
@@ -381,11 +381,11 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
       Fun x -> x ~= Fun y -> y   
       (can rename any variable definition with alpha, just change all uses as well)
   eta-equivalence: explicit forwarding of argument is a no-op
-      (Fun x -> e x) ~= e      if e is a function
+      (Fun x -> e x) ~= e     if e is a function
   beta-equivalance: "inlining a function call anywhere preserves meaning"
       (Fun x -> e) v ~= e[v/x] (with a subtle side-condition we skip for now)
-
-  Also  ~= is transitive, reflexive, symmetric, and we can always "substitute ~= for ~="
+      e.,g. (Fun z -> z + 1) 7 ~= 7 + 1 .. ~= 8
+  Also  ~= is transitive, reflexive, symmetric, and we can always "substitute ~= for ~=".  Plus, arithmetic laws, etc.
 *)
 
 (* ************************************************************ *)
