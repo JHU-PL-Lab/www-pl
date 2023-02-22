@@ -396,16 +396,25 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z";; (* encodes "Let z = 2 + 
   First we will write recursive programs by hand and then we will
   make a general macro, the Y-combinator. *)
 
-(* Recursion by explicit chaining of self as an argument *)
+(*  As a warm-up, recall the logical paradox program: *)
+
+let paradox = "Let p = (Fun s -> Not(s s)) In p p";;
+(* peu paradox;; will get a stack overflow. 
+   Good news: it is recursing
+   Bad news: no base case! *)
+
+(* Useful recursion by extending the above idea - add argument and base case *)
 
 let summate0 = "(Fun self -> Fun arg ->
     If arg = 0 Then 0 Else arg + self self (arg - 1))";;
 
 let summate0test = (summate0 ^ summate0 ^ "5");;
 
-(* Key idea in the above is like the P P paradox computation but with a base case:
-   pass the function to itself.
-   Paradox is BAD for proofs (which must terminate), GOOD for coding!! *)
+(* Key idea in the above is like the P P paradox but with arg and a base case:
+   in particular for the case arg = 0 observe there is no recursion.
+
+   Paradox is BAD for proofs (which must terminate), GOOD for coding!!
+   Note that C++ and Python objects in fact do something like this self passing under hood *)
 
 (* Here is summate as an independent function *)
 
@@ -444,14 +453,14 @@ let summate0test' = (summate ^ "5");;
   -- so, the pattern repeats.  Fortunately it stops when arg = 0, no infinite looping like paradoxes.
 
   Now, lets make a more user-friendly Y-macro for defining recursive functions.
-  1) get rid of extra self parameter in recursive calls ( the `self self`) and     
+  1) get rid of extra self parameter in recursive calls (turn `self self` into `rec`) and     
   2) get rid of the need to do the final line as a separate thing    
      -- lets make one master combinator to do all this. *)
 
 (* So, our goal is to make a function ycomb such that:
 
-ycomb (Fun self -> Fun arg ->
-    If arg = 0 Then 0 Else arg + self (arg - 1)) 5
+ycomb (Fun rec -> Fun arg ->
+    If arg = 0 Then 0 Else arg + rec (arg - 1)) 5
 
     computes to 15.
 
@@ -488,26 +497,29 @@ let test2 = new_bump^"4";;
 
 (* In general, we have bump ~= new_bump -- in *any* scenario we can replace one with the other safely *)
 
-(* Warm-up for a particular refactoring neeed to make ycomb: 
+(* So, that was a really simple example, next is a somewhat more complex one
+    - will allow us to turn `self self` into just `rec` with the spirit of this next one *)
 
-  Suppose we wanted `x + x` to appear in multiple places in some 
+(* 
+  Suppose `x + x` appeared in multiple places in some 
   code, but want the programmer to just write `xpx`, and rig 
-  a harness to pass in `x + x` in place of x. 
+  a harness to pass in `x + x` in place of x.
+  (Sort of like the double macro above but all in Fb)
 
   This will be more clear from the example below. *)
 
-(* Suppose we want this code: *)
+(* Suppose we actually want this code: *)
 let goal_code =
    "(Fun x -> Fun y -> If y = 1 Then (x + x) Else (x + x) + 1)";;
 
-(* But we want to let programmer just write this simpler *)   
+(* But we want to let programmer to write the simpler *)   
 let code = "(Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1)";; 
 
 (* Here is converter Fb code that will do it: its just a function
    taking code as argument and producing something with goal_code behavior *)
 let cvrt = "(Fun code -> Fun x -> Fun y -> code (x + x) y)";;
 
-(* Observe: cvrt turns code into goal_code!! *)
+(* Observe: cvrt turns code into goal_code - inserts `x + x` for `xpx` *)
 let converted_code = "("^cvrt^")("^code^")";;
 
 (* Test to show it works *)
@@ -523,7 +535,7 @@ let run = converted_code^" 5 2";; (* peu run;; *)
 
 (* We can see how we are doing code surgery if we just apply code argument: *)
 
-(* format @@ peu converted_code;; -- shows how we plugged in the x+x; this prints
+(* format @@ peu converted_code;; -- shows how we plugged in the x + x; this prints
 Fun x ->
     Fun y ->
         (Fun xpx -> Fun y -> If y = 1 Then xpx Else xpx + 1) (x + x) y 
@@ -534,19 +546,19 @@ Fun x ->
    converted_code ~= goal_code
 
    Why ~=?  Informally, the evaluator stopped by Fun x before it could plug in (x + x), 
-   but when x & y are applied the x+x will get run.
+   but when x & y are applied the `x + x` will get run.
 *)
 
 (* Now back to Y above.. lets do the same trick, but
    instead of replacing xpx with (x + x) lets replace
-   rec with (self self) to get something like summate0. *)
+   rec with (self self) to get something like summate0 as the goal code. *)
 
 (* Here is the code we would like to write *)
 let code = "(Fun rec -> Fun arg -> 
-               If arg = 0 Then 0 Else arg + rec (arg - 1))"
+               If arg = 0 Then 0 Else arg + rec (arg - 1))" (* no `rec rec` just `rec` *)
 
 (* here is the replacer -- replace rec with (self self) in above
-   for f here we will pass in "code" above *)
+   The f here will be something like `code` *)
 
 let repl = "(Fun f -> Fun self -> Fun x -> f (self self) x)";;
 
@@ -568,7 +580,7 @@ let go = summate0again^summate0again^"(5)";;
 
 (* Now lets put this together to make a single ycomb to do it all.
    ycomb0 just packages what we did above into a function:
-   feed it code as an argument, run repl on it, and self-apply.
+   feed it a `code`-shaped function as argument, run repl on it, and self-apply.
 *)
 
 let ycomb0 =
