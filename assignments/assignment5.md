@@ -16,7 +16,7 @@
 
      b. `Let x = f 1 + 2 In 0` ~= `1 - 1`
 
-     c. `f 1` ~= `((Fun x -> x x) (Fun x -> x x))` (* This is true but is impossible to prove using rules - ? SS *)
+     c. `f 1` ~= `((Fun x -> x x) (Fun x -> x x))`
 
      d. `(Fun b -> True And b)` ~= `(Fun x -> Fun y -> x And y) True`
 
