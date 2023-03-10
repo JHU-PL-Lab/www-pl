@@ -12,7 +12,7 @@
 
 2. (25 points) For each of the following potential operational equivalences for Fb, either prove that it holds by using the principles in Section 2.4.2 (using only a sequence of those principles and explicitly mentioning which principle is used in each step of the sequence -- like a geometry proof), or present a counterexample context C invalidating it by the definition of ~= in Section 2.4.1.
 
-     a. `Fun x -> x + 1` =~ `Fun a -> (fun y -> y + 1) a`
+     a. `Fun x -> x + 1` =~ `Fun a -> (Fun y -> y + 1) a`
 
      b. `Let x = f 1 + 2 In 0` ~= `1 - 1`
 
