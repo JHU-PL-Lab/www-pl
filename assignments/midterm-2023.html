@@ -1,0 +1,161 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/8683833116">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="midterm-2023">Midterm 2023</h2>
+
+<p>You are to work without the consultation of any individuals other than Prof/CAs on this exam.  This includes posting questions on the Internet, etc. Please include at the top of your exam</p>
+
+<blockquote>
+  <p>I pledge I worked without consultation with any individuals other than Prof/CAs on this exam</p>
+</blockquote>
+
+<p>certifying this.  You are free to use any non-human resources, e.g. the course text, lectures, Wikipedia, etc.</p>
+
+<p>You are free to ask questions on Courselore or in office hours, but please address all Courselore questions to Staff.  If it is a good issue to clarify we will make your question public.</p>
+
+<ol>
+  <li>
+    <p>(15 Points) Let’s fill out some <em>very</em> sketchy operational semantics proofs.  For each fragment below, build out a full proof tree in Fb which has the indicated substitution invocation somewhere in the proof.  Well, some also may be impossible - indicate which are impossible if no derivation can be built.  (Recall that for <code>e ==&gt; v</code>, both <code>e</code> and <code>v</code> must be closed.)</p>
+
+    <p>Example question: <code>y[4/y] ==&gt; ..</code><br />
+ Example Answer:</p>
+
+    <pre><code> ----------------------------    ---------   ------------
+ (Fun y -&gt; y) ==&gt; (Fun y -&gt; y)    4 ==&gt; 4    y[4/y] ==&gt; 4
+ ---------------------------------------------------------
+        (Fun y -&gt; y)(4) ==&gt; 4
+</code></pre>
+
+    <p>Note there are many answers possible, just make sure you have the indicated pattern <em>somewhere</em> in your proof tree.</p>
+
+    <p>a.  <code>(Fun x -&gt; x + y)[0/y] ==&gt; ...</code></p>
+
+    <p>b.  <code>(x + y)[0/y] ==&gt; ..</code></p>
+
+    <p>c.  <code>(Fun x -&gt; x + 1)[0/x] ==&gt; ...</code></p>
+
+    <p>d.  <code>(x x)[(Fun x -&gt; x)/x] ==&gt; ...</code></p>
+
+    <p>e.  <code>(x x)[(Fun x -&gt; x x x)/x] ==&gt; ...</code></p>
+  </li>
+  <li>
+    <p>(15 points) We focused on operational equivalence for <strong>Fb</strong>, but the definition naturally generalizes to other languages we studied (and even to JavaScript, Python, etc).  For example for <strong>FbR</strong>, the definition of ~= will read identically and the only difference is the contexts <code>C</code> will be <strong>FbR</strong> contexts not <strong>Fb</strong> contexts, and the <code>==&gt;</code> evaluation relation will also be <strong>FbR</strong>’s.</p>
+
+    <p>a. For the theory of <strong>FbR</strong> operational equivalence, propose one or more more useful <code>~=</code> laws to add to the <strong>Fb</strong> laws we had such as beta, etc.  Your laws need to deal with the new record syntax.  You need at least one law, and also see the following question which means you may need more than one.  But, don’t make any laws which are not strictly needed.  For example, <code>{} ~= {}</code> is already true by the existing reflexivity law so don’t add that one.</p>
+
+    <p>b. Use your new <strong>FbR</strong> laws and the existing <strong>Fb</strong> laws to prove <br />
+    <code>(Let r = { a = z; b = (Fun x -&gt; x) } In (r.b) 5) - 2 ~= ((Fun x -&gt; x) 5) - 2</code>.  Show your steps and name any laws used.</p>
+
+    <p>c. We can also use the definition of <code>~=</code> for <strong>FbR</strong> mentioned above to prove expressions are <em>not</em> equivalent.  Do this for the non-equivalence <code>z { a = 5; b = 7 } ~= z { a = 5 }</code>: give an <strong>FbR</strong> context <code>C</code> that distinguishes these two expressions.</p>
+  </li>
+  <li>
+    <p>(15 points) Currently in <strong>FbV</strong>, we only have <code>=</code> defined for integers. Yet in practice, it’s nice to have a polymorphic equality that also works on other data types, such as booleans and variants.</p>
+
+    <p>a. Redefine the operational semantics of <code>FbV</code> so that <code>=</code> now works as expected for boolean and variant values as well.  You only need to give any new rules related to <code>=</code>.  Note that function equality tests can still get stuck as happens with <strong>Fb</strong> now.</p>
+
+    <p>b. Write OCaml pseudocode reflecting the changes that would be needed to the <strong>FbV</strong> <code>eval</code> function to implement this new definition of <code>=</code>. There is no need to write other clauses of <code>eval</code>, you can just put <code>| ...</code> in your code for all the non-<code>Equal</code> <code>match</code> clauses.</p>
+
+    <p>c. The advantage of polymorphic equality is clear, more types of data can be directly compared. However, many modern languages opt not to include it as a feature. What are some potential downsides of polymorphic <code>=</code> that lead to this language design choice?</p>
+  </li>
+  <li>
+    <p>(10 points) Suppose we defined a new notion of operational equivalence <code>~~=</code> as follows:<br />
+For arbitrary <code>e</code> and <code>e'</code>, we say <code>e ~~= e'</code> if and only if for all contexts <code>C</code> such that  <code>C[e]</code> and <code>C[e']</code> are closed, if <code>C[e] =&gt; True</code> then <code>C[e'] =&gt; True</code>, and vice-versa. Is this the same as the <code>~=</code> as was defined in the lecture/book, or not? Either argue why if so or find an example of two expressions which are equivalent in one but not in the other.</p>
+  </li>
+  <li>
+    <p>(10 points) Write mutually recursive functions <code>iseven</code> and <code>isodd</code> in <strong>Fb</strong> without using <code>Let Rec</code>. You can use the Y combinator, self-passing, or a variation on one of these, whatever gets the job done.</p>
+  </li>
+</ol>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
