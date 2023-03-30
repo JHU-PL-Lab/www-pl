@@ -143,10 +143,12 @@ record_body:
     label EQUAL expr
       { [($1, $3)] }
   | label EQUAL expr SEMICOLON record_body
-      { let rec addifnotpresent (lab, e) l =
-          match l with [] -> [(lab,e)]
-	   | (l1,e1) :: tl -> if l1=lab then (raise DuplicateLabel) else (l1,e1) :: (addifnotpresent (lab, e) tl)
-          in addifnotpresent ($1, $3) $5 }
+      { let rec ispresent (lab, e) l =
+          match l with [] -> false
+	   | (l1,e1) :: tl -> if l1=lab then true else ispresent (lab, e) tl in
+        let addifnotpresent (lab, e) l =
+          if ispresent (lab, e) l then (raise DuplicateLabel) else (lab, e) :: l
+        in addifnotpresent ($1, $3) $5 }
 ;
 
 label:

@@ -89,7 +89,7 @@ let rec pp_expr fmt =
 			ff fmt "Tail %a" pp_parens e1
 	
 	| Actor(Name name) ->
-			ff fmt "<Actor %s/>" name
+			ff fmt "%s" name
 	| Send(e1, e2) ->
 			ff fmt "%a <- %a" pp_parens e1 pp_expr e2
 	| Create(e1, e2) ->
