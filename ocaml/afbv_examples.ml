@@ -54,38 +54,6 @@ actor <- `doit(3)"
 (* Note that parsing precedence is even worse in AFbV compared to previous languages!
    Moral: use many parentheses!! *)
 
-(* To close the loop, here is actual code for something like the a1/a2 example we worked in class.  
-   Recall the way it went:
-
-   1) in the bootstrap code we created actors a1 and a2 and send a1 the message `hi(7)
-   2) a1 handled the `hi(7) message, sending `ho(0) to a2
-   3) a2 then replied `ok(0) to a1.
-
-   Note that both a1 and a2 need to know each others' addresses; we can't in fact do that in the syntax
-   of AFbV (it is a mutual self-reference) - !  So, here we do a minor variation where the bootstrap code
-   makes a1 and send the `hi(7) message, and a1 then BOTH creates a2 and sends it a `ho(0) message.
-*)   
-let lecture_example = 
-  "Let a1_behavior = 
-      Let a2_behavior = Fun me -> Fun a1 -> Fun msg ->
-         Match msg With
-           `ho(n) -> 
-               (Print \"DEBUG: a2 received ho\");
-               (a1 <- `ok(0)); 
-               (Fun msg -> 0) 
-      In
-      Fun me -> Fun data -> Fun msg ->
-         Match msg With
-           `hi(n) -> 
-               (Print \"DEBUG: a1 received hi\");
-               Let a2 = Create(a2_behavior, me) In  (* a1 creates a2, tells it about itself for reply *)
-               (a2 <- `ho(0)); 
-               Fun msg -> (Print \"DEBUG: a1 received ok\"); (Fun msg -> 0)
-   In
-   Let a1 = Create(a1_behavior,0) In
-   a1 <- `hi(7)"
-    ;;
-
 (* Note if we send multiple messages to the above one_message_behavior actor 
    it will only process one of them (nondeterministically): *)
 
@@ -103,7 +71,7 @@ actor <- `doit(7)"
 
 
 (* Why did the above not process 2nd message?  Because the contract is: when the actor is finished processing,
-   it needs to return what code will use to process the next message.
+   it needs to return what code will use to process the next message.  Here that code is a no-op identity function.
 
    * This is similar to the hand-over-fist programming idiom for functional trees, lists, etc
    * But, it is not data state here, it is **code state**
@@ -141,7 +109,7 @@ let twome = "Let self_messaging_behavior =
      Match msg With
        `doit(_) ->
 	   (Print \"OUTPUT: \"; (Print 0); Print \"\n\");
-           (me <- (`onemoretime (1)));
+           (me <- (`onemoretime (1))); (* recall first parameter me is 'my own address' - message to self *)
 	   (* here is the function return value which sets the next behavior *)
            (Fun msg -> (Match msg With `onemoretime (one) -> (Print \"MORE OUTPUT: \"; Print one); (Fun msg -> 0))) In
 Let actor = Create(self_messaging_behavior, 00) In
@@ -149,7 +117,39 @@ actor <- `doit (00)"
 ;;
 
 
-(* Now, the above approach of inlining next code fails if we want to process unbounded messages.
+(* To close the loop, here is actual code for something like the a1/a2 example we worked in class.  
+   Recall the way it went:
+
+   1) in the bootstrap code we created actors a1 and a2 and send a1 the message `hi(7)
+   2) a1 handled the `hi(7) message, sending `ho(0) to a2
+   3) a2 then replied `ok(0) to a1.
+
+   Note that both a1 and a2 need to know each others' addresses; we can't in fact do that in the syntax
+   of AFbV (it is a mutual self-reference) - !  So, here we do a minor variation where the bootstrap code
+   makes a1 and send the `hi(7) message, and a1 then BOTH creates a2 and sends it a `ho(0) message.
+*)   
+let lecture_example = 
+   "Let a1_behavior = 
+       Let a2_behavior = Fun me -> Fun a1 -> Fun msg ->
+          Match msg With
+            `ho(n) -> 
+                (Print \"DEBUG: a2 received ho\");
+                (a1 <- `ok(0)); 
+                (Fun msg -> 0) 
+       In
+       Fun me -> Fun data -> Fun msg ->
+          Match msg With
+            `hi(n) -> 
+                (Print \"DEBUG: a1 received hi\");
+                Let a2 = Create(a2_behavior, me) In  (* a1 creates a2, tells it about itself for reply *)
+                (a2 <- `ho(0)); 
+                Fun msg -> (Print \"DEBUG: a1 received ok\"); (Fun msg -> 0)
+    In
+    Let a1 = Create(a1_behavior,0) In
+    a1 <- `hi(7)"
+     ;;
+
+(* The approach in the above examples of inlining next code fails if we want an actor to process unbounded messages.
    Solution: use recursion to set the next code to 'this' code ! *)
 
 (* Counting down example *)
@@ -184,9 +184,9 @@ let internal_count =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In 
      Match msg With
        `count(_) ->
            (Print \"OUTPUT: \"; (Print cur_count); Print \"\n\");
-           (If cur_count = 0 Then 0 Else (me <- (`count (_))));
+           (If cur_count = 0 Then 0 Else (me <- (`count (00))));
            (this (cur_count-1))) In
-Let actor = Create(self_messaging_behavior, 4) In
+Let actor = Create(self_messaging_behavior, 4) In 
 actor <- `count (00)"
 ;;
 
