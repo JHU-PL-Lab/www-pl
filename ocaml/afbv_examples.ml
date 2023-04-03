@@ -137,15 +137,15 @@ actor <- `doit(7) (* will run the DONE printing code *)"
 (* A variation where we instead send one message to ourself using the special me variable *)
 
 let twome = "Let self_messaging_behavior =
-  Fun me -> Fun data -> Fun msg ->
+  Fun me -> Fun _ -> Fun msg ->
      Match msg With
        `doit(_) ->
 	   (Print \"OUTPUT: \"; (Print 0); Print \"\n\");
            (me <- (`onemoretime (1)));
 	   (* here is the function return value which sets the next behavior *)
            (Fun msg -> (Match msg With `onemoretime (one) -> (Print \"MORE OUTPUT: \"; Print one); (Fun msg -> 0))) In
-Let actor = Create(self_messaging_behavior, 5) In
-actor <- `doit (0)"
+Let actor = Create(self_messaging_behavior, 00) In
+actor <- `doit (00)"
 ;;
 
 
@@ -157,7 +157,7 @@ actor <- `doit (0)"
    
 let count_down = " 
 Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
-Let count_down_behavior = Fun me ->  Fun data -> 
+Let count_down_behavior = Fun me ->  Fun _ -> 
    y (Fun this -> Fun msg -> 
       Match msg With
       | `count(n) ->
@@ -165,7 +165,7 @@ Let count_down_behavior = Fun me ->  Fun data ->
          (If n = 0 Then 0 Else (me <- (`count (n-1))));
          (this) (* key line - set next code to this *)
      ) In
-Let actor = Create(count_down_behavior, 0) In
+Let actor = Create(count_down_behavior, 00) In
 actor <- `count 4"
 ;;
 
@@ -187,11 +187,11 @@ let internal_count =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In 
            (If cur_count = 0 Then 0 Else (me <- (`count (_))));
            (this (cur_count-1))) In
 Let actor = Create(self_messaging_behavior, 4) In
-actor <- `count (0)"
+actor <- `count (00)"
 ;;
 
 
-(* Count server example to show how ne actor can maintain a data structure other
+(* Count server example to show how one actor can maintain a data structure other
    actors can use.  For simplicity the data structure here is just a single number,
    incremented at each call *)
 
@@ -211,7 +211,7 @@ Let count_user_beh = (* This is a client to the above server, it will query for 
 In
 Let counter = Create(count_beh, 10) (* initial value is 10 *) In
 Let user = Create(count_user_beh,counter) (* Need to tell user about count actor at its creation *) In
-user <- 0 (* bootstrap the messaging by sending user any message *)"
+user <- 00 (* bootstrap the messaging by sending user any message *)"
 ;;
 
 
@@ -227,7 +227,7 @@ Let pong_behavior =
           this pinger (* Use the same behavior for the next message received *)
                                ) In
 Let ping_behavior = 
-  Fun me -> Fun dummy -> Fun msg0 ->
+  Fun me -> Fun _ -> Fun msg0 ->
  (* First message should be `init; create pong actor and get it going *)
      Match msg0 With
       `init(n) -> Let a2 = Create(pong_behavior, me) In (* tell ponger about me (pinger) when its made *)
@@ -235,11 +235,11 @@ Let ping_behavior =
          (* Now set behavior for rest of ping/pong game: get a ping, send a pong *)
          (y (Fun this -> Fun msg ->
             Match msg With `ping(n) ->
-              (Print \"OUTPUT: \"; (Print n); Print \"\n\");
+              (Print \"Pinger got ping numbered: \"; (Print n); Print \"\n\");
               (If n = 0 Then 0 Else (a2 <- (`pong (n-2))));
               this 
             )) In
-Let a1 = Create(ping_behavior, 0) In
+Let a1 = Create(ping_behavior, 00) In
 a1 <- `init(4)"
 ;;
 
