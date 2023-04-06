@@ -209,7 +209,7 @@ Let count_user_beh = (* This is a client to the above server, it will query for 
    (Fun msg_n -> count_actor <- `count(me); (* this is the behavior to handle the reply, a number *)
    Fun msg_m -> Print \"OUTPUT: \"; Print(msg_n + msg_m)) (* One more behavior to handle reply to 2nd count *)
 In
-Let counter = Create(count_beh, 10) (* initial value is 10 *) In
+Let counter = Create(count_beh, 0) (* initial value is 0 *) In
 Let user = Create(count_user_beh,counter) (* Need to tell user about count actor at its creation *) In
 user <- 00 (* bootstrap the messaging by sending user any message *)"
 ;;

@@ -1,0 +1,180 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/8683833116">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assigment-7-actors">Assigment 7: Actors</h2>
+
+<p>This homework focuses on the actor model and actor programming in <strong>AFbV</strong>.  The AFbV examples run in class may be found in the <a href="https://pl.cs.jhu.edu/pl/ocaml/afbv_examples.ml"><code>afbv_examples.ml</code></a> file.</p>
+
+<p>That file also contains instructions on how to run the reference interpreter and to set up <code>utop</code> for easy testing of your actor code.  As a warm-up, turn on some of the debugging flags in comments at the top and <code>peu</code> some of the examples in that file. (Note that the state dump debug mode was recently cleaned up so if you want to use that please grab a fresh copy of the zip file to get the latest reference implementation (only the file <code>./reference/AFbV/toplevel.exe</code> is changed).)</p>
+
+<p>Note that <strong>AFbV</strong> has lists and pairs which can be used for your implementation.  There is no pattern-matching on lists however, you must use <code>Head(..)</code> and <code>Tail(..)</code> to access the head and tail, and <code>..= []</code> to test for an empty list.  You can write lists as <code>[1;2;3]</code> and cons with <code>::</code> just like in OCaml. Pairs are simply <code>(a, b)</code> as in OCaml. However, you need to use <code>Fst</code> and <code>Snd</code> to extract the first and second components of a pair, respectively. Lastly, <strong>AFbV</strong> is equipped with polymorphic equality, so you can even compare the equality of actors if necessary.</p>
+
+<p>For all the questions, include the answers in a file <code>assignment7.ml</code> as let-defined strings which <code>peu</code> will run (or, as OCaml comments for the written questions).</p>
+
+<p>For this assignment you are going to write a simple producer - consumer in AFbV. To start with we will just spec the producer.  The producer will start with an initial stock of items, and will be able to produce more products if demand exceeds the supply.</p>
+
+<p>a. For your implementation, the producer should meet the following requirements:</p>
+<ul>
+  <li><code>`Create(producer_behavior, n)</code> should return a producer actor with an initial stock of <code>n</code> products. Furthermore, it should respond to these messages:</li>
+  <li><code>`produce(_)</code> - add a product to its internal stock.</li>
+  <li><code>`consume(a)</code> - if the stock is not empty, send <code>a &lt;- `delivered(0)</code> and remove one item from the internal stock; if empty, send <code>a &lt;- `wait(0)</code> and <code>`me &lt;- `produce(0)</code>.  This is a somewhat artificial model of production, the producer can make more stock by simply sending <code>produce</code> messages to itself.  The consumer will also need to re-request to get an item delivered.</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">let</span> <span class="n">producer_behavior</span> <span class="o">=</span> <span class="s2">"(0 0)"</span><span class="p">;;</span>
+</code></pre></div></div>
+
+<p>Here is a simple tester for the producer.  The producer will start with one item, and a consumer will get an item the first time and the second time will get a <code>wait</code> and will need to re-request.</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">let</span> <span class="n">producer_tester</span> <span class="o">=</span> <span class="s2">"
+    Let producer_behavior = ("</span><span class="o">^</span><span class="n">producer_behavior</span><span class="o">^</span><span class="s2">") In
+    Let producer = Create(producer_behavior, 1) In
+    Let consumer_behavior = Fun me -&gt; Fun _ -&gt; 
+      (Fun _ -&gt;  
+        producer &lt;- `consume(me);
+        (Fun msg -&gt; 
+            Match msg With 
+            `delivered(_) -&gt; 
+                producer &lt;- `consume(me);
+                    (Fun msg -&gt; 
+                        Match msg With 
+                        `wait(_) -&gt; producer &lt;- `consume(me);
+                            (Fun msg -&gt; 
+                                Match msg With 
+                                `delivered(_) -&gt; Print </span><span class="se">\"</span><span class="s2">It worked!</span><span class="se">\"</span><span class="s2">))))
+    In
+    Let consumer = Create(consumer_behavior, 0) In
+    consumer &lt;- 0
+    "</span><span class="p">;;</span>
+</code></pre></div></div>
+
+<p>This is in fact not a very good test, the producer is both getting its own <code>`produce</code> message as well as the <code>`consume</code> message and since arrival order is nondeterministic by default the test will only work half the time.  Our suggestion in debugging is to use the <code>deterministic_delivery := true;;</code> option so the former earlier message will beat the latter.</p>
+
+<p>b. It is not too hard to fix this test even for nondeterministic execution: eventually the producer will get the <code>`produce</code> message since actors are fair, and so after some number of <code>`wait</code> messages the <code>`consume</code> will succeed.  Modify the above code so it even works in nondeterministic mode.  Note that solving question c. below could help you figure out how to solve this question.</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">let</span> <span class="n">fixed_producer_tester</span> <span class="o">=</span> <span class="s2">"(0 0)"</span><span class="p">;;</span>
+</code></pre></div></div>
+
+<p>c. We can use the theory to help us understand why the consumer tester here needs to repeat its requests.  For this question, give a sequence of global actor states G0 -&gt; G1 -&gt; G2 -&gt; … of a computation of the the producer and your fixed tester which shows how an arbitrary number of <code>`wait</code> messages could be sent back to the consumer before its <code>`consume</code> message is finally processed.  Put some “…” in your sequence for the part that could repeat.</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="c">(* a7c. ... YOUR ANSWER HERE ... *)</span>
+</code></pre></div></div>
+<p>Note that you can give your answer in the format <code>show_states := true</code> produces.  Please don’t include any of the actor code in your answers, “…” will do in place of any code.</p>
+
+<p>d. Now lets make a protocol for the consumer as well. The consumer should meet the following requirements:</p>
+<ul>
+  <li><code>`Create(consumer_behavior, (producer, n))</code> should return a consumer actor with a demand for <code>n</code> products from the <code>producer</code> actor. You can assume consumer actor will always start with demand greater than <code>0</code>. Furthermore, it should respond to these messages:</li>
+  <li><code>`purchase(_)</code> - send <code>`consume(me)</code> to the producer.</li>
+  <li><code>`wait(_)</code> - send another <code>`consume(me)</code> request to the producer.</li>
+  <li><code>`delivered(_)</code> - check whether the demand is met; if so, finish the execution. If not, send <code>me &lt;- `purchase(_)</code>, and update the demand.</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">let</span> <span class="n">consumer_behavior</span> <span class="o">=</span> <span class="s2">"(0 0)"</span><span class="p">;;</span>
+</code></pre></div></div>
+
+<p>Here is a sample runner which will simulate the transactions between a producer with initial stock of zero products, and two consumers with demand of one and two products respectively. Since the demands exceed the supply in this example, the two consumers will have to wait at least one and two times each before getting their products delivered. You can insert <code>Print</code> in your handling code for <code>wait</code> in the consumer actor to check for this behavior.</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">let</span> <span class="n">pc_tester</span> <span class="o">=</span> <span class="s2">"
+    Let producer_behavior = ("</span><span class="o">^</span><span class="n">producer_behavior</span><span class="o">^</span><span class="s2">") In
+    Let consumer_behavior = ("</span><span class="o">^</span><span class="n">consumer_behavior</span><span class="o">^</span><span class="s2">") In
+    Let producer = Create(producer_behavior, 0) In
+    Let user = Create(consumer_behavior, (producer, 1)) In
+    Let user2 = Create(consumer_behavior, (producer, 2)) In
+    user &lt;- `purchase(00);
+    user2 &lt;- `purchase(00) 
+    "</span><span class="p">;;</span>
+</code></pre></div></div>
+<h3 id="submission">Submission</h3>
+
+<p>Upload your <code>assignment7.ml</code> file to Gradescope.  The OCaml code in your file should only define the indicated strings, it should not run anything (no <code>peu</code> etc in it.)</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
