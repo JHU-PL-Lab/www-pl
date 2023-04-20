@@ -1,5 +1,5 @@
 (*
-   File: tfbsrx.ml
+   File: tfbsrx_examples.ml
    This File contains some typechecking examples  *)
 
 open Debugutils;;
