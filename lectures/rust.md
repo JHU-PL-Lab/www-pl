@@ -1,6 +1,6 @@
 ## A Taste of Rust
 
-In a nutshell: "OCaml meets C++ for safe but efficient systems programming"  
+In a nutshell: "OCaml crossed with C++ for safe but efficient systems programming"  
 OCaml features borrowed:
 
 *   immutable by default with `let`-definition
@@ -18,7 +18,7 @@ O-O features:
 
 Systems programming features:
 
-*   true pointer references
+*   true pointer references, & and * like C++
 *   **no garbage collector** -- so no pausing problems for systems code, and also no manual freeing required
 *   support for (efficient) stack allocation of data folling C/C++.
 
@@ -27,18 +27,20 @@ Systems programming features:
 Key innovation: **ownership** for improved heap memory safety without garbage collector
 
 *   Invariant: runtime variables "own" their heap data
-  - only one variable can alias a particular heap item (well, with a few exceptions)
-*   Concurrent data races are thus prevented since threads don't share variables
-*   Calling a function by default means the caller must give up access to the value (but can give back by returning it)
-*   Similarly, assignment by default means giving up access to the heap value
+    - only one variable can alias a particular heap item (well, with a few exceptions)
+*   Calling a function by default means the caller must give up access to the passed parameter (!) (but can give back by returning it)
+*   Similarly, assignment by default means giving up access to the heap value (!)
+*   Memory freed when owning variables' scope ends 
+    - e.g. when a function returns, all declared locals are deallocated unless they are returned: no way to access any more so OK to free!
 *   No manual freeing - could free data still being used and thats bad!
-*   Instead, use the above invariant: Memory freed when owning variables' scope ends
+*   Concurrent data races are prevented since threads don't share variables
+
 
 See the [documentation on ownership](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html) for details.
 
 #### Borrowing
 
-Up to now Rust is far too rigid to be useful. But there are weakenings available.
+With just this simple ownership Rust is far too rigid to be useful. But there are weakenings available.
 
 *   A function can accept arguments by-value or by-reference
 *   by-value transfers ownership as we saw up to now

@@ -1,6 +1,9 @@
 (*
    File: tfbsrx_examples.ml
-   This File contains some typechecking examples  *)
+   This File contains some typechecking examples  
+   
+   To test on these or your own examples either #use this file 
+   or copy/paste the definitions at the top *)
 
 open Debugutils;;
 
