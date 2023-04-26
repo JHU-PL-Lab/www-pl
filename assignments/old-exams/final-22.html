@@ -1,0 +1,169 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/8683833116">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<h2 id="programming-languages-final-exam-2022">Programming Languages Final Exam 2022</h2>
+
+<p>Your Name (please <strong>print very neatly</strong> to help Gradescope recognize it): <strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong>___</p>
+
+<ol>
+  <li>
+    <p>(20 points) For this question we will consider <strong>FbAb</strong>, <strong>Fb</strong> with in addition an <code>Abort</code> expression which will abort the current computation and just return <code>Abort</code> as the final value.  So for example <code>5 + Abort ⇒ Abort</code>, <code>If True Then Abort Else 0 ⇒ Abort</code>, etc.  Note that <code>If False Then Abort Else 0 ⇒ 0</code>, the <code>Abort</code> in this case did not run.  The grammar for <strong>FbAb</strong> is the same as for <strong>Fb</strong>, but in addition there is the extra expression <code>Abort</code>.</p>
+
+    <p>a. Define the operational semantics rules for <strong>FbAb</strong>.  Feel free to use shorthand to reference the existing rules without writing down all the details.</p>
+
+    <p>b. Is <code>Abort</code> a side effecting operation, or not?  Briefly justify your answer.</p>
+
+    <p>c. Define a reasonable notion of operational equivalence <code>~=</code> for <strong>FbAb</strong> following how we defined <code>~=</code> for <strong>Fb</strong>.  Some reasonable equations and inequations that should hold include e.g. <code>1 + 2 ~= 3</code>, <code>Abort + Abort ~= Abort</code>, <code>0 ~= 1</code> should fail, etc.</p>
+
+    <p>d. Do any of the <strong>Fb</strong> <code>~=</code> laws in the book fail to hold for <strong>FbAb</strong>?  If, so list them.  If not, just write “no laws in the book fail”.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(12 points) OCaml supports limits on mutation, for example built-in <code>list</code>s are immutable.  For this question we will consider degrees of mutability of different types of lists in OCaml.</p>
+
+    <p>a. Recall that in lecture we noted that lists could in fact be implemented in existing OCaml as  <code>type 'a list = Mt | Cons of 'a * 'a list</code>.  For this question, define an OCaml type <code>'a mut_list</code> similar to this type but where individual elements of the list can be mutated.  Only individual elements should mutate in your type, we can’t e.g. change the length of the list by mutation.</p>
+
+    <p>b. A different form of mutation that could be added to lists is allowing the list structure itself to change.  This would allow e.g. list <code>append</code> to be defined in-place, i.e. two lists could be “glued” together directly without copying one of them (i.e. like how linked lists work in C).  Define an OCaml type <code>'a linked_list</code> which would support such an operation, again as a variant of the above type.</p>
+
+    <p>c. Use your <code>linked_list</code> type in b. to write an OCaml implementation of in-place <code>append : 'a linked_list -&gt; 'a linked_list -&gt; 'a linked_list</code> as referenced in that question. You don’t need to be perfect in your OCaml syntax, we are only looking for the spirit of the answer, a list append that performs no copying.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(6 points) This question concerns <strong>AFbV</strong>.  When actors are created, they are told about their own address.</p>
+
+    <p>a. Write out the actor operational semantics <code>Create</code> rule and point out where this in fact happens.</p>
+
+    <p>b. Why do we need to tell actors about their own address?  In other words, why is this extra self-notice necessary for actor programming?</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(15 points) We defined type inference for <strong>EFb</strong> which included only <strong>Fb</strong> syntax, but the principles there naturally extend to the other language features such as records, state, variants and the like.  For this question we will consider <strong>EFbS</strong>, an extension of <strong>EFb</strong> to include the syntax of <strong>FbS</strong>: <code>Ref e</code>, <code>!e</code>, and <code>e := e</code>.  We will only need to add the clause <code>τ Ref</code> to the type grammar.  Note that these reference types are the same as the <code>τ ref</code> types of OCaml and the <code>τ Ref</code> of <strong>TFbSRX</strong>, the <code>τ</code> is the (fixed) type of the contents of the cell.</p>
+
+    <p>a. Give the new type inference rules <code>Γ ⊢ e : τ \ E</code> needed for this syntax.  Make sure your rules are <em>inference</em> rules, they should assume nothing about what is above the line, and all (closed) programs should produce derivations using the rules.  Any constraining needs to be done in the equations <code>E</code> alone.</p>
+
+    <p>b. Give new <code>E</code> set closure rules needed if any, describing what constraints in <code>E</code> imply what new constraints we need to add to <code>E</code>.</p>
+
+    <p>c. Add any new clauses needed for the consistency check, in particular listing any new immediately inconsistent constraints which will be considered type errors.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(8 points) Administrative Normal Form (ANF) is an equivalent form for expressions which makes the order of evaluation more explicit.  For example, <strong>Fb</strong> expression <code>(f (x + 5)) - 2</code> in ANF would be <code>Let x1 = x + 5 In Let x2 = f x1 In Let x3 = x2 - 2 In x3</code>.  These two expressions are doing the same operations in the same order, and are operationally equivalent.  Prove this fact step-by-step either using only the <code>~=</code> laws in the book, or with the laws plus an additional (sound) law you propose to add.  Don’t add a law unless it is absolutely needed.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(10 points) We didn’t mention anything about the <strong>STFbR</strong> operational semantics, but it is exactly the same as <strong>FbR</strong>’s operational semantics if you remove the type declarations from expressions. Now, suppose we extended the <strong>STFbR</strong> operational semantics to <strong>STFbR++</strong> which allows records to overload as integers, the number being the count of how many fields the record has (note this is just a silly idea for this question, it is not anything we would actually want to do in a real programming language).  So in <strong>STFbR++</strong> operational semantics it would be the case that <code>4 + {a = 5; b = True} ⇒ 6</code> since this record has two fields; the values of the fields are irrelevant.  Records would also still work as usual for projections so this is a strict extension to the run-time capability.</p>
+
+    <p>a. Modify the <strong>STFbR</strong> subtype rules (<em>only</em>) by adding one or more rules such that this example and others will in fact type-check in the <strong>STFbR++</strong> type system.</p>
+
+    <p>b. Write out the proof that the above program typechecks to confirm your new subtype rule(s) work.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+</ol>
+
+<p>(Blank page one, if you run out of room on any question say “see blank one” and write here)</p>
+
+<p style="page-break-after:always;"></p>
+
+<p>(Blank page two, if you run out of room on any question say “see blank two” and write here)</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
