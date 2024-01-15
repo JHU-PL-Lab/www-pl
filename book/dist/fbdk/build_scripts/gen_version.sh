@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-VERSION=1.4.0
+VERSION=1.4.1
 
 cat << END > version.ml
 
