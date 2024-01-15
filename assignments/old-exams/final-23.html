@@ -1,0 +1,183 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/8683833116">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<h2 id="programming-languages-final-exam-spring-2023">Programming Languages Final Exam Spring 2023</h2>
+
+<p>Your Name (please <strong>print neatly</strong> to help Gradescope automatically recognize it): <strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong>__</p>
+
+<p>Note that for any <em>single</em> numbered question 1. - 5. below, the word “freebie” as your answer will get you full points on that question.</p>
+
+<ol>
+  <li>
+    <p>(12 points) This question concerns some key mathematical relations defined and used in the course, and how they relate to (OCaml) implementations of those relations.  For each mathematical relation state what parameters are naturally inputs and what parameters are naturally outputs in the implementation of that relation. All of the parameters are naturally inputs or outputs.</p>
+
+    <p>a. For <strong>Fb</strong>, the e ==&gt; v relation</p>
+
+    <p>b. For <strong>TFb</strong>, the Γ |- e : τ relation</p>
+
+    <p>c. For <strong>AFbV</strong>, the e =S=&gt; v relation</p>
+
+    <p>d. For <strong>EFb</strong>, the Γ |- e : τ \ E relation</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(15 points) The book listed some laws for opertional equivalence ~= for <strong>Fb</strong>.  Let us consider some other possible laws.  Consider each of the following statements and categorize it as 1) true but not provable with the existing laws (so it would be good as a new law), 2) true <em>and</em> provable with the existing laws (give the proof in such a case, including all the laws used in the proof), or 3) false (prove that it is false in such a case).  Recall that in all laws, e, v, and x denote arbitrary expressions, value expressions, and variables, respectively.</p>
+
+    <p>a. Not(Not(x)) ~= x</p>
+
+    <p>b. (Fun x -&gt; x) e ~= e</p>
+
+    <p>c. e + x ~= x + e</p>
+
+    <p>d. x e ~= x e’ if e ~= e’</p>
+
+    <p>e. Let x = e1 in e2 ~= e2[e1/x]</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(10 points) Consider the language <strong>FbLog</strong>, <strong>Fb</strong> with logging. Additional expression <code>Log("logging this",e)</code> will dump the log string plus the value of <code>e</code> in a log and will also return the result of <code>e</code> as its value.</p>
+
+    <p>a. Logging is a side effect like state and actors; propose a side-effecting operational semantics for <strong>FbLog</strong>, and write the operational semantics rules for the new <code>Log</code> statement rule, the new value rule plus the rule for <code>Let</code> (the other rules will be similar so no need to write them out).  Make sure your relation keeps the logging messages preserved in the same order they were issues in the program run.</p>
+
+    <p>b. Recall that Leibnizian equivalence is based on the philosophy that two things are considered equivalent if “no observations can tell them apart”.  For <strong>Fb</strong> operational equivalence ~= we used equi-termination in all contexts C as the notion of “all observations”.  There are two potentially different notions of operational equivalence for <strong>FbLog</strong> programs.  One is to just view logging as irrelevant debugging information that is not an “observable” as far as Leibniz is concerned.  The other is to consider expressions to be equivalent only if they also have the same logging output.  Define these two notions of equivalence for <strong>FbLog</strong> programs, notate the first one just ~= and the second one ~==.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(15 points) We studied two ways that object-like behavior could be achieved in languages without official objects per se.  One was in <strong>FbSR</strong> where we showed that records sufficed to express object coding patterns.  The other was in the Actor language <strong>AFbV</strong> where variants were used to encode objects.</p>
+
+    <p>Let us compare these two encodings on examples.  Consider a (functional) object which has a field that is a number <code>n</code>, as well as method <code>flip</code> which returns the negation of <code>n</code> (not an object holding the negation, just the raw number) as well as method <code>is_zero</code> which you <em>must</em> to implement by sending a message to self checking if <code>flip</code> of field <code>n</code>  returns the same value as <code>n</code> which means <code>n</code> must be zero (yes this is very artificial, directly checking if <code>n</code> is zero is the way it would be done in practice).</p>
+
+    <p>a. For this question, first encode this simple object in <strong>FbR</strong> – complete the following code:</p>
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Let</span> <span class="n">flipper_class</span> <span class="o">=</span> <span class="o">..</span><span class="n">your</span> <span class="n">code</span> <span class="k">for</span> <span class="n">a</span> <span class="n">factory</span> <span class="n">making</span> <span class="n">flipper</span> <span class="n">objects</span> <span class="k">when</span> <span class="n">passed</span> <span class="n">a</span> <span class="n">number</span> <span class="n">n</span> <span class="o">..</span> <span class="nc">In</span> 
+<span class="nc">Let</span> <span class="n">flipper</span> <span class="o">=</span> <span class="n">flipper_class</span> <span class="mi">4</span> <span class="nc">In</span> 
+  <span class="n">flipper</span><span class="o">.</span><span class="n">iszero</span> <span class="n">flipper</span> <span class="p">{}</span> <span class="c">(* pass the object itself as a parameter as in our encoding *)</span>
+</code></pre></div>    </div>
+    <p>– The <code>iszero</code> call should invoke <code>flip</code> in turn and return <code>False</code> since <code>flip(4) = 4</code> should fail</p>
+
+    <p>b. Now repeat this simple object example but using a <em>variant</em> encoding for the object roughly following how the <strong>AFbV</strong> examples worked: messages are variants.  So fill in the code</p>
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Let</span> <span class="n">flipper_class</span> <span class="o">=</span> <span class="o">..</span><span class="n">your</span> <span class="n">code</span> <span class="k">for</span> <span class="n">a</span> <span class="n">factory</span> <span class="n">making</span> <span class="n">variant</span><span class="o">-</span><span class="n">style</span> <span class="n">flipper</span> <span class="n">objects</span> <span class="k">when</span> <span class="n">passed</span> <span class="n">a</span> <span class="n">number</span> <span class="n">n</span> <span class="o">..</span> <span class="nc">In</span> 
+<span class="nc">Let</span> <span class="n">flipper</span> <span class="o">=</span> <span class="n">flipper_class</span> <span class="mi">4</span> <span class="nc">In</span> 
+  <span class="n">flipper</span> <span class="n">flipper</span> <span class="nt">`iszero</span><span class="p">({})</span>  <span class="c">(* observe how we pass the self here before the message, make your code meet this interface *)</span>
+</code></pre></div>    </div>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(20 points) This question concerns subtyping and <strong>STFbR</strong>.</p>
+
+    <p>a. The intuition for subtyping can be unintuitive, and to help in understanding what is a subtype of what we gave an interpretation of types in terms of sets in lecture: subtypes are subsets in the set interpretation of types.  For the example types <code>{ m : {}; b : Bool }</code> vs <code>{ b : Bool }</code> draw a Venn diagram showing the elements of the two types as sets, and use the diagram to clarify which is a subset (and thus subtype) of which.  Note you only need to show value elements, for example <code>{ b = Not (Not False) }</code> is an element of the second type but you need not show that one.</p>
+
+    <p>b. Now, verify you got the subset relation correct in a. by either proving subtyping <code>{ m : {}; b : Bool } &lt;: { b : Bool }</code> or <code>{  b : Bool } &lt;: { m : {}; b : Bool }</code> using the <strong>STFbR</strong> subtyping rules.</p>
+
+    <p>c. Now repeat a. but for the two types <code>{ m : {}; b : Bool } -&gt; Bool</code> vs <code>{ b : Bool } -&gt; Bool</code>.  You need not list all elements in your diagram, only some representative ones.</p>
+
+    <p>d. Repeat b. but for the two types of c.</p>
+
+    <p>e. Now give <em>any</em> legal proof ∅ |- e : τ in the <strong>STFbR</strong> proof rules for <em>any</em> particualar e and τ which <strong>requires</strong> the use of the subtyping proof in b. to be proved.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+</ol>
+
+<p style="page-break-after:always;"></p>
+
+<p>(Blank page, if you run out of room on any question say “see blank” and write here)</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>

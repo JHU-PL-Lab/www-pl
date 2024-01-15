@@ -15,14 +15,12 @@ Please send private questions for course staff only as a new Conversion setting 
 **Course Assistants**
 
 * Shiwei Weng
-* Farnaz Yousefi
+* Logan Kostick
 * Robert Zhang
-* Junjie Lei
-* Zhenbo Yan
-* Ricky Cheng
-* Sean Murray
+* Brandon Stride
+* .. more TBA
 
 ### Office Hours and Locations
 
-They are posted [on Courselore](https://courselore.org/courses/8683833116/conversations/4).
+They will be posted [on Courselore](https://courselore.org/courses/2350216866) when they are set.
 

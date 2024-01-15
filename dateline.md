@@ -22,7 +22,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Jan 23</div>
+        <div align="center" class="body">Jan 22</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -41,7 +41,7 @@ Lecture material and assigments are under the indicated links; lectures with no 
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Jan 25</div>
+        <div align="center" class="body">Jan 24</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -60,7 +60,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Jan 30</div>
+        <div align="center" class="body">Jan 29</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -77,7 +77,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Feb 1</div>
+        <div align="center" class="body">Jan 31</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -94,7 +94,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Feb 6</div>
+        <div align="center" class="body">Feb 5</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -112,7 +112,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Feb 8</div>
+        <div align="center" class="body">Feb 7</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -129,7 +129,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Feb 13</div>
+        <div align="center" class="body">Feb 12</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -146,7 +146,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Feb 15</div>
+        <div align="center" class="body">Feb 14</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -164,7 +164,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Feb 20</div>
+        <div align="center" class="body">Feb 19</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -182,7 +182,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Feb 22</div>
+        <div align="center" class="body">Feb 21</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -199,7 +199,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Feb 27</div>
+        <div align="center" class="body">Feb 26</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -216,7 +216,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Mar 1</div>
+        <div align="center" class="body">Feb 28</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -233,7 +233,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Mar 6</div>
+        <div align="center" class="body">Mar 4</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -250,7 +250,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr>      
     <td width="8%"> 
-        <div align="center" class="body">Mar 8</div>
+        <div align="center" class="body">Mar 6</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -267,7 +267,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
       </tr>
       <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Mar 13</div>
+        <div align="center" class="body">Mar 11</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -284,7 +284,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Mar 15</div>
+        <div align="center" class="body">Mar 13</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -301,7 +301,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr>
     <td width="8%" height="2"> 
-        <div align="center" class="body">Mar 20-24</div>
+        <div align="center" class="body">Mar 18-22</div>
       </td>
       <td width="8%" height="2"> 
         <div align="center" class="body">&nbsp;</div>
@@ -312,7 +312,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr>
       <td width="8%"> 
-        <div align="center" class="body">Mar 27</div>
+        <div align="center" class="body">Mar 25</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -329,7 +329,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Mar 29</div>
+        <div align="center" class="body">Mar 27</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -346,7 +346,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 3</div>
+        <div align="center" class="body">Apr 1</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -363,7 +363,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 5</div>
+        <div align="center" class="body">Apr 3</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -380,7 +380,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 10</div>
+        <div align="center" class="body">Apr 8</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -397,7 +397,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 12</div>
+        <div align="center" class="body">Apr 10</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -415,7 +415,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 17</div>
+        <div align="center" class="body">Apr 15</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -432,7 +432,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 19</div>
+        <div align="center" class="body">Apr 17</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -449,7 +449,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 24</div>
+        <div align="center" class="body">Apr 22</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>
@@ -466,7 +466,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">Apr 26</div>
+        <div align="center" class="body">Apr 24</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Wed</div>
@@ -483,13 +483,13 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>    
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">May 5?</div>
+        <div align="center" class="body">May TBA</div>
       </td>
       <td width="8%"> 
-        <div align="center" class="body">Fri</div>
+        <div align="center" class="body">TBA</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">Final Review Session, 5-6 PM?</div>
+        <div align="left" class="body">Final Review Session, 5-6 PM</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -500,7 +500,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">May 8, 6-9PM</div>
+        <div align="center" class="body">May TBA, TBA AM/PM</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">Mon</div>

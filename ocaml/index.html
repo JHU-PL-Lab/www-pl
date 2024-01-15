@@ -44,7 +44,7 @@
           <li><a href="/pl/logistics.html">Overview</a></li>
            <li><a href="/pl/dateline.html">Dateline</a></li>
            <li><a href="https://gradescope.com">Gradescope</a></li>
-           <li><a href="https://courselore.org/courses/8683833116">Q&amp;A</a></li>
+           <li><a href="https://courselore.org/courses/2350216866">Q&amp;A</a></li>
            <li><a href="/pl/contact.html">Contact Us</a></li>
           </ul>
          </li>
@@ -66,7 +66,6 @@
          <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
          <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
          <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
-         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
        </ul></li>
         </ul>
        </nav>
@@ -92,9 +91,9 @@
 
 <h3 id="our-ml-dialect">Our ML Dialect</h3>
 
-<p>We will use <a href="http://ocaml.org">OCaml</a>, version 4.14.1.</p>
+<p>We will use <a href="http://ocaml.org">OCaml</a>, version 5.1.1.</p>
 
-<h3 id="installing-ocaml-4141">Installing OCaml 4.14.1</h3>
+<h3 id="installing-ocaml-511">Installing OCaml 5.1.1</h3>
 
 <p>We require that you use the <a href="https://opam.ocaml.org">opam packaging system</a> for installing OCaml and its extensions.  Once you get <code>opam</code> installed and working, everything else should be easy to install .. so the only hard part is the first step.</p>
 
@@ -129,8 +128,8 @@
     <ol>
       <li><code>opam init</code> to initialize OPAM (we suggest you answer <code>y</code> to the question <code>Do you want opam to modify ~/.profile? [N/y/f]</code>);</li>
       <li>If you didn’t get that question or said <code>N</code>, you will need to add line, <code>eval $(opam env)</code>, to your <code>~/.bash_profile</code> or <code>~/.profile</code> or <code>~/.bashrc</code> shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using <code>zsh</code> on macs, add line <code>eval `opam env`</code> instead to your <code>~/.zshrc</code> file.</li>
-      <li>Type command <code>eval $(opam env)</code> to your shell to let it know where the opam files are (zsh users on Macs type <code>eval `opam env`</code> instead)</li>
-      <li>Type <code>opam update &amp;&amp; opam switch create 4.14.1</code> (this will take awhile) to build OCaml version 4.14.1.</li>
+      <li>Type command <code>eval $(opam env --switch=5.1.1)</code> to your shell to let it know where the opam files are (zsh users on Macs type <code>eval `opam env --switch=5.1.1`</code> instead)</li>
+      <li>Type <code>opam update &amp;&amp; opam switch create 5.1.1</code> (this will take awhile) to build OCaml version 5.1.1.</li>
     </ol>
   </li>
   <li>If you already have an earlier version of OCaml installed via <code>opam</code>, you should only need to run the last line. Note if you took FPSE you need to also follow all the configuration steps below as they are different and the OCaml version is different.</li>
@@ -138,7 +137,7 @@
 
 <h3 id="configuring-ocaml">Configuring OCaml</h3>
 
-<p>Once you have OCaml 4.14.1 installed, run the following <code>opam</code> command in the terminal to install additional necessary packages used in the class:</p>
+<p>Once you have OCaml 5.1.1 installed, run the following <code>opam</code> command in the terminal to install additional necessary packages used in the class:</p>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opam <span class="nb">install </span>ocaml-lsp-server menhir utop ppx_deriving ounit2 ocamlformat
 </code></pre></div></div>
 
@@ -223,6 +222,7 @@
 <ul>
   <li><a href="https://www.cs.cornell.edu/courses/cs3110/2020sp/textbook/">Cornell cs3110 book</a> is another course which uses OCaml; it is more focused on programming and less on PL theory than this class is.</li>
   <li><a href="http://ocaml.org">ocaml.org</a> is the home of OCaml for finding downloads, documentation, etc. The <a href="http://ocaml.org/learn/tutorials/">tutorials</a> are also very good and there is a page of <a href="http://ocaml.org/learn/books.html">books</a>.</li>
+  <li><a href="https://johnwhitington.net/ocamlfromtheverybeginning/">OCaml from the very beginning</a> is a free online book.</li>
   <li>The <a href="https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1">OCaml Youtube Tutorial</a> if you like watching videos to learn things.</li>
 </ul>
 

@@ -5,9 +5,9 @@
 
 ### Our ML Dialect
 
-We will use [OCaml](http://ocaml.org), version 4.14.1.
+We will use [OCaml](http://ocaml.org), version 5.1.1.
 
-### Installing OCaml 4.14.1
+### Installing OCaml 5.1.1
 
 We require that you use the [opam packaging system](https://opam.ocaml.org) for installing OCaml and its extensions.  Once you get `opam` installed and working, everything else should be easy to install .. so the only hard part is the first step.
 
@@ -29,13 +29,13 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
 - You will then need to run some terminal commands to set up the basics:
     1.  `opam init` to initialize OPAM (we suggest you answer `y` to the question `Do you want opam to modify ~/.profile? [N/y/f]`);
     2.  If you didn't get that question or said `N`, you will need to add line, `eval $(opam env)`, to your `~/.bash_profile` or `~/.profile` or `~/.bashrc` shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using `zsh` on macs, add line ``eval `opam env` `` instead to your `~/.zshrc` file. 
-    3.  Type command `eval $(opam env)` to your shell to let it know where the opam files are (zsh users on Macs type ``eval `opam env` `` instead)       
-    4. Type `opam update && opam switch create 4.14.1` (this will take awhile) to build OCaml version 4.14.1.
+    3.  Type command `eval $(opam env --switch=5.1.1)` to your shell to let it know where the opam files are (zsh users on Macs type ``eval `opam env --switch=5.1.1` `` instead)       
+    4. Type `opam update && opam switch create 5.1.1` (this will take awhile) to build OCaml version 5.1.1.
 - If you already have an earlier version of OCaml installed via `opam`, you should only need to run the last line. Note if you took FPSE you need to also follow all the configuration steps below as they are different and the OCaml version is different.
 
 ### Configuring OCaml 
 
-Once you have OCaml 4.14.1 installed, run the following `opam` command in the terminal to install additional necessary packages used in the class:
+Once you have OCaml 5.1.1 installed, run the following `opam` command in the terminal to install additional necessary packages used in the class:
 ```bash
 opam install ocaml-lsp-server menhir utop ppx_deriving ounit2 ocamlformat
 ```
@@ -105,5 +105,6 @@ Looking at other people's code is a good way to learn good coding practices.
 
 * [Cornell cs3110 book](https://www.cs.cornell.edu/courses/cs3110/2020sp/textbook/) is another course which uses OCaml; it is more focused on programming and less on PL theory than this class is.
 * [ocaml.org](http://ocaml.org) is the home of OCaml for finding downloads, documentation, etc. The [tutorials](http://ocaml.org/learn/tutorials/) are also very good and there is a page of [books](http://ocaml.org/learn/books.html).
+* [OCaml from the very beginning](https://johnwhitington.net/ocamlfromtheverybeginning/) is a free online book.
 * The [OCaml Youtube Tutorial](https://www.youtube.com/playlist?list=PLea0WJq13cnCef-3KSU3qWFge9OGUlKx1) if you like watching videos to learn things.
 
