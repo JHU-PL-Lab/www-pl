@@ -14,11 +14,11 @@ Please send private questions for course staff only as a new Conversion setting 
 
 **Course Assistants**
 
-* Shiwei Weng
+* Aya Habbas
 * Logan Kostick
-* Robert Zhang
 * Brandon Stride
-* .. more TBA
+* Shiwei Weng
+* Robert Zhang
 
 ### Office Hours and Locations
 
