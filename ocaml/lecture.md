@@ -3,13 +3,14 @@
 
 * We will be using the OCaml language for implementing interpreters, typecheckers and the like
 * You are not going to learn how to be an OCaml software engineer in this class however, we are just going to cover the minimal OCaml needed for these tasks
-* Take [Functional Programming in Software Engineering](https://pl.cs.jhu.edu/fpse) for a focus on broader uses of OCaml
+   - Take [Functional Programming in Software Engineering](https://pl.cs.jhu.edu/fpse) for a focus on broader uses of OCaml
 * OCaml itself has a very minimal set of features which can build up other features, we will also follow that in our toy langauges **Fb**, **FbV**, **FbR**, etc.
 
 ### What is OCaml?
 * OCaml is a *strongly typed functional programming language*
    - Strongly typed means the compiler will detect type errors; you won't get them at runtime like in JavaScript/Python
    - Functional means an emphasis on *functions* as a key building block and use of functions as data (functions that themselves can take functions as arguments and return functions as results)
+   - We will also take an emphasis on functions in our study of PLs as functions are more fundamental than e.g. objects/classes.
 
 
 ### The top loop
@@ -89,8 +90,8 @@ let add1 x = x + 1;; (* a normal add1 definition *)
 let anon_add1 = (function x -> x + 1);; (* equivalent anonymous version; "x" is argument here *)
 let anon_add1_fun = (fun x -> x + 1);; (* `function` can usually be shortened to `fun` *)
 add1 3;;
-(add1 4) * 7;; 
-((fun x -> x + 1) 4) * 7;; (* can inline anonymous function definition; makes no sense here but will later *)
+(add1 4) * 7;;  (* note this is the same as add1 4 * 7 - application "binds tightest" *)
+((fun x -> x + 1) 4) * 7;; (* can inline anonymous function; useless here but useful later *)
 ```
 
 <a name="ii"></a>

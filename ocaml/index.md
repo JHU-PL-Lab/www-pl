@@ -29,9 +29,12 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
 - You will then need to run some terminal commands to set up the basics:
     1.  `opam init` to initialize OPAM (we suggest you answer `y` to the question `Do you want opam to modify ~/.profile? [N/y/f]`);
     2.  If you didn't get that question or said `N`, you will need to add line, `eval $(opam env)`, to your `~/.bash_profile` or `~/.profile` or `~/.bashrc` shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using `zsh` on macs, add line ``eval `opam env` `` instead to your `~/.zshrc` file. 
-    3.  Type command `eval $(opam env --switch=5.1.1)` to your shell to let it know where the opam files are (zsh users on Macs type ``eval `opam env --switch=5.1.1` `` instead)       
+    3.  Type command `eval $(opam env)` to your shell to let it know where the opam files are (zsh users on Macs type ``eval `opam env` `` instead)       
     4. Type `opam update && opam switch create 5.1.1` (this will take awhile) to build OCaml version 5.1.1.
-- If you already have an earlier version of OCaml installed via `opam`, you should only need to run the last line. Note if you took FPSE you need to also follow all the configuration steps below as they are different and the OCaml version is different.
+    5. At the end of the install it will likely suggest an `eval` command to type; do that.
+- If you already have an earlier version of OCaml installed via `opam`, you should only need to run the 4th line. 
+
+(Note if you took FPSE you need to make sure to switch to 5.1.1 and also follow all the configuration steps below as they are different and the OCaml version is different.   We are not using `Core` in this class so you need to make sure to also remove any reference to core in your `.ocamlinit` file.)
 
 ### Configuring OCaml 
 
@@ -40,11 +43,11 @@ Once you have OCaml 5.1.1 installed, run the following `opam` command in the ter
 opam install ocaml-lsp-server menhir utop ppx_deriving ounit2 ocamlformat
 ```
 
-Lastly, edit the file `~/.ocamlinit` to add the line 
+Lastly, edit the file `~/.ocamlinit` to consist of only the line 
 ```ocaml
 #use "topfind";;
 ```
-if it is not already in the file.  The contents of this file are entered in the top loop when it starts.  Here is an easy one-liner you can copy/paste into your terminal to set that file up:
+The contents of this file are entered in the top loop when it starts.  Here is an easy one-liner you can copy/paste into your terminal to set that file up:
 ```sh
 echo '#use "topfind";;'  > ~/.ocamlinit
 ```
@@ -78,15 +81,13 @@ We strongly recommend VSCode since it has OCaml-specific features such as syntax
 
 **[Visual Studio Code](https://code.visualstudio.com)**
 
-VSCode has very good OCaml support and is the "officially recommended editor". 
-
 * To make VSCode OCaml-aware you will need to install the **OCaml Platform**.   To install it, from the `View` menu select `Extensions`, and type OCaml in the search box and this extension will show up: select **OCaml Platform** from the list.
 
 * You can easily run a `utop` shell from within VSCode, just open up a shell from the `Terminal` menu and type `utop`.
 
 * If you are on Windows and using WSL2, you need to run Visual Studio "in WSL2 space" to get OCaml syntax highlighting and other nice features. See the [Remote WSL Extension Docs](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) for details on how to set up the VSCode-WSL2 connection.  If you are having trouble look at the [Additional Resources](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode#additional-resources) on that page.  Once you have the above set up, install the OCaml Platform as described above and you should have syntax highlighting etc working.
 
-**vim**: If you use `vim`, my condolances as it is woefully behind the times in spite of many band-aids added over the years.  Still, if you have been brainwashed to believe it is good, type shell commands `opam install merlin ocp-indent user-setup` and `opam user-setup install` after doing the above  default `opam` install to set up syntax highlighting, tab completion, displaying types, etc. See [here](https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt) for some dense documentation.
+**vim**: If you use `vim`, you really need to switch to VSCode..  `vim` is 1970's tech with 50 years of band-aids added to it (I was using its predecessor, `vi`, in 1979).  If you are having trouble switching to a modern editor, try `opam install merlin ocp-indent user-setup` and `opam user-setup install` after doing the above  default `opam` install to set up syntax highlighting, tab completion, displaying types, etc. for `vim`.  See [here](https://github.com/ocaml/merlin/blob/master/vim/merlin/doc/merlin.txt) for some dense documentation.
 
 **emacs**: See vim. Note you will need to also `opam install tuareg` to get emacs to work, and follow the instructions the install prints out.
 

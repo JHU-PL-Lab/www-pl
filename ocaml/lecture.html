@@ -44,7 +44,7 @@
           <li><a href="/pl/logistics.html">Overview</a></li>
            <li><a href="/pl/dateline.html">Dateline</a></li>
            <li><a href="https://gradescope.com">Gradescope</a></li>
-           <li><a href="https://courselore.org/courses/8683833116">Q&amp;A</a></li>
+           <li><a href="https://courselore.org/courses/2350216866">Q&amp;A</a></li>
            <li><a href="/pl/contact.html">Contact Us</a></li>
           </ul>
          </li>
@@ -66,7 +66,6 @@
          <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
          <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
          <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
-         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
        </ul></li>
         </ul>
        </nav>
@@ -88,8 +87,11 @@
 
 <ul>
   <li>We will be using the OCaml language for implementing interpreters, typecheckers and the like</li>
-  <li>You are not going to learn how to be an OCaml software engineer in this class however, we are just going to cover the minimal OCaml needed for these tasks</li>
-  <li>Take <a href="https://pl.cs.jhu.edu/fpse">Functional Programming in Software Engineering</a> for a focus on broader uses of OCaml</li>
+  <li>You are not going to learn how to be an OCaml software engineer in this class however, we are just going to cover the minimal OCaml needed for these tasks
+    <ul>
+      <li>Take <a href="https://pl.cs.jhu.edu/fpse">Functional Programming in Software Engineering</a> for a focus on broader uses of OCaml</li>
+    </ul>
+  </li>
   <li>OCaml itself has a very minimal set of features which can build up other features, we will also follow that in our toy langauges <strong>Fb</strong>, <strong>FbV</strong>, <strong>FbR</strong>, etc.</li>
 </ul>
 
@@ -99,6 +101,7 @@
     <ul>
       <li>Strongly typed means the compiler will detect type errors; you won’t get them at runtime like in JavaScript/Python</li>
       <li>Functional means an emphasis on <em>functions</em> as a key building block and use of functions as data (functions that themselves can take functions as arguments and return functions as results)</li>
+      <li>We will also take an emphasis on functions in our study of PLs as functions are more fundamental than e.g. objects/classes.</li>
     </ul>
   </li>
 </ul>
@@ -179,8 +182,8 @@
 <span class="k">let</span> <span class="n">anon_add1</span> <span class="o">=</span> <span class="p">(</span><span class="k">function</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);;</span> <span class="c">(* equivalent anonymous version; "x" is argument here *)</span>
 <span class="k">let</span> <span class="n">anon_add1_fun</span> <span class="o">=</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);;</span> <span class="c">(* `function` can usually be shortened to `fun` *)</span>
 <span class="n">add1</span> <span class="mi">3</span><span class="p">;;</span>
-<span class="p">(</span><span class="n">add1</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">7</span><span class="p">;;</span> 
-<span class="p">((</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">7</span><span class="p">;;</span> <span class="c">(* can inline anonymous function definition; makes no sense here but will later *)</span>
+<span class="p">(</span><span class="n">add1</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">7</span><span class="p">;;</span>  <span class="c">(* note this is the same as add1 4 * 7 - application "binds tightest" *)</span>
+<span class="p">((</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">4</span><span class="p">)</span> <span class="o">*</span> <span class="mi">7</span><span class="p">;;</span> <span class="c">(* can inline anonymous function; useless here but useful later *)</span>
 </code></pre></div></div>
 
 <p><a name="ii"></a></p>

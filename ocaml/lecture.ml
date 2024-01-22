@@ -33,8 +33,8 @@ let add1 x = x + 1;; (* a normal add1 definition *)
 let anon_add1 = (function x -> x + 1);; (* equivalent anonymous version; "x" is argument here *)
 let anon_add1_fun = (fun x -> x + 1);; (* `function` can usually be shortened to `fun` *)
 add1 3;;
-(add1 4) * 7;; 
-((fun x -> x + 1) 4) * 7;; (* can inline anonymous function definition; makes no sense here but will later *)
+(add1 4) * 7;;  (* note this is the same as add1 4 * 7 - application "binds tightest" *)
+((fun x -> x + 1) 4) * 7;; (* can inline anonymous function; useless here but useful later *)
 
 let add x y = x + y;;
 add 3 4;;
