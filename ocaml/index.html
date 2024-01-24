@@ -101,19 +101,24 @@
   <li>For Linux or Mac see <a href="https://opam.ocaml.org/doc/Install.html">The OPAM install page</a> for install instructions.</li>
   <li>For Mac users, the above requires <a href="https://brew.sh">Homebrew</a> (a package manager for Linux-ish libraries) so here is a more detailed suggestion of some copy/paste that should work.
     <ul>
-      <li>Mac without homebrew installed:
-        <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> /bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="si">)</span><span class="s2">"</span>
-</code></pre></div>        </div>
-        <p>will install Homebrew</p>
-      </li>
-      <li>Mac with Homebrew (make sure you first do a <code>brew update</code> before this): <code>brew install gpatch; brew install opam</code></li>
+      <li>Mac without homebrew installed:</li>
+    </ul>
+
+    <div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code> /bin/bash <span class="nt">-c</span> <span class="s2">"</span><span class="si">$(</span>curl <span class="nt">-fsSL</span> https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh<span class="si">)</span><span class="s2">"</span>
+</code></pre></div>    </div>
+    <p>will install Homebrew</p>
+    <ul>
+      <li>Mac once you have Homebrew: <code>brew update &amp;&amp; brew install gpatch &amp;&amp; brew install opam</code> will install <code>opam</code>/</li>
+      <li>After this, follow the “Initial setup of <code>opam</code>” instructions below.</li>
     </ul>
   </li>
   <li>For Windows you should use WSL2, the Windows Subsystem for Linux.  It creates a Linux-like system from within Windows.
     <ul>
-      <li>Once you install <a href="https://docs.microsoft.com/en-us/windows/wsl/">WSL 2</a> you will be able to follow the Linux Ubuntu install instructions linked above.
+      <li>Once you install <a href="https://docs.microsoft.com/en-us/windows/wsl/">WSL 2</a> you will be able to follow the Linux Ubuntu install instructions linked above.  Here is a copy/paste that should work.
         <ul>
-          <li>Note that your WSL2 Ubuntu needs the C compiler and tools for the <code>opam</code> install to work; the following Linux shell command will get you those: <code>sudo apt update &amp;&amp; sudo apt install make m4 gcc zip unzip bubblewrap</code>.</li>
+          <li>Your WSL2 Ubuntu needs the C compiler and tools for the <code>opam</code> install to work; enter the following to make sure those are set up: <code>sudo apt update &amp;&amp; sudo apt install make m4 gcc zip unzip bubblewrap</code>.</li>
+          <li>Next, type <code>sudo add-apt-repository ppa:avsm/ppa &amp;&amp; sudo apt update &amp;&amp; sudo apt install opam</code> to install <code>opam</code> in your WSL2.</li>
+          <li>After this, follow the “Initial setup of <code>opam</code>” instructions below.</li>
           <li>You can still use your Windows install of VSCode to edit files by using the <a href="https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode">VSCode Remote WSL Extension</a> – it will connect the Windows editor to the underlying WSL2 subsystem.  See below where VSCode is described for details on how to set this up.</li>
         </ul>
       </li>

@@ -14,14 +14,18 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
 -  For Linux or Mac see [The OPAM install page](https://opam.ocaml.org/doc/Install.html) for install instructions. 
 -  For Mac users, the above requires [Homebrew](https://brew.sh) (a package manager for Linux-ish libraries) so here is a more detailed suggestion of some copy/paste that should work.
 	- Mac without homebrew installed:
+
     ```sh
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ``` 
     will install Homebrew 
-	- Mac with Homebrew (make sure you first do a `brew update` before this): `brew install gpatch; brew install opam`
+	- Mac once you have Homebrew: `brew update && brew install gpatch && brew install opam` will install `opam`/
+    - After this, follow the "Initial setup of `opam`" instructions below.
 -   For Windows you should use WSL2, the Windows Subsystem for Linux.  It creates a Linux-like system from within Windows.
-    - Once you install [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/) you will be able to follow the Linux Ubuntu install instructions linked above. 
-       - Note that your WSL2 Ubuntu needs the C compiler and tools for the `opam` install to work; the following Linux shell command will get you those: `sudo apt update && sudo apt install make m4 gcc zip unzip bubblewrap`.
+    - Once you install [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/) you will be able to follow the Linux Ubuntu install instructions linked above.  Here is a copy/paste that should work.
+       - Your WSL2 Ubuntu needs the C compiler and tools for the `opam` install to work; enter the following to make sure those are set up: `sudo apt update && sudo apt install make m4 gcc zip unzip bubblewrap`.
+       - Next, type `sudo add-apt-repository ppa:avsm/ppa && sudo apt update && sudo apt install opam` to install `opam` in your WSL2.
+       - After this, follow the "Initial setup of `opam`" instructions below.
        - You can still use your Windows install of VSCode to edit files by using the [VSCode Remote WSL Extension](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) -- it will connect the Windows editor to the underlying WSL2 subsystem.  See below where VSCode is described for details on how to set this up.
     -  WSL2 has been working well for most people, but another option is to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, [here is one of them](https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098).  Once your virtual Linux box is set up, you can follow the `opam` Linux install instructions.
 
