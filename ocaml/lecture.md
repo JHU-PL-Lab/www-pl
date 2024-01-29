@@ -483,7 +483,7 @@ The above might make more sense if you consider similar-in-spirit C pseudo-code:
 ```c
  { int y = 3;
    { int x = 5;
-     { int (int) f = z -> return(x + z); (* imagining higher-order functions in C *)
+     { int (int) f = z -> return(x + z); // imagining higher-order functions in C
        { int x = y; (* shadows previous x in C *)
          return(f(y)); 
   }}}})
@@ -615,7 +615,7 @@ let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functio
 
 ### Solving some simple problems
 
-Here are some practice problems and their solutions for your own self-study (skipped in lecture)
+Here are some practice problems and their solutions for your own self-study (may skip in lecture depending on time available)
 
 Also see the [OCaml page examples](index.html#examples) for more sources for example problems and solutions.
 
