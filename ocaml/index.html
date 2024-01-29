@@ -108,17 +108,17 @@
 </code></pre></div>    </div>
     <p>will install Homebrew</p>
     <ul>
-      <li>Mac once you have Homebrew: <code>brew update &amp;&amp; brew install gpatch &amp;&amp; brew install opam</code> will install <code>opam</code>/</li>
-      <li>After this, follow the “Initial setup of <code>opam</code>” instructions below.</li>
+      <li>Mac once you have Homebrew: <code>brew update &amp;&amp; brew install gpatch &amp;&amp; brew install opam</code> will install <code>opam</code>.</li>
+      <li>After this, follow the “Initial Setup of <code>opam</code>” instructions below.</li>
     </ul>
   </li>
   <li>For Windows you should use WSL2, the Windows Subsystem for Linux.  It creates a Linux-like system from within Windows.
     <ul>
       <li>Once you install <a href="https://docs.microsoft.com/en-us/windows/wsl/">WSL 2</a> you will be able to follow the Linux Ubuntu install instructions linked above.  Here is a copy/paste that should work.
         <ul>
-          <li>Your WSL2 Ubuntu needs the C compiler and tools for the <code>opam</code> install to work; enter the following to make sure those are set up: <code>sudo apt update &amp;&amp; sudo apt install make m4 gcc zip unzip bubblewrap</code>.</li>
+          <li>Your WSL2 Ubuntu needs the C compiler and tools for the <code>opam</code> install to work; enter the following to make sure those are set up: <code>sudo apt update &amp;&amp; sudo apt install make m4 gcc zip unzip bubblewrap</code></li>
           <li>Next, type <code>sudo add-apt-repository ppa:avsm/ppa &amp;&amp; sudo apt update &amp;&amp; sudo apt install opam</code> to install <code>opam</code> in your WSL2.</li>
-          <li>After this, follow the “Initial setup of <code>opam</code>” instructions below.</li>
+          <li>After this, follow the “Initial Setup of <code>opam</code>” instructions below.</li>
           <li>You can still use your Windows install of VSCode to edit files by using the <a href="https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode">VSCode Remote WSL Extension</a> – it will connect the Windows editor to the underlying WSL2 subsystem.  See below where VSCode is described for details on how to set this up.</li>
         </ul>
       </li>
@@ -127,7 +127,7 @@
   </li>
 </ul>
 
-<h3 id="initial-setup-of-opam">Initial setup of <code>opam</code></h3>
+<h3 id="initial-setup-of-opam">Initial Setup of <code>opam</code></h3>
 <ul>
   <li>You will then need to run some terminal commands to set up the basics:
     <ol>
@@ -215,7 +215,8 @@
 </ul>
 
 <h3 id="example-worked-ocaml-exercises">Example Worked OCaml Exercises</h3>
-<p>Looking at other people’s code is a good way to learn good coding practices.</p>
+<p><a name="examples">
+Looking at other people’s code is a good way to learn good coding practices.</a></p>
 
 <ul>
   <li><a href="https://exercism.io/tracks/ocaml/exercises">Exercism OCaml Track</a> has a large set of programming problems to solve which have solutions by many other programmers as well.</li>

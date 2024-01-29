@@ -19,17 +19,17 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     ``` 
     will install Homebrew 
-	- Mac once you have Homebrew: `brew update && brew install gpatch && brew install opam` will install `opam`/
-    - After this, follow the "Initial setup of `opam`" instructions below.
+	- Mac once you have Homebrew: `brew update && brew install gpatch && brew install opam` will install `opam`.
+    - After this, follow the "Initial Setup of `opam`" instructions below.
 -   For Windows you should use WSL2, the Windows Subsystem for Linux.  It creates a Linux-like system from within Windows.
     - Once you install [WSL 2](https://docs.microsoft.com/en-us/windows/wsl/) you will be able to follow the Linux Ubuntu install instructions linked above.  Here is a copy/paste that should work.
-       - Your WSL2 Ubuntu needs the C compiler and tools for the `opam` install to work; enter the following to make sure those are set up: `sudo apt update && sudo apt install make m4 gcc zip unzip bubblewrap`.
+       - Your WSL2 Ubuntu needs the C compiler and tools for the `opam` install to work; enter the following to make sure those are set up: `sudo apt update && sudo apt install make m4 gcc zip unzip bubblewrap`
        - Next, type `sudo add-apt-repository ppa:avsm/ppa && sudo apt update && sudo apt install opam` to install `opam` in your WSL2.
-       - After this, follow the "Initial setup of `opam`" instructions below.
+       - After this, follow the "Initial Setup of `opam`" instructions below.
        - You can still use your Windows install of VSCode to edit files by using the [VSCode Remote WSL Extension](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) -- it will connect the Windows editor to the underlying WSL2 subsystem.  See below where VSCode is described for details on how to set this up.
     -  WSL2 has been working well for most people, but another option is to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, [here is one of them](https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098).  Once your virtual Linux box is set up, you can follow the `opam` Linux install instructions.
 
-### Initial setup of `opam`
+### Initial Setup of `opam`
 - You will then need to run some terminal commands to set up the basics:
     1.  `opam init` to initialize OPAM (we suggest you answer `y` to the question `Do you want opam to modify ~/.profile? [N/y/f]`);
     2.  If you didn't get that question or said `N`, you will need to add line, `eval $(opam env)`, to your `~/.bash_profile` or `~/.profile` or `~/.bashrc` shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using `zsh` on macs, add line ``eval `opam env` `` instead to your `~/.zshrc` file. 
@@ -100,6 +100,7 @@ We strongly recommend VSCode since it has OCaml-specific features such as syntax
 * The [FPSE Style Guide](http://pl.cs.jhu.edu/fpse/style-guide.html) is the standard we will adhere to in the class; it follows general best practices for modern OCaml.
 
 ### Example Worked OCaml Exercises
+<a name ="examples">
 Looking at other people's code is a good way to learn good coding practices.
 
 * [Exercism OCaml Track](https://exercism.io/tracks/ocaml/exercises) has a large set of programming problems to solve which have solutions by many other programmers as well.

@@ -149,7 +149,7 @@ None;;
 
  * Notice these are both in the `option` type .. either you have `Some` data or you have `None`.
  * These kinds of types with the capital-letter-named tags are called **variants** in OCaml; each tag wraps a different variant.
- * The `option` type is very useful; here is a super simple example.
+ * The `option` type is very useful; here is a simple example.
 
  ```ocaml
 # let nice_div m n = if n = 0 then None else Some (m / n);;
@@ -170,6 +170,7 @@ Error: This expression has type int option
 ```
 
 This type error means the `+` lhs should be type `int` but is a `Some` value which is not an `int`.
+  - `option` types are not coercable to integers (or any other type).
 
 Here is a non-solution to the above showing `None` is not like `nil`/`null`/`NULL` of some other languages:
  ```ocaml
@@ -179,7 +180,7 @@ Error: This expression has type int but an expression was expected of type
          'a option
 ```
 - The `then` and `else` branches must return the same type, here they do not.
-- The `int` and `int option` types have no overlap of members!  Generally true across OCaml.
+- The `int` and `int option` types have no overlap of members! 
 
 #### Pattern matching first example
 
@@ -419,7 +420,7 @@ QED.
 
 * Think of tuples as fixed length lists, where the types of each element can differ, unlike lists
 * A 2-tuple is a pair, a 3-tuple is a triple.
-* Tuples are "and" data structures: this *and* this *and this.  `struct` and objects are also "and" structures (variants like `Some/None` are OCaml's "or" structures, more later on them)
+* Tuples are "and" data structures: this *and* this *and* this.  `struct` and objects are also "and" structures (variants like `Some/None` are OCaml's "or" structures, more later on them)
 
 ```ocaml
 (2, "hi");;             (* type is int * string -- '*' is like "x" of set theory, a product *)
@@ -460,7 +461,7 @@ let y = 3;;
 let x = 5;;
 let f z = x + z;;
 let x = y;; (* this is a shadowing re-definition, not an assignment! *)
-f y;; (* 3 + 3 or 5 + 3 - ??   Answer: the latter. *)
+f y;; (* 3 + 3 or 5 + 3 - ?? Answer: the latter since x WAS 5 at point of f def'n. *)
 ```
 
 * To understand the above, realize that the top loop is conceptually an open-ended series of let-ins which never close:
@@ -494,24 +495,26 @@ Function definitions are similar, you can't mutate an existing definition.
 ```ocaml
 let f x = x + 1;;
 let g x = f (f x);;
-let f_alias = f;; (* make a new name for f above *)
 (* lets "change" f, say we made an error in its definition above *)
 let f x = if x <= 0 then 0 else x + 1;;
-f_alias;; (* it is the original f, similar to how let works on integer variables above *)
 g (-5);; (* g still refers to the initial f - !! *)
-let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
-g (-5);; (* works now *)
+let g x = f (f x);; (* FIX g to refer to new f: resubmit (identical) g code *)
+g (-5);; (* sees new f now *)
 ```
 
-* Moral: re-load all your functions if you change any one function
-* For Assignment 1, you will be able to say `dune test` in the terminal to compile and run tests on your code, and `dune utop` will load it all into `utop` so you can then play with your functions.
-* Also you can type into `utop` the command `#use "src/assignment.ml"` and it is as if you copy/pasted the whole file into `utop`.
+* Moral: **re-load all dependent functions if you change any function**
+* For Assignment 1, you can copy/paste stuff into the top loop to test.
+* Or, you can type `dune test` in the terminal to compile and automatically run tests on your code
+* Or, typing `dune utop` will compile and load it all into `utop` so you can then play with your functions.  You will need to type `open Assignment;;` into `utop` once it is going so all your functions are available.
+* Or, you can type into `utop` the command `#use "src/assignment.ml"` and it is as if you copy/pasted the whole file into `utop`.
+
+Moral: there are many ways to develop in OCaml, experiment with these different modes to see which is working best for you.
 
 #### Mutually recursive functions
 
-* Mutually recursive functions are not common but they require special syntax
+* Mutually recursive functions are not common but they require special syntax unfortunately
 * Warm up: write a copy function on lists
-  - List copy is in fact **useless** in OCaml because lists are immutable - compiler can *share* two versions without any issues
+  - List copy is in fact **100% useless** in OCaml because lists are immutable - compiler can *share* two versions without any issues
   - This property is *referential transparency*
 
 ```ocaml
@@ -530,11 +533,11 @@ Copy every other element, defined by mutual recursion via `and` syntax
 ```ocaml
 let rec copy_odd l = match l with
   | [] -> []
-  | hd :: tl ->  hd::(copy_even tl)
+  | hd :: tl ->  hd :: (copy_even tl) (* keep the head in this case *)
 and  (* new keyword for declaring mutually recursive functions *)
   copy_even l = match l with
   |  [] -> []
-  | x :: xs -> copy_odd xs;;
+  | x :: xs -> copy_odd xs;; (* throw away the head in this case *)
 
 copy_odd [1;2;3;4;5;6;7;8;9;10];;
 copy_even [1;2;3;4;5;6;7;8;9;10];;
@@ -567,14 +570,14 @@ assert(copy_odd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 
 Higher order functions are functions that either
  * take other functions as arguments
- * or return functions as results
+ * or return functions as results (which we already saw with multi-arg functions)
 
 Why?
  * "pluggable" programming by passing in and out chunks of code
  * greatly increases reusability of code since any varying code can be pulled out as a function to pass in
  * Lets show the power by extracting out some pluggable code
 
-Illustration of there usefulness by example: append `"gobble"` to each word in a list of strings
+Example: append `"gobble"` to each word in a list of strings
 
 ```ocaml
 let rec append_gobble l =
@@ -599,7 +602,7 @@ let rec map (f : 'a -> 'b) (l : 'a list) : 'b list =  (* function f is an argume
 ```ocaml
 let another_append_gobble = map (fun s -> s^"-gobble");; (* give only the first argument -- Currying *)
 another_append_gobble ["have";"a";"good";"day"];;
-map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* Or, don't give the intermediate application a name *)
+map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* don't have to name the intermediate application *)
 ```
 
 Mapping on lists of pairs - in and out lists can be different types.
@@ -612,7 +615,9 @@ let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functio
 
 ### Solving some simple problems
 
-Some practice problems and their solutions for your own self-study (skipped in lecture)
+Here are some practice problems and their solutions for your own self-study (skipped in lecture)
+
+Also see the [OCaml page examples](index.html#examples) for more sources for example problems and solutions.
 
 1. Write a function `to_upper_case` which takes a list (l) of characters and returns a list which has the same characters as l, but capitalized (if not already).
 

@@ -150,7 +150,7 @@ let y = 3;;
 let x = 5;;
 let f z = x + z;;
 let x = y;; (* this is a shadowing re-definition, not an assignment! *)
-f y;; (* 3 + 3 or 5 + 3 - ??   Answer: the latter. *)
+f y;; (* 3 + 3 or 5 + 3 - ?? Answer: the latter since x WAS 5 at point of f def'n. *)
 
 (let y = 3 in
  ( let x = 5 in
@@ -165,13 +165,11 @@ f y;; (* 3 + 3 or 5 + 3 - ??   Answer: the latter. *)
 
 let f x = x + 1;;
 let g x = f (f x);;
-let f_alias = f;; (* make a new name for f above *)
 (* lets "change" f, say we made an error in its definition above *)
 let f x = if x <= 0 then 0 else x + 1;;
-f_alias;; (* it is the original f, similar to how let works on integer variables above *)
 g (-5);; (* g still refers to the initial f - !! *)
-let g x = f (f x);; (* FIX to get new f: resubmit (identical) g code *)
-g (-5);; (* works now *)
+let g x = f (f x);; (* FIX g to refer to new f: resubmit (identical) g code *)
+g (-5);; (* sees new f now *)
 
 let rec copy l =
   match l with
@@ -182,11 +180,11 @@ let result = copy [1;2;3;4;5;6;7;8;9;10]
 
 let rec copy_odd l = match l with
   | [] -> []
-  | hd :: tl ->  hd::(copy_even tl)
+  | hd :: tl ->  hd :: (copy_even tl) (* keep the head in this case *)
 and  (* new keyword for declaring mutually recursive functions *)
   copy_even l = match l with
   |  [] -> []
-  | x :: xs -> copy_odd xs;;
+  | x :: xs -> copy_odd xs;; (* throw away the head in this case *)
 
 copy_odd [1;2;3;4;5;6;7;8;9;10];;
 copy_even [1;2;3;4;5;6;7;8;9;10];;
@@ -219,7 +217,7 @@ let rec map (f : 'a -> 'b) (l : 'a list) : 'b list =  (* function f is an argume
 
 let another_append_gobble = map (fun s -> s^"-gobble");; (* give only the first argument -- Currying *)
 another_append_gobble ["have";"a";"good";"day"];;
-map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* Or, don't give the intermediate application a name *)
+map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* don't have to name the intermediate application *)
 
 map (fun (x,y) -> x + y) [(1,2);(3,4)];;
 let flist = map (fun x -> (fun y -> x + y)) [1;2;4] ;; (* make a list of functions - why not? *)
