@@ -292,11 +292,11 @@ let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];;
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
 
-let rec rev’ l init = match l with
+let rec rev' l init = match l with
     | []   -> init 
-    | hd::tl ->  (@) (rev’ tl init) [hd] (* recall our previous rev was identical but @ infix *)
+    | hd::tl ->  (@) (rev' tl init) [hd] (* recall our previous rev was identical but @ infix *)
         ;;
-rev’ [1;2;3] [];;
+rev' [1;2;3] [];;
 
 let rec summate_left accum l = match l with
     | []   -> accum
@@ -313,6 +313,12 @@ fold_left (+) 0 [1;2;3];;
 
 let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) - much faster! *)
+
+let rec rev'' l accum = match l with (* Invariant for this rev: reverse l, put on front of accum *)
+    | []   -> accum
+    | hd::tl -> rev'' tl (hd :: accum) (* by induction can assume reverses tl, then tacks on to hd :: accum *)
+    ;;
+rev'' [1;2;3] [];; (* need to supply initial accum in this case, [] *)
 
 fold_left (fun elt -> fun accum -> "("^elt^" op "^accum^")") "z" ["a";"b";"c"] ;;  (* "(((z op a) op b) op c)" *)
 fold_right (fun accum -> fun elt -> "("^accum^" op "^elt^")") ["a";"b";"c"] "z" ;; (* "(a op (b op (c op z)))" *)
@@ -444,7 +450,7 @@ let rec insert x bintree =
 let goobt = insert "goober " bt;;
 bt;; (* observe bt did not change after the insert *)
 let gooobt = insert "slacker " goobt;; (* pass in goobt to accumulate both additions *)
-let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four"] (* folding helps *)
+let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four";"five";"six"] (* folding for serial insert *)
 
 type ratio = {num: int; denom: int};;
 let q = {num = 53; denom = 6};;
@@ -479,7 +485,7 @@ let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definit
 
 let x = { contents = 4};; (* identical to `let x = ref 4` *)
 x := 6;;
-x.contents <- 7;;  (* same effect as previous line: backarrow updates a field *)
+x.contents <- 7;;  (* same effect as previous line: backarrow mutates a field *)
 !x + 1;;
 x.contents + 1;; (* same effect as previous line *)
 
@@ -497,7 +503,7 @@ arr.(0);; (* access notation *)
 arr.(0) <- 5;; (* update notation *)
 arr;;
 
-exception Bad of string;; (* Exception named `Goo` has a string payload *)
+exception Bad of string;; (* Declare a new exception named `Goo` with a string payload *)
 
 let f _ = raise (Bad "keyboard on fire");;
 (* f ();; *) (* raises the exception to the top level *)

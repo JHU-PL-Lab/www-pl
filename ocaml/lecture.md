@@ -777,11 +777,11 @@ let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else
 * Here is `rev` written without fold to show how like with `summate_right` above it is a fold:
 
 ```ocaml
-let rec rev’ l init = match l with
+let rec rev' l init = match l with
     | []   -> init 
-    | hd::tl ->  (@) (rev’ tl init) [hd] (* recall our previous rev was identical but @ infix *)
+    | hd::tl ->  (@) (rev' tl init) [hd] (* recall our previous rev was identical but @ infix *)
         ;;
-rev’ [1;2;3] [];;
+rev' [1;2;3] [];;
 ```
 
 * Note that the append in `rev'` has the `accum` as the first parameter and the `elt` as the second parameter whereas the fold expects the parameters opposite
@@ -858,6 +858,16 @@ rev [1;2]
 ~= fold_left f (2::1::[]) []
 ~= 2::1::[]
 ~= [2;1]
+```
+
+* Here is `rev` written without fold but in `fold_left` style (perform the calculation on the way down):
+
+```ocaml
+let rec rev'' l accum = match l with (* Invariant for this rev: reverse l, put on front of accum *)
+    | []   -> accum
+    | hd::tl -> rev'' tl (hd :: accum) (* by induction can assume reverses tl, then tacks on to hd :: accum *)
+    ;;
+rev'' [1;2;3] [];; (* need to supply initial accum in this case, [] *)
 ```
 
 Another way to see how left and right folds produce different results:
@@ -1126,7 +1136,8 @@ let rec add_gobble binstringtree =
        Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
 ```
-(Remember, as with lists this is *not* mutating the tree, its building a "new" one)
+ * Remember, as with lists this is *not* mutating the tree, its building a "new" one
+ * Also as with `List.map` earlier we could write a `tree_map` function over trees since this is the common pattern of "make a new tree by applying some function `f` to each element of the tree"
 
 ```ocaml
 let rec lookup x bintree =
@@ -1158,7 +1169,7 @@ let rec insert x bintree =
 let goobt = insert "goober " bt;;
 bt;; (* observe bt did not change after the insert *)
 let gooobt = insert "slacker " goobt;; (* pass in goobt to accumulate both additions *)
-let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four"] (* folding helps *)
+let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four";"five";"six"] (* folding for serial insert *)
 ```
 
 * You have already been programming with immutable data structures -- lists
@@ -1256,14 +1267,14 @@ let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definit
 ```
 
 #### Refs are "really" mutable records
-* `'a ref` is in fact implemented by a mutable record with one field, contents:
+* `'a ref` is in fact implemented by an OCaml *mutable record* which has one field named `contents`:
 * `'a ref` abbreviates the type `{ mutable contents: 'a }`
-* The keyword `mutable` on a record field means it can change
+* The keyword `mutable` on a record field means it can be mutated
 
 ```ocaml
 let x = { contents = 4};; (* identical to `let x = ref 4` *)
 x := 6;;
-x.contents <- 7;;  (* same effect as previous line: backarrow updates a field *)
+x.contents <- 7;;  (* same effect as previous line: backarrow mutates a field *)
 !x + 1;;
 x.contents + 1;; (* same effect as previous line *)
 ```
@@ -1310,10 +1321,17 @@ arr;;
     - return `Some/None` and make the caller explicitly handle the `None` (error) case.
     - we covered this a bit with the `nice_div` example above.
 
-Here is a trivial example of how to declare and use exceptions in OCaml
+There are a few built-in exceptions we used previously:
+
+```sh
+failwith "Oops";; (* Generic code failure - exception is named `Failure` *)
+invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
+```
+
+Here is a simple example of how to declare and use exceptions in OCaml
 
 ```ocaml
-exception Bad of string;; (* Exception named `Goo` has a string payload *)
+exception Bad of string;; (* Declare a new exception named `Goo` with a string payload *)
 
 let f _ = raise (Bad "keyboard on fire");;
 (* f ();; *) (* raises the exception to the top level *)
@@ -1328,12 +1346,6 @@ let g () =
 g ();;
 ```
 
-There are a few built-in exceptions mentioned previously:
-
-```sh
-failwith "Oops";; (* Generic code failure - exception is named `Failure` *)
-invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
-```
 
 ### Modules
 

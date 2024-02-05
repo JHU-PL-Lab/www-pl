@@ -903,11 +903,11 @@ a. Assume that the capital of characters other than alphabets<br />
   <li>Here is <code>rev</code> written without fold to show how like with <code>summate_right</code> above it is a fold:</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">rev</span><span class="err">’</span> <span class="n">l</span> <span class="n">init</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">rev'</span> <span class="n">l</span> <span class="n">init</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
     <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">init</span> 
-    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span>  <span class="p">(</span><span class="o">@</span><span class="p">)</span> <span class="p">(</span><span class="n">rev</span><span class="err">’</span> <span class="n">tl</span> <span class="n">init</span><span class="p">)</span> <span class="p">[</span><span class="n">hd</span><span class="p">]</span> <span class="c">(* recall our previous rev was identical but @ infix *)</span>
+    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span>  <span class="p">(</span><span class="o">@</span><span class="p">)</span> <span class="p">(</span><span class="n">rev'</span> <span class="n">tl</span> <span class="n">init</span><span class="p">)</span> <span class="p">[</span><span class="n">hd</span><span class="p">]</span> <span class="c">(* recall our previous rev was identical but @ infix *)</span>
         <span class="p">;;</span>
-<span class="n">rev</span><span class="err">’</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="bp">[]</span><span class="p">;;</span>
+<span class="n">rev'</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="bp">[]</span><span class="p">;;</span>
 </code></pre></div></div>
 
 <ul>
@@ -993,6 +993,17 @@ a. Assume that the capital of characters other than alphabets<br />
 ~<span class="o">=</span> fold_left f <span class="o">(</span>2::1::[]<span class="o">)</span> <span class="o">[]</span>
 ~<span class="o">=</span> 2::1::[]
 ~<span class="o">=</span> <span class="o">[</span>2<span class="p">;</span>1]
+</code></pre></div></div>
+
+<ul>
+  <li>Here is <code>rev</code> written without fold but in <code>fold_left</code> style (perform the calculation on the way down):</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">rev''</span> <span class="n">l</span> <span class="n">accum</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> <span class="c">(* Invariant for this rev: reverse l, put on front of accum *)</span>
+    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">accum</span>
+    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="n">rev''</span> <span class="n">tl</span> <span class="p">(</span><span class="n">hd</span> <span class="o">::</span> <span class="n">accum</span><span class="p">)</span> <span class="c">(* by induction can assume reverses tl, then tacks on to hd :: accum *)</span>
+    <span class="p">;;</span>
+<span class="n">rev''</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="bp">[]</span><span class="p">;;</span> <span class="c">(* need to supply initial accum in this case, [] *)</span>
 </code></pre></div></div>
 
 <p>Another way to see how left and right folds produce different results:</p>
@@ -1262,7 +1273,10 @@ First just int lists.. <code>Mt</code> represents <code>[]</code>, <code>Cons(x,
        <span class="nc">Node</span><span class="p">(</span><span class="n">y</span><span class="o">^</span><span class="s2">"gobble"</span><span class="o">,</span><span class="n">add_gobble</span> <span class="n">left</span><span class="o">,</span><span class="n">add_gobble</span> <span class="n">right</span><span class="p">)</span>
 <span class="p">;;</span>
 </code></pre></div></div>
-<p>(Remember, as with lists this is <em>not</em> mutating the tree, its building a “new” one)</p>
+<ul>
+  <li>Remember, as with lists this is <em>not</em> mutating the tree, its building a “new” one</li>
+  <li>Also as with <code>List.map</code> earlier we could write a <code>tree_map</code> function over trees since this is the common pattern of “make a new tree by applying some function <code>f</code> to each element of the tree”</li>
+</ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">bintree</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">bintree</span> <span class="k">with</span>
@@ -1293,7 +1307,7 @@ First just int lists.. <code>Mt</code> represents <code>[]</code>, <code>Cons(x,
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">goobt</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"goober "</span> <span class="n">bt</span><span class="p">;;</span>
 <span class="n">bt</span><span class="p">;;</span> <span class="c">(* observe bt did not change after the insert *)</span>
 <span class="k">let</span> <span class="n">gooobt</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"slacker "</span> <span class="n">goobt</span><span class="p">;;</span> <span class="c">(* pass in goobt to accumulate both additions *)</span>
-<span class="k">let</span> <span class="n">manyt</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="nn">Fun</span><span class="p">.</span><span class="n">flip</span> <span class="n">insert</span><span class="p">)</span> <span class="nc">Leaf</span> <span class="p">[</span><span class="s2">"one"</span><span class="p">;</span><span class="s2">"two"</span><span class="p">;</span><span class="s2">"three"</span><span class="p">;</span><span class="s2">"four"</span><span class="p">]</span> <span class="c">(* folding helps *)</span>
+<span class="k">let</span> <span class="n">manyt</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="nn">Fun</span><span class="p">.</span><span class="n">flip</span> <span class="n">insert</span><span class="p">)</span> <span class="nc">Leaf</span> <span class="p">[</span><span class="s2">"one"</span><span class="p">;</span><span class="s2">"two"</span><span class="p">;</span><span class="s2">"three"</span><span class="p">;</span><span class="s2">"four"</span><span class="p">;</span><span class="s2">"five"</span><span class="p">;</span><span class="s2">"six"</span><span class="p">]</span> <span class="c">(* folding for serial insert *)</span>
 </code></pre></div></div>
 
 <ul>
@@ -1411,14 +1425,14 @@ First just int lists.. <code>Mt</code> represents <code>[]</code>, <code>Cons(x,
 
 <h4 id="refs-are-really-mutable-records">Refs are “really” mutable records</h4>
 <ul>
-  <li><code>'a ref</code> is in fact implemented by a mutable record with one field, contents:</li>
+  <li><code>'a ref</code> is in fact implemented by an OCaml <em>mutable record</em> which has one field named <code>contents</code>:</li>
   <li><code>'a ref</code> abbreviates the type <code>{ mutable contents: 'a }</code></li>
-  <li>The keyword <code>mutable</code> on a record field means it can change</li>
+  <li>The keyword <code>mutable</code> on a record field means it can be mutated</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="p">{</span> <span class="n">contents</span> <span class="o">=</span> <span class="mi">4</span><span class="p">};;</span> <span class="c">(* identical to `let x = ref 4` *)</span>
 <span class="n">x</span> <span class="o">:=</span> <span class="mi">6</span><span class="p">;;</span>
-<span class="n">x</span><span class="o">.</span><span class="n">contents</span> <span class="o">&lt;-</span> <span class="mi">7</span><span class="p">;;</span>  <span class="c">(* same effect as previous line: backarrow updates a field *)</span>
+<span class="n">x</span><span class="o">.</span><span class="n">contents</span> <span class="o">&lt;-</span> <span class="mi">7</span><span class="p">;;</span>  <span class="c">(* same effect as previous line: backarrow mutates a field *)</span>
 <span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span>
 <span class="n">x</span><span class="o">.</span><span class="n">contents</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* same effect as previous line *)</span>
 </code></pre></div></div>
@@ -1482,9 +1496,15 @@ First just int lists.. <code>Mt</code> represents <code>[]</code>, <code>Cons(x,
   </li>
 </ul>
 
-<p>Here is a trivial example of how to declare and use exceptions in OCaml</p>
+<p>There are a few built-in exceptions we used previously:</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Bad</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span> <span class="c">(* Exception named `Goo` has a string payload *)</span>
+<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failwith <span class="s2">"Oops"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Generic code failure - exception is named <span class="sb">`</span>Failure<span class="sb">`</span> <span class="k">*</span><span class="o">)</span>
+invalid_arg <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Invalid_argument exception <span class="k">*</span><span class="o">)</span>
+</code></pre></div></div>
+
+<p>Here is a simple example of how to declare and use exceptions in OCaml</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Bad</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span> <span class="c">(* Declare a new exception named `Goo` with a string payload *)</span>
 
 <span class="k">let</span> <span class="n">f</span> <span class="n">_</span> <span class="o">=</span> <span class="k">raise</span> <span class="p">(</span><span class="nc">Bad</span> <span class="s2">"keyboard on fire"</span><span class="p">);;</span>
 <span class="c">(* f ();; *)</span> <span class="c">(* raises the exception to the top level *)</span>
@@ -1497,12 +1517,6 @@ First just int lists.. <code>Mt</code> represents <code>[]</code>, <code>Cons(x,
       <span class="nc">Bad</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="nn">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s2">"exception Bad raised with payload </span><span class="se">\"</span><span class="s2">%s</span><span class="se">\"</span><span class="s2"> </span><span class="se">\n</span><span class="s2">"</span> <span class="n">s</span>
 <span class="p">;;</span>
 <span class="n">g</span> <span class="bp">()</span><span class="p">;;</span>
-</code></pre></div></div>
-
-<p>There are a few built-in exceptions mentioned previously:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failwith <span class="s2">"Oops"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Generic code failure - exception is named <span class="sb">`</span>Failure<span class="sb">`</span> <span class="k">*</span><span class="o">)</span>
-invalid_arg <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Invalid_argument exception <span class="k">*</span><span class="o">)</span>
 </code></pre></div></div>
 
 <h3 id="modules">Modules</h3>
