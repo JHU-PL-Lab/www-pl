@@ -1275,8 +1275,10 @@ First just int lists.. <code>Mt</code> represents <code>[]</code>, <code>Cons(x,
 </code></pre></div></div>
 <ul>
   <li>Remember, as with lists this is <em>not</em> mutating the tree, its building a “new” one</li>
-  <li>Also as with <code>List.map</code> earlier we could write a <code>tree_map</code> function over trees since this is the common pattern of “make a new tree by applying some function <code>f</code> to each element of the tree”</li>
+  <li>Also as with <code>List.map</code> earlier we could write a <code>tree_map</code> function over trees since this is the common pattern of “make a new tree by applying some function <code>f</code> to each element of the tree” (we won’t in fact but it would be a good exercise)</li>
 </ul>
+
+<p>Let us now write a binary tree <code>lookup</code> function:</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">bintree</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">bintree</span> <span class="k">with</span>

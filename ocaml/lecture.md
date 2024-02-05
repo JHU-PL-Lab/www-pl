@@ -1137,7 +1137,9 @@ let rec add_gobble binstringtree =
 ;;
 ```
  * Remember, as with lists this is *not* mutating the tree, its building a "new" one
- * Also as with `List.map` earlier we could write a `tree_map` function over trees since this is the common pattern of "make a new tree by applying some function `f` to each element of the tree"
+ * Also as with `List.map` earlier we could write a `tree_map` function over trees since this is the common pattern of "make a new tree by applying some function `f` to each element of the tree" (we won't in fact but it would be a good exercise)
+
+Let us now write a binary tree `lookup` function:
 
 ```ocaml
 let rec lookup x bintree =
