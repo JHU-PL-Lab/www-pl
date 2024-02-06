@@ -23,7 +23,7 @@ let do_search search_string filename =
   let substrings = strings |> List.map (fun elt -> String.split_on_char ' ' elt) |> List.concat in
   let substring_set = 
     List.fold_left 
-      (fun set -> fun elt -> Simple_set.add elt set) 
+      (fun set -> fun elt -> Simple_set.add elt set)
       Simple_set.emptyset 
       substrings
     in

@@ -1183,8 +1183,7 @@ let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four";"f
 ### End Core OCaml used in the course
 
 * The bulk of the assignments only use what we covered above
-* We now will quickly cover a few more features which we will not use nearly as much
-  - (Only state below will be needed in assignment 2)
+* We will now *very* quickly cover a few more features which we will rarely or never use
   - Note that the toy languages we study will copy OCaml to some degree so we at least want a basic understanding of OCaml's records, state, exceptions
   - **FbR** will be our **Fb** records extension, **FbS** for state, and **FbX** for eXceptions.
 
@@ -1193,7 +1192,7 @@ let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four";"f
   - Similar to the structs of C/C++.
   - The types *must* be declared with `type`, just like OCaml variants.
   - Also like variants and tuples they can be used in pattern matches.
-  - Also also record fields are **immutable** by default, so not like Python/Javascript dictionaries
+  - Also also record fields are **immutable** by default, so not like Python/Javascript dictionaries/objects
 
 Example: a declaring record type to represent rational numbers
 
