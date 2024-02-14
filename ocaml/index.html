@@ -117,7 +117,7 @@
       <li>Once you install <a href="https://docs.microsoft.com/en-us/windows/wsl/">WSL 2</a> you will be able to follow the Linux Ubuntu install instructions linked above.  Here is a copy/paste that should work.
         <ul>
           <li>Your WSL2 Ubuntu needs the C compiler and tools for the <code>opam</code> install to work; enter the following to make sure those are set up: <code>sudo apt update &amp;&amp; sudo apt install make m4 gcc zip unzip bubblewrap</code></li>
-          <li>Next, type <code>sudo add-apt-repository ppa:avsm/ppa &amp;&amp; sudo apt update &amp;&amp; sudo apt install opam</code> to install <code>opam</code> in your WSL2.</li>
+          <li>Next, type <code>sudo apt install opam</code> to install <code>opam</code> in your WSL2.</li>
           <li>After this, follow the “Initial Setup of <code>opam</code>” instructions below.</li>
           <li>You can still use your Windows install of VSCode to edit files by using the <a href="https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode">VSCode Remote WSL Extension</a> – it will connect the Windows editor to the underlying WSL2 subsystem.  See below where VSCode is described for details on how to set this up.</li>
         </ul>
