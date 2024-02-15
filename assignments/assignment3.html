@@ -1,0 +1,149 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/2350216866">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assignment-3-operational-semantics">Assignment 3: Operational Semantics</h2>
+
+<p>This short homework assignment will give you some practice with operational semantics before starting to write your F♭ interpreter. Please consult <a href="http://pl.cs.jhu.edu/pl/book/book.pdf">Chapter 2 of the book</a> for the full details on various definitions and for more examples beyond those in the lecture if you have any questions.</p>
+
+<ol>
+  <li>
+    <p>[5 points] Compute the following <strong>substitutions</strong>. Note that the substitution function is defined formally in Section 2.3.2 of the book.</p>
+
+    <p>a.  <code>(Fun y -&gt; x + 1) [12/x]</code></p>
+
+    <p>b.  <code>(Fun z -&gt; Fun z -&gt; 5 + z) [6/z]</code></p>
+
+    <p>c.  <code>(Fun x -&gt; Fun z -&gt; x And y) [True/y]</code></p>
+
+    <p>d.  <code>(If z Then (Fun z -&gt; Fun y -&gt; y And z) Else 22) [True/z]</code></p>
+
+    <p>e.  <code>((Fun x -&gt; x) (Fun y -&gt; x)) [3/x]</code></p>
+
+    <p>f.  <code>(Let y = x + 1 In y + 2) [5/y]</code></p>
+
+    <p>g.  <code>(Let f = f In f f) [(Fun f -&gt; f)/f]</code></p>
+  </li>
+  <li>
+    <p>[9 points] The following F♭ proof trees contain errors.  Describe why the proof tree is not valid (i.e., why the last line is, in fact, not a theorem).</p>
+  </li>
+</ol>
+
+<p><img src="a3p2.jpg" width="500" /></p>
+
+<ol>
+  <li>
+    <p>[15 points] Write operational semantics proofs (i.e., proof trees) showing what the following expressions evaluate to in the Fb operational semantics. Please give the whole proof trees using the rules in Chapter 2.  You may reference one proof tree in another like a “proof tree macro” to make your answer more readable if you want (in other words, you can re-use any one proof tree in another, just like how proofs of Lemmas can be used in Theorems in math).  Note: it is not a bad idea to start by running them in the reference interpreter to make sure you are on the right path.</p>
+
+    <p>a.  <code>Let f = (Fun y -&gt; y - 1) In Fun z -&gt; 5 + (f z) +1</code></p>
+
+    <p>b.  <code>(Let f = (Fun y -&gt; y - 1) In Fun z -&gt; 5 + (f z) + 1) 4</code></p>
+
+    <p>c.  <code>(Fun x -&gt; (Fun a -&gt; a) (If x = 2 Then x + 1 Else 1)) 2</code></p>
+  </li>
+  <li>
+    <p>[10 points] F♭ currently lacks errors.  For this question, we are going to define a new language <strong>F♭Er</strong>, which adds an error, <code>Err</code> for operations that are not defined in F♭ to F♭.</p>
+
+    <p>a. Define the BNF for <strong>F♭Er</strong>.  Note you can write “… Fb’s …” to indicate a copy/paste of the F♭ clauses.</p>
+
+    <p>b. Write two examples of the new proof rules that would be added to the existing rules.  You can also say “… Fb’s …” to paste in the F♭ rules as part of your set.</p>
+  </li>
+</ol>
+
+<h3 id="submission-and-grading">Submission and Grading</h3>
+
+<p>Upload your homework pdf to Gradescope. The format is fine as long as you can make a PDF, and we can read it.  So, scans of your handwritten solution are fine as long as they are readable and are in PDF format.  Please verify the scans are readable before uploading!</p>
+
+<p>Please remember to list any collaborators at the top of your submission as was done in assignments 1 and 2.</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
