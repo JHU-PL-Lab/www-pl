@@ -8,9 +8,9 @@
 
     To run these examples in your interpeter, type shell command
 
-    $ dune utop ./Fb
+    $ dune utop Fb
 
-    To use the reference interpreter, type
+    To load the reference interpreter into utop, type
 
     $ ./reference/Fb/toplevel.exe
 
@@ -45,6 +45,9 @@
 open Fbdk.Ast
 open Debugutils
 
+(* Here is a formatter for strings that are Fb programs *)
+let format s = s |> parse |> unparse |> print_string |> print_newline
+
 let ex1 = "If Not(1 = 2) Then 3 Else 4"
 let ex2 = "(Fun x -> x + 1) 5"
 let ex3 = "(Fun x -> Fun y -> x + y) 4 5"
@@ -66,8 +69,6 @@ let ex8 =
             x1 (x2 - 1)
     In x1 100"
 
-(* Here is a formatter for strings that are programs *)
-let format s = s |> parse |> unparse |> print_string |> print_newline
 let ex9 = "If 3 = 4 Then 5 Else 4 + 2"
 let ex10 = "(Fun x -> If 3 = x Then 5 Else x + 2) 4 "
 let ex11 = "(Fun x -> x x)(Fun y -> y)"
@@ -87,7 +88,7 @@ let ex15 = "Let Rec f x =
     If x = 1 Then 1 Else x + f (x - 1)
   In f"
 let omega = "(Fun w -> w w)"
-let diverger = omega ^ omega
+let diverger = omega ^ omega (* Computes forever, run at your own peril *)
 let combI = "Fun x -> x"
 let combK = "Fun x -> Fun y -> x"
 let combS = "Fun x -> Fun y -> Fun z -> (x z) (y z)"
@@ -109,28 +110,28 @@ let combD = "Fun x -> x x"
 (* ************************************************************ *)
 
 (*
-    * Macros are simply functions on *code* aka *code templates*
+    * Macros are simply **functions from code to code**
     * They are run (expanded) by a compiler preprocessor to produce the final code object which is then compiled
     * They run like how our Fb evaluator runs: **substitute**
-    * In an actual macro system you can use the full language syntax; C:
+    * In an actual macro system you can use the full language syntax; for example, in C:
 
     #define double(n) (n + n) /* Full C syntax on RHS of this C macro */
-       ... double(x-32) .. u code turns in to `(x-32) + (x-32)`
-    Simple version for Fb:
+       ... `double(x-32)` turns in to `(x-32) + (x-32)`
+    We use a simple somewhat-hackish macro system for Fb:
       * Use OCaml as the macro language
-      * Represent Fb programs in OCaml just as the concrete syntax -- strings
-      * Could instead use the Fb abstract syntax inside OCaml but harder to read
-      * This approach is not ideal as we will see, but it is very simple.
+      * Represent Fb programs in OCaml directly as the concrete syntax -- strings
+        - Could instead have used the Fb abstract syntax inside OCaml but its harder to read
+        - This approach is not ideal as we will see, but it is very simple.
 *)
 
-(* Here is a simple macro for a doubling function *)
+(* Here is a simple macro for a doubling operation *)
 let double n = "(" ^ n ^ ") + (" ^ n ^ ")";;
 
 (* n is a _macro parameter_, a string *)
 
 double "2 + 4"
 
-(* "(2 + 4) + (2 + 4)" *)
+(* "(2 + 4) + (2 + 4)" - observe this is just string manipulation, no execution happened! *)
 
 (*
     * Why didn't we just write n ^"+" ^ n above?? We need parens around all
@@ -139,56 +140,49 @@ double "2 + 4"
     * Notice also that macros do not do any evaluation -- `2 + 4` not `6` in the above.
 *)
 
-(* Macros can be used in other Fb code (strings) by appending them in
-   This is in principle how C etc macros work, but they work at the level of the parse tree *)
+(* * Macros can be used in other Fb code (strings) by appending them in
+   * This is in principle how C etc macros work, but they work at the level of the parse tree *)
 
 let quad = "Fun z -> " ^ double "z" ^ " + " ^ double "z"
 
 (* this returns "Fun z -> (z) + (z) + (z) + (z)" *)
 
 (* If we just wrote "Fun z -> double z + double z" the `double` would be an Fb variable
-   - not what we want!  Program would not be closed! *)
+   - not what we want!  Program would not be closed! 
+   - `double` is an OCaml variable, not an Fb variable. *)
 
 (* Example of a bad string-based macro *)
-let apply_bad f x = f ^ " " ^ x
+let apply_bad f x = f ^ " " ^ x (* f applied to x macro done badly *)
 
 (* sort of looks OK here for f x ... *)
 let apply_bad_eg = apply_bad "Fun x -> x" "0"
 
 (* oops! this is string "Fun x -> x 0"  which is "Fun x -> (x 0)" *)
 
-(* Fixed version - parens around each macro parameter *)
+(* Fixed version - put parens around each macro parameter *)
 let apply f x = "(" ^ f ^ ")(" ^ x ^ ")"
 let apply_eg = apply "Fun x ->x" "0"
 
-(* "(Fun x ->x)(0)", parsing is correct! *)
-
-(* A more principled way to write Fb macros in OCaml would be to use ASTs as input and output to macros *)
-
-let double_ast n = Plus (n, n)
-let quad_ast n = Plus (double_ast n, double_ast n)
-let eg_quad = quad_ast (Int 5)
-
-(* But, it is hard for humans to code in the above format so we use strings.
-   Real macro languages such as #define in C or ppx in OCaml will parse the strings *)
+(* this is "(Fun x ->x)(0)", parsing will be correct! *)
 
 (* ******************************************************** *)
 (* ********* Macro Encodings of features in Fb ************ *)
 (* ******************************************************** *)
 
-(* We now show how features not directly expressible can be simply encoded
-     - shows the power of Fb and of how features relate to each other
-     - the encodings can be inefficient and make programs harder to read so want actual feature in eventually *)
+(* We now show how features not directly expressible can be encoded
+     - shows the power of Fb and of how some features are closely related to each other
+     - the encodings can be inefficient and make programs hard to read so want actual feature in eventually 
+*)
 
 (* ****** Encoding Pairs in Fb ********* *)
 
 (* First lets encode some by hand, then write a general macro. *)
 
-(* Fact: the following odd thing can be made to behave a lot like OCaml's "(3,2)" *)
+(* Fact: the following odd thing can be made to behave like an OCaml pair `(3,2)` *)
 
 let pair_eg = "Fun d -> d 3 2"
 
-(* Proof: we can "get left side out" (and similarly for right) *)
+(* Proof: we can "get the left side out" (and similarly for right) *)
 
 let get_left =
   "Let p = Fun d -> d 3 2 In 
@@ -196,27 +190,27 @@ let get_left =
 
 (* A too-simple pair macro reflecting what we did above  *)
 
-let pr_simple c1 c2 = "Fun d -> d (" ^ c1 ^ ") (" ^ c2 ^ ")"
-let pair_eg_again = pr_simple "3" "2"
+let pr_lazy c1 c2 = "Fun d -> d (" ^ c1 ^ ") (" ^ c2 ^ ")"
+let pair_eg_again = pr_lazy "3" "2"
 
 (* pr_simple works for the above, but it makes a *lazy* pair, the components are not evaluated *)
 
-let lazy_pair_eg = pr_simple "2+3" "3"
+let pr_lazy_eg = pr_lazy "2+3" "3" (* returns "Fun d -> d (2+3) (3)" *)
 
-(* peu lazy_pair_eg  -- does not compute the 2+3 --> LAZY pair, not what OCaml does
+(* `peu pr_lazy_eg` returns "Function d -> d (2 + 3) 3"
+   -- does not compute the 2+3 --> LAZY pair, not what OCaml does
    -- here 2+3 will need to be computed every time first projection taken - inefficient!
    (note that lazy languages such as Haskell in fact cache so are not this inefficient) *)
 
 (* Macro which makes an eager pair, which is the OCaml form
    Idea is to use Let to force the components to compute first. *)
 let pr l r =
-  "(Let lft = (" ^ l ^ ") In Let rgt = (" ^ r
-  ^ ") In
+  "(Let lft = (" ^ l ^ ") In Let rgt = (" ^ r ^ ") In
       Fun x -> x lft rgt)"
 
-let pc = pr "34+3" "45"
+let pc = pr "4+3" "5"
 
-(* peu pc is "Fun x -> x 37 45" -- the eager pair that we wanted *)
+(* peu pc is "Fun x -> x 7 5" -- the eager pair that we wanted *)
 
 (* Macros for extracting contents of pairs *)
 let left c = "Let p = " ^ c ^ " In p (Fun x -> Fun y -> x)"
@@ -232,10 +226,12 @@ let use_pr = left pc
 let pair_add = "Fun p -> (" ^ left "p" ^ ") + (" ^ right "p" ^ ")"
 let use_pair_add = "(" ^ pair_add ^ ")(" ^ pc ^ ")"
 
-(* Note we could have instead directly made pr a 2-argument Fb function.
+(* Note we could have instead directly made pr a 2-argument **Fb** function.
    - There is a trade-off of doing something in OCaml level (macro) or in Fb itself.
    In fact in a way this is easier since Fb makes sure the components were evaluated
-   -- no Let needed.
+     -- no Let needed.
+   - In general in any language with macros there is a tension of "use a macro" or "use a function"
+      -- some things require a macro, e.g. if a parameter is not to be evaluated (like pr_lazy above)
 *)
 
 let pr_fb = "(Fun lft -> Fun rgt -> Fun x -> x lft rgt)"
@@ -357,14 +353,14 @@ let using_lazy = "Let f = " ^ lazy_double ^ " In f " ^ lazy_num
 (* peu using_lazy;; *)
 
 (* Freeze above has a bug if _ occurs free in expression e.
-   (Fb treats _ just like a variable, a flaw really) *)
+   (Fb treats _ just like a variable, a flaw we should fix really) *)
 
 let bad_freeze_use = "Let _ = 5 In (" ^ freeze "1 + _" ^ ")"
 let thaw_bad = thaw bad_freeze_use
 
 (* should be 6 but returns 1 *)
 
-(* A somewhat-fix *)
+(* A somewhat-fix through obscurity *)
 let freeze e = "(Fun x_9282733 -> (" ^ e ^ "))"
 
 (* above is a hack; really should change Fb parser to disallow `_` as variable use *)
@@ -386,7 +382,9 @@ let let_as_application = "(Fun x -> x - 44) (3+4)"
    3. replace all x's with 7 in `x - 44` getting `7-44`
    4. running that to get `-37` *)
 
-(* Here it is as a macro instead of just a coding pattern like the above: *)
+(* Here it is as a macro instead of just a coding pattern like the above
+   (note the body has a free variable so this macro can't be written as an Fb function) 
+*)
 
 let fblet x e1 e2 = "(Fun " ^ x ^ " -> " ^ e2 ^ ")(" ^ e1 ^ ")"
 let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z"
@@ -403,10 +401,10 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z"
    Formally, we can say the Let-version and the macro version are always equivalent:
       Let x = e in e'   ~=   (Fun x -> e')(e)   for any possible expressions e and e' and any variable x
       e.g. Let x = 3+4 In x - 44 ~= (Fun x -> x - 44) (3+4) by above
-      -- the ~= relation is called *operational equivalence*, we will define precisely later.
+      -- the ~= relation is called *operational equivalence*, we will define it precisely later.
       -- informally, replacing one with the other will not change overall program result.
       -- it is an equivalence relation and lets us do "algebra on programs"
-      -- we will use ~= below to help our understanding.
+      -- we will use ~= in the next topic below to help our understanding.
 *)
 
 (* Here are some classic equivalences from 90+ years ago:
