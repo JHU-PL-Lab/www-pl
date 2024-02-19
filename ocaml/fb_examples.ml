@@ -50,37 +50,42 @@ let ex2 = "(Fun x -> x + 1) 5"
 let ex3 = "(Fun x -> Fun y -> x + y) 4 5"
 
 let ex4 =
-  "Let Rec fib x =\n\
-  \    If x = 1 Or x = 2 Then 1 Else fib (x - 1) + fib (x - 2)\n\
-  \    In fib 6"
+  "Let Rec fib x =
+     If x = 1 Or x = 2 Then 1 Else fib (x - 1) + fib (x - 2)
+     In fib 6"
 
 let ex5 = "(Fun x -> x + 2)(3 + 2 + 5)"
 let ex6 = "(Fun x -> Fun x -> x) 3"
 let ex7 = "Fun x -> Fun y -> x + y + z"
 
 let ex8 =
-  "Let Rec x1 x2 =\n\
-  \     If x2 = 1 Then\n\
-  \          (Fun x3 -> x3 (x2 - 1)) (Fun x4 -> x4)\n\
-  \     Else\n\
-  \          x1 (x2 - 1)\n\
-  \  In x1 100"
+  "Let Rec x1 x2 =
+       If x2 = 1 Then
+            (Fun x3 -> x3 (x2 - 1)) (Fun x4 -> x4)
+       Else
+            x1 (x2 - 1)
+    In x1 100"
 
 (* Here is a formatter for strings that are programs *)
 let format s = s |> parse |> unparse |> print_string |> print_newline
 let ex9 = "If 3 = 4 Then 5 Else 4 + 2"
 let ex10 = "(Fun x -> If 3 = x Then 5 Else x + 2) 4 "
 let ex11 = "(Fun x -> x x)(Fun y -> y)"
-let ex12 = "(Fun f -> Fun x -> f(f(x)))\n           (Fun x -> x - 1) 4"
+let ex12 = "(Fun f -> Fun x -> f(f(x)))
+           (Fun x -> x - 1) 4"
 
 let ex13 =
-  "(Fun x -> Fun y -> x + y)\n\
-  \    ((Fun x -> If 3 = x Then 5 Else x + 2) 4)\n\
-  \    ((Fun f -> Fun x -> f (f x))\n\
-  \            (Fun x -> x - 1) 4 )"
+  "(Fun x -> Fun y -> x + y)
+     ((Fun x -> If 3 = x Then 5 Else x + 2) 4)
+     ((Fun f -> Fun x -> f (f x))
+             (Fun x -> x - 1) 4 )"
 
-let ex14 = "Let Rec f x =\n    If x = 1 Then 1 Else x + f (x - 1)\nIn f 3"
-let ex15 = "Let Rec f x =\n    If x = 1 Then 1 Else x + f (x - 1)\n  In f"
+let ex14 = "Let Rec f x =
+    If x = 1 Then 1 Else x + f (x - 1)
+In f 3"
+let ex15 = "Let Rec f x =
+    If x = 1 Then 1 Else x + f (x - 1)
+  In f"
 let omega = "(Fun w -> w w)"
 let diverger = omega ^ omega
 let combI = "Fun x -> x"
@@ -186,7 +191,8 @@ let pair_eg = "Fun d -> d 3 2"
 (* Proof: we can "get left side out" (and similarly for right) *)
 
 let get_left =
-  "Let p = Fun d -> d 3 2 In \n                p (Fun x -> Fun y -> x)"
+  "Let p = Fun d -> d 3 2 In 
+                p (Fun x -> Fun y -> x)"
 
 (* A too-simple pair macro reflecting what we did above  *)
 
@@ -205,7 +211,8 @@ let lazy_pair_eg = pr_simple "2+3" "3"
    Idea is to use Let to force the components to compute first. *)
 let pr l r =
   "(Let lft = (" ^ l ^ ") In Let rgt = (" ^ r
-  ^ ") In\n      Fun x -> x lft rgt)"
+  ^ ") In
+      Fun x -> x lft rgt)"
 
 let pc = pr "34+3" "45"
 
@@ -304,9 +311,14 @@ let eghdtl = head (tail eglist)
 (* Now for a real program: compute the length of a list *)
 
 let length =
-  "Let Rec len l =\n      If " ^ isempty "l"
-  ^ "\n      Then 0\n      Else\n          1 + len (" ^ tail "l"
-  ^ ")\n   In len"
+  "Let Rec len l =
+      If " ^ isempty "l"
+  ^ "
+      Then 0
+      Else
+          1 + len (" ^ tail "l"
+  ^ ")
+   In len"
 
 let eglength = "(" ^ length ^ ")(" ^ eglist ^ ")"
 
@@ -429,8 +441,8 @@ let paradox = "Let p = (Fun s -> Not(s s)) In p p"
 (* Useful recursion by extending the above idea - add argument and base case *)
 
 let summate0 =
-  "(Fun self -> Fun arg ->\n\
-  \    If arg = 0 Then 0 Else arg + self self (arg - 1))"
+  "(Fun self -> Fun arg ->
+     If arg = 0 Then 0 Else arg + self self (arg - 1))"
 
 let summate0test = summate0 ^ summate0 ^ "5"
 
@@ -582,8 +594,8 @@ let run = converted_code ^ " 5 2"
 
 (* Here is the code we would like to write *)
 let code =
-  "(Fun rec -> Fun arg -> \n\
-  \               If arg = 0 Then 0 Else arg + rec (arg - 1))"
+  "(Fun rec -> Fun arg -> 
+                If arg = 0 Then 0 Else arg + rec (arg - 1))"
 (* no `rec rec` just `rec` *)
 
 (* here is the replacer -- replace rec with (self self) in above
@@ -615,10 +627,10 @@ let go = summate0again ^ summate0again ^ "(5)"
 *)
 
 let ycomb0 =
-  "(Fun code -> \n\
-  \      Let repl = Fun f -> Fun self -> Fun x -> f (self self) x \n\
-  \      In\n\
-  \        (repl code)(repl code))"
+  "(Fun code -> 
+       Let repl = Fun f -> Fun self -> Fun x -> f (self self) x 
+       In
+         (repl code)(repl code))"
 
 (* recall `(repl code)` is ~= summate0 so this is ~= summate0 summate0 *)
 
@@ -633,9 +645,9 @@ let goy0 = ycomb0 ^ code ^ " 5"
    -- this is an example of the beta ~= law mentioned above *)
 
 let ycomb =
-  "(Fun code -> \n\
-  \       Let repl = Fun self -> Fun x -> code (self self) x \n\
-  \       In repl repl)"
+  "(Fun code -> 
+        Let repl = Fun self -> Fun x -> code (self self) x 
+        In repl repl)"
 
 (* Again lets verify this works *)
 let goy = ycomb ^ code ^ " 5"
@@ -645,5 +657,8 @@ let goy = ycomb ^ code ^ " 5"
 (* Equivalent way with Fb names for things via `Let` ..
    for HW4 part 2 this way may be easier to make sense of. *)
 let goy' =
-  "Let yy = " ^ ycomb ^ " In \nLet cc = " ^ code
-  ^ " In \nLet summate = yy cc In\nsummate 5"
+  "Let yy = " ^ ycomb ^ " In 
+Let cc = " ^ code
+  ^ " In 
+Let summate = yy cc In
+summate 5"
