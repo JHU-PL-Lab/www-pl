@@ -6,11 +6,11 @@
     This file contains a series of Fb example programs.  They are formatted
     as strings which can be parsed and evaluated using the debug utilities.
 
-    To run these examples in your interpeter, type shell command
+    To run these examples in your interpeter, from the top-level `dist` directory type command
 
     $ dune utop Fb
 
-    To load the reference interpreter into utop, type
+    Or, to load the reference interpreter into utop, type
 
     $ ./reference/Fb/toplevel.exe
 
