@@ -393,21 +393,20 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z"
 (* format let_ex;; - returns `(Fun z -> z + z) (2 + 3)` *)
 (* peu let_ex;; - returns "10" *)
 
-(* *********************** Equivalence ************************* *)
+(* *********************** Operational Equivalence ************************* *)
 
-(* Observe that the application and the let form are *equivalent*
-    - replace a Let with a macro-let or vice-versa and get same answers
+(* We can define an equivalence relation on Fb program fragments:
 
-   Formally, we can say the Let-version and the macro version are always equivalent:
-      Let x = e in e'   ~=   (Fun x -> e')(e)   for any possible expressions e and e' and any variable x
-      e.g. Let x = 3+4 In x - 44 ~= (Fun x -> x - 44) (3+4) by above
-      -- the ~= relation is called *operational equivalence*, we will define it precisely later.
-      -- informally, replacing one with the other will not change overall program result.
+          e1 ~= e2 iff "replacing e1 in a program with e2 (or vice-versa) doesn't change result"
+
+      e.g. Let x = e in e'   ~=   (Fun x -> e')(e)   for any possible expressions e and e' and any variable x
+         for example, Let x = 3+4 In x - 44 ~= (Fun x -> x - 44) (3+4) by above more general equivalence
+      -- the ~= relation will be defined more precisely later.
       -- it is an equivalence relation and lets us do "algebra on programs"
-      -- we will use ~= in the next topic below to help our understanding.
+      -- we will use ~= in the Y combinator below to help our understanding.
 *)
 
-(* Here are some classic equivalences from 90+ years ago:
+(* Here are some classic ~= equivalences from 90+ years ago:
 
    alpha-equivalence: rename parameter
        Fun x -> x ~= Fun y -> y
@@ -416,7 +415,7 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z"
        (Fun x -> e x) ~= e     if e is a function
    beta-equivalance: "inlining a function call anywhere preserves meaning"
        (Fun x -> e) v ~= e[v/x] (with a subtle side-condition we skip for now)
-       e.,g. (Fun z -> z + 1) 7 ~= 7 + 1 .. ~= 8
+       e.,g. (Fun z -> z + 1) 7 ~= 7 + 1 ~= 8
    Also  ~= is transitive, reflexive, symmetric, and we can always "substitute ~= for ~=".  Plus, arithmetic laws, etc.
 *)
 
@@ -430,10 +429,11 @@ let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z"
 
 (*  As a warm-up, recall the logical paradox program: *)
 
-let paradox = "Let p = (Fun s -> Not(s s)) In p p"
+let p = "(Fun s -> Not(s s))"
+let paradox = p ^ " " ^ p
 
 (* peu paradox;; will get a stack overflow.
-   Good news: it is recursing
+   Good news: it is recursing and making copies of the "Not"
    Bad news: no base case! *)
 
 (* Useful recursion by extending the above idea - add argument and base case *)
@@ -481,11 +481,13 @@ let summate0test' = summate ^ "5"
     Else arg + summate0 summate0 (arg - 1)
 
 
-  -- we can see the 2nd parameter `5` will come into the variable `arg` here 
+  -- we can see the parameter `5` will then come into the variable `arg` here 
   -- and the inner pattern is like what we started with, two summate0's applied to 5-1 ~= 4
   -- so, the pattern repeats.  Fortunately it stops when arg = 0, no infinite looping like paradoxes.
+  -- in some sense we are done, we know how to write a recursive function
+       -- but its just a design pattern or idiom, we want a macro.
 
-  Now, lets make a more user-friendly Y-macro for defining recursive functions.
+  So, lets make a more user-friendly macro ycomb (called the Y-combinator usually) to make recursive functions.
   1) get rid of extra self parameter in recursive calls (turn `self self` into `rec`) and     
   2) get rid of the need to do the final line as a separate thing    
      -- lets make one master combinator to do all this. *)
@@ -498,7 +500,7 @@ let summate0test' = summate ^ "5"
        computes to 15.
 *)
 
-(* Background: refactorings in Fb code *)
+(* Background: refactorings in Fb code which will help us fix the above issues *)
 
 (* First a very common functional programming refactoring:
    Extract out a concrete operation as a (function) parameter.
@@ -510,7 +512,7 @@ let summate0test' = summate ^ "5"
 let bump = "(Fun x -> If x = 0 Then 1 Else 0)"
 
 (* Suppose we wanted to convert this to code where the
-   equivalence relation `=` was instead a parameter, `op`
+   equivalence operation `=` was instead a parameter, `op`
       -- makes for more general code *)
 
 let bump_general = "(Fun op -> Fun x -> If op x 0 Then 1 Else 0)"
@@ -532,15 +534,13 @@ let test2 = new_bump ^ "4"
 (* In general, we have bump ~= new_bump -- in *any* scenario we can replace one with the other safely *)
 
 (* So, that was a really simple example, next is a somewhat more complex one
-    - will allow us to turn `self self` into just `rec` with the spirit of this next one *)
+    - let's do an example which is like how we can turn `self self` into just `rec`  *)
 
 (*
-   Suppose `x + x` appeared in multiple places in some
+   Suppose `x + x` (think `self self`) appeared in multiple places in some
    code, but want the programmer to just write `xpx`, and rig
    a harness to pass in `x + x` in place of x.
-   (Sort of like the double macro above but all in Fb)
-
-   This will be more clear from the example below. *)
+ *)
 
 (* Suppose we actually want this code: *)
 let goal_code = "(Fun x -> Fun y -> If y = 1 Then (x + x) Else (x + x) + 1)"
@@ -597,7 +597,7 @@ let code =
 (* no `rec rec` just `rec` *)
 
 (* here is the replacer -- replace rec with (self self) in above
-   The f here will be something like `code` *)
+   The f here will be something like `code`, `self self` like `x + x` *)
 
 let repl = "(Fun f -> Fun self -> Fun x -> f (self self) x)"
 
