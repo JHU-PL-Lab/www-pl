@@ -21,7 +21,7 @@ This short homework assignment will give you some practice with operational sema
 
 2. [9 points] The following F&#9837; proof trees contain errors.  Describe why the proof tree is not valid (i.e., why the last line is, in fact, not a theorem).
 
-<img src="a3p2.jpg" width=500>
+    <img src="a3p2.jpg" width=500>
 
 3. [15 points] Write operational semantics proofs (i.e., proof trees) showing what the following expressions evaluate to in the Fb operational semantics. Please give the whole proof trees using the rules in Chapter 2.  You may reference one proof tree in another like a "proof tree macro" to make your answer more readable if you want (in other words, you can re-use any one proof tree in another, just like how proofs of Lemmas can be used in Theorems in math).  Note: it is not a bad idea to start by running them in the reference interpreter to make sure you are on the right path.
 
