@@ -1,0 +1,157 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/2350216866">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assignment-5-operational-equivalance-records-variants-state">Assignment 5: Operational Equivalance, Records, Variants, State</h2>
+
+<ol>
+  <li>
+    <p>(10 points) Write an <strong>Fb</strong> function <code>cheapY</code> which works like the <code>Y</code>-combinator but only supports ten levels deep of recursive call. So for example</p>
+
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">cheapY</span> <span class="p">(</span><span class="nc">Function</span> <span class="n">this</span> <span class="o">-&gt;</span> <span class="nc">Function</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="nc">If</span> <span class="n">x</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">then</span> <span class="mi">1</span> <span class="nc">Else</span> <span class="n">x</span> <span class="o">+</span> <span class="n">this</span> <span class="p">(</span><span class="n">x</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="mi">10</span>
+</code></pre></div>    </div>
+
+    <p>returns <code>55</code> but if the <code>10</code> was replaced with <code>11</code> it diverges since the recursion tried to go 11 levels deep. This behavior is the same as a recursive function invocation with a runtime stack depth of at most 10 in e.g. the C language. Hint: you don’t actually need a counter to count the number of recursive calls, it is easier than that.</p>
+  </li>
+  <li>
+    <p>(25 points) For each of the following potential operational equivalences for Fb, either prove that it holds by using the principles in Section 2.4.2 (using only a sequence of those principles and explicitly mentioning which principle is used in each step of the sequence – like a geometry proof), or present a counterexample context C invalidating it by the definition of ~= in Section 2.4.1.</p>
+
+    <p>a. <code>Fun x -&gt; x + 1</code> =~ <code>Fun a -&gt; (Fun y -&gt; y + 1) a</code></p>
+
+    <p>b. <code>Fun x -&gt; (Fun x -&gt; x) 0 + (Let x = 1 In x)</code> ~= <code>Fun x -&gt; 1</code></p>
+
+    <p>c. <code>Fun x -&gt; If y Then Fun y -&gt; x + y Else f x</code> ~= <code>Fun y -&gt; If x Then Fun x -&gt; y + x Else f y</code></p>
+
+    <p>d. <code>(Fun x -&gt; Fun y -&gt; y And x) y</code> ~= <code>Fun y -&gt; y And y</code></p>
+
+    <p>e. <code>Fun a -&gt; Fun b -&gt; a + b</code> ~= <code>Fun b -&gt; Fun a -&gt; b + a</code></p>
+
+    <p>(Note that when you fill in the hole in a context <em>C</em>[<em>e</em>] for a counterexample, you should not change the parse precedence; in other words,  <em>C</em>[<em>e</em>] is always the same as <em>C</em>[<code>(</code><em>e</em><code>)</code>].)</p>
+  </li>
+  <li>
+    <p>(10 points) We primarily focused on operational equivalence for <strong>Fb</strong> during the course, but the definition naturally generalizes to other languages we studied (and even to JavaScript, Python, etc).  For example for <strong>FbV</strong>, the definition of ~= will read identically and the only difference is the contexts C will be <strong>FbV</strong> contexts not <strong>Fb</strong> contexts, and the ==&gt; evaluation relation will also be <strong>FbV</strong>’s.</p>
+
+    <p>a. For the theory of <strong>FbV</strong> operational equivalence, propose one useful ~= law to add to the <strong>Fb</strong> laws we had such as beta, etc.  Your law needs to deal with the new variant syntax and should be a useful and general law, not something vacuous like <code>n(v) ~= n(v)</code>.</p>
+
+    <p>b. Use your new <strong>FbV</strong> law and the existing <strong>Fb</strong> laws to prove <br />
+     <code>Match 'Red(Fun x -&gt; x) With | 'Red f -&gt; 'Green (f 5)  | 'Green m -&gt; 'Red (Fun x -&gt; x + y) ~= 'Green(5)</code>. Show your steps and name any laws used.</p>
+  </li>
+  <li>
+    <p>(10 points) Although <strong>FbR</strong> doesn’t have built-in pairs, we can encode pairs and their operations in <strong>FbR</strong> using records. For this question, the goal is to take a program with pairs syntax <code>(e1, e2)</code>, <code>Fst</code>, and <code>Snd</code> (but no pattern matching on pairs), such as</p>
+
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Let</span> <span class="n">p</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="o">,</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="mi">3</span><span class="p">))</span> <span class="nc">In</span>
+<span class="p">(</span><span class="nc">Fst</span> <span class="p">(</span><span class="nc">Snd</span> <span class="n">p</span><span class="p">))</span> <span class="o">=</span> <span class="mi">2</span>
+</code></pre></div>    </div>
+
+    <p>and to define an equivalent (i.e. returning the same result) <strong>FbR</strong> program which uses records to encode pairs.</p>
+
+    <p>(a) Define the pair constructor, <code>Fst</code>, and <code>Snd</code> as macros using <strong>FbR</strong>.</p>
+
+    <p>(b) Translate the above program to <strong>FbR</strong> using your pair encoding from (a). Your encoding should be such that the concept should work for any program using these pair operations, don’t just make something working for this example.</p>
+  </li>
+  <li>
+    <p>(15 points) For each of the following <strong>FbR/FbV/FbS</strong> programs, either prove it has a value (by building the operational semantics proof tree) <strong>or</strong> argue that the program has no value.  The operational semantics rules for these languages are in the book and are an extension of the <strong>Fb</strong> rules.</p>
+
+    <p>a. <code>(Fun yn -&gt; Match yn With `Yes(x) -&gt; 3 | `No(y) -&gt; y) (`No(3))</code></p>
+
+    <p>b. <code>(Fun r1 -&gt; Fun r2 -&gt; If r1.c Then r1.a Else {a = r2.c}) {a = 1; c = True} {a = False; c = 2}</code></p>
+
+    <p>c. <code>!(Ref (Ref False)) And True</code></p>
+  </li>
+</ol>
+
+<h3 id="submission-and-grading">Submission and Grading</h3>
+
+<p>Upload your homework pdf to Gradescope as was done in HW 3. <em>Please remember to list any collaborators at the top of your submission as was done in assignments 1-4</em>.</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>

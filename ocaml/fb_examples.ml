@@ -519,7 +519,7 @@ let bump_general = "(Fun op -> Fun x -> If op x 0 Then 1 Else 0)"
 
 (* Now feed in a concrete function for equivalence *)
 
-let new_bump = bump_general ^ "(Fun n1 -> Fun n2 -> n1 = (n2 + 0))"
+let new_bump = bump_general ^ "(Fun n1 -> Fun n2 -> n1 = n2)"
 
 (* The following two tests should give the same result *)
 
@@ -660,3 +660,14 @@ Let cc = " ^ code
   ^ " In 
 Let summate = yy cc In
 summate 5"
+
+(* or, even do this: *)
+
+let goy'' =
+   "Let yy = (Fun code -> 
+      Let repl = Fun self -> Fun x -> code (self self) x 
+      In repl repl) In 
+ Let summate = yy (Fun rec -> Fun arg -> 
+   If arg = 0 Then 0 Else arg + rec (arg - 1)) In
+ summate 5"
+ 
