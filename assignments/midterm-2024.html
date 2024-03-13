@@ -1,0 +1,164 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/2350216866">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="pl-midterm-2024">PL Midterm 2024</h2>
+
+<p>You are to work without the consultation of any individuals other than Prof/CAs on this exam.  This includes posting questions on the Internet, etc. Please include at the top of your exam</p>
+
+<blockquote>
+  <p>I pledge I worked without consultation with any individuals other than Prof/CAs on this exam</p>
+</blockquote>
+
+<p>certifying this.  You are free to use any non-human resources, e.g. the course text, lectures, Wikipedia, etc.</p>
+
+<p>You are free to ask questions on Courselore or in office hours, but please address all Courselore questions to Staff.  If it is a good issue to clarify we will make your question public.</p>
+
+<ol>
+  <li>
+    <p>(10 points) The definition of substitution in the book, Definition 2.10, left out some clauses (e.g. for <code>If</code>, <code>Let Rec</code>, etc.)  For this question write the complete definition of substitution.  You can literally copy/paste the clauses already in the book, just add clauses for all the missing syntax, including <code>Let Rec</code> even if you didn’t do the extra credit on Assignment 4.</p>
+  </li>
+  <li>
+    <p>(15 points) The book listed some laws for operational equivalence ~= for <strong>Fb</strong>.  Let us consider some other possible laws.  Consider each of the following statements and categorize it as 1) true but not provable with the existing laws (so it would be good as a new law), 2) true <em>and</em> provable with the existing laws (give the proof in such a case, including all the laws used in the proof), or 3) false (prove that it is false in such a case using the definition of ~=).  Recall that in all laws, e, v, and x denote arbitrary expressions, value expressions, and variables, respectively.</p>
+
+    <p>a. <code>Not(Not(x))</code> ~= <code>x</code></p>
+
+    <p>b. <code>(Fun x -&gt; x) e</code> ~= <code>e</code></p>
+
+    <p>c. <code>e + x</code> ~= <code>x + e</code></p>
+
+    <p>d. <code>x e</code> ~= <code>x e'</code> if <code>e</code> ~= <code>e'</code></p>
+
+    <p>e. <code>Let x = e1 in e2</code> ~= <code>e2[e1/x]</code></p>
+  </li>
+  <li>
+    <p>(10 points) Consider the <strong>FbV</strong> expression <code>e</code> defined as <code>Let h = `Hi(2) In Match h With `Ho(x) -&gt; x + 1</code>.  Using the operational semantics rules for <strong>FbV</strong> in the book (and covered in lecture), show that <code>e ==&gt; v</code> fails for <em>any</em> <code>v</code>.  (Hint: you want to show that any attempt to build a proof tree is doomed to failure.)</p>
+  </li>
+  <li>
+    <p>(15 points) For this question, you are to extend the <strong>Fb</strong> interpreter function with clauses for <strong>FbV</strong> to make an <strong>FbV</strong> interpreter that realizes the operational semantics.</p>
+
+    <p>Note that the <strong>AFbV</strong> interpreter in the FbDK is largely a superset  of <strong>FbV</strong> so you can use it if you want to see how to parse or execute <strong>FbV</strong> programs. Just replace “fb” or “Fb” in any instructions with “afbv” or “AFbV”, e.g. <code>./reference/AFbV/toplevel.exe</code> will start a <code>utop</code> with the reference interpreter loaded.  Then typing  e.g. <code>open Debugutils;; peu "Match `Hi(2) With `Hi(x) -&gt; x + 1";;</code> will run the reference interpreter.</p>
+
+    <p>The <strong>FbV</strong> interpreter is an extension of the <strong>Fb</strong> interpreter, and <em>all</em> you need to do for this question is to write is the new clauses needed in both the substitution function and in the main evaluator function.  Just put “…” for the other clauses as they are the same as the <strong>Fb</strong> ones.  In particular as can be seen from the AST above, <code>Variant</code> and <code>Match</code> are the two new match cases you need to address.  Note that the OCaml <code>name</code> type is a string representing variant names such as <code>`Hi</code> etc.</p>
+
+    <p>Here is an OCaml datatype for <strong>FbV</strong>.</p>
+  </li>
+</ol>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">type</span> <span class="n">ident</span> <span class="o">=</span> <span class="nc">Ident</span> <span class="k">of</span> <span class="kt">string</span>
+    <span class="k">type</span> <span class="n">name</span> <span class="o">=</span> <span class="nc">Name</span> <span class="k">of</span> <span class="kt">string</span>
+    <span class="k">type</span> <span class="n">expr</span> <span class="o">=</span> 
+    <span class="o">|</span> <span class="nc">Var</span> <span class="k">of</span> <span class="n">ident</span> <span class="o">|</span> <span class="nc">Int</span> <span class="k">of</span> <span class="kt">int</span> <span class="o">|</span> <span class="nc">Bool</span> <span class="k">of</span> <span class="kt">bool</span> 
+    <span class="o">|</span> <span class="nc">Plus</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span> <span class="o">|</span> <span class="nc">Minus</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span> <span class="o">|</span> <span class="nc">Equal</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span>
+    <span class="o">|</span> <span class="nc">And</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span> <span class="o">|</span> <span class="nc">Or</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span> <span class="o">|</span> <span class="nc">Not</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">|</span> <span class="nc">If</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span>
+    <span class="o">|</span> <span class="nc">Function</span> <span class="k">of</span> <span class="n">ident</span> <span class="o">*</span> <span class="n">expr</span> <span class="o">|</span> <span class="nc">Appl</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span> <span class="o">|</span> <span class="nc">Let</span> <span class="k">of</span> <span class="n">ident</span> <span class="o">*</span> <span class="n">expr</span> <span class="o">*</span> <span class="n">expr</span>
+    <span class="o">|</span> <span class="nc">Variant</span> <span class="k">of</span> <span class="n">name</span> <span class="o">*</span> <span class="n">expr</span> 
+    <span class="o">|</span> <span class="nc">Match</span> <span class="k">of</span> <span class="n">expr</span> <span class="o">*</span> <span class="p">(</span><span class="n">name</span> <span class="o">*</span> <span class="n">ident</span> <span class="o">*</span> <span class="n">expr</span><span class="p">)</span> <span class="kt">list</span>
+</code></pre></div></div>
+
+<ol>
+  <li>
+    <p>(25 points) In <strong>FbR</strong>, when evaluating a record, all the fields will be evaluated e.g. <code>{a = 1 + 1; b = 2 + 3} =&gt; {a = 2; b = 5}</code>. Now consider <strong>FbRn</strong> in which a record evaluates to itself like functions do: <code>{a = 1 + 1; b = 2 + 3} =&gt; {a = 1 + 1; b = 2 + 3}</code>. The field associated with label <code>lab</code> is only evaluated when the <code>lab</code> is selected: <code>{a = 1 + 1; b = 2 + 3}.a =&gt; 2</code>.  The records in <strong>FbR</strong> are called <em>eager</em> since the fields are eagerly evaluated; the <strong>FbRn</strong> form is <em>lazy</em>.</p>
+
+    <p>a. Define the expression and value grammars for <strong>FbRn</strong>.</p>
+
+    <p>b. Write the revised operational semantics rules for record and selection. All the other rules are the same as <strong>Fb</strong>’s and need not be given.</p>
+
+    <p>c. One advantage of lazy records is it is possible to write infinite sequences without <code>fun () -&gt; ..</code> to freeze values as we used in assignment 2: informally <code>Let s = {hd = 1; tl = s} In ((s.tl).tl).hd</code> expresses an <code>s</code> that is an infinite sequence of 1’s (view the <code>hd</code> field as the head of the sequence and <code>tl</code> as the tail). The body <code>((s.tl).tl).hd</code> then shows how we can get the third <code>1</code> element from <code>s</code>.  The above definition is not going to work however, because it is cyclic (the <code>s</code> occurring in “<code>tl = s</code>” is a free variable so the program is ill-formed as written).  For this question, give a <strong>FbRn</strong> expression which fixes the above informal example to use recursion to represent an infinite list <code>s</code>.  However you define <code>s</code> make sure  <code>((s.tl).tl).hd</code> will return <code>1</code>, and in general any number of <code>tl</code> followed by <code>hd</code> will return <code>1</code>.</p>
+
+    <p>d. In lecture and at the end of Section 3.3.2 in the textbook it covers how variants and records are duals of each other: one can encode the other. Discuss whether it’s still possible to encode <strong>FbRn</strong>-style lazy records in <strong>FbV</strong>, or not. In particular give an encoding of an <strong>FbRn</strong> record <code>{l_1 = e_1; ... ; l_n = e_n}</code> and selection <code>e.l_i</code> into <strong>FbV</strong> which behaves as described above, or argue why it will not be possible.</p>
+  </li>
+</ol>
+
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
