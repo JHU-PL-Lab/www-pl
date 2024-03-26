@@ -1,0 +1,125 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/2350216866">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assigment-6-a-fbrx-interpreter">Assigment 6: A <strong>FbRX</strong> Interpreter</h2>
+
+<p>Implement an interpreter for the variant language <strong>FbRX</strong> which implements <strong>Fb</strong> operational semantics extensions including</p>
+
+<ul>
+  <li><strong>FbR</strong> with in addition a record append operation <code>@</code> as described below</li>
+  <li><strong>FbX</strong> with runtime exceptions</li>
+  <li>A new primitive type String which <code>=</code> also can compare (along with the integers it already works on; i.e. extending the equality operation to strings) and which <code>@</code> can append strings together (e.g. <code>"a" @ "bc" =&gt; "abc"</code> )</li>
+</ul>
+
+<p>The only file you should modify is <strong>fbrxinterp.ml</strong>; do not change the code above <strong>eval</strong> in that file.</p>
+
+<p>For records, we permit the append of arbitrary records so e.g. <code>{a = 1; b = 1} @ {a = 2; c = 1} =&gt; {a = 2; b = 1; c = 1}</code> . If the same field is present in both records, the value in the right record has precedence.  Make sure you support <code>@</code> in all contexts, e.g. code like <code>(f 0) @ (g 1)</code> should work if <code>f</code>/<code>g</code> are functions returning records.</p>
+
+<p>For exceptions, <strong>FbRX</strong> supports exceptions via expression <code>Raise #xn e</code> and <code>Try e With #xn e</code> as is defined in <strong>FbX</strong> in the book. <strong>FbRX</strong> also supports runtime exceptions so the language itself can handle the dynamic errors that may arise. For example, e.g. <code>1 + True</code> should evaluate to <code>Raise #TypeMismatch 0</code> since there is a type mismatch here. Another <strong>FbRX</strong> exception you should support is <code>Raise #LabelNotFound 0</code> when a non-existing label is selected from a record, e.g. for <code>{a = 1}.b</code>. The value 0 in the exception is arbitrary, but when grading we will check whether the exception id matches the names above.  In general, for any case that there is a run-time type error the interpreter should return an <strong>FbRX</strong> exception instead of raising an OCaml exception as we did with <strong>Fb</strong>.</p>
+
+<p>For the string extension, <strong>FbRX</strong> supports literal strings equality testing on them.</p>
+
+<p>For <code>=</code> in <strong>FbRX</strong>, it works on two values of int or string type (only). If the types of two operands are different, or either type is a function, record, or boolean, it evaluates to an <strong>FbRX</strong> runtime type error exception <code>Raise #TypeMismatch 0</code>.</p>
+
+<p>In order to get you going we have included a scanner/parser/pretty printer for <strong>FbRX</strong> to the FbDK in directory <a href="https://pl.cs.jhu.edu/pl/book/dist/fbdk/FbRX/"><code>FbRX/</code></a>. Like the Fb interpreter, that directory contains a dummy <code>fbrxinterp.ml</code> file which you need to complete the <code>eval</code> function for. All of the other instructions are the same as for the <strong>Fb</strong> interpreter of Assignment 4: <code>dune build</code> to build, etc.  Note there is a reference implementation available as well, but we are not exactly following that reference in every single case; refer to the above for the description of how the operators should work (<code>=</code> in particular is slightly different in the reference implementation, it works on e.g. booleans but yours should not; also <code>@</code> does not append strings in the reference but it should for you).</p>
+
+<p>You will need to port over your <strong>Fb</strong> interpreter code for the basic <strong>Fb</strong> features. If you lost points for buggy code there, we will be <em>very</em> helpful in getting your basic <strong>Fb</strong> interpreter stuff working now if you ask (i.e. ask any CA or on Courselore and you will be told exactly how to fix your code). In any case the tests will primarily be on the new features and not on the function calling. <strong>FbRX</strong> does include <code>Let Rec</code> in the syntax but no testcases will touch it in this assignment. The AST type is as usual in the file <a href="https://pl.cs.jhu.edu/pl/book/dist/fbdk/FbRX/fbrxast.ml">fbrxast.ml</a>. The AST representation is mostly self-explanatory; Use the <code>Debutils</code> parser to test if you are not sure on the AST format.</p>
+
+<p>Hint: If you don’t know where to start, check out the operational semantics covered in class as well as in the book as guides for your implementation.</p>
+
+<h3 id="submission">Submission</h3>
+
+<p>Upload (only) your file <code>fbrxinterp.ml</code> to the <em>Assignment 6</em> target on Gradescope.</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
