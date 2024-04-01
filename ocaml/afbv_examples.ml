@@ -80,8 +80,8 @@ actor <- `doit(7)"
      - So, each actor after processing one message needs to set its continuation before going back to sleep.
      - This is the same as how in JavaScript for asynchronous requests you need to set up the callback code
        -- the callback function is exactly the "next thing" the code needs to do, the **continuation**
-       -- modern JavaScript has some sugar which hides this (asynch/await) but old JS and under the covers 
-          there is a continuation function in JavaScript to perform subsequent actions
+       -- modern JavaScript has some sugar which hides this (asynch/await) but old JS and 
+       under the covers there is a continuation function in JavaScript to perform subsequent actions
 *)
    
 (* Here is an example which processes multiple messages: 
@@ -177,7 +177,7 @@ actor <- `count 4"
 let internal_count =  "Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
    Let self_messaging_behavior =
 
-(* Observe how here the 'cur_count' state parameter is now under the Y - it is not just a global parameter,
+(* Observe how here the 'cur_count' state parameter is now **under the Y** - it is not just a global parameter,
    each recursion also needs to be fed cur_count, and that will allow us to propagate state *)
    
   Fun me -> y (Fun this -> Fun cur_count -> Fun msg ->
@@ -220,11 +220,11 @@ user <- 00 (* bootstrap the messaging by sending user any message *)"
 let ping_pong = "
 Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
 Let pong_behavior =
-  Fun me -> y (Fun this -> Fun pinger -> Fun msg ->
+  Fun me -> Fun pinger -> y (Fun this -> Fun msg ->
      Match msg With
        `pong(n) ->
           (pinger <- (`ping (n))); (* invariant: pinger variable is pinger actor address *)
-          this pinger (* Use the same behavior for the next message received *)
+          this (* Use the same behavior for the next message received *)
                                ) In
 Let ping_behavior = 
   Fun me -> Fun _ -> Fun msg0 ->
@@ -237,7 +237,7 @@ Let ping_behavior =
             Match msg With `ping(n) ->
               (Print \"Pinger got ping numbered: \"; (Print n); Print \"\n\");
               (If n = 0 Then 0 Else (a2 <- (`pong (n-2))));
-              this 
+              this (* again use same behavior for next message *)
             )) In
 Let a1 = Create(ping_behavior, 00) In
 a1 <- `init(4)"
