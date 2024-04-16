@@ -1,0 +1,155 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+         <li class="active"><a href="/pl/index.html">Home</a></li>
+         <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="/pl/dateline.html">Dateline</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/2350216866">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/book">The Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
+         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assignment-8-types">Assignment 8: Types</h2>
+
+<h4 id="part-a">Part A</h4>
+
+<p>Here are some written questions on typing.</p>
+
+<ol>
+  <li>
+    <p>For each of these expressions, either construct a typing proof in <strong>TFb</strong>, <strong>or</strong> show exactly why they cannot typecheck (i.e. no derivation tree could ever be built; don’t just informally describe it, use the formal system rules).</p>
+
+    <p>a.  <code>(If True Then 0 Else False)</code></p>
+
+    <p>b.  <code>(If True Then (Fun x:Int -&gt; x + 1) Else (Fun x:Int -&gt; x)) 0</code></p>
+
+    <p>c.  <code>(Fun x:(Bool -&gt; Int) -&gt; x False)(Fun x:Bool -&gt; 4)</code></p>
+  </li>
+  <li>
+    <p>Of the following pairs of types, is the left type a subtype of the right type, a supertype, or neither? Justify your answer by showing the proofs in the subtype proof system of the book; if neither holds describe why in words.  Pay close attention to the rules, it is easy for intuitions to fail on these examples.  Just build a proof tree based on the rules and you know you are correct.</p>
+
+    <p>a.  <code>{ x : Int; y : { z : Bool } }</code> and <code>{ x : Int; y : {}; w : Int }</code>,</p>
+
+    <p>b.  <code>{ x : Int } -&gt; { }</code> and <code>{ } -&gt; { x : Int }</code></p>
+
+    <p>c.  <code>{ } -&gt; { }</code> and <code>{ } -&gt; { x : Int }</code></p>
+  </li>
+  <li>
+    <p>Type the following program in <strong>STFbR</strong> (note this program is not showing the type declarations on <code>r1/r2</code>, you need to find types to fill in there such that the program is typeable):</p>
+
+    <pre><code>      Function n:Int -&gt; Function r1:{...} -&gt; Function r2:{...}-&gt;
+         {x = r1.x + 1; y = (If n = 0 Then r1.y - 1 Else r2.y +1); z =  r2.z + 2} 
+</code></pre>
+  </li>
+</ol>
+
+<h4 id="part-b">Part B</h4>
+
+<p>Write a type checker for <strong>TFbSRX</strong>. The language was described in lecture and is in section 6.4 of the book. The <code>TFbSRX/</code> directory of the FbDK contains the relevant parser and OCaml data type, all you have to do is fill in the file tfbsrxtype.ml with a correct implemention of the typecheck function there. Note that you <em>don’t</em> have to write an interpreter, only the typechecker.</p>
+
+<ul>
+  <li>The file <a href="http://pl.cs.jhu.edu/pl/ocaml/tfbsrx_examples.ml">tfbsrx_examples.ml</a> contains quite a few examples for you to test the typechecker with.</li>
+  <li>The AST for the language, in file <a href="https://pl.cs.jhu.edu/pl/book/dist/fbdk/TFbSRX/tfbsrxast.ml">TFbSRX/tfbsrxast.ml</a>, is slightly different from the one at the top of Section 6.4 in the textbook, it is a bit simpler.</li>
+  <li>As with the other languages in the FbDK you can use our reference implementations.  Type <code>./reference/TFbSRX/toplevel.exe</code> (or the <code>wsl-</code> version if you have been using that) to load the type checker into <code>utop</code>.  The above file <code>tfbsrx_examples.ml</code> then contains information on how you can invoke the typechecker in testing - either <code>#use</code> that file or copy/paste in the lines at the top.</li>
+  <li>Notice that <code>Raise ..</code> evaluates to “arbitrary tau” in the rule in the book. As we mentioned in lecture, this is usually handled by introducing an “anything type *” - a type that is equal to every other type in the system. A new type <code>TBottom</code> has been added to the type fbtype for this purpose.</li>
+  <li>
+    <p>Type checking exceptions can be somewhat tricky; especially their interactions with <em>other</em> expressions and type rules. You need to consider each rule carefully.</p>
+
+    <p>For example:</p>
+    <pre><code>|- (Function x:Int -&gt; x = 1) (Raise #Exn@Bool False) : Bool     
+   Because by function rule     |- (Function x:Int -&gt; x = 1) : Int -&gt; Bool     
+   and by exception rule     |- (Raise #Exn@Bool False) : Bottom (arbitrary tau)   
+   And because Int and Bottom can be equated, 
+   by application rule we have   |- (Function x:Int -&gt; x = 1) (Raise #Exn@Bool False) : Bool   `
+</code></pre>
+  </li>
+</ul>
+
+<h3 id="submission">Submission</h3>
+
+<p>For Part A, the upload is as for the other written assignments.  For Part B, upload (only) your file <code>tfbsrxtype.ml</code> which will (hopefully) contain your fully functioning type checker.</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
