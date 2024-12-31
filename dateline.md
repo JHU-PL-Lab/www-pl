@@ -389,7 +389,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Types II: Implementing Type Checkers</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</a>
+        <div align="center" class="body">&nbsp;</div>
     </div>
       </td>
       <td width="22%"> 
@@ -407,7 +407,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Types III: Subtyping (STFb)</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment8.html">8 - Types</div>
+        <div align="center" class="body"><a href="assignments/assignment8.html">8 - Types</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
