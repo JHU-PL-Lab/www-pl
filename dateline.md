@@ -407,7 +407,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Types III: Subtyping (STFb)</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment8.html">8 A&B - Types</div>
+        <div align="center" class="body"><a href="assignments/assignment8.html">8 - Types</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
