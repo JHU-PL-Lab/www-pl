@@ -2,7 +2,7 @@
 
 ### Class Time and location
 
-We will meet 1:30-2:45PM on Mondays and Wednesdays in Krieger 170.  You are expected to attend all lectures in-person, but if there are reasons you cannot attend such as being quarantined, sick, travelling, etc the lecture recordings should be available on Panopto.
+We will meet 1:30-2:45PM on Mondays and Wednesdays in Krieger 170.  You are expected to attend all lectures in-person, but if there are reasons you cannot attend such as being sick, travelling, etc the lecture recordings should be available on Panopto.
 
 ### Q&amp;A: Courselore
 
@@ -43,8 +43,8 @@ Office hours and locations will be pinned on Courselore.
 
 ### Exams
 
-There will be a midterm before spring break and a final examination during the normal final exam period slot.
+There will be an in-class midterm before spring break and a final examination during the normal final exam period slot.
 
 ### Grading
 
-The final will count around 50% of the grade, the midterm 30%, and the homeworks 20%.  The HWs will be weighted based on the time commitment of the assignment.
+The final will count around 50% of the grade, the midterm 30%, and the homeworks 20%.  Each HW will be weighted somewhat differently, based on the time commitment of the assignment.

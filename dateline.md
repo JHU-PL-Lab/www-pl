@@ -1,4 +1,4 @@
-## Dateline
+## Dateline (DRAFT, will be completed soon)
 
 Lecture material and assigments are under the indicated links; lectures with no such link will be based on the <a href="book">book</a>.  Assignments are posted on the date indicated in the dateline below, clicking on the link will return an error before that date.
 
