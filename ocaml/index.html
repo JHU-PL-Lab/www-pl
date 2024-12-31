@@ -44,7 +44,7 @@
           <li><a href="/pl/logistics.html">Overview</a></li>
            <li><a href="/pl/dateline.html">Dateline</a></li>
            <li><a href="https://gradescope.com">Gradescope</a></li>
-           <li><a href="https://courselore.org/courses/2350216866">Q&amp;A</a></li>
+           <li><a href="https://courselore.org/courses/0552179975">Q&amp;A</a></li>
            <li><a href="/pl/contact.html">Contact Us</a></li>
           </ul>
          </li>
@@ -91,9 +91,9 @@
 
 <h3 id="our-ml-dialect">Our ML Dialect</h3>
 
-<p>We will use <a href="http://ocaml.org">OCaml</a>, version 5.1.1.</p>
+<p>We will use <a href="http://ocaml.org">OCaml</a>, version 5.2.1.</p>
 
-<h3 id="installing-ocaml-511">Installing OCaml 5.1.1</h3>
+<h3 id="installing-ocaml-521">Installing OCaml 5.2.1</h3>
 
 <p>We require that you use the <a href="https://opam.ocaml.org">opam packaging system</a> for installing OCaml and its extensions.  Once you get <code>opam</code> installed and working, everything else should be easy to install .. so the only hard part is the first step.</p>
 
@@ -134,18 +134,18 @@
       <li><code>opam init</code> to initialize OPAM (we suggest you answer <code>y</code> to the question <code>Do you want opam to modify ~/.profile? [N/y/f]</code>);</li>
       <li>If you didn’t get that question or said <code>N</code>, you will need to add line, <code>eval $(opam env)</code>, to your <code>~/.bash_profile</code> or <code>~/.profile</code> or <code>~/.bashrc</code> shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using <code>zsh</code> on macs, add line <code>eval `opam env`</code> instead to your <code>~/.zshrc</code> file.</li>
       <li>Type command <code>eval $(opam env)</code> to your shell to let it know where the opam files are (zsh users on Macs type <code>eval `opam env`</code> instead)</li>
-      <li>Type <code>opam update &amp;&amp; opam switch create 5.1.1</code> (this will take awhile) to build OCaml version 5.1.1.</li>
+      <li>Type <code>opam update &amp;&amp; opam switch create 5.2.1</code> (this will take awhile) to build OCaml version 5.2.1.</li>
       <li>At the end of the install it will likely suggest an <code>eval</code> command to type; do that.</li>
     </ol>
   </li>
   <li>If you already have an earlier version of OCaml installed via <code>opam</code>, you should only need to run the 4th line.</li>
 </ul>
 
-<p>(Note if you took FPSE you need to make sure to switch to 5.1.1 and also follow all the configuration steps below as they are different and the OCaml version is different.   We are not using <code>Core</code> in this class so you need to make sure to also remove any reference to core in your <code>.ocamlinit</code> file.)</p>
+<p>(Note if you took FPSE you need to make sure to switch to 5.2.1 and also follow all the configuration steps below as they are different and the OCaml version is different.   We are not using <code>Core</code> in this class so you need to make sure to also remove any reference to core in your <code>.ocamlinit</code> file.)</p>
 
 <h3 id="configuring-ocaml">Configuring OCaml</h3>
 
-<p>Once you have OCaml 5.1.1 installed, run the following <code>opam</code> command in the terminal to install additional necessary packages used in the class:</p>
+<p>Once you have OCaml 5.2.1 installed, run the following <code>opam</code> command in the terminal to install additional necessary packages used in the class:</p>
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>opam <span class="nb">install </span>ocaml-lsp-server menhir utop ppx_deriving ounit2 ocamlformat
 </code></pre></div></div>
 
