@@ -27,7 +27,7 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
        - Next, type `sudo apt install opam` to install `opam` in your WSL2.
        - After this, follow the "Initial Setup of `opam`" instructions below.
        - You can still use your Windows install of VSCode to edit files by using the [VSCode Remote WSL Extension](https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode) -- it will connect the Windows editor to the underlying WSL2 subsystem.  See below where VSCode is described for details on how to set this up.
-    -  WSL2 has been working well for most people, but another option is to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, [here is one of them](https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098).  Once your virtual Linux box is set up, you can follow the `opam` Linux install instructions.
+    -  If you can't get this to work please ask on Courselore and we can help you get it going.  It pretty much works on all Windows computers these days.
 
 ### Initial Setup of `opam`
 - You will then need to run some terminal commands to set up the basics:
@@ -35,7 +35,7 @@ We require that you use the [opam packaging system](https://opam.ocaml.org) for 
     2.  If you didn't get that question or said `N`, you will need to add line, `eval $(opam env)`, to your `~/.bash_profile` or `~/.profile` or `~/.bashrc` shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using `zsh` on macs, add line ``eval `opam env` `` instead to your `~/.zshrc` file. 
     3.  Type command `eval $(opam env)` to your shell to let it know where the opam files are (zsh users on Macs type ``eval `opam env` `` instead)       
     4. Type `opam update && opam switch create 5.2.1` (this will take awhile) to build OCaml version 5.2.1.
-    5. At the end of the install it will likely suggest an `eval` command to type; do that.
+    5. At the end of the install it will likely suggest an `eval` command to type; do that (if you are on `zsh` replace the `$(...)` with back-quotes `` `...` ``).
 - If you already have an earlier version of OCaml installed via `opam`, you should only need to run the 4th line. 
 
 (Note if you took FPSE you need to make sure to switch to 5.2.1 and also follow all the configuration steps below as they are different and the OCaml version is different.   We are not using `Core` in this class so you need to make sure to also remove any reference to core in your `.ocamlinit` file.)

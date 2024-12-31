@@ -122,7 +122,7 @@
           <li>You can still use your Windows install of VSCode to edit files by using the <a href="https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-vscode">VSCode Remote WSL Extension</a> – it will connect the Windows editor to the underlying WSL2 subsystem.  See below where VSCode is described for details on how to set this up.</li>
         </ul>
       </li>
-      <li>WSL2 has been working well for most people, but another option is to set up a Linux VM on your Windows box, and then set up a Linux install of OCaml within the VM.  There are many good tutorials on how to build a Linux VM, <a href="https://www.lifewire.com/run-ubuntu-within-windows-virtualbox-2202098">here is one of them</a>.  Once your virtual Linux box is set up, you can follow the <code>opam</code> Linux install instructions.</li>
+      <li>If you can’t get this to work please ask on Courselore and we can help you get it going.  It pretty much works on all Windows computers these days.</li>
     </ul>
   </li>
 </ul>
@@ -135,7 +135,7 @@
       <li>If you didn’t get that question or said <code>N</code>, you will need to add line, <code>eval $(opam env)</code>, to your <code>~/.bash_profile</code> or <code>~/.profile</code> or <code>~/.bashrc</code> shell init file (add to the first one of these files that exists already) as you would need to do that in every new terminal window otherwise. If you are using <code>zsh</code> on macs, add line <code>eval `opam env`</code> instead to your <code>~/.zshrc</code> file.</li>
       <li>Type command <code>eval $(opam env)</code> to your shell to let it know where the opam files are (zsh users on Macs type <code>eval `opam env`</code> instead)</li>
       <li>Type <code>opam update &amp;&amp; opam switch create 5.2.1</code> (this will take awhile) to build OCaml version 5.2.1.</li>
-      <li>At the end of the install it will likely suggest an <code>eval</code> command to type; do that.</li>
+      <li>At the end of the install it will likely suggest an <code>eval</code> command to type; do that (if you are on <code>zsh</code> replace the <code>$(...)</code> with back-quotes <code>`...`</code>).</li>
     </ol>
   </li>
   <li>If you already have an earlier version of OCaml installed via <code>opam</code>, you should only need to run the 4th line.</li>
