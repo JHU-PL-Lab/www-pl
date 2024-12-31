@@ -393,7 +393,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">7 (Fri)</div>
+        <div align="center" class="body">7 (Fri) EDIT</div>
       </td>
     </tr>
     <tr> 
@@ -461,7 +461,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">8B (next Mon)</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>  
         <tr> 
@@ -478,7 +478,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">8B (next Mon) EDIT</div>
+        <div align="center" class="body">8B</div>
       </td>
     </tr>   
     <tr> 
