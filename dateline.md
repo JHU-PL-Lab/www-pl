@@ -390,7 +390,6 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
-    </div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">7 (Fri)</div>
