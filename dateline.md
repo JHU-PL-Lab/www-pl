@@ -228,7 +228,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">4p1 (4p2 Sun EDIT)</div>
+        <div align="center" class="body">4p1</div>
       </td>
     </tr>
     <tr> 
@@ -245,7 +245,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body"><a href="assignments/assignment5.html">5 - Y/Opeq/Records/Variants</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">4p2</div>
       </td>
     </tr>
     <tr>      
@@ -279,7 +279,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%">
-        <div align="center" class="body">5 (Tues) EDIT</div>
+        <div align="center" class="body">5</div>
       </td>
     </tr>
     <tr>
@@ -301,7 +301,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Concurrency I (AFbV)</div>
+        <div align="left" class="body">&nbsp;Objects (FbOB)</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a></div>
@@ -318,7 +318,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Concurrency II</div>
+        <div align="left" class="body">&nbsp;Concurrency I (AFbV)</div>
       </td>  
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -335,7 +335,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body"><a href="ocaml/afbv_examples.ml">AFbV coding</a></div>
+        <div align="left" class="body">&nbsp;Concurrency II</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -352,7 +352,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Objects (FbOB)</div>
+        <div align="left" class="body"><a href="ocaml/afbv_examples.ml">AFbV coding</a></div>
       </td>	
       <td width="22%"> 
         <div align="center" class="body"><a href="assignments/assignment7.html">7 - Concurrency</a></div>
@@ -393,7 +393,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">7 (Fri) EDIT</div>
+        <div align="center" class="body">7 (Fri)</div>
       </td>
     </tr>
     <tr> 
