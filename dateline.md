@@ -208,7 +208,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Operational Equivalence</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body"><a href="assignments/assignment5.html">5 - Fb programming/Y/Opeq</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
@@ -228,7 +228,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">4p1</div>
+        <div align="center" class="body">4</div>
       </td>
     </tr>
     <tr> 
@@ -242,10 +242,10 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;State (FbS)</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment5.html">5 - Y/Opeq/Records/Variants</a></div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">4p2</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
     <tr>      
@@ -262,7 +262,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">5</div>
       </td>
       </tr>
       <tr> 
@@ -279,7 +279,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%">
-        <div align="center" class="body">5</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
     <tr>
@@ -304,7 +304,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="left" class="body">&nbsp;Objects (FbOB)</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body"><a href="assignments/assignment6.html">6 - State/Exceptions/Objects</a></div>
+        <div align="center" class="body"><a href="assignments/assignment6.html">6 - Records/Variants/State/Exceptions/Objects</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
