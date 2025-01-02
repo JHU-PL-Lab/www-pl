@@ -142,7 +142,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     href="assignments/assignment3.html">3 - Fb Opsem</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">2 (Fri)</div>
       </td>
     </tr>
     <tr> 
@@ -159,7 +159,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">2</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
     <tr> 
@@ -177,7 +177,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">3 (Fri)</div>
       </td>
     </tr>
     <tr> 
@@ -194,7 +194,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">3</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
     <tr> 
@@ -211,7 +211,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body"><a href="assignments/assignment5.html">5 - Fb programming/Y/Opeq</a></div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">4 (Fri)</div>
       </td>
     </tr>
     <tr> 
@@ -228,7 +228,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">4</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
     </tr>
     <tr> 
@@ -245,7 +245,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">&nbsp;</div>
+        <div align="center" class="body">5 (Fri)</div>
       </td>
     </tr>
     <tr>      
@@ -262,7 +262,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">&nbsp;</div>
       </td>
       <td width="22%"> 
-        <div align="center" class="body">5</div>
+        <div align="center" class="body">&nbsp;</div>
       </td>
       </tr>
       <tr> 

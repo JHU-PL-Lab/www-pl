@@ -33,9 +33,9 @@ The collaboration policy for assignments is you are _strongly encouraged_ to for
 
 Please make sure to consult the course [Academic Integrity Policy](integrity.html) on what is legitimate interaction for homeworks, it is spelled out in detail there.
 
-#### Late HW Policy
+#### Flexible Homework Deadlines
 
-You will be given the same number of "late days" as there are distinct submission points in Gradescope, which should be around 9 this year. For each assigment you can use up to three of your late days quota, each one allowing you to submit the assignment one day later. **The quantum of lateness is the day, so if you are 15 seconds late that counts as a day late.** If you have a cold or flu you can use the late days for such absences; if you have an extended excused absence contact the instructor and we can work something out.
+Each homework has a deadline date listed.  You will start the term with 12 "flex days", which you can use to push back the due date by one day for each flex day you use. For each individual assigment you can use up to **three** of your 12 flex days quota, each one allowing you to submit the assignment one day later. **The quantum of time here is a day, so on each homework you can use either 0, 1, 2, or 3 flex days.**   Flex days are designed to help you plan around assignments or exams in other courses, and/or if you have a cold or flu which sets you back a bit; if you have an extended excused absence please contact the instructor and we can work something out.
 
 ### Office Hours
 
