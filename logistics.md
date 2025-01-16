@@ -41,10 +41,12 @@ Each homework has a deadline date listed.  You will start the term with 12 "flex
 
 Office hours and locations will be pinned on Courselore.
 
-### Exams
+### In-Class Exercises and Exams
+
+There will be periodic written in-class exercises which will be graded pass/fail.  They will not be announced in advance and cannot be made up, but you will be allowed to drop one score.
 
 There will be an in-class midterm before spring break and a final examination during the normal final exam period slot.
 
 ### Grading
 
-The final will count around 50% of the grade, the midterm 30%, and the homeworks 20%.  Each HW will be weighted somewhat differently, based on the time commitment of the assignment.
+The final will count around 50% of the grade, the midterm 25%, the in-class exercises 5%, and the homeworks 20%.  Each HW will be weighted somewhat differently, based on the time commitment of the assignment.  Note that these weights are only approximations at this point and may need to change.
