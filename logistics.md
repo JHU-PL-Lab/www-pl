@@ -49,4 +49,4 @@ There will be an in-class midterm before spring break and a final examination du
 
 ### Grading
 
-The final will count around 50% of the grade, the midterm 25%, the in-class exercises 5%, and the homeworks 20%.  Each HW will be weighted somewhat differently, based on the time commitment of the assignment.  Note that these weights are only approximations at this point and may need to change.
+The final will count around 50% of the grade, the midterm 25%, the in-class exercises 5%, and the homeworks 20%.  Each HW will be weighted somewhat differently, based on the time commitment of the assignment.  Note that these weights are only estimates, but the final cutoffs should not be too far off from these numbers.
