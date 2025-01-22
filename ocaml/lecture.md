@@ -2,8 +2,9 @@
 ## Introduction to OCaml Programming
 
 * We will be using the OCaml language for implementing interpreters, typecheckers and the like
+* It is a *functional* programming language which of interest in its own right
 * You are not going to learn how to be an OCaml software engineer in this class however, we are just going to cover the minimal OCaml needed for these tasks
-   - Take [Functional Programming in Software Engineering](https://pl.cs.jhu.edu/fpse) for a focus on broader uses of OCaml
+   - Take [Functional Programming in Software Engineering](https://pl.cs.jhu.edu/fpse) for a focus on software engineering in OCaml
 * OCaml itself has a very minimal set of features which can build up other features, we will also follow that in our toy langauges **Fb**, **FbV**, **FbR**, etc.
 
 ### What is OCaml?

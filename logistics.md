@@ -6,7 +6,7 @@ We will meet 1:30-2:45PM on Mondays and Wednesdays in Krieger 170.  You are expe
 
 ### Q&amp;A: Courselore
 
-We are using [Courselore](https://courselore.org/courses/0552179975) for course announcements and Q&amp;A. We will be emailing a special sign-up link for you to get on there; the link is also accessible from the course Canvas page if you added late.
+We are using [Courselore](https://courselore.org/courses/0552179975) for course announcements and Q&amp;A. We emailed a special sign-up link for you to get on there; the link is also accessible from the course Canvas page if you added late.
 
 ### Panopto Lecture Videos
 
@@ -43,7 +43,7 @@ Office hours and locations will be pinned on Courselore.
 
 ### In-Class Exercises and Exams
 
-There will be periodic written in-class exercises which will be graded pass/fail.  They will not be announced in advance and cannot be made up, but you will be allowed to drop one score.
+There will be periodic written in-class exercises which will be graded pass/fail.  *They will not be announced in advance and cannot be made up*, but you will be allowed to drop one score.
 
 There will be an in-class midterm before spring break and a final examination during the normal final exam period slot.
 
