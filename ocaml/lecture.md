@@ -124,16 +124,19 @@ add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but bi
 ```
 
 #### Declaring types in OCaml
-While OCaml infers types for you it is often good practice to add those types to your code, e.g.
 
-```ocaml
-let add (x : int) (y : int) : int = x + y;;
-```
-Note that the parentheses here are required, and the return type is at the end.
+  * While OCaml infers types for you it is often good practice to add those types to your functions, e.g.
+  ```ocaml
+  let add (x : int) (y : int) : int = x + y;;
+  ```
+  * Note that the parentheses are required, and the return type is at the end.
+  * For the homeworks we will give you the types to make clear what the requirements are for the function.
 
 ### Simple Structured Data Types: Option and Result
 
 * Before getting into "bigger" data types and how to declare our own, let's use one of the simplest structured data types, the built-in `option` type.
+* It is used when either we have some data, or we have nothing.
+* In standard PLs there is a `nil` or `Null` or `NULL` pointer which represents absence of data; `option` is a more precise version of those.
 
 ```ocaml
 Some 5;;
@@ -170,10 +173,10 @@ Error: This expression has type int option
        but an expression was expected of type int
 ```
 
-This type error means the `+` lhs should be type `int` but is a `Some` value which is not an `int`.
-  - `option` types are not coercable to integers (or any other type).
+  * This type error means the `+` lhs should be type `int` but is a `Some` value which is **not** an `int`.
+  * `option` types are not coercable to integers (or any other type).
 
-Here is a non-solution to the above showing `None` is not like `nil`/`null`/`NULL` of some other languages:
+Here is another failed attempt which shows how `None` is not like `nil`/`Null`/`NULL`:
  ```ocaml
 # let not_nice_div m n = if n = 0 then None else m / n;;
 Line 1, characters 47-52:
@@ -185,10 +188,10 @@ Error: This expression has type int but an expression was expected of type
 
 #### Pattern matching first example
 
-Here is a real solution to the above issue:
+Here is a real solution to how elements of `option` types can be used:
 ```ocaml
 # match (nice_div 5 2) with 
-   | Some i -> i + 7 (* i is bound to the result, 2 here *)
+   | Some i -> i + 7 (* i is bound to what the Some wraps, 2 here *)
    | None -> failwith "This should never happen, we divided by 2";;
 - : int = 9
 ```
@@ -197,7 +200,7 @@ Here is a real solution to the above issue:
 * The LHS in OCaml can be a general pattern which binds variables (the `i` here), etc
 * Note that we turned `None` into a runtime exception via `failwith`.
 
-Lastly, the function could itself raise an exception
+One other way to deal with this division by zero issue is the function could itself raise an exception:
 
 ```ocaml
 let div_exn m n = if n = 0 then failwith "divide by zero is bad!" else m / n;;
@@ -205,19 +208,17 @@ div_exn 3 4;;
 ```
 
 * This has the property of not needing a match on the result.  
-* Note that the built-in `/` also raises an exception.
+* Note that the built-in `/` also raises an exception, it more or less is doing what this example does.
 * Exceptions are side effects though, we want to minimize their usage to avoid error-at-a-distance.
 * The above examples show how exceptional conditions can either be handled via 
   - exceptions (the most common way, e.g. how Java deals with division by 0)
   - with Some/None in the return value; the latter is the C philosophy, C functions return `NULL` or `-1` if fail and the caller has to deal.
 
-### Everything is an expression
-
-
 ### Lists
 
 * Lists are pervasive in OCaml
 * They are **immutable** (cannot update elements in an existing list) so while they look something like arrays or vectors they are not
+* Isn't it totally impossible to write useful programs with lists that we can't change??  Surprisingly, its not hard at all.
 
 ```ocaml
 let l1 = [1; 2; 3];;
@@ -229,15 +230,16 @@ let l5 = [];; (* empty list *)
 
 #### Operations on lists.  
 
-* Lists are represented internally as **binary trees** with left children all leaves.
+* Lists are represented internally as **binary trees** where the left children are all leaves.
 * The tree nodes are `::` and are called *conses* (an historical term from Lisp)
 * The list is then the list of these left children going down the tree.
-* `::` is also an operation to build a new list
+* `::` is also an operation to build a new list by adding one element to the front of an existing list
+* Since lists don't mutate, sub-lists can be *shared* (!)
 
 ```ocaml
 3 :: [] (* also written [3], a singleton list -- tree with root ::, left sub tree 3, right sub tree empty list *) 
 let l1 = 1 :: (2 :: (3 :: []));; (* equivalent to [1;2;3] *)
-let l0 = 0 :: l1;; (* fast, just makes one new node, left is 0 right is l1 - SHARE it *)
+let l0 = 0 :: l1;; (* fast, just makes one new node, left is 0 right is l1 - l1 is shared with l0 *)
 l1;; (* Notice that l1 did not change even though we put a 0 on - immutable always! *)
 [1; 2; 3] @ [4; 5];; (* appending lists - slower, needs to cons 3 then 2 then 1 on front of [4;5] *)
 ```
@@ -264,12 +266,12 @@ hd [];;
 
 #### Append
 
-* Here is how list append is implemented with recursion on the first list
+* Here is how list append is implemented, recurse on the first list (only):
 ```ocaml
 let rec append l1 l2 =
   match l1 with
   |  [] -> l2
-  |  x :: xs -> x :: (append xs l2) (* assume function works for shorter lists like xs *)
+  |  hd :: tl -> x :: (append tl l2) (* assume function works for shorter lists like xs *)
 ;;
 append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is 1, xs is [2;3] *)
 1 :: (append [2;3] [4;5]);; (* This is what the first recursive call is performing *)
@@ -278,19 +280,22 @@ append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is
 * The above two patterns are mutually exclusive so order is in fact irrelevant here
 
 
-#### nth
+#### Applying a function to all list members
 
-* Lists are not random access like arrays; if you want to get the nth element, you need walk the list.
-* Notice also that pretty much any non-trivial function on lists is going to use recursion and pattern matching
+* Let us hint a bit at the power of higher-order functions with one example, `keep`.
+* We will *pass in* a function as a parameter to `keep`
+* The function we pass in returns `true/false` and we keep only the list elements it is `true` for
+* (such a `true`/`false`-valued function is called a *predicate* in logic)
+* This example starts to show why anonymous functions are so useful
 
 ```ocaml
-let rec nth l n =
+let rec keep (l : 'a list) (p : 'a -> bool) : 'a list = 
   match l with
-  |  [] -> failwith ("no "^(Int.to_string n)^"th element in this list")
-  |  x :: xs -> if n = 0 then x else nth xs (n-1) (* to get nth elt in list, get n-1-th elt from tail *)
+  |  [] -> [] (* no elements to check p on *)
+  |  hd :: tl -> if p hd then hd :: keep tl p else keep tl p
 ;;
-nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
-(* nth [33;22;11] 3;; *) (* Hits failure case; could have instead returned Some/None *)
+keep [33;-22;11] (fun n -> n > 0);; (* keep only the elements greater than 0 *)
+keep ["hello";"this";"is";"";"fun";""] (fun s -> s <> "");; (* keep non-empty strings *)
 ```
 
 Don't use non-exhaustive pattern matches! You will get a warning (and an error in compiler):
@@ -323,13 +328,13 @@ List.append [1;2] [3;4];;
 ```
 
 * Type `#show List;;` into utop to get a dump of all the functions in `List`.
-* NOTE: for assignment 1 you cannot use these `List.` functions, we want you to first practice using recursion.
+* NOTE: for assignment 1 you **cannot** use these `List.` functions, we want you to practice using recursion (you can use them after Assignment 1).
 * The [Standard Library Reference page for lists](http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html) contains descriptions as well.
 * There are similar modes for `Int`, `String`, `Float`, etc modules which similarly contain handy functions.
 
-#### Types of these library functions
+#### The Types of List Library Functions
 
-* The types of the functions are additional hints to their purpose, get used to reading them
+* The types of the functions are additional hints as to their purpose, get used to reading them
 * Much of the time when you mis-use a function you will get a type error
 * `'a list` etc is a polymorphic aka generic type, `'a` can be *any* type. more later on that
 ```ocaml
@@ -348,9 +353,9 @@ Consider list reverse (no need to code as it is `List.rev`; this is just an exam
 let rec rev l =
   match l with
   |  [] -> []
-  | x :: xs -> rev xs @ [x]
+  | hd :: tl -> rev tl @ [hd] (* Assume by induction that rev tl "works" since its a shorter list. *)
 ;;
-rev [1;2;3];; (* recall [1;2;3] is equivalent to 1 :: ( 2 :: ( 3 :: [])) *)
+rev [1;2;3];; (* recall [1;2;3] is equivalent to 1 :: [2;3] *)
 ```
 
 Let us argue why this works.
@@ -365,25 +370,28 @@ Before doing the general case, here are some equivalences we can see from the ab
 rev [1;2;3] 
 ~= rev (1 :: [2;3]) (by the meaning of the [...] list syntax)
 ~= (rev [2;3]) @ [1]  (the second pattern is matched: x is 1, xs is [2;3] and run the match body)
-~= (rev [3] @ [2]) @ [1]  (same thing for the rev [2;3] expression - plug in its elaboration)
-~= ((rev [] @ [3]) @ [2]) @ [1]
-~= (([] @ [3]) @ [2]) @ [1]
-~= [3;2;1] (by the meaning of append)
+.. assuming it "works" for smaller lists, we have
+~= [3;2] @ 1
+~= [3;2;1]
 ``` 
 
-But, what we really want to show is it reverses ANY list.. use induction!
+We now want to generalize this to any list, not just `[1;2;3]`: use induction to prove it.
 
 Let P(n) mean "for any list l of length n, `rev l ~=` its reverse".
+
+#### Tangent: review of why induction works
 
 Recall an induction principle:
 To show P(n) for all in, it suffices to show 
   1) P(0), and 
   2) P(k-1) holds implies P(k) holds for any natural number k>0.
 
-* Induction is often not explained well by mathematicians which causes confusion
-* It is easier for us CS-ers, the induction step 2) is really just a **proof macro** with k a parameter
-   - imagine copy/pasting your proof of 2) for any particular number k => macro expansion
-* Induction is justified by repeatedly instantiating the macro for 1,2,3,..
+* Why does this work??
+* Think of induction step 2) as a **proof macro** with k a parameter
+* Since it holds for any k, we can plug in any particular number into the macro
+   - plug in k=1: P(0) implies P(1) has to hold
+   - plug k=2: P(1) implies P(2) has to hold 
+   - ...
 
 So, if we showed 1) and 2) above, 
 - P(0) is true by 1)
@@ -395,7 +403,7 @@ So, if we showed 1) and 2) above,
     and we just showed we have P(2), so we also have P(3).
 - ... etc for all k
 
-Let us now prove by induction.
+Let us now prove reverse reverses, by induction.
 
 Theorem: For any list `l` of length n, `rev l ~=` the reverse of `l` .
 Proof.  Proceed by induction to show this property for any n.

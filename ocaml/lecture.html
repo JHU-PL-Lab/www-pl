@@ -215,16 +215,22 @@ So, <code>add</code> is in fact a <strong>higher-order function</strong>: it ret
 </code></pre></div></div>
 
 <h4 id="declaring-types-in-ocaml">Declaring types in OCaml</h4>
-<p>While OCaml infers types for you it is often good practice to add those types to your code, e.g.</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add</span> <span class="p">(</span><span class="n">x</span> <span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span> <span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
-</code></pre></div></div>
-<p>Note that the parentheses here are required, and the return type is at the end.</p>
+<ul>
+  <li>While OCaml infers types for you it is often good practice to add those types to your functions, e.g.
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="k">let</span> <span class="n">add</span> <span class="p">(</span><span class="n">x</span> <span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span> <span class="o">:</span> <span class="kt">int</span><span class="p">)</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Note that the parentheses are required, and the return type is at the end.</li>
+  <li>For the homeworks we will give you the types to make clear what the requirements are for the function.</li>
+</ul>
 
 <h3 id="simple-structured-data-types-option-and-result">Simple Structured Data Types: Option and Result</h3>
 
 <ul>
   <li>Before getting into “bigger” data types and how to declare our own, let’s use one of the simplest structured data types, the built-in <code>option</code> type.</li>
+  <li>It is used when either we have some data, or we have nothing.</li>
+  <li>In standard PLs there is a <code>nil</code> or <code>Null</code> or <code>NULL</code> pointer which represents absence of data; <code>option</code> is a more precise version of those.</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Some</span> <span class="mi">5</span><span class="p">;;</span>
@@ -262,12 +268,12 @@ Error: This expression has <span class="nb">type </span>int option
        but an expression was expected of <span class="nb">type </span>int
 </code></pre></div></div>
 
-<p>This type error means the <code>+</code> lhs should be type <code>int</code> but is a <code>Some</code> value which is not an <code>int</code>.</p>
 <ul>
+  <li>This type error means the <code>+</code> lhs should be type <code>int</code> but is a <code>Some</code> value which is <strong>not</strong> an <code>int</code>.</li>
   <li><code>option</code> types are not coercable to integers (or any other type).</li>
 </ul>
 
-<p>Here is a non-solution to the above showing <code>None</code> is not like <code>nil</code>/<code>null</code>/<code>NULL</code> of some other languages:</p>
+<p>Here is another failed attempt which shows how <code>None</code> is not like <code>nil</code>/<code>Null</code>/<code>NULL</code>:</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="k">let</span> <span class="n">not_nice_div</span> <span class="n">m</span> <span class="n">n</span> <span class="o">=</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="nc">None</span> <span class="k">else</span> <span class="n">m</span> <span class="o">/</span> <span class="n">n</span><span class="p">;;</span>
 <span class="nc">Line</span> <span class="mi">1</span><span class="o">,</span> <span class="n">characters</span> <span class="mi">47</span><span class="o">-</span><span class="mi">52</span><span class="o">:</span>
 <span class="nc">Error</span><span class="o">:</span> <span class="nc">This</span> <span class="n">expression</span> <span class="n">has</span> <span class="k">type</span> <span class="kt">int</span> <span class="n">but</span> <span class="n">an</span> <span class="n">expression</span> <span class="n">was</span> <span class="n">expected</span> <span class="k">of</span> <span class="k">type</span>
@@ -280,9 +286,9 @@ Error: This expression has <span class="nb">type </span>int option
 
 <h4 id="pattern-matching-first-example">Pattern matching first example</h4>
 
-<p>Here is a real solution to the above issue:</p>
+<p>Here is a real solution to how elements of <code>option</code> types can be used:</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">#</span> <span class="k">match</span> <span class="p">(</span><span class="n">nice_div</span> <span class="mi">5</span> <span class="mi">2</span><span class="p">)</span> <span class="k">with</span> 
-   <span class="o">|</span> <span class="nc">Some</span> <span class="n">i</span> <span class="o">-&gt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">7</span> <span class="c">(* i is bound to the result, 2 here *)</span>
+   <span class="o">|</span> <span class="nc">Some</span> <span class="n">i</span> <span class="o">-&gt;</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">7</span> <span class="c">(* i is bound to what the Some wraps, 2 here *)</span>
    <span class="o">|</span> <span class="nc">None</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="s2">"This should never happen, we divided by 2"</span><span class="p">;;</span>
 <span class="o">-</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="mi">9</span>
 </code></pre></div></div>
@@ -293,7 +299,7 @@ Error: This expression has <span class="nb">type </span>int option
   <li>Note that we turned <code>None</code> into a runtime exception via <code>failwith</code>.</li>
 </ul>
 
-<p>Lastly, the function could itself raise an exception</p>
+<p>One other way to deal with this division by zero issue is the function could itself raise an exception:</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">div_exn</span> <span class="n">m</span> <span class="n">n</span> <span class="o">=</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">failwith</span> <span class="s2">"divide by zero is bad!"</span> <span class="k">else</span> <span class="n">m</span> <span class="o">/</span> <span class="n">n</span><span class="p">;;</span>
 <span class="n">div_exn</span> <span class="mi">3</span> <span class="mi">4</span><span class="p">;;</span>
@@ -301,7 +307,7 @@ Error: This expression has <span class="nb">type </span>int option
 
 <ul>
   <li>This has the property of not needing a match on the result.</li>
-  <li>Note that the built-in <code>/</code> also raises an exception.</li>
+  <li>Note that the built-in <code>/</code> also raises an exception, it more or less is doing what this example does.</li>
   <li>Exceptions are side effects though, we want to minimize their usage to avoid error-at-a-distance.</li>
   <li>The above examples show how exceptional conditions can either be handled via
     <ul>
@@ -311,13 +317,12 @@ Error: This expression has <span class="nb">type </span>int option
   </li>
 </ul>
 
-<h3 id="everything-is-an-expression">Everything is an expression</h3>
-
 <h3 id="lists">Lists</h3>
 
 <ul>
   <li>Lists are pervasive in OCaml</li>
   <li>They are <strong>immutable</strong> (cannot update elements in an existing list) so while they look something like arrays or vectors they are not</li>
+  <li>Isn’t it totally impossible to write useful programs with lists that we can’t change??  Surprisingly, its not hard at all.</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">l1</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">];;</span>
@@ -330,15 +335,16 @@ Error: This expression has <span class="nb">type </span>int option
 <h4 id="operations-on-lists">Operations on lists.</h4>
 
 <ul>
-  <li>Lists are represented internally as <strong>binary trees</strong> with left children all leaves.</li>
+  <li>Lists are represented internally as <strong>binary trees</strong> where the left children are all leaves.</li>
   <li>The tree nodes are <code>::</code> and are called <em>conses</em> (an historical term from Lisp)</li>
   <li>The list is then the list of these left children going down the tree.</li>
-  <li><code>::</code> is also an operation to build a new list</li>
+  <li><code>::</code> is also an operation to build a new list by adding one element to the front of an existing list</li>
+  <li>Since lists don’t mutate, sub-lists can be <em>shared</em> (!)</li>
 </ul>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="mi">3</span> <span class="o">::</span> <span class="bp">[]</span> <span class="c">(* also written [3], a singleton list -- tree with root ::, left sub tree 3, right sub tree empty list *)</span> 
 <span class="k">let</span> <span class="n">l1</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">::</span> <span class="p">(</span><span class="mi">2</span> <span class="o">::</span> <span class="p">(</span><span class="mi">3</span> <span class="o">::</span> <span class="bp">[]</span><span class="p">));;</span> <span class="c">(* equivalent to [1;2;3] *)</span>
-<span class="k">let</span> <span class="n">l0</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">::</span> <span class="n">l1</span><span class="p">;;</span> <span class="c">(* fast, just makes one new node, left is 0 right is l1 - SHARE it *)</span>
+<span class="k">let</span> <span class="n">l0</span> <span class="o">=</span> <span class="mi">0</span> <span class="o">::</span> <span class="n">l1</span><span class="p">;;</span> <span class="c">(* fast, just makes one new node, left is 0 right is l1 - l1 is shared with l0 *)</span>
 <span class="n">l1</span><span class="p">;;</span> <span class="c">(* Notice that l1 did not change even though we put a 0 on - immutable always! *)</span>
 <span class="p">[</span><span class="mi">1</span><span class="p">;</span> <span class="mi">2</span><span class="p">;</span> <span class="mi">3</span><span class="p">]</span> <span class="o">@</span> <span class="p">[</span><span class="mi">4</span><span class="p">;</span> <span class="mi">5</span><span class="p">];;</span> <span class="c">(* appending lists - slower, needs to cons 3 then 2 then 1 on front of [4;5] *)</span>
 </code></pre></div></div>
@@ -367,11 +373,11 @@ Error: This expression has <span class="nb">type </span>int option
 <h4 id="append">Append</h4>
 
 <ul>
-  <li>Here is how list append is implemented with recursion on the first list
+  <li>Here is how list append is implemented, recurse on the first list (only):
     <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">append</span> <span class="n">l1</span> <span class="n">l2</span> <span class="o">=</span>
 <span class="k">match</span> <span class="n">l1</span> <span class="k">with</span>
 <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">l2</span>
-<span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">::</span> <span class="p">(</span><span class="n">append</span> <span class="n">xs</span> <span class="n">l2</span><span class="p">)</span> <span class="c">(* assume function works for shorter lists like xs *)</span>
+<span class="o">|</span>  <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">::</span> <span class="p">(</span><span class="n">append</span> <span class="n">tl</span> <span class="n">l2</span><span class="p">)</span> <span class="c">(* assume function works for shorter lists like xs *)</span>
 <span class="p">;;</span>
 <span class="n">append</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">];;</span> <span class="c">(* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is 1, xs is [2;3] *)</span>
 <span class="mi">1</span> <span class="o">::</span> <span class="p">(</span><span class="n">append</span> <span class="p">[</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="p">[</span><span class="mi">4</span><span class="p">;</span><span class="mi">5</span><span class="p">]);;</span> <span class="c">(* This is what the first recursive call is performing *)</span>
@@ -381,20 +387,23 @@ Error: This expression has <span class="nb">type </span>int option
   <li>The above two patterns are mutually exclusive so order is in fact irrelevant here</li>
 </ul>
 
-<h4 id="nth">nth</h4>
+<h4 id="applying-a-function-to-all-list-members">Applying a function to all list members</h4>
 
 <ul>
-  <li>Lists are not random access like arrays; if you want to get the nth element, you need walk the list.</li>
-  <li>Notice also that pretty much any non-trivial function on lists is going to use recursion and pattern matching</li>
+  <li>Let us hint a bit at the power of higher-order functions with one example, <code>keep</code>.</li>
+  <li>We will <em>pass in</em> a function as a parameter to <code>keep</code></li>
+  <li>The function we pass in returns <code>true/false</code> and we keep only the list elements it is <code>true</code> for</li>
+  <li>(such a <code>true</code>/<code>false</code>-valued function is called a <em>predicate</em> in logic)</li>
+  <li>This example starts to show why anonymous functions are so useful</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">nth</span> <span class="n">l</span> <span class="n">n</span> <span class="o">=</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">keep</span> <span class="p">(</span><span class="n">l</span> <span class="o">:</span> <span class="k">'</span><span class="n">a</span> <span class="kt">list</span><span class="p">)</span> <span class="p">(</span><span class="n">p</span> <span class="o">:</span> <span class="k">'</span><span class="n">a</span> <span class="o">-&gt;</span> <span class="kt">bool</span><span class="p">)</span> <span class="o">:</span> <span class="k">'</span><span class="n">a</span> <span class="kt">list</span> <span class="o">=</span> 
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-  <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">failwith</span> <span class="p">(</span><span class="s2">"no "</span><span class="o">^</span><span class="p">(</span><span class="nn">Int</span><span class="p">.</span><span class="n">to_string</span> <span class="n">n</span><span class="p">)</span><span class="o">^</span><span class="s2">"th element in this list"</span><span class="p">)</span>
-  <span class="o">|</span>  <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">n</span> <span class="o">=</span> <span class="mi">0</span> <span class="k">then</span> <span class="n">x</span> <span class="k">else</span> <span class="n">nth</span> <span class="n">xs</span> <span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="c">(* to get nth elt in list, get n-1-th elt from tail *)</span>
+  <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span> <span class="c">(* no elements to check p on *)</span>
+  <span class="o">|</span>  <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">p</span> <span class="n">hd</span> <span class="k">then</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">keep</span> <span class="n">tl</span> <span class="n">p</span> <span class="k">else</span> <span class="n">keep</span> <span class="n">tl</span> <span class="n">p</span>
 <span class="p">;;</span>
-<span class="n">nth</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="mi">0</span><span class="p">;;</span> <span class="c">(* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)</span>
-<span class="c">(* nth [33;22;11] 3;; *)</span> <span class="c">(* Hits failure case; could have instead returned Some/None *)</span>
+<span class="n">keep</span> <span class="p">[</span><span class="mi">33</span><span class="p">;</span><span class="o">-</span><span class="mi">22</span><span class="p">;</span><span class="mi">11</span><span class="p">]</span> <span class="p">(</span><span class="k">fun</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">);;</span> <span class="c">(* keep only the elements greater than 0 *)</span>
+<span class="n">keep</span> <span class="p">[</span><span class="s2">"hello"</span><span class="p">;</span><span class="s2">"this"</span><span class="p">;</span><span class="s2">"is"</span><span class="p">;</span><span class="s2">""</span><span class="p">;</span><span class="s2">"fun"</span><span class="p">;</span><span class="s2">""</span><span class="p">]</span> <span class="p">(</span><span class="k">fun</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="n">s</span> <span class="o">&lt;&gt;</span> <span class="s2">""</span><span class="p">);;</span> <span class="c">(* keep non-empty strings *)</span>
 </code></pre></div></div>
 
 <p>Don’t use non-exhaustive pattern matches! You will get a warning (and an error in compiler):</p>
@@ -426,15 +435,15 @@ Error: This expression has <span class="nb">type </span>int option
 
 <ul>
   <li>Type <code>#show List;;</code> into utop to get a dump of all the functions in <code>List</code>.</li>
-  <li>NOTE: for assignment 1 you cannot use these <code>List.</code> functions, we want you to first practice using recursion.</li>
+  <li>NOTE: for assignment 1 you <strong>cannot</strong> use these <code>List.</code> functions, we want you to practice using recursion (you can use them after Assignment 1).</li>
   <li>The <a href="http://caml.inria.fr/pub/docs/manual-ocaml/libref/List.html">Standard Library Reference page for lists</a> contains descriptions as well.</li>
   <li>There are similar modes for <code>Int</code>, <code>String</code>, <code>Float</code>, etc modules which similarly contain handy functions.</li>
 </ul>
 
-<h4 id="types-of-these-library-functions">Types of these library functions</h4>
+<h4 id="the-types-of-list-library-functions">The Types of List Library Functions</h4>
 
 <ul>
-  <li>The types of the functions are additional hints to their purpose, get used to reading them</li>
+  <li>The types of the functions are additional hints as to their purpose, get used to reading them</li>
   <li>Much of the time when you mis-use a function you will get a type error</li>
   <li><code>'a list</code> etc is a polymorphic aka generic type, <code>'a</code> can be <em>any</em> type. more later on that
     <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">length</span><span class="p">;;</span>
@@ -453,9 +462,9 @@ Error: This expression has <span class="nb">type </span>int option
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
   <span class="o">|</span>  <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="bp">[]</span>
-  <span class="o">|</span> <span class="n">x</span> <span class="o">::</span> <span class="n">xs</span> <span class="o">-&gt;</span> <span class="n">rev</span> <span class="n">xs</span> <span class="o">@</span> <span class="p">[</span><span class="n">x</span><span class="p">]</span>
+  <span class="o">|</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span> <span class="n">rev</span> <span class="n">tl</span> <span class="o">@</span> <span class="p">[</span><span class="n">hd</span><span class="p">]</span> <span class="c">(* Assume by induction that rev tl "works" since its a shorter list. *)</span>
 <span class="p">;;</span>
-<span class="n">rev</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* recall [1;2;3] is equivalent to 1 :: ( 2 :: ( 3 :: [])) *)</span>
+<span class="n">rev</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* recall [1;2;3] is equivalent to 1 :: [2;3] *)</span>
 </code></pre></div></div>
 
 <p>Let us argue why this works.</p>
@@ -471,15 +480,16 @@ Error: This expression has <span class="nb">type </span>int option
 <pre><code>rev [1;2;3] 
 ~= rev (1 :: [2;3]) (by the meaning of the [...] list syntax)
 ~= (rev [2;3]) @ [1]  (the second pattern is matched: x is 1, xs is [2;3] and run the match body)
-~= (rev [3] @ [2]) @ [1]  (same thing for the rev [2;3] expression - plug in its elaboration)
-~= ((rev [] @ [3]) @ [2]) @ [1]
-~= (([] @ [3]) @ [2]) @ [1]
-~= [3;2;1] (by the meaning of append)
+.. assuming it "works" for smaller lists, we have
+~= [3;2] @ 1
+~= [3;2;1]
 </code></pre>
 
-<p>But, what we really want to show is it reverses ANY list.. use induction!</p>
+<p>We now want to generalize this to any list, not just <code>[1;2;3]</code>: use induction to prove it.</p>
 
 <p>Let P(n) mean “for any list l of length n, <code>rev l ~=</code> its reverse”.</p>
+
+<h4 id="tangent-review-of-why-induction-works">Tangent: review of why induction works</h4>
 
 <p>Recall an induction principle:<br />
 To show P(n) for all in, it suffices to show <br />
@@ -487,13 +497,15 @@ To show P(n) for all in, it suffices to show <br />
   2) P(k-1) holds implies P(k) holds for any natural number k&gt;0.</p>
 
 <ul>
-  <li>Induction is often not explained well by mathematicians which causes confusion</li>
-  <li>It is easier for us CS-ers, the induction step 2) is really just a <strong>proof macro</strong> with k a parameter
+  <li>Why does this work??</li>
+  <li>Think of induction step 2) as a <strong>proof macro</strong> with k a parameter</li>
+  <li>Since it holds for any k, we can plug in any particular number into the macro
     <ul>
-      <li>imagine copy/pasting your proof of 2) for any particular number k =&gt; macro expansion</li>
+      <li>plug in k=1: P(0) implies P(1) has to hold</li>
+      <li>plug k=2: P(1) implies P(2) has to hold</li>
+      <li>…</li>
     </ul>
   </li>
-  <li>Induction is justified by repeatedly instantiating the macro for 1,2,3,..</li>
 </ul>
 
 <p>So, if we showed 1) and 2) above,</p>
@@ -508,7 +520,7 @@ To show P(n) for all in, it suffices to show <br />
   <li>… etc for all k</li>
 </ul>
 
-<p>Let us now prove by induction.</p>
+<p>Let us now prove reverse reverses, by induction.</p>
 
 <p>Theorem: For any list <code>l</code> of length n, <code>rev l ~=</code> the reverse of <code>l</code> .<br />
 Proof.  Proceed by induction to show this property for any n.<br />

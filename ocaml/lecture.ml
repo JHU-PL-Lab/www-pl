@@ -48,8 +48,6 @@ add3 (3 * 2);;
 add3 3 * 2;; (* NOT the previous - this is the same as (add3 3) * 2 - application binds tighter than `*` *)
 add3 @@ 3 * 2;; (* LIKE the original - @@ is like the " " for application but binds LOOSER than other ops *)
 
-let add (x : int) (y : int) : int = x + y;;
-
 Some 5;;
 (*  - : int option = Some 5 *)
 
@@ -67,7 +65,7 @@ let l5 = [];; (* empty list *)
 
 3 :: [] (* also written [3], a singleton list -- tree with root ::, left sub tree 3, right sub tree empty list *) 
 let l1 = 1 :: (2 :: (3 :: []));; (* equivalent to [1;2;3] *)
-let l0 = 0 :: l1;; (* fast, just makes one new node, left is 0 right is l1 - SHARE it *)
+let l0 = 0 :: l1;; (* fast, just makes one new node, left is 0 right is l1 - l1 is shared with l0 *)
 l1;; (* Notice that l1 did not change even though we put a 0 on - immutable always! *)
 [1; 2; 3] @ [4; 5];; (* appending lists - slower, needs to cons 3 then 2 then 1 on front of [4;5] *)
 
@@ -83,18 +81,18 @@ hd [];;
 let rec append l1 l2 =
   match l1 with
   |  [] -> l2
-  |  x :: xs -> x :: (append xs l2) (* assume function works for shorter lists like xs *)
+  |  hd :: tl -> x :: (append tl l2) (* assume function works for shorter lists like xs *)
 ;;
 append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is 1, xs is [2;3] *)
 1 :: (append [2;3] [4;5]);; (* This is what the first recursive call is performing *)
 
-let rec nth l n =
+let rec keep (l : 'a list) (p : 'a -> bool) : 'a list = 
   match l with
-  |  [] -> failwith ("no "^(Int.to_string n)^"th element in this list")
-  |  x :: xs -> if n = 0 then x else nth xs (n-1) (* to get nth elt in list, get n-1-th elt from tail *)
+  |  [] -> [] (* no elements to check p on *)
+  |  hd :: tl -> if p hd then hd :: keep tl p else keep tl p
 ;;
-nth [33;22;11] 0;; (* Recall [`33;22;11]` is `33 :: [22;11]` so in first call x is 33 *)
-(* nth [33;22;11] 3;; *) (* Hits failure case; could have instead returned Some/None *)
+keep [33;-22;11] (fun n -> n > 0);; (* keep only the elements greater than 0 *)
+keep ["hello";"this";"is";"";"fun";""] (fun s -> s <> "");; (* keep non-empty strings *)
 
 let dumb l = match l with
       | x :: y -> x;;
@@ -119,9 +117,9 @@ List.append;;
 let rec rev l =
   match l with
   |  [] -> []
-  | x :: xs -> rev xs @ [x]
+  | hd :: tl -> rev tl @ [hd] (* Assume by induction that rev tl "works" since its a shorter list. *)
 ;;
-rev [1;2;3];; (* recall [1;2;3] is equivalent to 1 :: ( 2 :: ( 3 :: [])) *)
+rev [1;2;3];; (* recall [1;2;3] is equivalent to 1 :: [2;3] *)
 
 (2, "hi");;             (* type is int * string -- '*' is like "x" of set theory, a product *)
 let tuple = (2, "hi");; (* tuple elements separated by commas, list elements by semicolon *)
