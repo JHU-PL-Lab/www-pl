@@ -72,7 +72,7 @@ l1;; (* Notice that l1 did not change even though we put a 0 on - immutable alwa
 let hd l =
   match l with
   |  [] -> None
-  |  x :: xs -> Some x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
+  |  hd :: tl -> Some x (* the pattern hd :: tl  binds hd to the first elt, tl to ALL the others *)
 ;;
 hd [1;2;3];; (* [1;2;3] is 1 :: [2;3] So the head is 1. *)
 hd [1];; (* [1] is 1 :: []  So the head is 1. *)
@@ -81,9 +81,9 @@ hd [];;
 let rec append l1 l2 =
   match l1 with
   |  [] -> l2
-  |  hd :: tl -> x :: (append tl l2) (* assume function works for shorter lists like xs *)
+  |  hd :: tl -> hd :: (append tl l2) (* assume function works for shorter lists like tl *)
 ;;
-append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is 1, xs is [2;3] *)
+append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call hd is 1, tl is [2;3] *)
 1 :: (append [2;3] [4;5]);; (* This is what the first recursive call is performing *)
 
 let rec keep (l : 'a list) (p : 'a -> bool) : 'a list = 
@@ -138,11 +138,11 @@ let i,b,f = 4, true, 4.4;;
 
 (* Pattern matching on a pair allows parallel pattern matching *)
 
-let rec eq_lists l1 l2 = 
+let rec eq_lists l1 l2 = (* note `l1 = l2` in OCaml will work so no need to actually write this .. *)
   match l1,l2 with
   | [], [] -> true
-  | x::xs, x'::xs' -> if x <> x' then false else eq_lists xs xs'
-  | _ -> false (* lengths must differ if this case is hit *)
+  | hd :: tl, hd' :: tl' -> if hd <> hd' then false else eq_lists tl tl'
+  | _ -> false (* _ is a catch-all pattern; lengths must differ if this case is hit *)
 
 let y = 3;;
 let x = 5;;
@@ -182,7 +182,7 @@ let rec copy_odd l = match l with
 and  (* new keyword for declaring mutually recursive functions *)
   copy_even l = match l with
   |  [] -> []
-  | x :: xs -> copy_odd xs;; (* throw away the head in this case *)
+  | hd :: tl -> copy_odd tl;; (* throw away the head in this case *)
 
 copy_odd [1;2;3;4;5;6;7;8;9;10];;
 copy_even [1;2;3;4;5;6;7;8;9;10];;
@@ -194,7 +194,7 @@ let copy_odd ll =
   and
     copy_even_local l = match l with
     |        [] -> []
-    | x :: xs -> copy_odd_local xs
+    | hd :: tl -> copy_odd_local tl
   in
   copy_odd_local ll;;
 
@@ -203,7 +203,7 @@ assert(copy_odd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 let rec append_gobble l =
   match l with
   | [] -> []
-  | hd::tl -> (hd ^"-gobble") :: append_gobble tl;;
+  | hd::tl -> (hd ^ "-gobble") :: append_gobble tl;;
 
 append_gobble ["have";"a";"good";"day"];;
 ("have" ^"gobble") :: ("a"^"gobble") :: append_gobble ["good";"day"];;
@@ -213,7 +213,7 @@ let rec map (f : 'a -> 'b) (l : 'a list) : 'b list =  (* function f is an argume
   | [] -> []
   | hd::tl -> (f hd) :: map f tl;;
 
-let another_append_gobble = map (fun s -> s^"-gobble");; (* give only the first argument -- Currying *)
+let another_append_gobble = map (fun s -> s ^ "-gobble");; (* give only the first argument -- Currying *)
 another_append_gobble ["have";"a";"good";"day"];;
 map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* don't have to name the intermediate application *)
 
@@ -257,15 +257,21 @@ let rec contains x l =
 let rec diff l1 l2 =
   match l1 with
   | [] -> []
-  | x :: xs ->
-      if contains x l2 then diff xs l2
-      else x :: diff xs l2
+  | hd :: tl ->
+      if contains hd l2 then diff tl l2
+      else hd :: diff tl l2
 ;;
 
 assert(contains 1 [1; 2; 3]);;
 assert(not(contains 5 [1; 2; 3]));;
 assert(diff [1;2;3] [3;4;5] = [1; 2]);;
 assert(diff [1;2] [1;2;3] = []);;
+
+let rec list_max_aux n l = (* invariant: n is the maximal integer seen thus far *)
+  match l with 
+  | [] -> n
+  | hd :: tl -> if hd > n then list_max_aux hd tl else list_max n tl
+let list_max = list_max_aux Int.min_int (* prime the pump *)
 
 let rec summate_right l = match l with
     | []   -> 0 (* this is the initial number to start with; a special case *)

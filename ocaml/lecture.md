@@ -257,7 +257,7 @@ Picture of `l1` and `l0`:
 let hd l =
   match l with
   |  [] -> None
-  |  x :: xs -> Some x (* the pattern x :: xs  binds x to the first elt, xs to ALL the others *)
+  |  hd :: tl -> Some x (* the pattern hd :: tl  binds hd to the first elt, tl to ALL the others *)
 ;;
 hd [1;2;3];; (* [1;2;3] is 1 :: [2;3] So the head is 1. *)
 hd [1];; (* [1] is 1 :: []  So the head is 1. *)
@@ -271,9 +271,9 @@ hd [];;
 let rec append l1 l2 =
   match l1 with
   |  [] -> l2
-  |  hd :: tl -> x :: (append tl l2) (* assume function works for shorter lists like xs *)
+  |  hd :: tl -> hd :: (append tl l2) (* assume function works for shorter lists like tl *)
 ;;
-append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call x is 1, xs is [2;3] *)
+append [1;2;3] [4;5];; (* Recall `[1;2;3]` is `1 :: [2;3]` so in first call hd is 1, tl is [2;3] *)
 1 :: (append [2;3] [4;5]);; (* This is what the first recursive call is performing *)
 ```
 * Pattern priority: pick the first matched clause
@@ -369,7 +369,7 @@ Before doing the general case, here are some equivalences we can see from the ab
 ```
 rev [1;2;3] 
 ~= rev (1 :: [2;3]) (by the meaning of the [...] list syntax)
-~= (rev [2;3]) @ [1]  (the second pattern is matched: x is 1, xs is [2;3] and run the match body)
+~= (rev [2;3]) @ [1]  (the second pattern is matched: hd is 1, tl is [2;3] and run the match body)
 .. assuming it "works" for smaller lists, we have
 ~= [3;2] @ 1
 ~= [3;2;1]
@@ -409,8 +409,8 @@ Theorem: For any list `l` of length n, `rev l ~=` the reverse of `l` .
 Proof.  Proceed by induction to show this property for any n.
   1) for n = 0, `l ~= []` since that is the only 0-length list.
      `rev [] ~= []` which is `[]` reversed, check!
-  2) Assume for any k-length list `l` that `rev l ~= l` reversed.
-     Show for any k+1 length list, i.e. for any list `x :: l`
+  2) Assume for any (k-1)-length list `l` that `rev l ~= l` reversed.
+     Show for any k length list, i.e. for any list `x :: l`
      that `rev (x :: l) ~= (x :: l)` reversed:
 
 OK, by computing, `rev (x :: l) ~= rev l @ [x]`.
@@ -451,11 +451,11 @@ let i,b,f = 4, true, 4.4;;
 
 (* Pattern matching on a pair allows parallel pattern matching *)
 
-let rec eq_lists l1 l2 = 
+let rec eq_lists l1 l2 = (* note `l1 = l2` in OCaml will work so no need to actually write this .. *)
   match l1,l2 with
   | [], [] -> true
-  | x::xs, x'::xs' -> if x <> x' then false else eq_lists xs xs'
-  | _ -> false (* lengths must differ if this case is hit *)
+  | hd :: tl, hd' :: tl' -> if hd <> hd' then false else eq_lists tl tl'
+  | _ -> false (* _ is a catch-all pattern; lengths must differ if this case is hit *)
 ```
 
 #### Consequences of immutable variable declarations on the top loop
@@ -499,7 +499,7 @@ The above might make more sense if you consider similar-in-spirit C pseudo-code:
 ```
 
 
-Function definitions are similar, you can't mutate an existing definition.
+Function definitions are similar, you can't mutate an existing definition, only shadow it.
 
 ```ocaml
 let f x = x + 1;;
@@ -512,19 +512,19 @@ g (-5);; (* sees new f now *)
 ```
 
 * Moral: **re-load all dependent functions if you change any function**
-* For Assignment 1, you can copy/paste stuff into the top loop to test.
-* Or, you can type `dune test` in the terminal to compile and automatically run tests on your code
-* Or, typing `dune utop` will compile and load it all into `utop` so you can then play with your functions.  You will need to type `open Assignment;;` into `utop` once it is going so all your functions are available.
-* Or, you can type into `utop` the command `#use "src/assignment.ml"` and it is as if you copy/pasted the whole file into `utop`.
+* For programming assignments, if you want to play with your code you can copy/paste stuff into the top loop to test, but beware that functions depending on the function you changed may not change
+* To be safe, save `assignment.ml`, quit `utop`,  type `dune utop` again which will compile and load all your code.  You will need to type `open Assignment;;` into `utop` once it is going so all your functions are available.
+* Note you can alternatively type into `utop` the command `#use "src/assignment.ml"` and it is as if you copy/pasted the whole file into `utop`.
+* Run `dune test` to check on your overall progress.
 
 Moral: there are many ways to develop in OCaml, experiment with these different modes to see which is working best for you.
 
 #### Mutually recursive functions
 
-* Mutually recursive functions are not common but they require special syntax unfortunately
+* Mutually recursive functions require special syntax in OCaml
 * Warm up: write a copy function on lists
   - List copy is in fact **100% useless** in OCaml because lists are immutable - compiler can *share* two versions without any issues
-  - This property is *referential transparency*
+  - This property is called *referential transparency*
 
 ```ocaml
 let rec copy l =
@@ -537,7 +537,7 @@ let result = copy [1;2;3;4;5;6;7;8;9;10]
 * Argue by induction that this will copy: `(copy tl)` is a call on a shorter list so can assume is correct
 
 
-Copy every other element, defined by mutual recursion via `and` syntax
+Now lets do some mutual recursion.  Copy every other element, defined by mutual recursion via `and` syntax
 
 ```ocaml
 let rec copy_odd l = match l with
@@ -546,7 +546,7 @@ let rec copy_odd l = match l with
 and  (* new keyword for declaring mutually recursive functions *)
   copy_even l = match l with
   |  [] -> []
-  | x :: xs -> copy_odd xs;; (* throw away the head in this case *)
+  | hd :: tl -> copy_odd tl;; (* throw away the head in this case *)
 
 copy_odd [1;2;3;4;5;6;7;8;9;10];;
 copy_even [1;2;3;4;5;6;7;8;9;10];;
@@ -565,7 +565,7 @@ let copy_odd ll =
   and
     copy_even_local l = match l with
     |        [] -> []
-    | x :: xs -> copy_odd_local xs
+    | hd :: tl -> copy_odd_local tl
   in
   copy_odd_local ll;;
 
@@ -574,6 +574,17 @@ assert(copy_odd [1;2;3;4;5;6;7;8;9;10] = [1;3;5;7;9]);;
 
 - `copy_even_local` is not available in the top loop, it is local to `copy_odd` function only, just like local variables but its a function.
 - Note how the last line "exports" the internal `copy_odd_local` by forwarding the `ll` parameter to it
+- In general if you need an auxiliary function for one of the homework questions, you can either define it at the top level
+  ```ocaml
+  let aux n = n + 1 (* super simple example auxiliary function *)
+  let solution i = ... aux (i*i) ...
+  ```
+  or make it purely local:
+    ```ocaml
+  let solution i = 
+    let aux n = n+1 in
+    ... aux (i*i) ...
+    ```
 
 ### Higher Order Functions
 
@@ -592,14 +603,14 @@ Example: append `"gobble"` to each word in a list of strings
 let rec append_gobble l =
   match l with
   | [] -> []
-  | hd::tl -> (hd ^"-gobble") :: append_gobble tl;;
+  | hd::tl -> (hd ^ "-gobble") :: append_gobble tl;;
 
 append_gobble ["have";"a";"good";"day"];;
 ("have" ^"gobble") :: ("a"^"gobble") :: append_gobble ["good";"day"];;
 ```
 
 * At a high level, the common pattern is "apply a function to every list element and make a list of the results"
-* So, lets pull out the "append gobble" action as a function parameter so it will be it code we can plug in
+* So, lets pull out the "append gobble" action as a **function parameter** so it will be it code we can plug in
 * The resulting function is called `map` (note it is built-in as `List.map`):
 ```ocaml
 let rec map (f : 'a -> 'b) (l : 'a list) : 'b list =  (* function f is an argument here *)
@@ -609,7 +620,7 @@ let rec map (f : 'a -> 'b) (l : 'a list) : 'b list =  (* function f is an argume
 ```
 
 ```ocaml
-let another_append_gobble = map (fun s -> s^"-gobble");; (* give only the first argument -- Currying *)
+let another_append_gobble = map (fun s -> s ^ "-gobble");; (* give only the first argument -- Currying *)
 another_append_gobble ["have";"a";"good";"day"];;
 map (fun s -> s^"-gobble") ["have";"a";"good";"day"];; (* don't have to name the intermediate application *)
 ```
@@ -713,9 +724,9 @@ let rec contains x l =
 let rec diff l1 l2 =
   match l1 with
   | [] -> []
-  | x :: xs ->
-      if contains x l2 then diff xs l2
-      else x :: diff xs l2
+  | hd :: tl ->
+      if contains hd l2 then diff tl l2
+      else hd :: diff tl l2
 ;;
 ```
 
@@ -725,6 +736,15 @@ assert(contains 1 [1; 2; 3]);;
 assert(not(contains 5 [1; 2; 3]));;
 assert(diff [1;2;3] [3;4;5] = [1; 2]);;
 assert(diff [1;2] [1;2;3] = []);;
+```
+
+All of the above functions can simply pass the tail of the list in the recursion.  Sometimes you need to pass additional information *down* the recursion to *accumulate* something.  For example lets write a `list_max` function which returns the maximal integer in a list.  Note that the list could be empty, we will return `Int.min_int` in this case, the smallest integer.
+```ocaml
+let rec list_max_aux n l = (* invariant: n is the maximal integer seen thus far *)
+  match l with 
+  | [] -> n
+  | hd :: tl -> if hd > n then list_max_aux hd tl else list_max n tl
+let list_max = list_max_aux Int.min_int (* prime the pump *)
 ```
 
 <a name="iv"></a>
@@ -1077,7 +1097,7 @@ let zer = CZero;;
   - Similar in spirit to how C structs can be recursive (but, no pointer needed here)
 
 Warm-up: homebrew lists - built-in list type is not in fact needed
-First just int lists.. `Mt` represents `[]`, `Cons(x,xs)` represents `x::xs`
+First just int lists.. `Mt` represents `[]`, `Cons(hd,tl)` represents `hd::tl`
 
 ```ocaml
 type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
