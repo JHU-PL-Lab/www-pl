@@ -810,6 +810,11 @@ And now the same thing using our general `fold_right` (which is also the same as
 ```ocaml
 List.fold_right (+) [1;2;3] 0
 ```
+which is the same as
+```ocaml
+List.fold_right (fun elt accum -> elt + accum) [1;2;3] 0
+```
+if we wrote out the `+`.  Note one parameter is the current element and the other is the accumulation.
 
 * Many recursive functions on lists can be expressed with `List.fold_right`: they are simple accumulations over a base case.
 

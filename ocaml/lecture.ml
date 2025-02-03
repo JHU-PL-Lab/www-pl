@@ -305,6 +305,8 @@ summate_right [1;2;3];; (* = (1+(2+(3+0))) - observe we start from *right* side,
 
 List.fold_right (+) [1;2;3] 0
 
+List.fold_right (fun elt accum -> elt + accum) [1;2;3] 0
+
 let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* `accum` is reversed tail, `elt` is current head *)
 let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];; (* `accum` has f applied to all elts in tail *)
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 

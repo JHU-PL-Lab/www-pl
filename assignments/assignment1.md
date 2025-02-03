@@ -9,7 +9,7 @@ You are to write several small programs in OCaml.
 * The terminal command `dune build` run from the top level `assignment1/` directory will build (compile) all your functions in the `assignment.ml` file.
 * The terminal command `dune test` also run from `assignment1/` will build the code and run all the tests in the above `test.ml` file.  It will report on each test whether it succeeded or failed.
 * To play with your code in `utop`, you could copy/paste your functions directly into the top loop, but a perhaps easier way is to type terminal command `dune utop`, again from the `assignment1/` directory.  This will compile all your functions and load them into `utop`.  They will all be part of a module `Assignment` since the file was called `assignment.ml`; so, next type `open Assignment;;` into `utop` so the functions will be directly available -- you will then be able to type e.g. `nth_exn 1 [1;2;3;4];;` to informally test your code.
-* When you are all done the homework, from directory `assignment1` run the command `dune build` one last time which will build `_build/src/submission.zip` -- that is the zip file you should upload to Gradescope.
+* When you are all done the homework, from directory `assignment1` run the command `dune build` one last time which will build `_build/default/src/submission.zip` -- that is the zip file you should upload to Gradescope.
 
 ### Resources to help you
 

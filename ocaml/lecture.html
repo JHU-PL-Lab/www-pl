@@ -934,6 +934,10 @@ a. Assume that the capital of characters other than alphabets<br />
 <p>And now the same thing using our general <code>fold_right</code> (which is also the same as the library function <code>List.fold_right</code>)</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">0</span>
 </code></pre></div></div>
+<p>which is the same as</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="n">elt</span> <span class="o">+</span> <span class="n">accum</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">0</span>
+</code></pre></div></div>
+<p>if we wrote out the <code>+</code>.  Note one parameter is the current element and the other is the accumulation.</p>
 
 <ul>
   <li>Many recursive functions on lists can be expressed with <code>List.fold_right</code>: they are simple accumulations over a base case.</li>
