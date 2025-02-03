@@ -558,7 +558,7 @@ This completes the induction step.</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">tuple</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="o">,</span> <span class="s2">"hi"</span><span class="o">,</span> <span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="p">);;</span>
 
 <span class="k">match</span> <span class="n">tuple</span> <span class="k">with</span>
-  <span class="p">(</span><span class="n">f</span><span class="o">,</span> <span class="n">s</span><span class="o">,</span> <span class="n">th</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="p">;;</span>
+  <span class="o">|</span> <span class="p">(</span><span class="n">f</span><span class="o">,</span> <span class="n">s</span><span class="o">,</span> <span class="n">th</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">s</span><span class="p">;;</span>
 
 <span class="c">(* shorthand for the above - only one pattern, can use let syntax *)</span>
 <span class="k">let</span> <span class="p">(</span><span class="n">f</span><span class="o">,</span> <span class="n">s</span><span class="o">,</span> <span class="n">th</span><span class="p">)</span> <span class="o">=</span> <span class="n">tuple</span> <span class="k">in</span> <span class="n">s</span><span class="p">;;</span>
@@ -632,7 +632,7 @@ This completes the induction step.</p>
   <li>For programming assignments, if you want to play with your code you can copy/paste stuff into the top loop to test, but beware that functions depending on the function you changed may not change</li>
   <li>To be safe, save <code>assignment.ml</code>, quit <code>utop</code>,  type <code>dune utop</code> again which will compile and load all your code.  You will need to type <code>open Assignment;;</code> into <code>utop</code> once it is going so all your functions are available.</li>
   <li>Note you can alternatively type into <code>utop</code> the command <code>#use "src/assignment.ml"</code> and it is as if you copy/pasted the whole file into <code>utop</code>.</li>
-  <li>Run <code>dune test</code> to check on your overall progress.</li>
+  <li>Run <code>dune test</code> to check your overall progress to see which tests pass.</li>
 </ul>
 
 <p>Moral: there are many ways to develop in OCaml, experiment with these different modes to see which is working best for you.</p>
@@ -643,7 +643,7 @@ This completes the induction step.</p>
   <li>Mutually recursive functions require special syntax in OCaml</li>
   <li>Warm up: write a copy function on lists
     <ul>
-      <li>List copy is in fact <strong>100% useless</strong> in OCaml because lists are immutable - compiler can <em>share</em> two versions without any issues</li>
+      <li>List copy is in fact <strong>100% useless</strong> in OCaml because lists are immutable - variables can <em>share</em> a single copy without any issues</li>
       <li>This property is called <em>referential transparency</em></li>
     </ul>
   </li>
@@ -722,7 +722,9 @@ This completes the induction step.</p>
 <ul>
   <li>“pluggable” programming by passing in and out chunks of code</li>
   <li>greatly increases reusability of code since any varying code can be pulled out as a function to pass in</li>
-  <li>Lets show the power by extracting out some pluggable code</li>
+  <li>We alreayd saw Curried functions such as <code>add : int -&gt; (int -&gt; int)</code> which <em>return</em> functions</li>
+  <li>Also <code>keep : 'a list -&gt; ('a -&gt; bool) -&gt; 'a list</code> above let us plug in a predicate (function)</li>
+  <li>Lets show more power by generalizing an algorithm to extract code we can then plug in</li>
 </ul>
 
 <p>Example: append <code>"gobble"</code> to each word in a list of strings</p>
@@ -867,7 +869,7 @@ a. Assume that the capital of characters other than alphabets<br />
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">list_max_aux</span> <span class="n">n</span> <span class="n">l</span> <span class="o">=</span> <span class="c">(* invariant: n is the maximal integer seen thus far *)</span>
   <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> 
   <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">n</span>
-  <span class="o">|</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">hd</span> <span class="o">&gt;</span> <span class="n">n</span> <span class="k">then</span> <span class="n">list_max_aux</span> <span class="n">hd</span> <span class="n">tl</span> <span class="k">else</span> <span class="n">list_max</span> <span class="n">n</span> <span class="n">tl</span>
+  <span class="o">|</span> <span class="n">hd</span> <span class="o">::</span> <span class="n">tl</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">hd</span> <span class="o">&gt;</span> <span class="n">n</span> <span class="k">then</span> <span class="n">list_max_aux</span> <span class="n">hd</span> <span class="n">tl</span> <span class="k">else</span> <span class="n">list_max_aux</span> <span class="n">n</span> <span class="n">tl</span>
 <span class="k">let</span> <span class="n">list_max</span> <span class="o">=</span> <span class="n">list_max_aux</span> <span class="nn">Int</span><span class="p">.</span><span class="n">min_int</span> <span class="c">(* prime the pump *)</span>
 </code></pre></div></div>
 
@@ -880,173 +882,154 @@ a. Assume that the capital of characters other than alphabets<br />
   <li>We already saw this with <code>map</code> - we didn’t need to write <code>append_gobble</code> directly, instead we could use <code>map</code>.
     <h3 id="folds">Folds</h3>
   </li>
-  <li>fold_left/right use a binary function to combine list elements</li>
+  <li><code>fold_left</code>/<code>fold_right</code> use a binary function to combine list elements</li>
+  <li>Think of <code>fold</code>ing as something you feed just the “base case code” and the “recursive case code” to for a function on lists, and it builds a recursive function for you.</li>
   <li>As with <code>map</code> let us first write a concrete combiner and then pull out the particular combination code as a parameter</li>
 </ul>
 
-<h4 id="folding-right">Folding right</h4>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">char_list_to_string</span> <span class="n">l</span> <span class="o">=</span>
+  <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> 
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="s2">""</span> <span class="c">(* "" is the "base case code" we will want to plug in later *)</span>
+  <span class="o">|</span> <span class="n">elt</span> <span class="o">::</span> <span class="n">elts</span> <span class="o">-&gt;</span>  <span class="c">(* we are calling the current list element `elt`, thats the convention in folding  *)</span>
+    <span class="k">let</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">char_list_to_string</span> <span class="n">elts</span> <span class="k">in</span> <span class="c">(* this is what `accum` is, the *accumulation* from recursing *)</span>
+      <span class="p">(</span><span class="nn">Char</span><span class="p">.</span><span class="n">escaped</span> <span class="n">elt</span><span class="p">)</span><span class="o">^</span><span class="n">accum</span><span class="p">;;</span>  <span class="c">(* this is the "recursive case" code: put elt on front of result thus far *)</span>
+<span class="n">char_list_to_string</span> <span class="p">[</span><span class="k">'</span><span class="n">h'</span><span class="p">;</span><span class="k">'</span><span class="n">e'</span><span class="p">;</span><span class="k">'</span><span class="n">l'</span><span class="p">;</span><span class="k">'</span><span class="n">l'</span><span class="p">;</span><span class="k">'</span><span class="n">o'</span><span class="p">;</span><span class="k">'</span><span class="o">!</span><span class="k">'</span><span class="p">];;</span>
+</code></pre></div></div>
 
-<p>First here is how we would hand-code it with <code>let rec</code>:</p>
+<p>Let us make a minor tweak to this to make clear that the recursive case code can be pulled out as a function:</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">char_list_to_string</span> <span class="n">l</span> <span class="o">=</span>
+  <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> 
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="s2">""</span>
+  <span class="o">|</span> <span class="n">elt</span> <span class="o">::</span> <span class="n">elts</span> <span class="o">-&gt;</span> 
+    <span class="k">let</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">char_list_to_string</span> <span class="n">elts</span> <span class="k">in</span> 
+      <span class="k">let</span> <span class="n">f</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nn">Char</span><span class="p">.</span><span class="n">escaped</span> <span class="n">elt</span><span class="p">)</span><span class="o">^</span><span class="n">accum</span> <span class="k">in</span> <span class="n">f</span> <span class="n">elt</span> <span class="n">accum</span> <span class="c">(* same effect as above, we did a no-op *)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Now, <code>fold_right</code> just takes the base case (<code>""</code> here) and the recursion code (<code>f</code> here) as general parameters:</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">fold_right</span> <span class="n">f</span> <span class="n">l</span> <span class="n">init</span> <span class="o">=</span>
+  <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> 
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">init</span> <span class="c">(* "" is now the parameter init *)</span>
+  <span class="o">|</span> <span class="n">elt</span> <span class="o">::</span> <span class="n">elts</span> <span class="o">-&gt;</span> 
+    <span class="k">let</span> <span class="n">accum</span> <span class="o">=</span> <span class="n">fold_right</span> <span class="n">f</span> <span class="n">elts</span> <span class="n">init</span> <span class="k">in</span> <span class="c">(* same as above but forwarding extra parameters f / init *)</span>
+      <span class="n">f</span> <span class="n">elt</span> <span class="n">accum</span> <span class="c">(* same code as above but f passed in now as a parameter *)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Now let’s re-constitute the particular example we had above by passing the base/recursion code back in again:</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="nn">Char</span><span class="p">.</span><span class="n">escaped</span> <span class="n">elt</span><span class="p">)</span><span class="o">^</span><span class="n">accum</span><span class="p">)</span> <span class="p">[</span><span class="k">'</span><span class="n">a'</span><span class="p">;</span><span class="k">'</span><span class="n">b'</span><span class="p">;</span><span class="k">'</span><span class="n">c'</span><span class="p">]</span> <span class="s2">""</span>
+</code></pre></div></div>
+
+<p>Another example with summating done manually (<code>init</code> case is <code>0</code>, function is <code>(+)</code> which is <code>fun elt accum -&gt; elt + accum</code>)</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">summate_right</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="mi">0</span> <span class="c">(* this is the initial number to start with; a special case *)</span>
-    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span>  <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">hd</span> <span class="p">(</span><span class="n">summate_right</span> <span class="n">tl</span><span class="p">)</span> <span class="c">(* assume by induction this will summate tl, add hd *)</span>
+    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="mi">0</span>
+    <span class="o">|</span> <span class="n">elt</span> <span class="o">::</span> <span class="n">elts</span> <span class="o">-&gt;</span>  <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">elt</span> <span class="p">(</span><span class="n">summate_right</span> <span class="n">elts</span><span class="p">)</span>
     <span class="p">;;</span>
-<span class="n">summate_right</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span>
+<span class="n">summate_right</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* = (1+(2+(3+0))) - observe we start from *right* side, fold_right is fold-starting-from-right *)</span>
 </code></pre></div></div>
-
-<p>Now lets generalize the initial value:</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">summate_right</span> <span class="n">l</span> <span class="n">init</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">init</span> <span class="c">(* init is the initial number to start with *)</span>
-    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span>  <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="n">hd</span> <span class="p">(</span><span class="n">summate_right</span> <span class="n">tl</span> <span class="n">init</span><span class="p">)</span>
-    <span class="p">;;</span>
-<span class="n">summate_right</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">0</span><span class="p">;;</span>
-</code></pre></div></div>
-
-<p>Finally, pull out the <code>+</code> as a function <em>parameter</em>:</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">fold_right</span> <span class="n">f</span> <span class="n">l</span> <span class="n">init</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">init</span>
-  <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="n">f</span> <span class="n">hd</span> <span class="p">(</span><span class="n">fold_right</span> <span class="n">f</span> <span class="n">tl</span> <span class="n">init</span><span class="p">)</span> <span class="c">(* same code as above just extracting (+) as a parameter *)</span>
-<span class="p">;;</span>
-<span class="k">let</span> <span class="n">summate_right'</span> <span class="o">=</span> <span class="n">fold_right</span> <span class="p">(</span><span class="o">+</span><span class="p">);;</span> <span class="c">(* re-constitute the version above by feeding in (+) *)</span>
-<span class="n">fold_right</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">0</span><span class="p">;;</span> <span class="c">(* = (1+(2+(3+0))) - observe the 0 is on the right *)</span>
+<p>And now the same thing using our general <code>fold_right</code> (which is also the same as the library function <code>List.fold_right</code>)</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="mi">0</span>
 </code></pre></div></div>
 
 <ul>
-  <li>Many functions on lists have this common skeleton and can be written succinctly with <code>fold_right</code></li>
-  <li>(It is so important that it is in the standard library as well, as <code>List.fold_right</code>)</li>
+  <li>Many recursive functions on lists can be expressed with <code>List.fold_right</code>: they are simple accumulations over a base case.</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="o">@</span> <span class="p">[</span><span class="n">elt</span><span class="p">])</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span>
-<span class="k">let</span> <span class="n">map</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">elt</span><span class="p">)</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="o">@</span> <span class="p">[</span><span class="n">elt</span><span class="p">])</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span> <span class="c">(* `accum` is reversed tail, `elt` is current head *)</span>
+<span class="k">let</span> <span class="n">map</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">f</span> <span class="n">elt</span><span class="p">)</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span> <span class="c">(* `accum` has f applied to all elts in tail *)</span>
 <span class="k">let</span> <span class="n">filter</span> <span class="n">f</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">f</span> <span class="n">elt</span> <span class="k">then</span> <span class="n">elt</span><span class="o">::</span><span class="n">accum</span> <span class="k">else</span> <span class="n">accum</span><span class="p">)</span> <span class="n">l</span> <span class="bp">[]</span><span class="p">;;</span> 
-</code></pre></div></div>
-
-<ul>
-  <li>We leave as an exercise understanding how the last two work but let us dig into <code>rev</code>.</li>
-  <li>Note that unlike <code>summate</code> above the types of the two arguments to <code>f</code> are different here.
-    <ul>
-      <li>parameter <code>elt</code> is the head of the list, and <code>accum</code> is the <em>accumulated</em> result thus far.</li>
-    </ul>
-  </li>
-  <li>Here is <code>rev</code> written without fold to show how like with <code>summate_right</code> above it is a fold:</li>
-</ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">rev'</span> <span class="n">l</span> <span class="n">init</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">init</span> 
-    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span>  <span class="p">(</span><span class="o">@</span><span class="p">)</span> <span class="p">(</span><span class="n">rev'</span> <span class="n">tl</span> <span class="n">init</span><span class="p">)</span> <span class="p">[</span><span class="n">hd</span><span class="p">]</span> <span class="c">(* recall our previous rev was identical but @ infix *)</span>
-        <span class="p">;;</span>
-<span class="n">rev'</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="bp">[]</span><span class="p">;;</span>
-</code></pre></div></div>
-
-<ul>
-  <li>Note that the append in <code>rev'</code> has the <code>accum</code> as the first parameter and the <code>elt</code> as the second parameter whereas the fold expects the parameters opposite</li>
-  <li>So, the <code>f</code> we feed in to the <code>rev</code> via <code>fold_right</code> swaps them (also it makes the <code>elt</code> into a singleton list)</li>
-  <li>i.e., we pass <code>f</code> = <code>fun elt accum -&gt; accum @ [elt]</code></li>
-  <li>Why does this work?  By induction, can assume <code>accum</code> (the result so far) is the reverse of tail
-    <ul>
-      <li>then, adding the head, elt, at the end will reverse, done - !</li>
-    </ul>
-  </li>
-</ul>
-
-<p>Here is another view, a trace:</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rev <span class="o">[</span>1<span class="p">;</span>2] 
-~<span class="o">=</span> fold_right f <span class="o">[</span>1<span class="p">;</span>2] <span class="o">[]</span> 
-~<span class="o">=</span> f 1 <span class="o">(</span>fold_right f <span class="o">[</span>2] <span class="o">[]])</span> 
-~<span class="o">=</span> <span class="o">(</span>fold_right f <span class="o">[</span>2] <span class="o">[]])</span> @ <span class="o">[</span>1]
-~<span class="o">=</span> <span class="o">(</span>f 2 <span class="o">(</span>fold_right f <span class="o">[]</span> <span class="o">[])</span> @ <span class="o">[</span>1]
-~<span class="o">=</span> <span class="o">(</span>fold_right f <span class="o">[]</span> <span class="o">[])</span> @ <span class="o">[</span>2] @ <span class="o">[</span>1]
-~<span class="o">=</span> <span class="o">[]</span> @ <span class="o">[</span>2] @ <span class="o">[</span>1]
-~<span class="o">=</span> <span class="o">[</span>2<span class="p">;</span>1]
 </code></pre></div></div>
 
 <h4 id="folding-left">Folding left</h4>
 
 <ul>
   <li><code>fold_left</code> accumulates “on the way down” (we pass down the f computed value), whereas <code>fold_right</code> accumulates “on the way up” (the f computes <em>after</em> the recursive call)</li>
-  <li>This is somewhat related to pre-order vs post-order tree traversal you already know about:
+  <li>Recall the <code>list_max_aux</code> function above which accumulated the maximum element seen.</li>
+  <li>Lets rename the variables we used before to the <code>accum/elt/elts</code> ones we use for folding</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">list_max_aux</span> <span class="n">accum</span> <span class="n">l</span> <span class="o">=</span> <span class="c">(* invariant: accum is the maximal integer seen thus far *)</span>
+  <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> 
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="c">(* we are 100% done, and by the invariant this is the biggest integer seen to its the answer *)</span>
+  <span class="o">|</span> <span class="n">elt</span> <span class="o">::</span> <span class="n">elts</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">elt</span> <span class="o">&gt;</span> <span class="n">accum</span> <span class="k">then</span> <span class="n">list_max_aux</span> <span class="n">elt</span> <span class="n">elts</span> <span class="k">else</span> <span class="n">list_max_aux</span> <span class="n">accum</span> <span class="n">elts</span><span class="p">;;</span>
+<span class="n">list_max_aux</span> <span class="p">(</span><span class="nn">Int</span><span class="p">.</span><span class="n">min_int</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="o">-</span><span class="mi">1</span><span class="p">];;</span>
+</code></pre></div></div>
+
+<p>Here <code>accum</code> is already a parameter since max needs a seed; lets rewrite this to encapsulate the recursion case as <code>f</code>:</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">list_max_aux</span> <span class="n">accum</span> <span class="n">l</span> <span class="o">=</span> 
+  <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> 
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">accum</span>
+  <span class="o">|</span> <span class="n">elt</span> <span class="o">::</span> <span class="n">elts</span> <span class="o">-&gt;</span> <span class="k">let</span> <span class="n">f</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">elt</span> <span class="o">&gt;</span> <span class="n">accum</span> <span class="k">then</span> <span class="n">elt</span> <span class="k">else</span> <span class="n">accum</span> <span class="k">in</span>
+       <span class="n">list_max_aux</span> <span class="p">(</span><span class="n">f</span> <span class="n">accum</span> <span class="n">elt</span><span class="p">)</span> <span class="n">elts</span>
+</code></pre></div></div>
+<ul>
+  <li>This code is a bit different than above because we pushed the condition in, but its the same effect</li>
+  <li>Observe that by convention the <code>accum</code>/<code>elt</code> parameters are in opposite order on <code>f</code> for left folding</li>
+  <li>We can now make the <code>f</code> also a parameter, which gives us <code>fold_left</code>:</li>
+</ul>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">fold_left</span> <span class="n">f</span> <span class="n">accum</span> <span class="n">l</span> <span class="o">=</span> 
+  <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> 
+  <span class="o">|</span> <span class="bp">[]</span> <span class="o">-&gt;</span> <span class="n">accum</span>
+  <span class="o">|</span> <span class="n">elt</span> <span class="o">::</span> <span class="n">elts</span> <span class="o">-&gt;</span>  <span class="n">fold_left</span> <span class="n">f</span> <span class="p">(</span><span class="n">f</span> <span class="n">accum</span> <span class="n">elt</span><span class="p">)</span> <span class="n">elts</span><span class="p">;;</span>
+</code></pre></div></div>
+<p>Again all we did was to pull out <code>f</code> as a parameter, let’s pass it back in to show that:</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="k">if</span> <span class="n">elt</span> <span class="o">&gt;</span> <span class="n">accum</span> <span class="k">then</span> <span class="n">elt</span> <span class="k">else</span> <span class="n">accum</span><span class="p">)</span> <span class="p">(</span><span class="nn">Int</span><span class="p">.</span><span class="n">min_int</span><span class="p">)</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="o">-</span><span class="mi">1</span><span class="p">];;</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Observe how when we get to the bottom of the recursion (empty list) we have the fully final value in <code>accum</code></li>
+  <li>So we just need to return … return … return it all the way to the top without touching it.</li>
+</ul>
+
+<p>For summation we can also use <code>fold_left</code> which is now working from the left side:</p>
+
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* computes ((0 + 1) + 2) + 3); note using library function version List.fold_left here *)</span>
+</code></pre></div></div>
+
+<ul>
+  <li>Notice we get the same answer for left and right fold, because the operator <code>(+)</code> happens to be commutative and associative
     <ul>
-      <li>“left” is “pre”, compute on the way down</li>
-      <li>“right” is “post”, compute on the way back up</li>
+      <li><code>((0 + 1) + 2) + 3) ~= (0 + (1 + ( 2 + 3)))</code></li>
     </ul>
   </li>
-  <li>In general it is a fundamental aspect of recursive functions: can compute pre- post- or both.</li>
-  <li>So, in the left approach we will pass <em>down</em> the currently accumulated <em>result</em>, <code>accum</code>.</li>
-  <li>When we get to the bottom of the recursion (empty list) we have the fully final value in accum and just need to return … return … return it all the way to the top without touching it.</li>
-  <li>List and value arguments (and <code>accum</code> and <code>elt</code> on <code>f</code>) are swapped compared to <code>fold_right</code>, be careful !</li>
-  <li>Let us again do summation, this time “on the way down”, and extract the general folder.</li>
+  <li>String concatenation <code>^</code> is not commutative so we see a difference in left vs right folding there:</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">summate_left</span> <span class="n">accum</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">accum</span>
-    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="n">summate_left</span> <span class="p">((</span><span class="o">+</span><span class="p">)</span> <span class="n">accum</span> <span class="n">hd</span><span class="p">)</span> <span class="n">tl</span> <span class="c">(* pass down accum + hd as new "accum" -- accumulating *)</span>
-    <span class="p">;;</span>
-<span class="n">summate_left</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span> <span class="c">(* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)</span>
-</code></pre></div></div>
-<ul>
-  <li>Note that the “initial <code>accum</code>”  is <code>0</code>, grows on way <em>down</em> (only)</li>
-  <li>Again let us extract the <code>(+)</code> as a new parameter <code>f</code> to allow any operation to be applied in this manner</li>
-</ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">fold_left</span> <span class="n">f</span> <span class="n">accum</span> <span class="n">l</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">accum</span>
-    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="n">fold_left</span> <span class="n">f</span> <span class="p">(</span><span class="n">f</span> <span class="n">accum</span> <span class="n">hd</span><span class="p">)</span> <span class="n">tl</span>
-    <span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="o">^</span><span class="p">)</span> <span class="s2">"z"</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="p">;;</span>
+<span class="n">fold_right</span> <span class="p">(</span><span class="o">^</span><span class="p">)</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="s2">"z"</span> <span class="p">;;</span>
 </code></pre></div></div>
 
+<p>This also shows how the parameter order is slightly different in the two:</p>
 <ul>
-  <li>Type is <code>('a -&gt; 'b -&gt; 'a) -&gt; 'a -&gt; 'b list -&gt; 'a</code> which parenthesizes as <code>('a -&gt; 'b -&gt; 'a) -&gt; ('a -&gt; ('b list -&gt; 'a))</code></li>
+  <li><code>List.fold_left</code>’s type is <code>('acc -&gt; 'a -&gt; 'acc) -&gt; 'acc -&gt; ('a list) -&gt; 'acc</code></li>
+  <li><code>List.fold_right</code>’s type is <code>('a -&gt; 'acc -&gt; 'acc) -&gt; 'a list -&gt; 'acc -&gt; 'acc</code></li>
 </ul>
 
-<p>Summing elements of a list can now be more succinctly coded:</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="o">+</span><span class="p">)</span> <span class="mi">0</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">];;</span>
-</code></pre></div></div>
-
-<ul>
-  <li>Tracing this, <code>accum</code> is <code>0</code>, <code>1</code>, <code>3</code>, <code>6</code> on succive recursive calls, <code>6</code> for the base case which bubbles all the way out to the top.</li>
-  <li>As with <code>fold_right</code> this skeleton lets us plug in different <code>f</code> to make many natural functions on lists.</li>
-</ul>
-
+<p>Here are a few more examples of folding left:</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">length</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="n">accum</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="mi">0</span> <span class="n">l</span><span class="p">;;</span> <span class="c">(* adds accum, ignores elt *)</span>
 <span class="k">let</span> <span class="n">rev</span> <span class="n">l</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="n">elt</span><span class="o">::</span><span class="n">accum</span><span class="p">)</span> <span class="bp">[]</span> <span class="n">l</span><span class="p">;;</span> <span class="c">(* e.g. rev [1;2;3] = (3::(2::(1::[]))) - much faster! *)</span>
 </code></pre></div></div>
-<p>Lets unfold to clarify how this version of <code>rev</code> runs (<code>f</code> is <code>(fun accum elt -&gt; elt::accum)</code>):</p>
-
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rev <span class="o">[</span>1<span class="p">;</span>2] 
-~<span class="o">=</span> fold_left f <span class="o">[]</span> <span class="o">[</span>1<span class="p">;</span>2] 
-~<span class="o">=</span> fold_left f <span class="o">(</span>f <span class="o">[]</span> 1<span class="o">)</span> <span class="o">[</span>2]
-~<span class="o">=</span> fold_left f <span class="o">(</span>1::[]<span class="o">)</span> <span class="o">[</span>2]
-~<span class="o">=</span> fold_left f <span class="o">(</span>f <span class="o">(</span>1::[]<span class="o">)</span> 2<span class="o">)</span> <span class="o">[]</span>
-~<span class="o">=</span> fold_left f <span class="o">(</span>2::1::[]<span class="o">)</span> <span class="o">[]</span>
-~<span class="o">=</span> 2::1::[]
-~<span class="o">=</span> <span class="o">[</span>2<span class="p">;</span>1]
-</code></pre></div></div>
 
 <ul>
-  <li>Here is <code>rev</code> written without fold but in <code>fold_left</code> style (perform the calculation on the way down):</li>
+  <li>For both of these, assume by induction that <code>accum</code> has the accumulated result for all list elements earlier in the list</li>
+  <li>Consider computing <code>rev [1;2;3]</code> when we have for example gotten to <code>[3]</code> (<code>elt</code> = <code>3</code>) in the recursion</li>
+  <li>At this point can assume the <code>accum</code> is <code>[2;1]</code>, the result for previous elts we passed.</li>
+  <li>So, put <code>3</code> on the front (the <code>elt::accum</code>), and we are done!</li>
 </ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">rev''</span> <span class="n">l</span> <span class="n">accum</span> <span class="o">=</span> <span class="k">match</span> <span class="n">l</span> <span class="k">with</span> <span class="c">(* Invariant for this rev: reverse l, put on front of accum *)</span>
-    <span class="o">|</span> <span class="bp">[]</span>   <span class="o">-&gt;</span> <span class="n">accum</span>
-    <span class="o">|</span> <span class="n">hd</span><span class="o">::</span><span class="n">tl</span> <span class="o">-&gt;</span> <span class="n">rev''</span> <span class="n">tl</span> <span class="p">(</span><span class="n">hd</span> <span class="o">::</span> <span class="n">accum</span><span class="p">)</span> <span class="c">(* by induction can assume reverses tl, then tacks on to hd :: accum *)</span>
-    <span class="p">;;</span>
-<span class="n">rev''</span> <span class="p">[</span><span class="mi">1</span><span class="p">;</span><span class="mi">2</span><span class="p">;</span><span class="mi">3</span><span class="p">]</span> <span class="bp">[]</span><span class="p">;;</span> <span class="c">(* need to supply initial accum in this case, [] *)</span>
-</code></pre></div></div>
-
-<p>Another way to see how left and right folds produce different results:</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fold_left</span> <span class="p">(</span><span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">" op "</span><span class="o">^</span><span class="n">accum</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="s2">"z"</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="p">;;</span>  <span class="c">(* "(((z op a) op b) op c)" *)</span>
-<span class="n">fold_right</span> <span class="p">(</span><span class="k">fun</span> <span class="n">accum</span> <span class="o">-&gt;</span> <span class="k">fun</span> <span class="n">elt</span> <span class="o">-&gt;</span> <span class="s2">"("</span><span class="o">^</span><span class="n">accum</span><span class="o">^</span><span class="s2">" op "</span><span class="o">^</span><span class="n">elt</span><span class="o">^</span><span class="s2">")"</span><span class="p">)</span> <span class="p">[</span><span class="s2">"a"</span><span class="p">;</span><span class="s2">"b"</span><span class="p">;</span><span class="s2">"c"</span><span class="p">]</span> <span class="s2">"z"</span> <span class="p">;;</span> <span class="c">(* "(a op (b op (c op z)))" *)</span>
-</code></pre></div></div>
 
 <h3 id="pipeling-and-composition">Pipeling and composition</h3>
 
-<p>Pipelining Example: get the element nth from the end from a list, by first reversing and then getting nth element.</p>
+<ul>
+  <li>Pipelining is like an assembly line: feed output of one stage into the next stage, in a sequence.</li>
+  <li>Example: get the element nth from the end from a list, by first reversing and then getting nth element from front.</li>
+</ul>
 
-<p>Obvious version:</p>
+<p>First try, which works fine:</p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">nth_end</span> <span class="n">l</span> <span class="n">n</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">nth</span> <span class="p">(</span><span class="nn">List</span><span class="p">.</span><span class="n">rev</span> <span class="n">l</span><span class="p">)</span> <span class="n">n</span><span class="p">;;</span>
 </code></pre></div></div>
 
@@ -1062,7 +1045,7 @@ a. Assume that the capital of characters other than alphabets<br />
   <li>The type gives it away: <code>(|&gt;)</code> has type <code>'a -&gt; ('a -&gt; 'b) -&gt; 'b</code></li>
   <li>The <code>Fun.flip</code> is needed to put the list argument second, not first
     <ul>
-      <li>it is another interesting higher-order function, with type <code>('a -&gt; 'b -&gt; 'c) -&gt; 'b -&gt; 'a -&gt; 'c</code>.</li>
+      <li>it is another interesting higher-order function, with type <code>('a -&gt; 'b -&gt; 'c) -&gt; ('b -&gt; 'a -&gt; 'c)</code>.</li>
     </ul>
   </li>
   <li>So, e.g. <code>(Fun.flip(List.nth) 2)</code> is a function taking a list and returning the 2nd element.
@@ -1074,11 +1057,14 @@ a. Assume that the capital of characters other than alphabets<br />
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">compose</span> <span class="n">g</span> <span class="n">f</span> <span class="o">=</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">g</span> <span class="p">(</span><span class="n">f</span> <span class="n">x</span><span class="p">));;</span>
 <span class="n">compose</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">+</span><span class="mi">3</span><span class="p">)</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span><span class="o">*</span><span class="mi">2</span><span class="p">)</span> <span class="mi">10</span><span class="p">;;</span>
 </code></pre></div></div>
+<ul>
+  <li>The type again tells the whole story: <code>('a -&gt; 'b) -&gt; ('c -&gt; 'a) -&gt; ('c -&gt; 'b)</code></li>
+</ul>
 
 <h3 id="currying">Currying</h3>
 
 <ul>
-  <li>Names the way multi-argument functions work in OCaml</li>
+  <li>Names the way multi-argument functions work in OCaml: return a function expecting next parameter</li>
   <li>Logician Haskell Curry originally came up with the idea in the 1930’s</li>
   <li>First lets recall how multi-argument functions in OCaml are Curried</li>
 </ul>
@@ -1088,14 +1074,10 @@ a. Assume that the capital of characters other than alphabets<br />
 <span class="k">let</span> <span class="n">tmp</span> <span class="o">=</span> <span class="n">add_c</span> <span class="mi">1</span> <span class="k">in</span> <span class="n">tmp</span> <span class="mi">2</span><span class="p">;;</span> <span class="c">(* the partial application of arguments - tmp is a function *)</span>
 <span class="c">(* An equivalent way to define `add_c`, clarifying what the above means *)</span>
 <span class="k">let</span> <span class="n">add_c</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="k">fun</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">);;</span>
-<span class="c">(* and, yet another identical way .. lots of equivalent notation in OCaml *)</span>
-<span class="k">let</span> <span class="n">add_c</span> <span class="o">=</span> <span class="k">fun</span> <span class="n">x</span> <span class="n">y</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span>
-<span class="c">(* yet one more, the built-in (+) *)</span>
-<span class="k">let</span> <span class="n">add_c</span> <span class="o">=</span> <span class="p">(</span><span class="o">+</span><span class="p">);;</span>
 </code></pre></div></div>
 
 <p>Here is the <em>non-Curried</em> version: use a <em>pair of arguments</em> instead</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_nc</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span><span class="o">+</span><span class="n">y</span><span class="p">;;</span> <span class="c">(* type is int * int -&gt; int - no way to partially apply *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_nc</span> <span class="p">(</span><span class="n">x</span><span class="o">,</span><span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="n">y</span><span class="p">;;</span> <span class="c">(* type is int * int -&gt; int - no way to partially apply *)</span>
 </code></pre></div></div>
 
 <ul>
@@ -1123,8 +1105,8 @@ a. Assume that the capital of characters other than alphabets<br />
 </code></pre></div></div>
 
 <p>Observe the types themselves pretty much specify their behavior</p>
-<pre><code>curry : ('a * 'b -&gt; 'c) -&gt; 'a -&gt; 'b -&gt; 'c
-uncurry : ('a -&gt; 'b -&gt; 'c) -&gt; 'a * 'b -&gt; 'c
+<pre><code>curry : ('a * 'b -&gt; 'c) -&gt; ('a -&gt; 'b -&gt; 'c)
+uncurry : ('a -&gt; 'b -&gt; 'c) -&gt; ('a * 'b -&gt; 'c)
 </code></pre>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">noop1</span> <span class="o">=</span> <span class="n">curry</span> <span class="p">(</span><span class="n">uncurry</span> <span class="n">add_c</span><span class="p">);;</span> <span class="c">(* a no-op *)</span>
@@ -1148,15 +1130,7 @@ uncurry : ('a -&gt; 'b -&gt; 'c) -&gt; 'a * 'b -&gt; 'c
 f <span class="o">(</span><span class="nt">-5</span><span class="o">)</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<ul>
-  <li>Recall that OCaml infers types but they can be optionally declared</li>
-  <li>It is good practice to paste the inferred types in your code to have types as documentation</li>
-</ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add</span> <span class="p">(</span><span class="n">x</span><span class="o">:</span> <span class="kt">float</span><span class="p">)</span> <span class="p">(</span><span class="n">y</span><span class="o">:</span> <span class="kt">float</span><span class="p">)</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="nn">Float</span><span class="p">.</span><span class="n">to_int</span> <span class="p">(</span><span class="n">x</span> <span class="o">+.</span> <span class="n">y</span><span class="p">);;</span>
-</code></pre></div></div>
-
-<p>Type abbreviations are also possible via keyword <code>type</code></p>
+<p>Type abbreviations are possible via keyword <code>type</code></p>
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">intpair</span> <span class="o">=</span> <span class="kt">int</span> <span class="o">*</span> <span class="kt">int</span><span class="p">;;</span>
 <span class="k">let</span> <span class="n">f</span> <span class="p">(</span><span class="n">p</span> <span class="o">:</span> <span class="n">intpair</span><span class="p">)</span> <span class="o">:</span> <span class="kt">int</span> <span class="o">=</span> <span class="k">match</span> <span class="n">p</span> <span class="k">with</span>
                       <span class="p">(</span><span class="n">l</span><span class="o">,</span> <span class="n">r</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">l</span> <span class="o">+</span> <span class="n">r</span>
@@ -1183,32 +1157,29 @@ f <span class="o">(</span><span class="nt">-5</span><span class="o">)</span><spa
 <p>Example of how to declare a new variant type for doing mixed arithmetic (integers and floats)</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">mynumber</span> <span class="o">=</span> <span class="nc">Fixed</span> <span class="k">of</span> <span class="kt">int</span> <span class="o">|</span> <span class="nc">Floating</span> <span class="k">of</span> <span class="kt">float</span><span class="p">;;</span>  <span class="c">(* read "|" as "or" *)</span>
-</code></pre></div></div>
-<ul>
-  <li>Constructors must start with Capital Letter to distinguish from variables (<code>Fixed</code> and <code>Floating</code> here)</li>
-  <li>The <code>of</code> indicates what type is under the wrapper, optionally no of meaning nothing under wrapper</li>
-  <li>Type declarations are required but once they are in place type inference on them works</li>
-</ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nc">Fixed</span><span class="p">(</span><span class="mi">5</span><span class="p">);;</span> <span class="c">(* tag 5 as a Fixed *)</span>
+<span class="nc">Fixed</span><span class="p">(</span><span class="mi">5</span><span class="p">);;</span> <span class="c">(* tag 5 as a Fixed *)</span>
 <span class="nc">Fixed</span> <span class="mi">5</span><span class="p">;;</span> <span class="c">(* parens optional as is often the case in OCaml *)</span>
 <span class="nc">Floating</span> <span class="mi">4</span><span class="o">.</span><span class="mi">0</span><span class="p">;;</span> <span class="c">(* tag 4.0 as a Floating *)</span>
 </code></pre></div></div>
-
-<p>Note constructors look like functions but they are <strong>not</strong> – you always need to give the argument</p>
+<ul>
+  <li>Constructors must start with Capital Letter to distinguish from variables (<code>Fixed</code> and <code>Floating</code> here)</li>
+  <li>The <code>of</code> indicates what type of thing is under the wrapper, leave out <code>of</code> and there will be nothing</li>
+  <li>Type declarations are required but once they are in place type inference on them works</li>
+  <li>Note constructors look like functions but they are <strong>not</strong> – you always need to give the argument</li>
+</ul>
 
 <p>Destruct variants by pattern matching like we did for <code>Some/None</code> option type values:</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">ff_as_int</span> <span class="n">x</span> <span class="o">=</span>
     <span class="k">match</span> <span class="n">x</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="nc">Fixed</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span>    <span class="c">(* variants fit well into pattern matching syntax *)</span>
+    <span class="o">|</span> <span class="nc">Fixed</span> <span class="n">n</span> <span class="o">-&gt;</span> <span class="n">n</span>
     <span class="o">|</span> <span class="nc">Floating</span> <span class="n">z</span> <span class="o">-&gt;</span> <span class="n">int_of_float</span> <span class="n">z</span><span class="p">;;</span>
 
-<span class="n">ff_as_int</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="mi">5</span><span class="p">);;</span> <span class="c">(* beware that ff_as_int Fixed(5) won't parse properly!!  Super commmon error!!! 
+<span class="n">ff_as_int</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="mi">5</span><span class="p">);;</span> <span class="c">(* beware that ff_as_int Fixed(5) won't parse properly!!  Super commmon error!
                          ff_as_int @@ Fixed 5 will though *)</span>
 </code></pre></div></div>
 
-<p>A non-trivial function using the above variant</p>
+<p>An example using the above variant</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">add_num</span> <span class="n">n1</span> <span class="n">n2</span> <span class="o">=</span>
    <span class="k">match</span> <span class="n">n1</span><span class="o">,</span> <span class="n">n2</span> <span class="k">with</span>    <span class="c">(* note use of pair here to parallel-match on two variables  *)</span>
@@ -1221,12 +1192,12 @@ f <span class="o">(</span><span class="nt">-5</span><span class="o">)</span><spa
 <span class="n">add_num</span> <span class="p">(</span><span class="nc">Fixed</span> <span class="mi">10</span><span class="p">)</span> <span class="p">(</span><span class="nc">Floating</span> <span class="mi">3</span><span class="o">.</span><span class="mi">14159</span><span class="p">);;</span>
 </code></pre></div></div>
 
-<p>Multiple data items in a single variant case?  Use tuple types</p>
+<p>Multiple data items in a single variant case?  Can use tuple types</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">complex</span> <span class="o">=</span> <span class="nc">CZero</span> <span class="o">|</span> <span class="nc">Nonzero</span> <span class="k">of</span> <span class="kt">float</span> <span class="o">*</span> <span class="kt">float</span><span class="p">;;</span>
 
 <span class="k">let</span> <span class="n">com</span> <span class="o">=</span> <span class="nc">Nonzero</span><span class="p">(</span><span class="mi">3</span><span class="o">.</span><span class="mi">2</span><span class="o">,</span><span class="mi">11</span><span class="o">.</span><span class="mi">2</span><span class="p">);;</span>
-<span class="k">let</span> <span class="n">zer</span> <span class="o">=</span> <span class="nc">CZero</span><span class="p">;;</span>
+<span class="k">let</span> <span class="n">zer</span> <span class="o">=</span> <span class="nc">CZero</span><span class="p">;;</span> <span class="c">(* example of a variant without a payload *)</span>
 </code></pre></div></div>
 
 <h4 id="recursive-data-structures">Recursive data structures</h4>
@@ -1234,50 +1205,46 @@ f <span class="o">(</span><span class="nt">-5</span><span class="o">)</span><spa
   <li>An important use of variant types</li>
   <li>Functional programming is highly suited for computing over tree-structured data</li>
   <li>Recursive types can refer to themselves in their own definition</li>
-  <li>Similar in spirit to how C structs can be recursive (but, no pointer needed here)</li>
+  <li>
+    <p>Similar in spirit to how C structs can be recursive (but, no pointer needed here)</p>
+  </li>
+  <li>Warm-up: homebrew lists - built-in list type is not in fact needed</li>
+  <li><code>Mt</code> represents <code>[]</code>, <code>Cons(hd,tl)</code> represents <code>hd::tl</code></li>
 </ul>
-
-<p>Warm-up: homebrew lists - built-in list type is not in fact needed<br />
-First just int lists.. <code>Mt</code> represents <code>[]</code>, <code>Cons(hd,tl)</code> represents <code>hd::tl</code></p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="n">myintlist</span> <span class="o">=</span> <span class="nc">Mt</span> <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="kt">int</span> <span class="o">*</span> <span class="n">myintlist</span><span class="p">;;</span> <span class="c">(* Observe: self-referential type *)</span>
-<span class="k">let</span> <span class="n">mylisteg</span> <span class="o">=</span> <span class="nc">Cons</span><span class="p">(</span><span class="mi">3</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">5</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">7</span><span class="o">,</span><span class="nc">Mt</span><span class="p">)));;</span> <span class="c">(* equivalent in spirit to [3;5;7] *)</span>
-</code></pre></div></div>
-<p>Let us extend the above to be polymorphic using a <em>type parameter</em>, <code>'a</code>.</p>
 
 <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="k">'</span><span class="n">a</span> <span class="n">mylist</span> <span class="o">=</span> <span class="nc">Mt</span> <span class="o">|</span> <span class="nc">Cons</span> <span class="k">of</span> <span class="k">'</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="k">'</span><span class="n">a</span> <span class="n">mylist</span><span class="p">);;</span>
+<span class="k">let</span> <span class="n">mylisteg</span> <span class="o">=</span> <span class="nc">Cons</span><span class="p">(</span><span class="mi">3</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">5</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">7</span><span class="o">,</span><span class="nc">Mt</span><span class="p">)));;</span> <span class="c">(* equivalent in spirit to [3;5;7] *)</span>
 </code></pre></div></div>
 <ul>
-  <li>Observe how above type takes a (prefix) argument, <code>'a</code> – <code>mylist</code> is a type function</li>
-  <li>Perhaps better syntax would have been <code>type mylist(t) = Mt | Cons of t * (mylist(t))</code></li>
-  <li>This <code>'a</code> is not the same as the generic type <code>'a</code> - can be confusing</li>
+  <li>First notice that we can refer to <code>mylist</code> in its own type definition: its a <em>recursive type</em></li>
+  <li>Also observe how above type takes a (prefix) argument, <code>'a</code> – <code>mylist</code> is a type function, <code>'a</code> is the type of list elements</li>
+  <li>
+    <p>Perhaps better syntax would have been <code>type mylist(t) = Mt | Cons of t * (mylist(t))</code></p>
+  </li>
+  <li>Coding is analogous with built-in lists but without special sugar to make lists like <code>[1;2;3]</code></li>
+  <li>Lets write <code>map</code> as a test to show how easy it is<br />
+```ocaml<br />
+let rec map ml f =<br />
+match ml with<br />
+  | Mt -&gt; Mt<br />
+  | Cons(hd,tl) -&gt; Cons(f hd,map tl f);;</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">mylisteg</span> <span class="o">=</span> <span class="nc">Cons</span><span class="p">(</span><span class="mi">3</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">5</span><span class="o">,</span><span class="nc">Cons</span><span class="p">(</span><span class="mi">7</span><span class="o">,</span><span class="nc">Mt</span><span class="p">)));;</span>
-</code></pre></div></div>
-<p>Coding is very similar to built-in lists</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">map</span> <span class="n">ml</span> <span class="n">f</span> <span class="o">=</span>
-  <span class="k">match</span> <span class="n">ml</span> <span class="k">with</span>
-    <span class="o">|</span> <span class="nc">Mt</span> <span class="o">-&gt;</span> <span class="nc">Mt</span>
-    <span class="o">|</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">hd</span><span class="o">,</span><span class="n">tl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">f</span> <span class="n">hd</span><span class="o">,</span><span class="n">map</span> <span class="n">tl</span> <span class="n">f</span><span class="p">);;</span>
+<p>let map_eg = map mylisteg (fun x -&gt; x - 1);;</p>
+<pre><code>
+&lt;a name="v"&gt;&lt;/a&gt;
 
-<span class="k">let</span> <span class="n">map_eg</span> <span class="o">=</span> <span class="n">map</span> <span class="n">mylisteg</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);;</span>
-</code></pre></div></div>
+##  OCaml Lecture V
 
-<p><a name="v"></a></p>
+#### Trees
 
-<h2 id="ocaml-lecture-v">OCaml Lecture V</h2>
+* Binary trees are like lists but with two self-referential sub-structures not one
+* Here is one tree definition; note the data is (only) in the nodes here
+* ... n-ary trees are a direct generalization of this pattern
 
-<h4 id="trees">Trees</h4>
-
-<ul>
-  <li>Binary trees are like lists but with two self-referential sub-structures not one</li>
-  <li>Here is one tree definition; note the data is (only) in the nodes here</li>
-  <li>… n-ary trees are a direct generalization of this pattern</li>
-</ul>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="k">'</span><span class="n">a</span> <span class="n">btree</span> <span class="o">=</span> <span class="nc">Leaf</span> <span class="o">|</span> <span class="nc">Node</span> <span class="k">of</span> <span class="k">'</span><span class="n">a</span> <span class="o">*</span> <span class="k">'</span><span class="n">a</span> <span class="n">btree</span> <span class="o">*</span> <span class="k">'</span><span class="n">a</span> <span class="n">btree</span><span class="p">;;</span>
-</code></pre></div></div>
+```ocaml
+type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
+</code></pre>
 
 <p>Example trees</p>
 

@@ -128,7 +128,7 @@ let tuple = (2, "hi");; (* tuple elements separated by commas, list elements by 
 let tuple = (2, "hi", 1.2);;
 
 match tuple with
-  (f, s, th) -> s;;
+  | (f, s, th) -> s;;
 
 (* shorthand for the above - only one pattern, can use let syntax *)
 let (f, s, th) = tuple in s;;
@@ -270,62 +270,71 @@ assert(diff [1;2] [1;2;3] = []);;
 let rec list_max_aux n l = (* invariant: n is the maximal integer seen thus far *)
   match l with 
   | [] -> n
-  | hd :: tl -> if hd > n then list_max_aux hd tl else list_max n tl
+  | hd :: tl -> if hd > n then list_max_aux hd tl else list_max_aux n tl
 let list_max = list_max_aux Int.min_int (* prime the pump *)
 
+let rec char_list_to_string l =
+  match l with 
+  | [] -> "" (* "" is the "base case code" we will want to plug in later *)
+  | elt :: elts ->  (* we are calling the current list element `elt`, thats the convention in folding  *)
+    let accum = char_list_to_string elts in (* this is what `accum` is, the *accumulation* from recursing *)
+      (Char.escaped elt)^accum;;  (* this is the "recursive case" code: put elt on front of result thus far *)
+char_list_to_string ['h';'e';'l';'l';'o';'!'];;
+
+let rec char_list_to_string l =
+  match l with 
+  | [] -> ""
+  | elt :: elts -> 
+    let accum = char_list_to_string elts in 
+      let f = fun elt accum -> (Char.escaped elt)^accum in f elt accum (* same effect as above, we did a no-op *)
+
+let rec fold_right f l init =
+  match l with 
+  | [] -> init (* "" is now the parameter init *)
+  | elt :: elts -> 
+    let accum = fold_right f elts init in (* same as above but forwarding extra parameters f / init *)
+      f elt accum (* same code as above but f passed in now as a parameter *)
+
+fold_right (fun elt accum -> (Char.escaped elt)^accum) ['a';'b';'c'] ""
+
 let rec summate_right l = match l with
-    | []   -> 0 (* this is the initial number to start with; a special case *)
-    | hd::tl ->  (+) hd (summate_right tl) (* assume by induction this will summate tl, add hd *)
+    | []   -> 0
+    | elt :: elts ->  (+) elt (summate_right elts)
     ;;
-summate_right [1;2;3];;
+summate_right [1;2;3];; (* = (1+(2+(3+0))) - observe we start from *right* side, fold_right is fold-starting-from-right *)
 
-let rec summate_right l init = match l with
-    | []   -> init (* init is the initial number to start with *)
-    | hd::tl ->  (+) hd (summate_right tl init)
-    ;;
-summate_right [1;2;3] 0;;
+List.fold_right (+) [1;2;3] 0
 
-let rec fold_right f l init = match l with
-  | [] -> init
-  | hd::tl -> f hd (fold_right f tl init) (* same code as above just extracting (+) as a parameter *)
-;;
-let summate_right' = fold_right (+);; (* re-constitute the version above by feeding in (+) *)
-fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
-
-let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];;
-let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
+let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* `accum` is reversed tail, `elt` is current head *)
+let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];; (* `accum` has f applied to all elts in tail *)
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
 
-let rec rev' l init = match l with
-    | []   -> init 
-    | hd::tl ->  (@) (rev' tl init) [hd] (* recall our previous rev was identical but @ infix *)
-        ;;
-rev' [1;2;3] [];;
+let rec list_max_aux accum l = (* invariant: accum is the maximal integer seen thus far *)
+  match l with 
+  | [] -> accum (* we are 100% done, and by the invariant this is the biggest integer seen to its the answer *)
+  | elt :: elts -> if elt > accum then list_max_aux elt elts else list_max_aux accum elts;;
+list_max_aux (Int.min_int) [1;2;3;2;-1];;
 
-let rec summate_left accum l = match l with
-    | []   -> accum
-    | hd::tl -> summate_left ((+) accum hd) tl (* pass down accum + hd as new "accum" -- accumulating *)
-    ;;
-summate_left 0 [1;2;3];; (* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)
+let rec list_max_aux accum l = 
+  match l with 
+  | [] -> accum
+  | elt :: elts -> let f = fun accum elt -> if elt > accum then elt else accum in
+       list_max_aux (f accum elt) elts
 
-let rec fold_left f accum l = match l with
-    | []   -> accum
-    | hd::tl -> fold_left f (f accum hd) tl
-    ;;
+let rec fold_left f accum l = 
+  match l with 
+  | [] -> accum
+  | elt :: elts ->  fold_left f (f accum elt) elts;;
 
-fold_left (+) 0 [1;2;3];;
+fold_left (fun accum elt -> if elt > accum then elt else accum) (Int.min_int) [1;2;3;2;-1];;
+
+List.fold_left (+) 0 [1;2;3];; (* computes ((0 + 1) + 2) + 3); note using library function version List.fold_left here *)
+
+fold_left (^) "z" ["a";"b";"c"] ;;
+fold_right (^) ["a";"b";"c"] "z" ;;
 
 let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) - much faster! *)
-
-let rec rev'' l accum = match l with (* Invariant for this rev: reverse l, put on front of accum *)
-    | []   -> accum
-    | hd::tl -> rev'' tl (hd :: accum) (* by induction can assume reverses tl, then tacks on to hd :: accum *)
-    ;;
-rev'' [1;2;3] [];; (* need to supply initial accum in this case, [] *)
-
-fold_left (fun elt -> fun accum -> "("^elt^" op "^accum^")") "z" ["a";"b";"c"] ;;  (* "(((z op a) op b) op c)" *)
-fold_right (fun accum -> fun elt -> "("^accum^" op "^elt^")") ["a";"b";"c"] "z" ;; (* "(a op (b op (c op z)))" *)
 
 let nth_end l n = List.nth (List.rev l) n;;
 
@@ -339,12 +348,8 @@ add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
 let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - tmp is a function *)
 (* An equivalent way to define `add_c`, clarifying what the above means *)
 let add_c = fun x -> (fun y -> x + y);;
-(* and, yet another identical way .. lots of equivalent notation in OCaml *)
-let add_c = fun x y -> x + y;;
-(* yet one more, the built-in (+) *)
-let add_c = (+);;
 
-let add_nc (x,y) = x+y;; (* type is int * int -> int - no way to partially apply *)
+let add_nc (x,y) = x + y;; (* type is int * int -> int - no way to partially apply *)
 
 let curry fnc = fun x -> fun y -> fnc (x, y);;
 let uncurry fc = fun (x, y) -> fc x y;;
@@ -359,8 +364,6 @@ let noop2 = uncurry (curry add_nc);; (* another no-op; noop1 & noop2 together sh
 
 print_string ("hi\n");;
 
-let add (x: float) (y: float) : int = Float.to_int (x +. y);;
-
 type intpair = int * int;;
 let f (p : intpair) : int = match p with
                       (l, r) -> l + r
@@ -370,17 +373,16 @@ f (2, 3);; (* still, can pass it to the function expecting an intpair *)
 ((2,3):intpair);; (* can also explicitly tag data with its type *)
 
 type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
-
 Fixed(5);; (* tag 5 as a Fixed *)
 Fixed 5;; (* parens optional as is often the case in OCaml *)
 Floating 4.0;; (* tag 4.0 as a Floating *)
 
 let ff_as_int x =
     match x with
-    | Fixed n -> n    (* variants fit well into pattern matching syntax *)
+    | Fixed n -> n
     | Floating z -> int_of_float z;;
 
-ff_as_int (Fixed 5);; (* beware that ff_as_int Fixed(5) won't parse properly!!  Super commmon error!!! 
+ff_as_int (Fixed 5);; (* beware that ff_as_int Fixed(5) won't parse properly!!  Super commmon error!
                          ff_as_int @@ Fixed 5 will though *)
 
 let add_num n1 n2 =
@@ -396,14 +398,10 @@ add_num (Fixed 10) (Floating 3.14159);;
 type complex = CZero | Nonzero of float * float;;
 
 let com = Nonzero(3.2,11.2);;
-let zer = CZero;;
-
-type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
-let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent in spirit to [3;5;7] *)
+let zer = CZero;; (* example of a variant without a payload *)
 
 type 'a mylist = Mt | Cons of 'a * ('a mylist);;
-
-let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent in spirit to [3;5;7] *)
 
 let rec map ml f =
   match ml with

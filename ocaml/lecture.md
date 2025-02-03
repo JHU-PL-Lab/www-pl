@@ -441,7 +441,7 @@ Tuple pattern matching
 let tuple = (2, "hi", 1.2);;
 
 match tuple with
-  (f, s, th) -> s;;
+  | (f, s, th) -> s;;
 
 (* shorthand for the above - only one pattern, can use let syntax *)
 let (f, s, th) = tuple in s;;
@@ -515,7 +515,7 @@ g (-5);; (* sees new f now *)
 * For programming assignments, if you want to play with your code you can copy/paste stuff into the top loop to test, but beware that functions depending on the function you changed may not change
 * To be safe, save `assignment.ml`, quit `utop`,  type `dune utop` again which will compile and load all your code.  You will need to type `open Assignment;;` into `utop` once it is going so all your functions are available.
 * Note you can alternatively type into `utop` the command `#use "src/assignment.ml"` and it is as if you copy/pasted the whole file into `utop`.
-* Run `dune test` to check on your overall progress.
+* Run `dune test` to check your overall progress to see which tests pass.
 
 Moral: there are many ways to develop in OCaml, experiment with these different modes to see which is working best for you.
 
@@ -523,7 +523,7 @@ Moral: there are many ways to develop in OCaml, experiment with these different 
 
 * Mutually recursive functions require special syntax in OCaml
 * Warm up: write a copy function on lists
-  - List copy is in fact **100% useless** in OCaml because lists are immutable - compiler can *share* two versions without any issues
+  - List copy is in fact **100% useless** in OCaml because lists are immutable - variables can *share* a single copy without any issues
   - This property is called *referential transparency*
 
 ```ocaml
@@ -595,7 +595,9 @@ Higher order functions are functions that either
 Why?
  * "pluggable" programming by passing in and out chunks of code
  * greatly increases reusability of code since any varying code can be pulled out as a function to pass in
- * Lets show the power by extracting out some pluggable code
+ * We alreayd saw Curried functions such as `add : int -> (int -> int)` which *return* functions
+ * Also `keep : 'a list -> ('a -> bool) -> 'a list` above let us plug in a predicate (function)
+ * Lets show more power by generalizing an algorithm to extract code we can then plug in
 
 Example: append `"gobble"` to each word in a list of strings
 
@@ -743,7 +745,7 @@ All of the above functions can simply pass the tail of the list in the recursion
 let rec list_max_aux n l = (* invariant: n is the maximal integer seen thus far *)
   match l with 
   | [] -> n
-  | hd :: tl -> if hd > n then list_max_aux hd tl else list_max n tl
+  | hd :: tl -> if hd > n then list_max_aux hd tl else list_max_aux n tl
 let list_max = list_max_aux Int.min_int (* prime the pump *)
 ```
 
@@ -755,163 +757,144 @@ let list_max = list_max_aux Int.min_int (* prime the pump *)
 * We already saw this with `map` - we didn't need to write `append_gobble` directly, instead we could use `map`.
 ### Folds
 
- * fold_left/right use a binary function to combine list elements
+ * `fold_left`/`fold_right` use a binary function to combine list elements
+ * Think of `fold`ing as something you feed just the "base case code" and the "recursive case code" to for a function on lists, and it builds a recursive function for you.
  * As with `map` let us first write a concrete combiner and then pull out the particular combination code as a parameter
 
+```ocaml
+let rec char_list_to_string l =
+  match l with 
+  | [] -> "" (* "" is the "base case code" we will want to plug in later *)
+  | elt :: elts ->  (* we are calling the current list element `elt`, thats the convention in folding  *)
+    let accum = char_list_to_string elts in (* this is what `accum` is, the *accumulation* from recursing *)
+      (Char.escaped elt)^accum;;  (* this is the "recursive case" code: put elt on front of result thus far *)
+char_list_to_string ['h';'e';'l';'l';'o';'!'];;
+```
 
-#### Folding right
+Let us make a minor tweak to this to make clear that the recursive case code can be pulled out as a function:
+```ocaml
+let rec char_list_to_string l =
+  match l with 
+  | [] -> ""
+  | elt :: elts -> 
+    let accum = char_list_to_string elts in 
+      let f = fun elt accum -> (Char.escaped elt)^accum in f elt accum (* same effect as above, we did a no-op *)
+```
 
-First here is how we would hand-code it with `let rec`:
+* Now, `fold_right` just takes the base case (`""` here) and the recursion code (`f` here) as general parameters:
+
+```ocaml
+let rec fold_right f l init =
+  match l with 
+  | [] -> init (* "" is now the parameter init *)
+  | elt :: elts -> 
+    let accum = fold_right f elts init in (* same as above but forwarding extra parameters f / init *)
+      f elt accum (* same code as above but f passed in now as a parameter *)
+```
+
+* Now let's re-constitute the particular example we had above by passing the base/recursion code back in again:
+
+```ocaml
+fold_right (fun elt accum -> (Char.escaped elt)^accum) ['a';'b';'c'] ""
+```
+
+Another example with summating done manually (`init` case is `0`, function is `(+)` which is `fun elt accum -> elt + accum`)
 ```ocaml
 let rec summate_right l = match l with
-    | []   -> 0 (* this is the initial number to start with; a special case *)
-    | hd::tl ->  (+) hd (summate_right tl) (* assume by induction this will summate tl, add hd *)
+    | []   -> 0
+    | elt :: elts ->  (+) elt (summate_right elts)
     ;;
-summate_right [1;2;3];;
+summate_right [1;2;3];; (* = (1+(2+(3+0))) - observe we start from *right* side, fold_right is fold-starting-from-right *)
+```
+And now the same thing using our general `fold_right` (which is also the same as the library function `List.fold_right`)
+```ocaml
+List.fold_right (+) [1;2;3] 0
 ```
 
-Now lets generalize the initial value:
+* Many recursive functions on lists can be expressed with `List.fold_right`: they are simple accumulations over a base case.
 
 ```ocaml
-let rec summate_right l init = match l with
-    | []   -> init (* init is the initial number to start with *)
-    | hd::tl ->  (+) hd (summate_right tl init)
-    ;;
-summate_right [1;2;3] 0;;
-```
-
-Finally, pull out the `+` as a function *parameter*:
-
-```ocaml
-let rec fold_right f l init = match l with
-  | [] -> init
-  | hd::tl -> f hd (fold_right f tl init) (* same code as above just extracting (+) as a parameter *)
-;;
-let summate_right' = fold_right (+);; (* re-constitute the version above by feeding in (+) *)
-fold_right (+) [1;2;3] 0;; (* = (1+(2+(3+0))) - observe the 0 is on the right *)
-```
-
-* Many functions on lists have this common skeleton and can be written succinctly with `fold_right`
-* (It is so important that it is in the standard library as well, as `List.fold_right`)
-
-```ocaml
-let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];;
-let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];;
+let rev l = List.fold_right (fun elt accum -> accum @ [elt]) l [];; (* `accum` is reversed tail, `elt` is current head *)
+let map f l = List.fold_right (fun elt accum -> (f elt)::accum) l [];; (* `accum` has f applied to all elts in tail *)
 let filter f l = List.fold_right (fun elt accum -> if f elt then elt::accum else accum) l [];; 
 ```
-
-* We leave as an exercise understanding how the last two work but let us dig into `rev`.
-* Note that unlike `summate` above the types of the two arguments to `f` are different here.
-  - parameter `elt` is the head of the list, and `accum` is the *accumulated* result thus far.
-* Here is `rev` written without fold to show how like with `summate_right` above it is a fold:
-
-```ocaml
-let rec rev' l init = match l with
-    | []   -> init 
-    | hd::tl ->  (@) (rev' tl init) [hd] (* recall our previous rev was identical but @ infix *)
-        ;;
-rev' [1;2;3] [];;
-```
-
-* Note that the append in `rev'` has the `accum` as the first parameter and the `elt` as the second parameter whereas the fold expects the parameters opposite
-* So, the `f` we feed in to the `rev` via `fold_right` swaps them (also it makes the `elt` into a singleton list)
-* i.e., we pass `f` = `fun elt accum -> accum @ [elt]`
-* Why does this work?  By induction, can assume `accum` (the result so far) is the reverse of tail
-  - then, adding the head, elt, at the end will reverse, done - !
- 
-Here is another view, a trace:   
-
-```sh
-rev [1;2] 
-~= fold_right f [1;2] [] 
-~= f 1 (fold_right f [2] []]) 
-~= (fold_right f [2] []]) @ [1]
-~= (f 2 (fold_right f [] []) @ [1]
-~= (fold_right f [] []) @ [2] @ [1]
-~= [] @ [2] @ [1]
-~= [2;1]
-```
-
 
 #### Folding left
 
 * `fold_left` accumulates "on the way down" (we pass down the f computed value), whereas `fold_right` accumulates "on the way up" (the f computes *after* the recursive call)
-* This is somewhat related to pre-order vs post-order tree traversal you already know about: 
-   - “left” is “pre”, compute on the way down
-   - “right” is “post”, compute on the way back up
-* In general it is a fundamental aspect of recursive functions: can compute pre- post- or both.
-* So, in the left approach we will pass *down* the currently accumulated *result*, `accum`.
-* When we get to the bottom of the recursion (empty list) we have the fully final value in accum and just need to return ... return ... return it all the way to the top without touching it.
-* List and value arguments (and `accum` and `elt` on `f`) are swapped compared to `fold_right`, be careful !
-* Let us again do summation, this time “on the way down”, and extract the general folder.
+* Recall the `list_max_aux` function above which accumulated the maximum element seen.
+* Lets rename the variables we used before to the `accum/elt/elts` ones we use for folding
 
 ```ocaml
-let rec summate_left accum l = match l with
-    | []   -> accum
-    | hd::tl -> summate_left ((+) accum hd) tl (* pass down accum + hd as new "accum" -- accumulating *)
-    ;;
-summate_left 0 [1;2;3];; (* ~= summate_left (0+1) [2;3] ~= summate_left (1+2) [3] = summate_left (3+3) [] ~= 6 *)
+let rec list_max_aux accum l = (* invariant: accum is the maximal integer seen thus far *)
+  match l with 
+  | [] -> accum (* we are 100% done, and by the invariant this is the biggest integer seen to its the answer *)
+  | elt :: elts -> if elt > accum then list_max_aux elt elts else list_max_aux accum elts;;
+list_max_aux (Int.min_int) [1;2;3;2;-1];;
 ```
-* Note that the "initial `accum`"  is `0`, grows on way *down* (only)
-* Again let us extract the `(+)` as a new parameter `f` to allow any operation to be applied in this manner
+
+Here `accum` is already a parameter since max needs a seed; lets rewrite this to encapsulate the recursion case as `f`:
+```ocaml
+let rec list_max_aux accum l = 
+  match l with 
+  | [] -> accum
+  | elt :: elts -> let f = fun accum elt -> if elt > accum then elt else accum in
+       list_max_aux (f accum elt) elts
+```
+* This code is a bit different than above because we pushed the condition in, but its the same effect
+* Observe that by convention the `accum`/`elt` parameters are in opposite order on `f` for left folding
+* We can now make the `f` also a parameter, which gives us `fold_left`:
 
 ```ocaml
-let rec fold_left f accum l = match l with
-    | []   -> accum
-    | hd::tl -> fold_left f (f accum hd) tl
-    ;;
+let rec fold_left f accum l = 
+  match l with 
+  | [] -> accum
+  | elt :: elts ->  fold_left f (f accum elt) elts;;
 ```
-
-* Type is `('a -> 'b -> 'a) -> 'a -> 'b list -> 'a` which parenthesizes as `('a -> 'b -> 'a) -> ('a -> ('b list -> 'a))`
-
-Summing elements of a list can now be more succinctly coded:
+Again all we did was to pull out `f` as a parameter, let's pass it back in to show that:
 ```ocaml
-fold_left (+) 0 [1;2;3];;
+fold_left (fun accum elt -> if elt > accum then elt else accum) (Int.min_int) [1;2;3;2;-1];;
 ```
 
-* Tracing this, `accum` is `0`, `1`, `3`, `6` on succive recursive calls, `6` for the base case which bubbles all the way out to the top.
-* As with `fold_right` this skeleton lets us plug in different `f` to make many natural functions on lists.
+* Observe how when we get to the bottom of the recursion (empty list) we have the fully final value in `accum` 
+* So we just need to return ... return ... return it all the way to the top without touching it.
 
+For summation we can also use `fold_left` which is now working from the left side:
+
+```ocaml
+List.fold_left (+) 0 [1;2;3];; (* computes ((0 + 1) + 2) + 3); note using library function version List.fold_left here *)
+```
+
+* Notice we get the same answer for left and right fold, because the operator `(+)` happens to be commutative and associative
+   - `((0 + 1) + 2) + 3) ~= (0 + (1 + ( 2 + 3)))`
+* String concatenation `^` is not commutative so we see a difference in left vs right folding there:
+
+```ocaml
+fold_left (^) "z" ["a";"b";"c"] ;;
+fold_right (^) ["a";"b";"c"] "z" ;;
+```
+
+This also shows how the parameter order is slightly different in the two:
+* `List.fold_left`'s type is `('acc -> 'a -> 'acc) -> 'acc -> ('a list) -> 'acc`
+* `List.fold_right`'s type is `('a -> 'acc -> 'acc) -> 'a list -> 'acc -> 'acc`
+
+Here are a few more examples of folding left:
 ```ocaml
 let length l = List.fold_left (fun accum elt -> accum + 1) 0 l;; (* adds accum, ignores elt *)
 let rev l = List.fold_left (fun accum elt -> elt::accum) [] l;; (* e.g. rev [1;2;3] = (3::(2::(1::[]))) - much faster! *)
 ```
-Lets unfold to clarify how this version of `rev` runs (`f` is `(fun accum elt -> elt::accum)`):
 
-```sh
-rev [1;2] 
-~= fold_left f [] [1;2] 
-~= fold_left f (f [] 1) [2]
-~= fold_left f (1::[]) [2]
-~= fold_left f (f (1::[]) 2) []
-~= fold_left f (2::1::[]) []
-~= 2::1::[]
-~= [2;1]
-```
-
-* Here is `rev` written without fold but in `fold_left` style (perform the calculation on the way down):
-
-```ocaml
-let rec rev'' l accum = match l with (* Invariant for this rev: reverse l, put on front of accum *)
-    | []   -> accum
-    | hd::tl -> rev'' tl (hd :: accum) (* by induction can assume reverses tl, then tacks on to hd :: accum *)
-    ;;
-rev'' [1;2;3] [];; (* need to supply initial accum in this case, [] *)
-```
-
-Another way to see how left and right folds produce different results:
-
-```ocaml
-fold_left (fun elt -> fun accum -> "("^elt^" op "^accum^")") "z" ["a";"b";"c"] ;;  (* "(((z op a) op b) op c)" *)
-fold_right (fun accum -> fun elt -> "("^accum^" op "^elt^")") ["a";"b";"c"] "z" ;; (* "(a op (b op (c op z)))" *)
-```
-
+* For both of these, assume by induction that `accum` has the accumulated result for all list elements earlier in the list
+* Consider computing `rev [1;2;3]` when we have for example gotten to `[3]` (`elt` = `3`) in the recursion
+* At this point can assume the `accum` is `[2;1]`, the result for previous elts we passed.
+*  So, put `3` on the front (the `elt::accum`), and we are done!
 
 ### Pipeling and composition
 
-Pipelining Example: get the element nth from the end from a list, by first reversing and then getting nth element.
+* Pipelining is like an assembly line: feed output of one stage into the next stage, in a sequence.
+* Example: get the element nth from the end from a list, by first reversing and then getting nth element from front.
 
-Obvious version:
+First try, which works fine:
 ```ocaml
 let nth_end l n = List.nth (List.rev l) n;;
 ```
@@ -925,7 +908,7 @@ let nth_end l n = l |> List.rev |> (Fun.flip(List.nth) n);;
 * All `[1;2] |> List.rev` in fact does is apply the second argument to the first - very simple!
 * The type gives it away: `(|>)` has type `'a -> ('a -> 'b) -> 'b`
 * The `Fun.flip` is needed to put the list argument second, not first
-  - it is another interesting higher-order function, with type `('a -> 'b -> 'c) -> 'b -> 'a -> 'c`.
+  - it is another interesting higher-order function, with type `('a -> 'b -> 'c) -> ('b -> 'a -> 'c)`.
 * So, e.g. `(Fun.flip(List.nth) 2)` is a function taking a list and returning the 2nd element.
 #### Function Composition: functions both in and out
 
@@ -934,10 +917,11 @@ Composition operation `g o f` from math: take two functions, return their compos
 let compose g f = (fun x -> g (f x));;
 compose (fun x -> x+3) (fun x -> x*2) 10;;
 ```
+* The type again tells the whole story: `('a -> 'b) -> ('c -> 'a) -> ('c -> 'b)`
 
 ### Currying
 
-* Names the way multi-argument functions work in OCaml
+* Names the way multi-argument functions work in OCaml: return a function expecting next parameter
 * Logician Haskell Curry originally came up with the idea in the 1930's
 * First lets recall how multi-argument functions in OCaml are Curried
 
@@ -947,15 +931,11 @@ add_c 1 2;; (* recall this is the same as '(add_c 1) 2' *)
 let tmp = add_c 1 in tmp 2;; (* the partial application of arguments - tmp is a function *)
 (* An equivalent way to define `add_c`, clarifying what the above means *)
 let add_c = fun x -> (fun y -> x + y);;
-(* and, yet another identical way .. lots of equivalent notation in OCaml *)
-let add_c = fun x y -> x + y;;
-(* yet one more, the built-in (+) *)
-let add_c = (+);;
 ```
 
 Here is the *non-Curried* version: use a *pair of arguments* instead
 ```ocaml
-let add_nc (x,y) = x+y;; (* type is int * int -> int - no way to partially apply *)
+let add_nc (x,y) = x + y;; (* type is int * int -> int - no way to partially apply *)
 ```
 
 * Notice how the type of `add_nc` differs from `add_c`: `int * int -> int` vs `int -> int -> int`.
@@ -981,8 +961,8 @@ new_add_c 2 3;;
 
 Observe the types themselves pretty much specify their behavior
 ```
-curry : ('a * 'b -> 'c) -> 'a -> 'b -> 'c
-uncurry : ('a -> 'b -> 'c) -> 'a * 'b -> 'c
+curry : ('a * 'b -> 'c) -> ('a -> 'b -> 'c)
+uncurry : ('a -> 'b -> 'c) -> ('a * 'b -> 'c)
 ```
 
 ```ocaml
@@ -1010,14 +990,7 @@ let f x = if x <= 0 then invalid_arg "Let's be positive, please!" else x + 1;;
 f (-5);;
 ```
 
-* Recall that OCaml infers types but they can be optionally declared
-* It is good practice to paste the inferred types in your code to have types as documentation
-
-```ocaml
-let add (x: float) (y: float) : int = Float.to_int (x +. y);;
-```
-
-Type abbreviations are also possible via keyword `type`
+Type abbreviations are possible via keyword `type`
 ```ocaml
 type intpair = int * int;;
 let f (p : intpair) : int = match p with
@@ -1042,32 +1015,28 @@ Example of how to declare a new variant type for doing mixed arithmetic (integer
 
 ```ocaml
 type mynumber = Fixed of int | Floating of float;;  (* read "|" as "or" *)
-```
-  - Constructors must start with Capital Letter to distinguish from variables (`Fixed` and `Floating` here)
-  - The `of` indicates what type is under the wrapper, optionally no of meaning nothing under wrapper
-  - Type declarations are required but once they are in place type inference on them works
-
-```ocaml
 Fixed(5);; (* tag 5 as a Fixed *)
 Fixed 5;; (* parens optional as is often the case in OCaml *)
 Floating 4.0;; (* tag 4.0 as a Floating *)
 ```
-
-Note constructors look like functions but they are **not** -- you always need to give the argument
+  - Constructors must start with Capital Letter to distinguish from variables (`Fixed` and `Floating` here)
+  - The `of` indicates what type of thing is under the wrapper, leave out `of` and there will be nothing
+  - Type declarations are required but once they are in place type inference on them works
+  - Note constructors look like functions but they are **not** -- you always need to give the argument
 
 Destruct variants by pattern matching like we did for `Some/None` option type values:
 
 ```ocaml
 let ff_as_int x =
     match x with
-    | Fixed n -> n    (* variants fit well into pattern matching syntax *)
+    | Fixed n -> n
     | Floating z -> int_of_float z;;
 
-ff_as_int (Fixed 5);; (* beware that ff_as_int Fixed(5) won't parse properly!!  Super commmon error!!! 
+ff_as_int (Fixed 5);; (* beware that ff_as_int Fixed(5) won't parse properly!!  Super commmon error!
                          ff_as_int @@ Fixed 5 will though *)
 ```
 
-A non-trivial function using the above variant
+An example using the above variant
 
 ```ocaml
 let add_num n1 n2 =
@@ -1081,13 +1050,13 @@ let add_num n1 n2 =
 add_num (Fixed 10) (Floating 3.14159);;
 ```
 
-Multiple data items in a single variant case?  Use tuple types
+Multiple data items in a single variant case?  Can use tuple types
 
 ```ocaml
 type complex = CZero | Nonzero of float * float;;
 
 let com = Nonzero(3.2,11.2);;
-let zer = CZero;;
+let zer = CZero;; (* example of a variant without a payload *)
 ```
 
 #### Recursive data structures 
@@ -1096,26 +1065,19 @@ let zer = CZero;;
   - Recursive types can refer to themselves in their own definition
   - Similar in spirit to how C structs can be recursive (but, no pointer needed here)
 
-Warm-up: homebrew lists - built-in list type is not in fact needed
-First just int lists.. `Mt` represents `[]`, `Cons(hd,tl)` represents `hd::tl`
-
-```ocaml
-type myintlist = Mt | Cons of int * myintlist;; (* Observe: self-referential type *)
-let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent in spirit to [3;5;7] *)
-```
-Let us extend the above to be polymorphic using a *type parameter*, `'a`.
+* Warm-up: homebrew lists - built-in list type is not in fact needed
+*  `Mt` represents `[]`, `Cons(hd,tl)` represents `hd::tl`
 
 ```ocaml
 type 'a mylist = Mt | Cons of 'a * ('a mylist);;
+let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent in spirit to [3;5;7] *)
 ```
-* Observe how above type takes a (prefix) argument, `'a` -- `mylist` is a type function
+* First notice that we can refer to `mylist` in its own type definition: its a *recursive type*
+* Also observe how above type takes a (prefix) argument, `'a` -- `mylist` is a type function, `'a` is the type of list elements
 * Perhaps better syntax would have been `type mylist(t) = Mt | Cons of t * (mylist(t))`
-* This `'a` is not the same as the generic type `'a` - can be confusing
 
-```ocaml
-let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));;
-```
- Coding is very similar to built-in lists
+* Coding is analogous with built-in lists but without special sugar to make lists like `[1;2;3]`
+* Lets write `map` as a test to show how easy it is
 ```ocaml
 let rec map ml f =
   match ml with
