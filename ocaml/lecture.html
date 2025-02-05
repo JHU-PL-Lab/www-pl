@@ -1276,13 +1276,16 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 </code></pre></div></div>
 <ul>
   <li>Remember, as with lists this is <em>not</em> mutating the tree, its building a “new” one</li>
-  <li>Also as with <code>List.map</code> earlier we could write a <code>tree_map</code> function over trees since this is the common pattern of “make a new tree by applying some function <code>f</code> to each element of the tree” (we won’t in fact but it would be a good exercise)</li>
+  <li>
+    <p>Also as with <code>List.map</code> earlier we could write a <code>tree_map</code> function over trees since this is the common pattern of “make a new tree by applying some function <code>f</code> to each element of the tree” (we won’t in fact but it would be a good exercise)</p>
+  </li>
+  <li>Recall a <em>binary search tree</em> is a binary tree where all values in any left subtree are smaller (or equal to) any value in the node itself or in any right subtree</li>
+  <li>Let us now write a binary search tree <code>lookup</code> function</li>
+  <li>Invariant: input tree is a binary search tree (bst) with the above property</li>
 </ul>
 
-<p>Let us now write a binary tree <code>lookup</code> function:</p>
-
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">bintree</span> <span class="o">=</span>
-  <span class="k">match</span> <span class="n">bintree</span> <span class="k">with</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">bst</span> <span class="o">=</span>
+  <span class="k">match</span> <span class="n">bst</span> <span class="k">with</span>
   <span class="o">|</span> <span class="nc">Leaf</span> <span class="o">-&gt;</span> <span class="bp">false</span>
   <span class="o">|</span> <span class="nc">Node</span> <span class="p">(</span><span class="n">y</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="p">)</span> <span class="o">-&gt;</span>
       <span class="k">if</span> <span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="k">then</span> <span class="bp">true</span> <span class="k">else</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="n">y</span> <span class="k">then</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">left</span> <span class="k">else</span> <span class="n">lookup</span> <span class="n">x</span> <span class="n">right</span>
@@ -1292,9 +1295,9 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 <span class="n">lookup</span> <span class="s2">"flack"</span> <span class="n">bt</span><span class="p">;;</span>
 </code></pre></div></div>
 
-<p>Let us now define how to insert an element in sorted order.</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">insert</span> <span class="n">x</span> <span class="n">bintree</span> <span class="o">=</span>
-   <span class="k">match</span> <span class="n">bintree</span> <span class="k">with</span>
+<p>Let us now define how to insert an element but to still preserve the bst property.</p>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">insert</span> <span class="n">x</span> <span class="n">bst</span> <span class="o">=</span>
+   <span class="k">match</span> <span class="n">bst</span> <span class="k">with</span>
    <span class="o">|</span> <span class="nc">Leaf</span> <span class="o">-&gt;</span> <span class="nc">Node</span><span class="p">(</span><span class="n">x</span><span class="o">,</span> <span class="nc">Leaf</span><span class="o">,</span> <span class="nc">Leaf</span><span class="p">)</span>
    <span class="o">|</span> <span class="nc">Node</span><span class="p">(</span><span class="n">y</span><span class="o">,</span> <span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="p">)</span> <span class="o">-&gt;</span>
        <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;=</span> <span class="n">y</span> <span class="k">then</span> <span class="nc">Node</span><span class="p">(</span><span class="n">y</span><span class="o">,</span> <span class="n">insert</span> <span class="n">x</span> <span class="n">left</span><span class="o">,</span> <span class="n">right</span><span class="p">)</span>
@@ -1303,23 +1306,29 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 </code></pre></div></div>
 
 <ul>
-  <li>This is also <strong>not mutating</strong> – it returns a whole new tree - !</li>
+  <li>This is also <strong>not mutating</strong> – it returns a whole new tree - !
+    <ul>
+      <li>(well, not exactly, we can share subtrees with old tree; more below)</li>
+    </ul>
+  </li>
   <li>If you then want to insert another element you need to pass the result from the previous call.</li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">goobt</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"goober "</span> <span class="n">bt</span><span class="p">;;</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">bt2</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"goober "</span> <span class="n">bt</span><span class="p">;;</span>
 <span class="n">bt</span><span class="p">;;</span> <span class="c">(* observe bt did not change after the insert *)</span>
-<span class="k">let</span> <span class="n">gooobt</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"slacker "</span> <span class="n">goobt</span><span class="p">;;</span> <span class="c">(* pass in goobt to accumulate both additions *)</span>
-<span class="k">let</span> <span class="n">manyt</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="nn">Fun</span><span class="p">.</span><span class="n">flip</span> <span class="n">insert</span><span class="p">)</span> <span class="nc">Leaf</span> <span class="p">[</span><span class="s2">"one"</span><span class="p">;</span><span class="s2">"two"</span><span class="p">;</span><span class="s2">"three"</span><span class="p">;</span><span class="s2">"four"</span><span class="p">;</span><span class="s2">"five"</span><span class="p">;</span><span class="s2">"six"</span><span class="p">]</span> <span class="c">(* folding for serial insert *)</span>
+<span class="k">let</span> <span class="n">bt3</span> <span class="o">=</span> <span class="n">insert</span> <span class="s2">"slacker "</span> <span class="n">bt2</span><span class="p">;;</span> <span class="c">(* pass in bt2 to accumulate both additions in bt3 *)</span>
+<span class="k">let</span> <span class="n">manyt</span> <span class="o">=</span> <span class="nn">List</span><span class="p">.</span><span class="n">fold_left</span> <span class="p">(</span><span class="nn">Fun</span><span class="p">.</span><span class="n">flip</span> <span class="n">insert</span><span class="p">)</span> <span class="nc">Leaf</span> 
+            <span class="p">[</span><span class="s2">"one"</span><span class="p">;</span><span class="s2">"two"</span><span class="p">;</span><span class="s2">"three"</span><span class="p">;</span><span class="s2">"four"</span><span class="p">;</span><span class="s2">"five"</span><span class="p">;</span><span class="s2">"six"</span><span class="p">;</span><span class="s2">"seven"</span><span class="p">;</span><span class="s2">"eight"</span><span class="p">;</span><span class="s2">"nine"</span><span class="p">]</span> 
+            <span class="c">(* folding for serial insert; accum here is the tree so keep passing it along *)</span>
 </code></pre></div></div>
 
 <ul>
-  <li>You have already been programming with immutable data structures – lists</li>
+  <li>You have already been programming with immutable data structures – <code>list</code>s</li>
   <li>For trees you are used to mutating to insert, delete, etc so takes some getting used to</li>
   <li>It looks really inefficient since an insertion is making a “totally new tree”
     <ul>
       <li>but, the compiler can in fact share all subtrees along the spine to the new node - “only” log n cost</li>
-      <li>referential transparency at work</li>
+      <li>referential transparency at work!</li>
     </ul>
   </li>
 </ul>
@@ -1327,10 +1336,10 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 <h3 id="end-core-ocaml-used-in-the-course">End Core OCaml used in the course</h3>
 
 <ul>
-  <li>The bulk of the assignments only use what we covered above</li>
-  <li>We will now <em>very</em> quickly cover a few more features which we will rarely or never use
+  <li>The assignments mainly use what we covered above</li>
+  <li>We will now quickly cover a few more OCaml features which we will rarely use
     <ul>
-      <li>Note that the toy languages we study will copy OCaml to some degree so we at least want a basic understanding of OCaml’s records, state, exceptions</li>
+      <li>Note that the toy languages we study will mirror OCaml to some degree so we at least want a basic understanding of OCaml’s records, state, and exceptions</li>
       <li><strong>FbR</strong> will be our <strong>Fb</strong> records extension, <strong>FbS</strong> for state, and <strong>FbX</strong> for eXceptions.</li>
     </ul>
   </li>
@@ -1339,7 +1348,7 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 <h3 id="records">Records</h3>
 <ul>
   <li>Like tuples but with labels on fields.</li>
-  <li>Similar to the structs of C/C++.</li>
+  <li>Similar to the <code>struct</code>s of C/C++.</li>
   <li>The types <em>must</em> be declared with <code>type</code>, just like OCaml variants.</li>
   <li>Also like variants and tuples they can be used in pattern matches.</li>
   <li>Also also record fields are <strong>immutable</strong> by default, so not like Python/Javascript dictionaries/objects</li>
@@ -1367,7 +1376,7 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 </code></pre></div></div>
 
 <p>One more example function with records</p>
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">unhappy_add_ratio</span> <span class="n">r1</span> <span class="n">r2</span> <span class="o">=</span> 
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">unhappy_add_ratio</span> <span class="n">r1</span> <span class="n">r2</span> <span class="o">=</span> <span class="c">(* Doesn't use patterns, boo hoo *)</span>
   <span class="p">{</span><span class="n">num</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">num</span> <span class="o">*</span> <span class="n">r2</span><span class="o">.</span><span class="n">denom</span> <span class="o">+</span> <span class="n">r2</span><span class="o">.</span><span class="n">num</span> <span class="o">*</span> <span class="n">r1</span><span class="o">.</span><span class="n">denom</span><span class="p">;</span> 
    <span class="n">denom</span> <span class="o">=</span> <span class="n">r1</span><span class="o">.</span><span class="n">denom</span> <span class="o">*</span> <span class="n">r2</span><span class="o">.</span><span class="n">denom</span><span class="p">};;</span>
 
@@ -1397,6 +1406,12 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 
 <p>Indirect mutability - variable itself can’t change, but what it points to can.</p>
 <ul>
+  <li>C language perspective on this: if <code>p</code> is an <code>int *</code> type (pointer),
+    <ul>
+      <li><code>*p = 5;</code> is what you can do in OCaml – change what pointer points to</li>
+      <li><code>p = someotherpointer</code> is what you <strong>can’t</strong> do, changing the pointer itself.</li>
+    </ul>
+  </li>
   <li>items are immutable unless their mutability is explicitly declared</li>
 </ul>
 
@@ -1406,19 +1421,20 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
   <li>References are more like standard PL variables which can change but there are some subtle differences
     <ul>
       <li>You can’t make a reference without any value in it, there is no <code>null</code> pointer possible.</li>
-      <li>References are more an <em>immutable</em> pointer to a <em>mutable</em> block, they are not directly mutable</li>
+      <li>You need to explicitly dereference them so they are like <code>int *</code> types in C mentioned above</li>
+      <li>References are an <em>immutable</em> pointer to a <em>mutable</em> block, can change the pointed-to but not the pointer.</li>
     </ul>
   </li>
 </ul>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="mi">4</span><span class="p">;;</span>    <span class="c">(* declare initial value when creating; type is `int ref` here *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="mi">4</span><span class="p">;;</span>    <span class="c">(* must declare initial value when creating; type is `int ref` here *)</span>
 </code></pre></div></div>
 
-<p>Meaning of the above: x forevermore (i.e. forever unless shadowed) refers to a fixed cell.  The <strong>contents</strong> of that fixed call <strong>can</strong> change, but not x.</p>
+<p>Meaning of the above: x refers to a fixed cell.  The <strong>contents</strong> of that fixed call <strong>can</strong> change, but not x.</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">(* x + 1;; *)</span> <span class="c">(* a type error ! *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">(* x + 1;; *)</span> <span class="c">(* a type error, need to explicitly dereference *)</span>
 <span class="o">!</span><span class="n">x</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;;</span> <span class="c">(* need `!x` to get out the value; parallels `*x` in C *)</span>
-<span class="n">x</span> <span class="o">:=</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* assignment - x must be a ref cell.  Returns () - goal is side effect *)</span>
+<span class="n">x</span> <span class="o">:=</span> <span class="mi">6</span><span class="p">;;</span> <span class="c">(* assignment is := not =. x must be a ref cell.  Returns unit, () - goal is side effect *)</span>
 <span class="o">!</span><span class="n">x</span><span class="p">;;</span> <span class="c">(* Mutation happened to contents of cell x *)</span>
 <span class="k">let</span> <span class="n">x_alias</span> <span class="o">=</span> <span class="n">x</span><span class="p">;;</span> <span class="c">(* make another name for x since we are about to shadow it *)</span>
 <span class="k">let</span> <span class="n">x</span> <span class="o">=</span> <span class="n">ref</span> <span class="s2">"hi"</span><span class="p">;;</span> <span class="c">(* does NOT mutate x above, instead another shadowing definition *)</span>
@@ -1500,13 +1516,13 @@ type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
 
 <p>There are a few built-in exceptions we used previously:</p>
 
-<div class="language-sh highlighter-rouge"><div class="highlight"><pre class="highlight"><code>failwith <span class="s2">"Oops"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Generic code failure - exception is named <span class="sb">`</span>Failure<span class="sb">`</span> <span class="k">*</span><span class="o">)</span>
-invalid_arg <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="o">(</span><span class="k">*</span> Invalid_argument exception <span class="k">*</span><span class="o">)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">failwith</span> <span class="s2">"Oops"</span><span class="p">;;</span> <span class="c">(* Generic code failure - exception is a built-in `Failure` exception *)</span>
+<span class="n">invalid_arg</span> <span class="s2">"This function works on non-empty lists only"</span><span class="p">;;</span> <span class="c">(* Invalid_argument exception *)</span>
 </code></pre></div></div>
 
 <p>Here is a simple example of how to declare and use exceptions in OCaml</p>
 
-<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Bad</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span> <span class="c">(* Declare a new exception named `Goo` with a string payload *)</span>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">exception</span> <span class="nc">Bad</span> <span class="k">of</span> <span class="kt">string</span><span class="p">;;</span> <span class="c">(* Declare a new exception named `Bad` with a string payload *)</span>
 
 <span class="k">let</span> <span class="n">f</span> <span class="n">_</span> <span class="o">=</span> <span class="k">raise</span> <span class="p">(</span><span class="nc">Bad</span> <span class="s2">"keyboard on fire"</span><span class="p">);;</span>
 <span class="c">(* f ();; *)</span> <span class="c">(* raises the exception to the top level *)</span>
@@ -1515,7 +1531,7 @@ invalid_arg <span class="s2">"This function works on non-empty lists only"</span
 <span class="k">let</span> <span class="n">g</span> <span class="bp">()</span> <span class="o">=</span>
   <span class="k">try</span>
     <span class="n">f</span> <span class="bp">()</span>
-  <span class="k">with</span> <span class="c">(* `catch` keyword in Java; use pattern matching in handlers *)</span>
+  <span class="k">with</span> <span class="c">(* `catch` is the analogous keyword in Java; use pattern matching in handlers *)</span>
       <span class="nc">Bad</span> <span class="n">s</span> <span class="o">-&gt;</span> <span class="nn">Printf</span><span class="p">.</span><span class="n">printf</span> <span class="s2">"exception Bad raised with payload </span><span class="se">\"</span><span class="s2">%s</span><span class="se">\"</span><span class="s2"> </span><span class="se">\n</span><span class="s2">"</span> <span class="n">s</span>
 <span class="p">;;</span>
 <span class="n">g</span> <span class="bp">()</span><span class="p">;;</span>
@@ -1528,7 +1544,7 @@ invalid_arg <span class="s2">"This function works on non-empty lists only"</span
   <li>a <strong>module</strong> is a larger level of program abstraction, think functional components or library.</li>
   <li>e.g. Java package, Python module, C directory, etc</li>
   <li><em>something</em> is needed for all but very small programs: imagine a file system without directories/folders as an analogy to a PL without modules</li>
-  <li>We are not going to study the theory of modules later in the course so will cover a bit more about the principles now</li>
+  <li>We are not going to study the theory of modules later in the course so will cover some of the principles now</li>
 </ul>
 
 <h4 id="general-principles-of-modules">General principles of modules</h4>
@@ -1540,7 +1556,7 @@ invalid_arg <span class="s2">"This function works on non-empty lists only"</span
     <ul>
       <li><strong>import</strong> things (e.g. other modules) from the outside;</li>
       <li><strong>export</strong> some (or all) things it has declared for outsiders to use;</li>
-      <li>it may <strong>hide</strong> some things for internal use only
+      <li>A module may <strong>hide</strong> some things for internal use only
         <ul>
           <li>allows module users to avoid seeing grubby internals - a higher level of abstraction</li>
           <li>avoids users mucking with internals and messing things up</li>
@@ -1567,8 +1583,12 @@ with a <code>File</code>’s <code>reset()</code>: use <code>Window.reset()</cod
       <li>Modules always start with a Capital letter, just like variant labels.</li>
     </ul>
   </li>
-  <li>We now study how we can build and use our own OCaml modules</li>
-  <li>(We focus here on building modules via files; there are other methods in OCaml which we skip)</li>
+  <li>We now study how we can build and use our own OCaml modules
+    <ul>
+      <li>We focus here on building modules via files; there are other methods in OCaml which we skip</li>
+      <li>The FbDK you will use for writing interpreters and typecheckers uses modules so it will help to understand whats going on with it</li>
+    </ul>
+  </li>
 </ul>
 
 <h4 id="making-a-module">Making a module</h4>
@@ -1592,6 +1612,7 @@ with a <code>File</code>’s <code>reset()</code>: use <code>Window.reset()</cod
       <li><code>dune</code> is <code>make</code> for OCaml</li>
       <li><code>dune build</code> invokes the OCaml compiler on all the files in a project</li>
       <li>if you are curious what actual compiler calls are happening, add <code>--verbose</code> to the build command</li>
+      <li><code>dune test</code> will build and then run any tests</li>
     </ul>
   </li>
 </ul>
@@ -1604,8 +1625,9 @@ with a <code>File</code>’s <code>reset()</code>: use <code>Window.reset()</cod
   <li>Observe how a module can also contain type definitions, this is a key differece of OCaml</li>
 </ul>
 
-<h3 id="playing-with-the-simple_set-library-module">Playing with the Simple_set library module</h3>
+<h3 id="using-the-simple_set-library-module">Using the Simple_set library module</h3>
 <ul>
+  <li><code>dune test</code> will run some simple tests in <code>tests/tests.ml</code></li>
   <li>We can use <code>dune utop</code> to load the library module into a fresh <code>utop</code>, after which we can play with it</li>
 </ul>
 
@@ -1627,11 +1649,12 @@ contains 3 aset ;;
   </li>
 </ul>
 
+<p>For the interpreters and typecheckers you write, you will be able to run them with <code>dune utop</code> or as an executable.</p>
+
 <h3 id="end-of-ocaml">End of OCaml!</h3>
 
 <ul>
-  <li>If you want to learn more about software engineering in OCaml, consider taking <a href="https://pl.cs.jhu.edu/fpse">Functional Progamming in Software Engineering</a> in the fall</li>
-  <li>Or, just click on the above course link for resources to teach it to yourself.</li>
+  <li>If you want to learn more about software engineering in OCaml, take <a href="https://pl.cs.jhu.edu/fpse">Functional Progamming in Software Engineering</a> in the fall</li>
 </ul>
       
           </section>

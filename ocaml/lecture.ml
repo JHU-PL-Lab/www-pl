@@ -433,8 +433,8 @@ let rec add_gobble binstringtree =
        Node(y^"gobble",add_gobble left,add_gobble right)
 ;;
 
-let rec lookup x bintree =
-  match bintree with
+let rec lookup x bst =
+  match bst with
   | Leaf -> false
   | Node (y, left, right) ->
       if x = y then true else if x < y then lookup x left else lookup x right
@@ -443,18 +443,20 @@ let rec lookup x bintree =
 lookup "whack!" bt;;
 lookup "flack" bt;;
 
-let rec insert x bintree =
-   match bintree with
+let rec insert x bst =
+   match bst with
    | Leaf -> Node(x, Leaf, Leaf)
    | Node(y, left, right) ->
        if x <= y then Node(y, insert x left, right)
        else Node(y, left, insert x right)
 ;;
 
-let goobt = insert "goober " bt;;
+let bt2 = insert "goober " bt;;
 bt;; (* observe bt did not change after the insert *)
-let gooobt = insert "slacker " goobt;; (* pass in goobt to accumulate both additions *)
-let manyt = List.fold_left (Fun.flip insert) Leaf ["one";"two";"three";"four";"five";"six"] (* folding for serial insert *)
+let bt3 = insert "slacker " bt2;; (* pass in bt2 to accumulate both additions in bt3 *)
+let manyt = List.fold_left (Fun.flip insert) Leaf 
+            ["one";"two";"three";"four";"five";"six";"seven";"eight";"nine"] 
+            (* folding for serial insert; accum here is the tree so keep passing it along *)
 
 type ratio = {num: int; denom: int};;
 let q = {num = 53; denom = 6};;
@@ -468,7 +470,7 @@ let rat_to_int {num = n; denom = d} =  n / d;;
 let unhappy_rat_to_int r  =
    r.num / r.denom;;
 
-let unhappy_add_ratio r1 r2 = 
+let unhappy_add_ratio r1 r2 = (* Doesn't use patterns, boo hoo *)
   {num = r1.num * r2.denom + r2.num * r1.denom; 
    denom = r1.denom * r2.denom};;
 
@@ -477,11 +479,11 @@ unhappy_add_ratio {num = 1; denom = 3} {num = 2; denom = 5};;
 let happy_add_ratio {num = n1; denom = d1} {num = n2; denom = d2} = 
   {num = n1 * d2 + n2 * d1; denom = d1 * d2};;
 
-let x = ref 4;;    (* declare initial value when creating; type is `int ref` here *)
+let x = ref 4;;    (* must declare initial value when creating; type is `int ref` here *)
 
-(* x + 1;; *) (* a type error ! *)
+(* x + 1;; *) (* a type error, need to explicitly dereference *)
 !x + 1;; (* need `!x` to get out the value; parallels `*x` in C *)
-x := 6;; (* assignment - x must be a ref cell.  Returns () - goal is side effect *)
+x := 6;; (* assignment is := not =. x must be a ref cell.  Returns unit, () - goal is side effect *)
 !x;; (* Mutation happened to contents of cell x *)
 let x_alias = x;; (* make another name for x since we are about to shadow it *)
 let x = ref "hi";; (* does NOT mutate x above, instead another shadowing definition *)
@@ -507,7 +509,10 @@ arr.(0);; (* access notation *)
 arr.(0) <- 5;; (* update notation *)
 arr;;
 
-exception Bad of string;; (* Declare a new exception named `Goo` with a string payload *)
+failwith "Oops";; (* Generic code failure - exception is a built-in `Failure` exception *)
+invalid_arg "This function works on non-empty lists only";; (* Invalid_argument exception *)
+
+exception Bad of string;; (* Declare a new exception named `Bad` with a string payload *)
 
 let f _ = raise (Bad "keyboard on fire");;
 (* f ();; *) (* raises the exception to the top level *)
@@ -516,7 +521,7 @@ let f _ = raise (Bad "keyboard on fire");;
 let g () =
   try
     f ()
-  with (* `catch` keyword in Java; use pattern matching in handlers *)
+  with (* `catch` is the analogous keyword in Java; use pattern matching in handlers *)
       Bad s -> Printf.printf "exception Bad raised with payload \"%s\" \n" s
 ;;
 g ();;
