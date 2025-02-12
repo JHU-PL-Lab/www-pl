@@ -499,7 +499,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
     </tr>
     <tr> 
       <td width="8%"> 
-        <div align="center" class="body">May TBA</div>
+        <div align="center" class="body">May 12, 6-9PM</div>
       </td>
       <td width="8%"> 
         <div align="center" class="body">TBA</div>

@@ -1226,29 +1226,33 @@ f <span class="o">(</span><span class="nt">-5</span><span class="o">)</span><spa
     <p>Perhaps better syntax would have been <code>type mylist(t) = Mt | Cons of t * (mylist(t))</code></p>
   </li>
   <li>Coding is analogous with built-in lists but without special sugar to make lists like <code>[1;2;3]</code></li>
-  <li>Lets write <code>map</code> as a test to show how easy it is<br />
-```ocaml<br />
-let rec map ml f =<br />
-match ml with<br />
-  | Mt -&gt; Mt<br />
-  | Cons(hd,tl) -&gt; Cons(f hd,map tl f);;</li>
+  <li>
+    <p>Lets write <code>map</code> as a test to show how easy it is</p>
+
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="k">rec</span> <span class="n">map</span> <span class="n">ml</span> <span class="n">f</span> <span class="o">=</span>
+<span class="k">match</span> <span class="n">ml</span> <span class="k">with</span>
+  <span class="o">|</span> <span class="nc">Mt</span> <span class="o">-&gt;</span> <span class="nc">Mt</span>
+  <span class="o">|</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">hd</span><span class="o">,</span><span class="n">tl</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nc">Cons</span><span class="p">(</span><span class="n">f</span> <span class="n">hd</span><span class="o">,</span><span class="n">map</span> <span class="n">tl</span> <span class="n">f</span><span class="p">);;</span>
+
+<span class="k">let</span> <span class="n">map_eg</span> <span class="o">=</span> <span class="n">map</span> <span class="n">mylisteg</span> <span class="p">(</span><span class="k">fun</span> <span class="n">x</span> <span class="o">-&gt;</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span><span class="p">);;</span>
+</code></pre></div>    </div>
+  </li>
 </ul>
 
-<p>let map_eg = map mylisteg (fun x -&gt; x - 1);;</p>
-<pre><code>
-&lt;a name="v"&gt;&lt;/a&gt;
+<p><a name="v"></a></p>
 
-##  OCaml Lecture V
+<h2 id="ocaml-lecture-v">OCaml Lecture V</h2>
 
-#### Trees
+<h4 id="trees">Trees</h4>
 
-* Binary trees are like lists but with two self-referential sub-structures not one
-* Here is one tree definition; note the data is (only) in the nodes here
-* ... n-ary trees are a direct generalization of this pattern
+<ul>
+  <li>Binary trees are like lists but with two self-referential sub-structures not one</li>
+  <li>Here is one tree definition; note the data is (only) in the nodes here</li>
+  <li>… n-ary trees are a direct generalization of this pattern</li>
+</ul>
 
-```ocaml
-type 'a btree = Leaf | Node of 'a * 'a btree * 'a btree;;
-</code></pre>
+<div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">type</span> <span class="k">'</span><span class="n">a</span> <span class="n">btree</span> <span class="o">=</span> <span class="nc">Leaf</span> <span class="o">|</span> <span class="nc">Node</span> <span class="k">of</span> <span class="k">'</span><span class="n">a</span> <span class="o">*</span> <span class="k">'</span><span class="n">a</span> <span class="n">btree</span> <span class="o">*</span> <span class="k">'</span><span class="n">a</span> <span class="n">btree</span><span class="p">;;</span>
+</code></pre></div></div>
 
 <p>Example trees</p>
 

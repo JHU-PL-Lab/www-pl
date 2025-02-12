@@ -1083,14 +1083,15 @@ let mylisteg = Cons(3,Cons(5,Cons(7,Mt)));; (* equivalent in spirit to [3;5;7] *
 
 * Coding is analogous with built-in lists but without special sugar to make lists like `[1;2;3]`
 * Lets write `map` as a test to show how easy it is
-```ocaml
-let rec map ml f =
+
+  ```ocaml
+  let rec map ml f =
   match ml with
     | Mt -> Mt
     | Cons(hd,tl) -> Cons(f hd,map tl f);;
 
-let map_eg = map mylisteg (fun x -> x - 1);;
-```
+  let map_eg = map mylisteg (fun x -> x - 1);;
+  ```
 
 <a name="v"></a>
 
