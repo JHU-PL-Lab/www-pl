@@ -116,12 +116,13 @@ let combD = "Fun x -> x x"
     * In an actual macro system you can use the full language syntax; for example, in C:
 
     #define double(n) (n + n) /* Full C syntax on RHS of this C macro */
-       ... `double(x-32)` turns in to `(x-32) + (x-32)`
+       ... `double(x-32)` turns in to the C code `(x-32) + (x-32)`
+
     We use a simple somewhat-hackish macro system for Fb:
       * Use OCaml as the macro language
       * Represent Fb programs in OCaml directly as the concrete syntax -- strings
-        - Could instead have used the Fb abstract syntax inside OCaml but its harder to read
-        - This approach is not ideal as we will see, but it is very simple.
+        - Could instead have used the Fb abstract syntax inside OCaml but its harder to read the macros that way.
+        - The string approach is a hack, but it is simple.
 *)
 
 (* Here is a simple macro for a doubling operation *)
@@ -133,15 +134,7 @@ double "2 + 4"
 
 (* "(2 + 4) + (2 + 4)" - observe this is just string manipulation, no execution happened! *)
 
-(*
-    * Why didn't we just write n ^"+" ^ n above?? We need parens around all
-    macro parameters like the n to not change the parse order.
-    * This is the downside of working over concrete syntax as strings
-    * Notice also that macros do not do any evaluation -- `2 + 4` not `6` in the above.
-*)
-
-(* * Macros can be used in other Fb code (strings) by appending them in
-   * This is in principle how C etc macros work, but they work at the level of the parse tree *)
+(*  Macros can be used in other Fb code (strings) by appending them in *)
 
 let quad = "Fun z -> " ^ double "z" ^ " + " ^ double "z"
 
@@ -149,12 +142,11 @@ let quad = "Fun z -> " ^ double "z" ^ " + " ^ double "z"
 
 (* If we just wrote "Fun z -> double z + double z" the `double` would be an Fb variable
    - not what we want!  Program would not be closed! 
-   - `double` is an OCaml variable, not an Fb variable. *)
+   - `double` is an *OCaml variable*, not an Fb variable. 
+   - very easy to confuse OCaml and Fb variables, pay attention to that! *)
 
 (* Example of a bad string-based macro *)
 let apply_bad f x = f ^ " " ^ x (* f applied to x macro done badly *)
-
-(* sort of looks OK here for f x ... *)
 let apply_bad_eg = apply_bad "Fun x -> x" "0"
 
 (* oops! this is string "Fun x -> x 0"  which is "Fun x -> (x 0)" *)
@@ -176,19 +168,19 @@ let apply_eg = apply "Fun x ->x" "0"
 
 (* ****** Encoding Pairs in Fb ********* *)
 
-(* First lets encode some by hand, then write a general macro. *)
+(* First lets encode some pairs by hand, then write a general macro. *)
 
 (* Fact: the following odd thing can be made to behave like an OCaml pair `(3,2)` *)
 
 let pair_eg = "Fun d -> d 3 2"
 
-(* Proof: we can "get the left side out" (and similarly for right) *)
+(* Proof: we can "get the left side out" (and similarly for right side) *)
 
 let get_left =
   "Let p = Fun d -> d 3 2 In 
-                p (Fun x -> Fun y -> x)"
+   p (Fun x -> Fun y -> x)"
 
-(* A too-simple pair macro reflecting what we did above  *)
+(* A pair macro reflecting what we did above  *)
 
 let pr_lazy c1 c2 = "Fun d -> d (" ^ c1 ^ ") (" ^ c2 ^ ")"
 let pair_eg_again = pr_lazy "3" "2"
@@ -197,27 +189,26 @@ let pair_eg_again = pr_lazy "3" "2"
 
 let pr_lazy_eg = pr_lazy "2+3" "3" (* returns "Fun d -> d (2+3) (3)" *)
 
-(* `peu pr_lazy_eg` returns "Function d -> d (2 + 3) 3"
-   -- does not compute the 2+3 --> LAZY pair, not what OCaml does
-   -- here 2+3 will need to be computed every time first projection taken - inefficient!
-   (note that lazy languages such as Haskell in fact cache so are not this inefficient) *)
+(* 
+   -- does not compute the 2+3 --> a LAZY pair, not what OCaml does
+*)
 
 (* Macro which makes an eager pair, which is the OCaml form
    Idea is to use Let to force the components to compute first. *)
 let pr l r =
-  "(Let lft = (" ^ l ^ ") In Let rgt = (" ^ r ^ ") In
+  "(Let lft = " ^ l ^ " In Let rgt = " ^ r ^ " In
       Fun x -> x lft rgt)"
 
 let pc = pr "4+3" "5"
 
 (* peu pc is "Fun x -> x 7 5" -- the eager pair that we wanted *)
 
-(* Macros for extracting contents of pairs *)
-let left c = "Let p = " ^ c ^ " In p (Fun x -> Fun y -> x)"
-let right c = "Let p = " ^ c ^ " In p (Fun x -> Fun y -> y)"
-let use_pr = left pc
+(* Macros for extracting contents of pairs following example above *)
+let left c = "(" ^ c ^ ")(Fun x -> Fun y -> x)"
+let right c = "(" ^ c ^ ")(Fun x -> Fun y -> y)"
+let use_pr_eg = left pc
 
-(* peu use_pr;; *)
+(* peu use_pr_eg;; *)
 
 (* A use of pairs: an Fb function which takes a pair, adds up components
    High level idea is Fun p -> left p + right p, add ^'s and ()'s
@@ -226,16 +217,13 @@ let use_pr = left pc
 let pair_add = "Fun p -> (" ^ left "p" ^ ") + (" ^ right "p" ^ ")"
 let use_pair_add = "(" ^ pair_add ^ ")(" ^ pc ^ ")"
 
-(* Note we could have instead directly made pr a 2-argument **Fb** function.
-   - There is a trade-off of doing something in OCaml level (macro) or in Fb itself.
-   In fact in a way this is easier since Fb makes sure the components were evaluated
-     -- no Let needed.
-   - In general in any language with macros there is a tension of "use a macro" or "use a function"
-      -- some things require a macro, e.g. if a parameter is not to be evaluated (like pr_lazy above)
-*)
+(* Note we could have instead directly made pr a 2-argument **Fb** function: *)
 
 let pr_fb = "(Fun lft -> Fun rgt -> Fun x -> x lft rgt)"
-let pr_fb_eg = pr_fb ^ "(4+2) 5"
+let pr_fb_eg = "("^ pr_fb ^ ") 3 (5-1)"
+
+ (*  - There is a trade-off of doing something in OCaml level (macro) or in Fb itself.
+*)
 
 (* ****** Encoding Lists ********* *)
 
@@ -244,29 +232,29 @@ let pr_fb_eg = pr_fb ^ "(4+2) 5"
 (* First lets just make lists as pairs of (head,tail),
    which has a bug *)
 
+(* Under this idea, cons (hd :: tl) is just (hd,tl) : *)
 let cons_buggy e1 e2 = pr e1 e2
-
-(* use the above pair macro in cons (::) macro *)
-let emptylist_buggy = pr "0" "0"
-
-(* make something up here *)
 let head_buggy e = left e
 let tail_buggy e = right e
 
-(* [0;4;2] is informally encoded (0,(4,(2,(0,0)))): *)
-let eglist = cons_buggy "0" (cons_buggy "4" (cons_buggy "2" emptylist_buggy))
-let eghd = head_buggy eglist
+let emptylist_buggy = pr "0" "0" (* something arbitrary for empty list *)
 
-(* evals to 0 *)
-let egtl = tail_buggy eglist
-let eghdtl = head_buggy (tail_buggy eglist)
+(* [0;4;2] is informally then (0,(4,(2,(0,0)))): *)
+let eglist_buggy = cons_buggy "0" (cons_buggy "4" (cons_buggy "2" emptylist_buggy))
+let eghd = head_buggy eglist_buggy
 
-(* evals to 4 *)
+(* evals to 0 - works ! *)
+let egtl = tail_buggy eglist_buggy
+let eghdtl = head_buggy (tail_buggy eglist_buggy)
+
+(* evals to 4 - works !!!*)
 
 (* peu eghdtl;; *)
 
 (* All good so far..  but, can't test for empty list!! - this encoding is broken
    Seems like "tl l = 0" would work but if l is not empty it would get stuck. *)
+
+let failed_is_empty  = "("^ tail_buggy eglist_buggy ^ ") = 0"
 
 (* Solution: tag each element with a flag of emptylist or not *)
 (* Makes lists triples of (tag,head,tail), tag True iff list is empty
@@ -275,31 +263,23 @@ let eghdtl = head_buggy (tail_buggy eglist)
 
    (False, 1, (False, 2, (False, 3, (True, 0, 0))))
 
-   Lets make triple macros *)
+   Lets make triple macros, for simplicity we will use pairs to make them *)
 
-let triple a b c = pr (pr a b) c
-
-(* triples in terms of pairs (could have also made triples directly) *)
+let triple a b c = pr (pr a b) c (* "(1,2,3)" is then ((1,2),3) *)
 let tfirst t = left (left t)
 let tsecond t = right (left t)
 let tthird t = right t
 
 (* Now let us encode lists using triples as outined above *)
-let cons (e1, e2) = triple "False" e1 e2
-
-(* tag False means its not emptylist *)
-let empty_list = triple "True" "0" "0"
-
-(* tag True --> empty list!  0's are filler *)
+let cons (e1, e2) = triple "False" e1 e2 (* False = this list is not empty *)
+let empty_list = triple "True" "0" "0" (* True = this list is empty *)
 let head e = tsecond e
 let tail e = tthird e
-let isempty e = tfirst e
-
-(* Pull out the tag: True -> empty list, False -> not *)
+let isempty e = tfirst e (* use that flag as the boolean result *)
 
 let eglist = cons ("0", cons ("4", cons ("2", empty_list)))
 
-(* This is informally (False, (0, (False, 4, (False, 2, (True, 0, 0))))) if Fb had primitive triples *)
+(* This is informally (False, (0, (False, 4, (False, 2, (True, 0, 0))))) *)
 let eghd = head eglist
 let egtl = tail eglist
 let eghdtl = head (tail eglist)
@@ -318,7 +298,7 @@ let length =
 
 let eglength = "(" ^ length ^ ")(" ^ eglist ^ ")"
 
-(* peu eglength;; (* 3 *) *)
+(* peu eglength;; (* returns 3 *) *)
 
 (* ****** Freeze and thaw macros ********* *)
 
@@ -335,7 +315,11 @@ let thaw_fr = fr ^ "0"
 
 (* Now let us make a macro for this simple operation *)
 
+
 let freeze e = "(Fun _ -> (" ^ e ^ "))"
+
+let bad_freeze_fb = "Fun e -> (Fun _ -> e)"
+let bad_freeze_fb_eg = "(" ^ bad_freeze_fb ^ ") (4 + 4)"
 
 (* the Fun blocks the evaluator from e *)
 let thaw e = "((" ^ e ^ ") 0)"
@@ -352,20 +336,6 @@ let using_lazy = "Let f = " ^ lazy_double ^ " In f " ^ lazy_num
 
 (* peu using_lazy;; *)
 
-(* Freeze above has a bug if _ occurs free in expression e.
-   (Fb treats _ just like a variable, a flaw we should fix really) *)
-
-let bad_freeze_use = "Let _ = 5 In (" ^ freeze "1 + _" ^ ")"
-let thaw_bad = thaw bad_freeze_use
-
-(* should be 6 but returns 1 *)
-
-(* A somewhat-fix through obscurity *)
-let freeze e = "(Fun x_9282733 -> (" ^ e ^ "))"
-
-(* above is a hack; really should change Fb parser to disallow `_` as variable use *)
-(* This issue is called a _hygiene condition_ and real-world macro systems need to address this *)
-
 (* ****** Encoding Let as function application ********* *)
 
 (* Let is built-in but it is also easy to define as a macro: it is just a function call.
@@ -373,19 +343,19 @@ let freeze e = "(Fun x_9282733 -> (" ^ e ^ "))"
 
 (* Here is the idea of the encoding on an example *)
 
-let let_eg = "Let x = 3+4 In x - 44"
-let let_as_application = "(Fun x -> x - 44) (3+4)"
+let let_eg = "Let x = 3 + 4 In x - 44"
+let let_as_application = "(Fun x -> x - 44) (3 + 4)"
 
 (* Has exact same effect as previous Let: both
-   1. evaluate the 3+4
-   2. get 7 as result there
-   3. replace all x's with 7 in `x - 44` getting `7-44`
-   4. running that to get `-37` *)
+   1. evaluate the 3 + 4
+   2. .. getting 7 as result
+   3. so, replace all x's with 7 in `x - 44` getting `7 - 44`
+   4. and, running that to get `-37` *)
 
 (* Here it is as a macro instead of just a coding pattern like the above
    (note the body has a free variable so this macro can't be written as an Fb function) 
 *)
-
+(* macro for Let x = e1 in e2: *)
 let fblet x e1 e2 = "(Fun " ^ x ^ " -> " ^ e2 ^ ")(" ^ e1 ^ ")"
 let let_ex = fblet "z" (* = *) "2+3" (* In *) "z + z"
 
