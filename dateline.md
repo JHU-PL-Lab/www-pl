@@ -273,7 +273,8 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Wed</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">Midterm</div>
+        <div align="left" class="body">Midterm (<a
+      href="assignments/old-exams/midterm-study.html">Study Guide</a></div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
