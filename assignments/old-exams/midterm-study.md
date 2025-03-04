@@ -12,4 +12,4 @@
 
 These were take-home exams; since the 2025 exam is in-class it may be shorter.
 
-[2022](midterm-22.html), [2023](midterm-23.html), [2024](midterm-23.html).
+[2022](midterm-2022.html), [2023](midterm-2023.html), [2024](midterm-2024.html).
