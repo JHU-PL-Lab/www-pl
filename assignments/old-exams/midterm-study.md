@@ -10,4 +10,6 @@
 
 ### Old Midterms
 
+These were take-home exams; since the 2025 exam is in-class it may be shorter.
+
 [2022](midterm-22.html), [2023](midterm-23.html), [2024](midterm-23.html).
