@@ -1,0 +1,160 @@
+<!DOCTYPE HTML>
+<!--
+ Solarize by TEMPLATED
+ templated.co @templatedco
+ Released for free under the Creative Commons Attribution 3.0 license (templated.co/license)
+-->
+<html>
+ <head>
+  <title>Principles of Programming Languages</title>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+  <meta name="description" content="" />
+  <meta name="keywords" content="" />
+  <!--[if lte IE 8]><script src="/pl/css/ie/html5shiv.js"></script><![endif]-->
+  <script src="/pl/js/jquery.min.js"></script>
+  <script src="/pl/js/jquery.dropotron.min.js"></script>
+  <script src="/pl/js/skel.min.js"></script>
+  <script src="/pl/js/skel-layers.min.js"></script>
+  <script src="/pl/js/init.js"></script>
+  <noscript>
+   <link rel="stylesheet" href="/pl/css/skel.css" />
+   <link rel="stylesheet" href="/pl/css/style.css" />
+  </noscript>
+  <!--[if lte IE 8]><link rel="stylesheet" href="/pl/css/ie/v8.css" /><![endif]-->
+ </head>
+ <body>
+
+  <!-- Header Wrapper -->
+   <div class="wrapper style1">
+   
+   <!-- Header -->
+    <div id="header">
+     <div class="container">
+       
+      <!-- Logo -->
+       <h1><a href="/pl/index.html" id="logo">Principles of PL</a></h1>
+      
+      <!-- Nav -->
+       <nav id="nav">
+        <ul>
+          <li>
+          <a href="/pl/logistics.html">Logistics</a>
+          <ul class="menu">
+          <li><a href="/pl/logistics.html">Overview</a></li>
+           <li><a href="https://gradescope.com">Gradescope</a></li>
+           <li><a href="https://courselore.org/courses/0552179975">Q&amp;A</a></li>
+           <li><a href="/pl/contact.html">Contact Us</a></li>
+          </ul>
+         </li>
+         <li><a href="/pl/dateline.html">Dateline</a></li>
+         <li><a href="/pl/book">Book</a>
+         <ul class="menu">
+         <li><a href="/pl/book/book.pdf">Book PDF</a></li>
+         <li><a href="/pl/book/dist/">FbDK Distro</a></li>
+       </ul></li>
+
+         <li><a href="/pl/ocaml/index.html">OCaml</a>
+         </li>
+         <li><a href="">Assignments</a>
+         <ul class="menu">
+         <li><a href="/pl/assignments/assignment1.html">Assignment 1</a></li>
+         <li><a href="/pl/assignments/assignment2.html">Assignment 2</a></li>
+         <li><a href="/pl/assignments/assignment3.html">Assignment 3</a></li>
+         <li><a href="/pl/assignments/assignment4.html">Assignment 4</a></li>
+         <li><a href="/pl/assignments/assignment5.html">Assignment 5</a></li>
+         <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
+         <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
+         <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
+       </ul></li>
+        </ul>
+       </nav>
+ 
+     </div>
+    </div>
+<!-- close-out code before the standard footer .. use to glue in raw html. -->
+</div>
+<!-- Main -->
+<div id="main" class="wrapper style4">
+<!-- Content -->
+<div id="content" class="container">
+<section>
+
+<link rel="stylesheet" href="/pl/css/friendly.css" />
+<meta charset="utf-8" />
+    <h2 id="assignment-6-state-exceptions-objects">Assignment 6: State, Exceptions, Objects</h2>
+
+<ol>
+  <li>
+    <p>(6 points) Let us consider the language <strong>FbSE</strong>: <strong>Fb</strong> with state and a new feature we will call “state erasure”. This language has all of the syntax and semantics of <strong>FbS</strong> as well as a new expression form: <code>Erase</code>. <code>Erase</code> always evaluates to <code>0</code>, but it has a side effect of throwing away all existing state information. As a result, any dereference (such as <code>!x</code>) immediately after an <code>Erase</code> will get stuck (not evaluate to any value) since the state lookup will not succeed; only cells allocated after an <code>Erase</code> will be able to be dereferenced. For this question you are to extend the <strong>FbS</strong> rules by writing an operational semantics rule(s) for this new <code>Erase</code> expression.</p>
+  </li>
+  <li>
+    <p>(10 points) For this question we want to develop a stateful language with “state snapback” – its syntax is <strong>FbS</strong> but with two additional pieces of syntax, <code>Checkpoint</code> and <code>Snapback</code>, which are expressions (not values). Executing <code>Checkpoint</code> makes a full checkpoint of the current state; later on if <code>Snapback</code> is ever executed it <em>rolls back</em> all of the values that were checkpointed to their previously checkpointed values. We will call this new language <strong>FbSnap</strong>. For this question you are to write the operational semantics rules for <strong>FbSnap</strong>. Since there are many rules you only need to give the rules for function application, assignment <code>:=</code>, <code>Checkpoint</code>, and <code>Snapback</code>.</p>
+
+    <p>Here are answers to a few questions you may have. First, start with the <strong>FbS</strong> operational semantics as your basis. Note that any newly allocated locations should still be kept around at snapback – new memory locations could have been allocated since the previous checkpoint and variables could reference them, so only snap back for the things that existed back then. The checkpoint is global in the sense that a second checkpointing just overwrites any previous checkpoint if any. (Hint: the operational semantics execution state should be a triple here, not a pair as was the case in <strong>FbS</strong>.) Here are a few examples of evaluations (only showing the initial and final values, not the full state).</p>
+  </li>
+</ol>
+
+<ul>
+  <li><code>Let x = Ref 5 In (Checkpoint; x := 3; Snapback; !x)</code> returns <code>5</code></li>
+  <li><code>Checkpoint; Let x = Ref 5 In (Snapback; !x)</code> returns <code>5</code> (only values checkpointed are snapped back)</li>
+  <li><code>Let x = Ref 5 In (Snapback; !x)</code> returns <code>5</code> (no checkpoint so nothing to snapback)</li>
+  <li><code>Let x = Ref 5 In (Checkpoint; x := 3; Checkpoint; x := 6; Snapback; !x)</code> returns <code>3</code></li>
+</ul>
+
+<ol>
+  <li>
+    <p>(12 points) We can define operational equivalence for a hypothetical language <strong>FbSRX</strong> that combines both state and exceptions, using an analogous notion as with <strong>Fb</strong>: they equi-terminate in all <strong>FbSRX</strong> program contexts.</p>
+
+    <p>a. Write out this definition using mathematical notation, analogous to Definition 2.16 in the book but for <strong>FbSRX</strong> instead of <strong>Fb</strong>.  Note that <strong>FbSRX</strong> operational semantics will need to look like <strong>FbS</strong> in terms of having the state S as part of the operational semantics configuration.  We did not cover this explicit system but for this question you can just think of it as a union of <strong>FbS</strong> and <strong>FbX</strong>.</p>
+
+    <p>Which of these potential <strong>FbSRX</strong> operational equivalences in fact hold? Give a <em>counterexample FbSRX context C</em> for the ones that are false to demonstrate that fact.  For the ones you believe to be true, just mention that fact, no supporting evidence is needed.</p>
+
+    <p>b. <code>Try True with #wipeout(x) -&gt; False ~= False</code></p>
+
+    <p>c. <code>(Raise #wipeout(4)) + 4 =~ 7 - (Raise #wipeout(5))</code></p>
+
+    <p>d. <code>Let x = Ref 5 in 5 =~ 5</code></p>
+
+    <p>e. <code>(Let c = Ref 0 In c := c; !c) =~ (Let c = Ref 0 In c := c; c)</code></p>
+  </li>
+  <li>
+    <p>(8 points) This question addresses the gap in <strong>Fb</strong> when run-time type errors occur: expressions such as <code>4 + True</code> or <code>4 3</code> do not evaluate to anything, which is the same as a nonterminating computation. In this question we consider adding an extension to <strong>FbX</strong>, to have some exception mechanism that can raise exceptions for these dynamic type errors (we are using <strong>FbX</strong> just because it has exceptions, and that is what we need to raise when one of these errors is hit). Let us call this language <strong>FbDX</strong> for Dynamic <strong>FbX</strong>. Our desire is to have <strong>FbDX</strong> raise an exception, <code>Raise #TypeErr 0</code>, whenever one of these runtime type mismatch cases arise. <code>#TypeErr</code> will be the name of the special exception for (all) such type errors, and <code>0</code> is the required argument. This is a very simple form of exception, we would likely want a fancier form in a real language.</p>
+
+    <p>a. Write the additional <strong>FbDX</strong> operational semantics rules which would raise exceptions in the cases where <strong>Fb</strong> would have gotten stuck due to a run-time type mismatch on a <code>+</code> operation (all the other type mismatches for function application, etc are similar; for simplicity you only need to do “<code>+</code>” for this question). Make the rules clear and unambigous.</p>
+
+    <p>b. Now write a <code>Let safeadd = Fun x -&gt; Fun y -&gt; ...</code> function in <strong>FbDX</strong> itself which is “fault tolerant”: <code>safeadd</code> will return <code>0</code> in the case that either argument was not a number, and do the addition otherwise.</p>
+  </li>
+  <li>
+    <p>(10 points) Recall the following encoding of a <code>point</code> object in <strong>FbSR</strong> that is in the book:</p>
+
+    <div class="language-ocaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code> <span class="nc">Let</span> <span class="n">point</span> <span class="o">=</span> <span class="p">{</span> <span class="n">x</span> <span class="o">=</span> <span class="nc">Ref</span> <span class="mi">4</span><span class="p">;</span> <span class="n">y</span> <span class="o">=</span> <span class="nc">Ref</span> <span class="mi">3</span><span class="p">;</span>
+    <span class="n">magnitude</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">this</span> <span class="o">-&gt;</span> <span class="nc">Fun</span> <span class="n">dummy</span> <span class="o">-&gt;</span>  <span class="o">!</span><span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">x</span><span class="p">)</span> <span class="o">+</span> <span class="o">!</span><span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">y</span><span class="p">);</span>
+    <span class="n">iszero</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">this</span> <span class="o">-&gt;</span> <span class="nc">Fun</span> <span class="n">dummy</span> <span class="o">-&gt;</span> <span class="p">(</span><span class="n">this</span><span class="o">.</span><span class="n">magnitude</span> <span class="n">this</span> <span class="p">{})</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">setx</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">this</span> <span class="o">-&gt;</span> <span class="nc">Fun</span> <span class="n">newx</span> <span class="o">-&gt;</span> <span class="n">this</span><span class="o">.</span><span class="n">x</span> <span class="o">:=</span> <span class="n">newx</span><span class="p">;</span>
+    <span class="n">sety</span> <span class="o">=</span> <span class="nc">Fun</span> <span class="n">this</span> <span class="o">-&gt;</span> <span class="nc">Fun</span> <span class="n">newy</span> <span class="o">-&gt;</span> <span class="n">this</span><span class="o">.</span><span class="n">y</span> <span class="o">:=</span> <span class="n">newy</span> <span class="p">}</span> <span class="nc">In</span>
+       <span class="n">point</span><span class="o">.</span><span class="n">magnitude</span> <span class="n">point</span> <span class="p">{}</span>
+</code></pre></div>    </div>
+
+    <p>a.  One disadvantage of this encoding is how we can’t just say simply <code>point.magnitude {}</code> to send a <code>magnitude</code> message – we need to explicitly pass the self every time, cluttering the syntax. Provide an alternative encoding of this <code>point</code> object which has all the functionality but for which <code>point.magnitude {}</code> (and similarly for the other methods) is going to give the right answer, <code>7</code> here.</p>
+
+    <p>b.  Now extend your encoding to also hide the fields <code>x</code> and <code>y</code>: make them behave like <code>private</code> fields in Java. Make sure the internal access to the fields still works.</p>
+
+    <p>In both of your answers to this question you can change how internal field access and internal messaging works if you want, but do keep your encoding general so it should be clear how it will encode any standard object.</p>
+  </li>
+</ol>
+
+<h3 id="submission">Submission</h3>
+
+<p>As usual, upload your pdf to the Assignment 6 target in Gradescope.</p>
+      
+          </section>
+        </div>
+      </div>
+
+				<div id="copyright">
+					Web Design: <a href="http://templated.co">TEMPLATED</a> Images: <a href="http://unsplash.com">Unsplash</a> (<a href="http://unsplash.com/cc0">CC0</a>)
+				</div>			
+
+
+   </body>
+</html>
