@@ -24,7 +24,7 @@
 (* show_messages := true;; *)
 
 (* uncomment the following line to show the global state of the actor system as it evolves; 
-   this is the same as flag --show-state on the binary. Actor names are @1 @2 etc here*)
+   this is the same as flag --show-state on the binary. Actor names are a_1 a_2 etc here*)
 (* show_states := true;; *)
 
 (* uncomment the following line to force messages to be delivered in the order sent;
@@ -52,7 +52,8 @@ actor <- `doit(3)"
 (* peu onemsg will print OUTPUT: 5 *)
 
 (* Note that parsing precedence is even worse in AFbV compared to previous languages!
-   Moral: use many parentheses!! *)
+   Moral: use many parentheses!! 
+   Also, most annoyingly the string quotes need to be escaped in AFbV, the \"" in the above. *)
 
 (* Note if we send multiple messages to the above one_message_behavior actor 
    it will only process one of them (nondeterministically): *)
@@ -70,11 +71,12 @@ actor <- `doit(7)"
    - keeps message in a queue instead of a set conceptually *)
 
 
-(* Why did the above not process 2nd message?  Because the contract is: when the actor is finished processing,
-   it needs to return what code will use to process the next message.  Here that code is a no-op identity function.
+(* Why did the above not print out the 2nd OUTPUT message?  Because the contract is: when the actor is finished processing,
+   it needs to return the code it will use to process the next message.  Here that code is a no-op identity function.
+   So, it did in fact process it but the result was to not do anything.
 
-   * This is similar to the hand-over-fist programming idiom for functional trees, lists, etc
-   * But, it is not data state here, it is **code state**
+   * This is similar to the hand-over-fist programming idiom for modifying functional trees, lists, etc
+   * But, it is more general, it is the **code state** here.
    * In other words, the code you are setting is the future code for the actor
      - The PL term for "the rest of the code I need to run" is the **continuation**
      - So, each actor after processing one message needs to set its continuation before going back to sleep.
@@ -117,16 +119,16 @@ actor <- `doit (00)"
 ;;
 
 
-(* To close the loop, here is actual code for something like the a1/a2 example we worked in class.  
-   Recall the way it went:
+(* To close the loop, here is actual code for the refined a1/a2 example we worked in class.  
+   Recall the way it went (this is the second version where a1 itself creates a2):
 
-   1) in the bootstrap code we created actors a1 and a2 and send a1 the message `hi(7)
-   2) a1 handled the `hi(7) message, sending `ho(0) to a2
+   1) in the bootstrap code we created actor a1 and sent a1 the message `hi(5)
+   2) a1 handled the `hi(5) message, first creating actor a2 then sending `ho(6) to a2
    3) a2 then replied `ok(0) to a1.
 
-   Note that both a1 and a2 need to know each others' addresses; we can't in fact do that in the syntax
-   of AFbV (it is a mutual self-reference) - !  So, here we do a minor variation where the bootstrap code
-   makes a1 and send the `hi(7) message, and a1 then BOTH creates a2 and sends it a `ho(0) message.
+   * Note that both a1 and a2 need to know each others' addresses to send each other messages
+   * We can't in fact do the initial version of the example where we started with a1 and a2 
+     both being created by the bootstrap code, because there is no syntax for mututal actor definition in AFbV.
 *)   
 let lecture_example = 
    "Let a1_behavior = 
@@ -142,11 +144,11 @@ let lecture_example =
             `hi(n) -> 
                 (Print \"DEBUG: a1 received hi\");
                 Let a2 = Create(a2_behavior, me) In  (* a1 creates a2, tells it about itself for reply *)
-                (a2 <- `ho(0)); 
+                (a2 <- `ho(6)); 
                 Fun msg -> (Print \"DEBUG: a1 received ok\"); (Fun msg -> 0)
     In
     Let a1 = Create(a1_behavior,0) In
-    a1 <- `hi(7)"
+    a1 <- `hi(5)"
      ;;
 
 (* The approach in the above examples of inlining next code fails if we want an actor to process unbounded messages.
@@ -163,7 +165,7 @@ Let count_down_behavior = Fun me ->  Fun _ ->
       | `count(n) ->
          (Print \"OUTPUT: \"; (Print n); Print \"\n\");
          (If n = 0 Then 0 Else (me <- (`count (n-1))));
-         (this) (* key line - set next code to this *)
+         (this) (* key line - set next code to this - like `this (n-1)` recursion but delay the n-1 *)
      ) In
 Let actor = Create(count_down_behavior, 00) In
 actor <- `count 4"
@@ -215,7 +217,9 @@ user <- 00 (* bootstrap the messaging by sending user any message *)"
 ;;
 
 
-(* ping pong example involving two actors.  Have pinger create ponger for fun. *)
+(* Ping pong example involving two actors.  Pinger creates ponger.
+   Here they both can iterate unboundedly since both actors are recursions.
+ *)
 
 let ping_pong = "
 Let y = (Fun b -> Let w = Fun s -> Fun m -> b (s s) m In w w) In
@@ -228,7 +232,7 @@ Let pong_behavior =
                                ) In
 Let ping_behavior = 
   Fun me -> Fun _ -> Fun msg0 ->
- (* First message should be `init; create pong actor and get it going *)
+ (* First message should be `init; create pong actor and tell it how many balls to hit *)
      Match msg0 With
       `init(n) -> Let a2 = Create(pong_behavior, me) In (* tell ponger about me (pinger) when its made *)
 	 (a2 <- `pong(n)); (* send pong an n-ball to start the game *)
