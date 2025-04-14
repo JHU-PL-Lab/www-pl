@@ -33,7 +33,7 @@ Write a type checker for **TFbSRX**. The language was described in lecture and i
 
 *   The file [tfbsrx_examples.ml](http://pl.cs.jhu.edu/pl/ocaml/tfbsrx_examples.ml) contains quite a few examples for you to test the typechecker with.
 *   The AST for the language, in file [TFbSRX/tfbsrxast.ml](https://pl.cs.jhu.edu/pl/book/dist/fbdk/TFbSRX/tfbsrxast.ml), is slightly different from the one at the top of Section 6.4 in the textbook, it is a bit simpler.
-*   As with the other languages in the FbDK you can use our reference implementations.  Type `./reference/TFbSRX/toplevel.exe` (or the `wsl-` version if you have been using that) to load the type checker into `utop`.  The above file `tfbsrx_examples.ml` then contains information on how you can invoke the typechecker in testing - either `#use` that file or copy/paste in the lines at the top.
+*   As with the other languages in the FbDK you can use our reference implementations.  Type `./reference/TFbSRX/toplevel.exe` to load the type checker into `utop`.  The above file `tfbsrx_examples.ml` then contains information on how you can invoke the typechecker in testing - either `#use` that file or copy/paste in the lines at the top.
 *   Notice that `Raise ..` evaluates to "arbitrary tau" in the rule in the book. As we mentioned in lecture, this is usually handled by introducing an "anything type \*" - a type that is equal to every other type in the system. A new type `TBottom` has been added to the type fbtype for this purpose.
 *   Type checking exceptions can be somewhat tricky; especially their interactions with _other_ expressions and type rules. You need to consider each rule carefully.  
       
