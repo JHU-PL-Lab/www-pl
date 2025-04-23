@@ -93,7 +93,7 @@ fn main() {
     let x7 = HasDrop{z:7};
 }
 </pre>
-
+OUTPUT:
 <pre>Dropping 4!
 Dropping 3!
 Dropping 5!
