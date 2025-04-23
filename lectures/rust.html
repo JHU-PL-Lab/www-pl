@@ -37,20 +37,20 @@
       <!-- Nav -->
        <nav id="nav">
         <ul>
-         <li class="active"><a href="/pl/index.html">Home</a></li>
-         <li>
+          <li>
           <a href="/pl/logistics.html">Logistics</a>
           <ul class="menu">
-           <li><a href="/pl/dateline.html">Dateline</a></li>
+          <li><a href="/pl/logistics.html">Overview</a></li>
            <li><a href="https://gradescope.com">Gradescope</a></li>
-           <li><a href="https://campuswire.com/c/G9E051068">Q&amp;A</a></li>
+           <li><a href="https://courselore.org/courses/0552179975">Q&amp;A</a></li>
            <li><a href="/pl/contact.html">Contact Us</a></li>
           </ul>
          </li>
-         <li><a href="/pl/book">The Book</a>
+         <li><a href="/pl/dateline.html">Dateline</a></li>
+         <li><a href="/pl/book">Book</a>
          <ul class="menu">
-         <li><a href="/pl/book/book.pdf">The book PDF</a></li>
-         <li><a href="/pl/book/dist/">The FbDK dist</a></li>
+         <li><a href="/pl/book/book.pdf">Book PDF</a></li>
+         <li><a href="/pl/book/dist/">FbDK Distro</a></li>
        </ul></li>
 
          <li><a href="/pl/ocaml/index.html">OCaml</a>
@@ -65,7 +65,6 @@
          <li><a href="/pl/assignments/assignment6.html">Assignment 6</a></li>
          <li><a href="/pl/assignments/assignment7.html">Assignment 7</a></li>
          <li><a href="/pl/assignments/assignment8.html">Assignment 8</a></li>
-         <li><a href="/pl/assignments/assignment9.html">Assignment 9</a></li>
        </ul></li>
         </ul>
        </nav>
@@ -84,7 +83,7 @@
 <meta charset="utf-8" />
     <h2 id="a-taste-of-rust">A Taste of Rust</h2>
 
-<p>In a nutshell: “OCaml meets C++ for safe but efficient systems programming”  <br />
+<p>In a nutshell: “OCaml crossed with C++ for safe but efficient systems programming”  <br />
 OCaml features borrowed:</p>
 
 <ul>
@@ -107,7 +106,7 @@ OCaml features borrowed:</p>
 <p>Systems programming features:</p>
 
 <ul>
-  <li>true pointer references</li>
+  <li>true pointer references, &amp; and * like C++</li>
   <li><strong>no garbage collector</strong> – so no pausing problems for systems code, and also no manual freeing required</li>
   <li>support for (efficient) stack allocation of data folling C/C++.</li>
 </ul>
@@ -117,20 +116,27 @@ OCaml features borrowed:</p>
 <p>Key innovation: <strong>ownership</strong> for improved heap memory safety without garbage collector</p>
 
 <ul>
-  <li>Invariant: runtime variables “own” their heap data</li>
-  <li>only one variable can alias a particular heap item (well, with a few exceptions)</li>
-  <li>Concurrent data races are thus prevented since threads don’t share variables</li>
-  <li>Calling a function by default means the caller must give up access to the value (but can give back by returning it)</li>
-  <li>Similarly, assignment by default means giving up access to the heap value</li>
+  <li>Invariant: runtime variables “own” their heap data
+    <ul>
+      <li>only one variable can alias a particular heap item (well, with a few exceptions)</li>
+    </ul>
+  </li>
+  <li>Calling a function by default means the caller must give up access to the passed parameter (!) (but can give back by returning it)</li>
+  <li>Similarly, assignment by default means giving up access to the heap value (!)</li>
+  <li>Memory freed when owning variables’ scope ends
+    <ul>
+      <li>e.g. when a function returns, all declared locals are deallocated unless they are returned: no way to access any more so OK to free!</li>
+    </ul>
+  </li>
   <li>No manual freeing - could free data still being used and thats bad!</li>
-  <li>Instead, use the above invariant: Memory freed when owning variables’ scope ends</li>
+  <li>Concurrent data races are prevented since threads don’t share variables</li>
 </ul>
 
 <p>See the <a href="https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html">documentation on ownership</a> for details.</p>
 
 <h4 id="borrowing">Borrowing</h4>
 
-<p>Up to now Rust is far too rigid to be useful. But there are weakenings available.</p>
+<p>With just this simple ownership Rust is far too rigid to be useful. But there are weakenings available.</p>
 
 <ul>
   <li>A function can accept arguments by-value or by-reference</li>

@@ -29,11 +29,12 @@ Key innovation: **ownership** for improved heap memory safety without garbage co
 *   Invariant: runtime variables "own" their heap data
     - only one variable can alias a particular heap item (well, with a few exceptions)
 *   Calling a function by default means the caller must give up access to the passed parameter (!) (but can give back by returning it)
-*   Similarly, assignment by default means giving up access to the heap value (!)
-*   Memory freed when owning variables' scope ends 
+*   Similarly, assignment `x = y` by default means giving up access to the heap value `x` you just assigned, the new variable `y` now owns it's data (!)
+*   **Key**: Memory is freed when the owning variables' scope ends 
     - e.g. when a function returns, all declared locals are deallocated unless they are returned: no way to access any more so OK to free!
 *   No manual freeing - could free data still being used and thats bad!
 *   Concurrent data races are prevented since threads don't share variables
+*   Garbage collectis is avoided, all freeing is done at function return
 
 
 See the [documentation on ownership](https://doc.rust-lang.org/book/ch04-01-what-is-ownership.html) for details.
