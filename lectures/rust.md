@@ -20,7 +20,7 @@ Systems programming features:
 
 *   true pointer references, & and * like C++
 *   **no garbage collector** -- so no pausing problems for systems code, and also no manual freeing required
-*   support for (efficient) stack allocation of data folling C/C++.
+*   support for (efficient) stack allocation of data following C/C++.
 
 #### Ownership
 

@@ -10,4 +10,4 @@
 
 ### Old finals
 
-[2018](final-18.html), [2019](final-19.html), [2020 take-home](final-20-take-home.html) [2020 key](final-20-key.pdf),  [2021](final-21.html),  [2022](final-22.html), [2022 key](final-22-key.pdf), [2023](final-23.html).
+[2019](final-19.html), [2020 take-home](final-20-take-home.html) [2020 key](final-20-key.pdf),  [2021](final-21.html),  [2022](final-22.html), [2022 key](final-22-key.pdf), [2023](final-23.html), [2024](final-24.html).

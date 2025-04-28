@@ -1,0 +1,90 @@
+<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+
+<h2 id="programming-languages-final-exam-spring-2024">Programming Languages Final Exam Spring 2024</h2>
+
+<p>Your Name (please <strong>print neatly</strong> to help Gradescope automatically recognize it): <strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong><strong>__</strong>__</p>
+
+<p>Note that for any <em>single</em> numbered question 1. - 5. below, the magical word “SHAZAM!” as your answer will get you full points on that question.  The magic backfires if you attempt to use it twice however: two SHAZAM!s is no SHAZAM.</p>
+
+<ol>
+  <li>
+    <p>(18 points) This question concerns operational equivalence.</p>
+
+    <p>a. Give two equivalent Fb expressions which can be proved equivalent using the laws of β-Equivalence, transitivity, and congruence.  Your two expressions <em>must</em> require the use of <em>all  three of these laws</em> to be proven equivalent, in other words if any three of those laws were removed from the list of allowable laws to use the proof of equivalence of the two expressions would be impossible. Please show all the steps of your proof to convince us the laws are needed.  (Your proof can optionally use other laws as well if you want.)</p>
+
+    <p>b. Diverging and stuck computations are all operationally equivalent, but none of the equivalence laws in the book allow us to prove that.  For this question, consider the particular example of <code>0 1 ~= (Fun x -&gt; x x)(Fun x -&gt; x x)</code>: expand the definition of operational equivalence and argue informally why this equivalence holds based on the definition.</p>
+
+    <p>c. Now write a new true law we could add to our list of laws for <code>~=</code> which would allow any diverging or stuck computation to be equated.  It should allow any of the cases of two diverging, two stuck, or one diverging one stuck expressions to be equated.</p>
+
+    <p>d. The definition of operational equivalence for <strong>Fb</strong> is odd in how the two runs can produce different values.  Suppose the definition of operational equivalence was instead as follows:  <code>e1 ~= e2</code> iff for all contexts <code>C</code> such that <code>C[e1]</code> and <code>C[e2]</code> are both closed expressions, <code>C[e1] ==&gt; v</code> if and only if <code>C[e2] ==&gt; v</code> (note the same value <code>v</code> here unlike the definition in the book).  Show that this would be a bad definition: it would either equate too many or too few things.  In particular, give two expressions which either should be equivalent under the correct definition and are not here, or vice-versa.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(18 points) This question concerns records and variants.  <strong>FbV</strong> variants such as <code>`foo(4)</code> are not <em>too</em> different from a singleton <strong>FbR</strong> record <code>{ foo = 4 }</code> as far as <em>construction</em> of data goes: both have a label and a value.  But, if we attempted to use singleton records in place of variants we would not get far due to the difficulty of <em>destructing</em> data.</p>
+
+    <p>a. Argue informally why the <strong>FbV</strong> <code>Match .. With</code> syntax cannot be encoded in <strong>FbR</strong> if we replaced all variant definitions with singleton records as described above.</p>
+
+    <p>b. Consider an extension to <strong>FbR</strong> we will call <strong>FbRHas</strong> which includes additional expression syntax <code>e Has l</code> which returns <code>True</code> if <code>e</code> computes to a record that has an <code>l</code> field, returns <code>False</code> if it computes to a record without an <code>l</code> field, and implicitly gets stuck if <code>e</code> computes to a non-record.  For this question write out any new operational semantics rules needed to extend the <strong>FbR</strong> operational semantics to <strong>FbRHas</strong>.</p>
+
+    <p>c. In <strong>FbRHas</strong> we <em>can</em> fully and faithfully encode variants as singleton records.  Show this is the case by manually translating the following simple <strong>FbV</strong> program to <strong>FbRHas</strong></p>
+
+    <p><code>Let w = `hi(4) In Match w With `ho(x) -&gt; x + 1 | `hi(y) -&gt; y - 1</code></p>
+
+    <p>Your answer should not try to simplify this program (yes it’s equivalent to the program <code>3</code>), but instead implement the <code>Match</code> philosophy of the above example using the new <code>Has</code> syntax.  Your answer should start out <code>Let w = { hi = 4 } In ...</code>.  (Note that this encoding is totally different from the variants-as-records encoding covered in lecture.)</p>
+
+    <p>d. Finally, write out a general translation function <code>toFbRHas(e)</code> which will take any <strong>FbV</strong> program <code>e</code> and turn it into an equivalent <strong>FbRHas</strong> program using the above ideas to encode variants as singleton records and <code>Match</code> using <code>Has</code>.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(20 points) Many languages support implicit coercions of data, for example adding an integer and a floating point number is possible because the integer can be implicitly promoted to a float before adding. There is a flavor of subtyping to this: it can be viewed as using the subtyping <code>int &lt;: float</code> along with the subsumption rule to promote an integer to a float.</p>
+
+    <p>For this question we will consider the simpler case of allowing integers to be viewed as booleans: <code>0</code> can be viewed as a <code>False</code> boolean, and any non-<code>0</code> integer can be viewed as a <code>True</code> boolean.  Consider the language <strong>FbMasq</strong> which supports this implicit coercion, so for example <code>3 And True ==&gt; True</code>, and <code>Not(0) ==&gt; True</code> in <strong>FbMasq</strong> since <code>3</code> masquerades as <code>True</code> and <code>0</code> masquerades as <code>False</code>.</p>
+
+    <p>a. Write out any new operational semantics rules beyond those in <strong>Fb</strong> already needed to support this implicit coercion of integers to booleans in <strong>FbMasq</strong>.  Make sure you will allow an integer to always stand in whenever a boolean is normally needed.</p>
+
+    <p>Next let us consider a typed version of <strong>FbMasq</strong>,  <strong>STFbMasq</strong>, which uses subtyping to allow us to typecheck such programs.  For example, <code>|- 3 And True : Bool</code> should hold in <strong>STFbMasq</strong>.  The <strong>STFbMasq</strong> typing rules are defined as those of <strong>STFbR</strong>, removing the record rules, and adding one new subtyping rule, the axiom <code>|- Int &lt;: Bool</code>.  (We will keep the subsumption rule and all of the non-record subtyping rules of <strong>STFbR</strong>).</p>
+
+    <p>b. Recall that we can interpret subtyping as subsetting.  Use this philosophy to draw a Venn diagram of how the <code>Int</code> and <code>Bool</code> types-as-sets should relate in <strong>STFbMasq</strong>; include a few representative examples in your diagram such as <code>3</code> and <code>False</code>.</p>
+
+    <p>c. Now use the <strong>STFbMasq</strong> type and subtype rules to type our little example: <code>|- 3 And True : Bool</code>.</p>
+
+    <p>d. Show that the system didn’t overdo it: argue that there is no proof possible for <code>|- 3 + True : Int</code> by showing any attempt to construct such a tree will fail.</p>
+
+    <p>e. Is <code>|- (Int -&gt; Int) -&gt; Int &lt;: (Bool -&gt; Int) -&gt; Bool</code> provable using the <strong>STFbMasq</strong> subtyping rules?  Either give the proof tree or argue why not.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(15 points) <strong>FbX</strong> has a simpler <code>Try .. With</code> syntax in comparison with OCaml’s: in OCaml you can match on multiple possible exceptions, for example in OCaml you can write <code>try ... with | Foo(x) -&gt; x + 1 | Bar(y) -&gt; y - 1</code> to potentially catch either <code>Foo</code> or <code>Bar</code> in one <code>try</code>.  In <strong>FbX</strong> we only allow for one <code>With</code> clause, so only <code>Try ... With #Foo(x) -&gt; x + 1</code> in this case could be written and we would not be able to handle the <code>Bar</code> exception in this <code>Try</code> if it occurred in the <code>...</code>.</p>
+
+    <p>a. <strong>FbX</strong> has this design because it is in fact not difficult to code something of the spirit of the above OCaml <code>try with</code> example using only <strong>FbX</strong> syntax.  Concretely, write a <strong>FbX</strong> expression which fully and faithfully captures the OCaml example above, assuming the <code>...</code> code could raise either <code>#Foo(..)</code> or <code>#Bar(..)</code> exceptions.</p>
+
+    <p>b. Now, generalize this: show that there is a macro abbreviation for a more general <code>Try .. With</code> that can be defined in <strong>FbX</strong>.  Your macro should look like<br />
+<code>Try e1 With | #xn1(x1) -&gt; e1 | ... | #xnn(xn) -&gt; en =def= ...</code> where the <code>...</code> is filled with <strong>FbX</strong> code that implements this n-ary exception catch.  You can use mathematical notation in writing out the macro, so “…” is fine.</p>
+
+    <p>c. One other approach is to build in a multiple-clause <code>Try-With</code> into <strong>FbX</strong> itself.  Consider <strong>FbXMultTry</strong>, a modification of <strong>FbX</strong> to support multiple clauses as outlined above.  The syntax of <strong>FbXMultTry</strong> <code>Try With</code>  is that of the macro left hand side given in the previous question.  For this question, write the new operational semantics rule for this new form of <code>Try</code>.</p>
+
+    <p style="page-break-after:always;"></p>
+  </li>
+  <li>
+    <p>(15 points) This question concerns actors.  One issue we did not address for actors is what happens with “garbage” actors, actors which are idle and are obviously never, ever going to receive any more messages.  In long-running systems that generate many actors these must be freed or we will run out of memory, similar to how a heap in any modern programming language can fill up if we don’t either collect garbage or manually free memory to be re-used.</p>
+
+    <p>a. One solution to this for actors is to take the C/C++ approach and extend <strong>AFbV</strong> to support a <code>Free(e)</code> syntax which for <code>e</code> evaluating to some actor name <code>a</code> will manually remove actor <code>a</code> from the global actor soup <code>G</code>.  For this question you are to modify the operational semantics of <strong>AFbV</strong> to support <code>Free</code>.  Here are a few hints which you are free to use.  First, modify the local actor stepping relation <code>e =S=&gt; v</code> so that the set <code>S</code> of messages and newly created actors also can include elements <code>Free(a)</code> meaning actor <code>a</code> is to be freed.  Then modify the global stepping relation <code>G -&gt; G'</code> to also remove any actor which has been demanded to be freed, as well as any messages to that actor as they are now also garbage since the actor has been terminated.</p>
+
+    <p>b. The manual free approach above is chaotic as actors which have messages waiting for them, or which could get messages sent to them in the future, can be freed and this will then orphan those messages.  For this question, instead of adding <code>Free</code> syntax, let us just modify the global stepping relation so that it has an additional form of step it can take, a garbage collection step <code>G -&gt; G'</code>.  If there is any actor whose name is not appearing anywhere other than in itself (i.e. its name occurs in the code of no other actor and in no queued message of <code>G</code>), such an actor can be removed from <code>G</code>, as well as any other actors now garbage based on that actor being removed.  For this question you are to write out this new garbage collection rule.</p>
+  </li>
+</ol>
+
+<p style="page-break-after:always;"></p>
+
+<p>(Blank page, if you run out of room on any question say “see blank one” and write here)</p>
+
+<p style="page-break-after:always;"></p>
+
+<p>(Blank page, if you run out of room on any question say “see blank two” and write here)</p>
+
+<p style="page-break-after:always;"></p>
+
+<p>(Blank page, if you run out of room on any question say “see blank three” and write here)</p>
