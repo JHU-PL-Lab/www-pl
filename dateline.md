@@ -472,7 +472,7 @@ href="assignments/assignment1.html">1 - OCaml</a></div>
         <div align="center" class="body">Mon</div>
       </td>
       <td width="30%"> 
-        <div align="left" class="body">&nbsp;Lecture Recap Day</div>
+        <div align="left" class="body">&nbsp;Final Exam Review Day</div>
       </td>
       <td width="22%"> 
         <div align="center" class="body">&nbsp;</div>
