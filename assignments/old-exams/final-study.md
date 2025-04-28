@@ -4,7 +4,7 @@
 
 *   The exam covers all of the lecture materials. Most of the topics in the book should be considered as covered, but those book sections completely skipped will not be on the final.
 *   Recall that all of the lectures were [recorded and are on Panopto](https://jh.hosted.panopto.com/Panopto/Pages/Sessions/List.aspx?folderID=34dbc661-2113-4b74-abe3-b2570141b127).  Take advantage of that and review lecture recordings for topics that you are weak on.  The 2024 final exam was also solved on the last day of lecture.
-*   The 2023 exam was worked through in last years lecture, [here is the recording](https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a727509f-c97c-4b53-b466-b16e017e6ccc).  Also in 2023 some previous exam questions were solved, see [this recording](https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=efcb0661-636b-4272-8a0a-aff901720886).
+*   The 2023 exam was worked through in last years lecture, [here is the recording](https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=a727509f-c97c-4b53-b466-b16e017e6ccc).  Also in 2023 and 2022 some previous exam questions were solved, see [this recording for 2023](https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=efcb0661-636b-4272-8a0a-aff901720886) and [this recording for 2022](https://jh.hosted.panopto.com/Panopto/Pages/Viewer.aspx?id=f5ed318f-3027-4705-927a-ae940144cd6e).
 *   While OCaml questions are fair on the final, it is not a focus of the exam.
 *   The previous finals below collectively will give a pretty good idea of the scope of the exam; different topics are asked different years as there is no time to quiz every topic.
 *   The final is written to take 1.5 hours and it is in a three-hour slot.  So, if you studied you should not have a time problem.
