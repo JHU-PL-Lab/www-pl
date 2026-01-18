@@ -1,12 +1,22 @@
 ## Course Logistics
+Instructor: Ziyang Li
+Instructor Email: ziyang@cs.jhu.edu
+
+TA: Farnaz Yousefi
+TA Email: fyousef2@jh.edu
+TA Office Hours: Friday 4:00-5:00pm
+
+CA: Yuming Feng
+CA Email: yfeng97@jh.edu
+CA Office Hours: TBD
 
 ### Class Time and location
 
-We will meet 1:30-2:45PM on Mondays and Wednesdays in Krieger 170.  You are expected to attend all lectures in-person, but if there are reasons you cannot attend such as being sick, travelling, etc the lecture recordings should be available on Panopto.
+We will meet 3:00-4:15pm on Tuesdays and Thursdays. You are expected to attend lectures in-person; if you cannot attend (illness, travel, etc.) lecture recordings should be available on Panopto.
 
 ### Q&amp;A: Courselore
 
-We are using [Courselore](https://courselore.org/courses/0552179975) for course announcements and Q&amp;A. We emailed a special sign-up link for you to get on there; the link is also accessible from the course Canvas page if you added late.
+We are using [Courselore](https://courselore.org/courses/1421960494) for course announcements and Q&amp;A. We emailed a special sign-up link for you to get on there; the link is also accessible from the course Canvas page if you added late.
 
 ### Panopto Lecture Videos
 
@@ -19,7 +29,7 @@ The book for the course is the on-line [Book](book/index.html), which directly c
 
 ### Gradescope
 
-[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See Courselore for the entry code ([here](https://courselore.org/courses/0552179975/conversations/1) once you have made your Courselore account.)
+[Gradescope](https://gradescope.com) will be used for assignment submission and grade posting. See Courselore for the entry code ([here](https://courselore.org/courses/1421960494/conversations/1) once you have made your Courselore account.)
 
 ### Assignments
 

@@ -6,21 +6,19 @@ If you feel your question might be relevant to other students and does not conta
 Please send private questions for course staff only as a new Conversion setting Visible to "Visible by Staff Only" (not "Visible by Everyone") in Courselore.
 
 
-**Professor** Scott Smith
-**email** [scott@cs.jhu.edu](mailto:scott@cs.jhu.edu)
+<!-- **Professor** Scott Smith
+**email** [scott@cs.jhu.edu](mailto:scott@cs.jhu.edu) -->
 
-**Head Teaching Assistant** Earl Wu
-**email** kwu48 --at-- jhu.edu
+**Instructor** Ziyang Li
+**email** [ziyang@cs.jhu.edu](mailto:ziyang@cs.jhu.edu)
 
-**Course Assistants**
+**TA** Farnaz Yousefi
+**email** [fyousef2@jh.edu](mailto:fyousef2@jh.edu)
 
-* Brandon Stride
-* Shiwei Weng
-* Farnaz Yousefi
-* Bella Xia
-* Chenxin Zhu
+**CA** Yuming Feng
+**email** [yfeng97@jh.edu](mailto:yfeng97@jh.edu)
 
 ### Office Hours and Locations
 
-They will be posted [on Courselore](https://courselore.org/courses/2350216866) when they are set.
+They will be posted [on Courselore](https://courselore.org/courses/1421960494) when they are set.
 
