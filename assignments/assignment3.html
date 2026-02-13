@@ -82,47 +82,94 @@
 <link rel="stylesheet" href="/pl/css/friendly.css" />
 <meta charset="utf-8" />
     <h2 id="assignment-3-operational-semantics">Assignment 3: Operational Semantics</h2>
+<script>
+  window.MathJax = {
+    loader: { load: ['[tex]/bussproofs'] },
+    tex: {
+      packages: { '[+]': ['bussproofs'] },
+      macros: {
+        AxiomBar: ['\\AxiomC{}\\UnaryInfC{$#1$}', 1]
+      }
+    }
+  };
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+
 
 <p>This short homework assignment will give you some practice with operational semantics before starting to write your F♭ interpreter. Please consult <a href="http://pl.cs.jhu.edu/pl/book/book.pdf">Chapter 2 of the book</a> for the full details on various definitions and for more examples beyond those in the lecture if you have any questions.</p>
 
 <ol>
   <li>
-    <p>[7 points] Compute the following <strong>substitutions</strong>. Note that the substitution function is defined formally in Section 2.3.2 of the book.</p>
+    <p>[6 points] Compute the following <strong>substitutions</strong>. Note that the substitution function is defined formally in Section 2.3.2 of the book.</p>
 
-    <p>a.  <code>(Fun z -&gt; Fun y -&gt; x and True) [False/x]</code></p>
-
-    <p>b.  <code>(Fun x -&gt; Fun z -&gt; 5 + z) [6/z]</code></p>
-
-    <p>c.  <code>(Fun x -&gt; Fun z -&gt; If y Then x Else z) [True/y]</code></p>
-
-    <p>d.  <code>(If z Then (Fun z -&gt; Fun y -&gt; y And z) Else 22) [True/z]</code></p>
-
-    <p>e.  <code>((Fun x -&gt; x) (Fun y -&gt; x)) [3/x]</code></p>
-
-    <p>f.  <code>(Let y = x + 1 In y + 2) [5/y]</code></p>
-
-    <p>g.  <code>(Let f = f In f f) [(Fun f -&gt; f)/f]</code></p>
+        <p>a. <code>(Fun x -&gt; Fun z -&gt; (x + y) = z) [4/y]</code></p>
+        <p>b. <code>(If z Then (Fun x -&gt; Fun z -&gt; x And z) Else 22) [True/z]</code></p>
+        <p>c. <code>(Fun x -&gt; y - z + 1) [3/x]</code></p>
+        <p>d. <code>((Fun f -&gt; Fun x -&gt; f x) (Fun y -&gt; x)) [2/x]</code></p>
+        <p>e. <code>(Let y = x + 1 In y + 2) [5/y]</code></p>
+        <p>f. <code>(Let f = f In f f) [(Fun f -&gt; f)/f]</code></p>
   </li>
   <li>
     <p>[9 points] The following F♭ proof trees contain errors.  Describe why the proof tree is not valid (i.e., why the last line is, in fact, not a theorem).<br />
-  <img src="a3p2.jpg" width="500" /></p>
+        <p>a.
+        \[
+        \begin{prooftree}
+        \AxiomBar{y \Rightarrow y}
+        \AxiomBar{3 \Rightarrow 3}
+        \BinaryInfC{$\mathtt{Let}\ x = y\ \mathtt{In}\ 3 \Rightarrow 3$}
+        \end{prooftree}
+        \]</p>
+
+        <p>b.
+        \[
+        \begin{prooftree}
+        \AxiomBar{3 \Rightarrow 3}
+        \AxiomBar{0 \Rightarrow 0}
+        \BinaryInfC{$3 + 0 \Rightarrow 3$}
+        \AxiomBar{2 \Rightarrow 2}
+        \BinaryInfC{$\mathtt{If}\ 3 + 0\ \mathtt{Then}\ 2\ \mathtt{Else}\ 2 \Rightarrow 2$}
+        \end{prooftree}
+        \]</p>
+
+        <p>c.
+        \[
+        \begin{prooftree}
+        \AxiomBar{\mathtt{Fun}\ x \to x + 2 \Rightarrow \mathtt{Fun}\ x \to x + 2}
+        \AxiomBar{3 \Rightarrow 3}
+        \AxiomBar{((\mathtt{Fun}\ x \to x + 2)[3/x]) \Rightarrow \mathtt{Fun}\ x \to 3 + 2}
+        \TrinaryInfC{$(\mathtt{Fun}\ x \to x + 2)\ 3 \Rightarrow \mathtt{Fun}\ x \to 3 + 2$}
+        \end{prooftree}
+        \]</p>
+        </p>
   </li>
   <li>
     <p>[15 points] Write operational semantics proofs (i.e., proof trees) showing what the following expressions evaluate to in the Fb operational semantics. Please give the whole proof trees using the rules in Chapter 2.  You may reference one proof tree in another like a “proof tree macro” to make your answer more readable if you want (in other words, you can re-use any one proof tree in another, just like how proofs of Lemmas can be used in Theorems in math).  Note: it is not a bad idea to start by running them in the reference interpreter to make sure you are on the right path.</p>
 
-    <p>a.  <code>Let f = (Fun y -&gt; Not y) In Fun z -&gt; If (f z) Then 1 Else 0</code></p>
-
-    <p>b.  <code>(Fun f -&gt; Fun z -&gt; If (f z) Then 1 Else 0) (Fun y -&gt; Not y) False</code></p>
-
-    <p>c.  <code>Not((Fun x -&gt; If x = 0 Then True Else Fun x -&gt; x) 0)</code></p>
+        <p>a. <code>Let f = (Fun y -&gt; y - 1) In Fun z -&gt; 5 + (f z) +1</code></p>
+        <p>b. <code>(Let f = (Fun y -&gt; y - 1) In Fun z -&gt; 5 + (f z) + 1) 4</code></p>
+        <p>c. <code>(Fun x -&gt; (Fun a -&gt; a) (If x = 2 Then x + 1 Else 1)) 2</code></p>
   </li>
   <li>
-    <p>[10 points] F♭ currently lacks errors.  For this question, we are going to define a new language <strong>F♭Er</strong>, which adds an error, <code>Err</code> for operations that are not defined in F♭ to F♭.</p>
+    <p><strong>[10 points]</strong> Consider the following simple arithmetic language <strong>Arith</strong>, consisting of:</p>
+    <ul>
+        <li>integer constants</li>
+        <li>unary negation</li>
+        <li>binary addition</li>
+        <li>binary subtraction</li>
+        <li>binary multiplication</li>
+    </ul>
+    <p>For example, valid Arith expressions include:</p>
+    <pre><code>9
+3 + 3
+-3 + (2 * 6)
+(4 * (2 + 8)) - 3</code></pre>
+    <p>Parentheses indicate grouping in the usual way.</p>
 
-    <p>a. Define the BNF for <strong>F♭Er</strong>.  Note you can write “… Fb’s …” to indicate a copy/paste of the F♭ clauses.</p>
-
-    <p>b. Write two examples of the new proof rules that would be added to the existing rules.  You can also say “… Fb’s …” to paste in the F♭ rules as part of your set.</p>
+    <p>a. Define the grammar of expressions and values for Arith using BNF notation.</p>
+    <p>b. Give the full set of operational semantics rules for Arith.</p>
+    <p>c. The Arith language is normalizing: for every Arith expression <code>e</code>, there exists a value <code>v</code> such that <code>e ⇒ v</code>. Prove this fact. (Hint: follow the structure of the normalization proof for the BOOL language in Chapter 2.)</p>
   </li>
+
 </ol>
 
 <h3 id="submission-and-grading">Submission and Grading</h3>
