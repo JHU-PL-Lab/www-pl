@@ -53,7 +53,7 @@ Office hours and locations will be pinned on Courselore.
 
 ### In-Class Exercises and Exams
 
-There will be periodic written in-class exercises which will be graded pass/fail.  *They will not be announced in advance and cannot be made up*, but you will be allowed to drop one score.
+There will be written in-class exercises which will be graded pass/fail. They will happen every Thursday starting from the second week of class. There will be roughly 12 in-class exercises total, and you must hand in at least 8 of them. There will not be in-class exercises during midterm week or final week.
 
 There will be an in-class midterm before spring break and a final examination during the normal final exam period slot.
 
