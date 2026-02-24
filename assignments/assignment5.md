@@ -57,11 +57,14 @@ These are "paper" questions not coding questions, and you will submit a pdf solu
 
     (b) Translate the above program to **FbR** using your pair encoding from (a). Your encoding should be such that the concept should work for any program using these pair operations, don't just make something working for this example.
 
-5. (10 points) For the following **FbR/FbV** programs, either prove it has a value (by building the operational semantics proof tree) **or** argue that the program has no value.  Both of these systems were presented in lecture, tne the **FbV** system is also in the book.
 
-     a. **FbV**: ``(Fun yn -> Match yn With `Yes(x) -> 3 | `No(y) -> y) (`No(3))``
+5. (10 points) Make operational semantics rules for the freeze and thaw macros we defined for **Fb**. This means we are making a new programming language, **FbFT** (**Fb** extended with freeze and thaw).  You _must_ write a rule that actually does the "work" of the construct; don't just make a rule which is just expanding like a macro.  Concretely, your rule(s) *cannot* have any `Fun ..` or applications in them either above or below the line.  To help you get going, the grammar for **FbFT** is as follows:
 
-     b. **FbR**: ``(Fun r1 -> Fun r2 -> If r1.c Then r1.a Else {a = r2.c}) {a = 1; c = True} {a = False; c = 2}``
+    ```ocaml
+    v ::= (* all Fb clauses *) | Freeze(e) 
+    e ::= (* all Fb clauses *) | Thaw(e)
+    ```
+    You don't need to write out all the existing Fb rules, it is OK to state (* insert all Fb rules here *).
 
 #### Part II Submission
 
