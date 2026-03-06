@@ -1,8 +1,10 @@
 ## Assignment 5: Fb Programming, Y, Operational Equivalance, Records and Variants
 
-This assignment has two parts.  Part I consists of some short Fb programs you will need to write, and the second part is some written questions.  There are two separate Gradescope submission points for the two parts.  
+This assignment has two parts.  
+Part I consists of some short Fb programs you will need to write, and the second part is some written questions.  
+There are two separate Gradescope submission points for the two parts.  
 
-(Note that you can e.g. use one flex day to turn in *both* of them up to one day later -- consider it as one assignment when it comes to submission deadline and flex days.)
+(Note that you can e.g. use three flex day to turn in *both* of them up to three day later -- consider it as one assignment when it comes to submission deadline and flex days.)
 
 ### Part I: Fb programming
 
@@ -69,3 +71,4 @@ These are "paper" questions not coding questions, and you will submit a pdf solu
 #### Part II Submission
 
 Upload your homework pdf to the Gradescope Assignment 5 Part II submission point. *Please remember to list any collaborators at the top of your submission*.
+
